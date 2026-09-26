@@ -263,6 +263,33 @@ export type Database = {
           },
         ]
       }
+      matching_preferences: {
+        Row: {
+          age_max: number | null
+          age_min: number | null
+          languages: string[]
+          max_distance_miles: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age_max?: number | null
+          age_min?: number | null
+          languages?: string[]
+          max_distance_miles?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age_max?: number | null
+          age_min?: number | null
+          languages?: string[]
+          max_distance_miles?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           body: string
@@ -334,7 +361,9 @@ export type Database = {
           city: string | null
           country: string | null
           created_at: string
+          deletion_requested_at: string | null
           display_name: string
+          email_notifications_enabled: boolean
           european_citizenship: boolean
           hobbies: string[]
           id: string
@@ -343,6 +372,7 @@ export type Database = {
           occupation: string | null
           onboarding_completed_at: string | null
           profile_visibility: string
+          push_notifications_enabled: boolean
           state: string | null
           travel_frequency: string | null
           travel_style: string[]
@@ -358,7 +388,9 @@ export type Database = {
           city?: string | null
           country?: string | null
           created_at?: string
+          deletion_requested_at?: string | null
           display_name?: string
+          email_notifications_enabled?: boolean
           european_citizenship?: boolean
           hobbies?: string[]
           id: string
@@ -367,6 +399,7 @@ export type Database = {
           occupation?: string | null
           onboarding_completed_at?: string | null
           profile_visibility?: string
+          push_notifications_enabled?: boolean
           state?: string | null
           travel_frequency?: string | null
           travel_style?: string[]
@@ -382,7 +415,9 @@ export type Database = {
           city?: string | null
           country?: string | null
           created_at?: string
+          deletion_requested_at?: string | null
           display_name?: string
+          email_notifications_enabled?: boolean
           european_citizenship?: boolean
           hobbies?: string[]
           id?: string
@@ -391,6 +426,7 @@ export type Database = {
           occupation?: string | null
           onboarding_completed_at?: string | null
           profile_visibility?: string
+          push_notifications_enabled?: boolean
           state?: string | null
           travel_frequency?: string | null
           travel_style?: string[]
@@ -423,6 +459,75 @@ export type Database = {
           created_at?: string
           schema_version?: number
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reported_user_id: string
+          reporter_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reported_user_id: string
+          reporter_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reported_user_id?: string
+          reporter_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      safety_plans: {
+        Row: {
+          auto_checkin_minutes: number
+          checked_in_at: string | null
+          created_at: string
+          id: string
+          location: string | null
+          meeting_at: string
+          meeting_with: string
+          status: string
+          trusted_contacts: Json
+          user_id: string
+        }
+        Insert: {
+          auto_checkin_minutes?: number
+          checked_in_at?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          meeting_at: string
+          meeting_with: string
+          status?: string
+          trusted_contacts?: Json
+          user_id: string
+        }
+        Update: {
+          auto_checkin_minutes?: number
+          checked_in_at?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          meeting_at?: string
+          meeting_with?: string
+          status?: string
+          trusted_contacts?: Json
           user_id?: string
         }
         Relationships: []
@@ -510,6 +615,27 @@ export type Database = {
         }
         Relationships: []
       }
+      verification_status: {
+        Row: {
+          status: string
+          stripe_identity_session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          status?: string
+          stripe_identity_session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          status?: string
+          stripe_identity_session_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -523,6 +649,7 @@ export type Database = {
         }[]
       }
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
+      process_overdue_safety_checkins: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

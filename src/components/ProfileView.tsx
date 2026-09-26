@@ -4,6 +4,7 @@ import { calculateAge } from "@/lib/age";
 import { CONNECTION_TYPE_LABELS } from "@/constants/connectionTypes";
 import type { ConnectionType } from "@/constants/connectionTypes";
 import type { Tables } from "@/types/database";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 
 function ReadOnlyRow({ label, values }: { label: string; values: string[] | null | undefined }) {
   if (!values || values.length === 0) return null;
@@ -20,9 +21,16 @@ type ProfileViewProps = {
   connectionTypes: ConnectionType[] | undefined;
   originCountries: string[] | undefined;
   fallbackName?: string;
+  verificationStatus?: string | null;
 };
 
-export function ProfileView({ profile, connectionTypes, originCountries, fallbackName }: ProfileViewProps) {
+export function ProfileView({
+  profile,
+  connectionTypes,
+  originCountries,
+  fallbackName,
+  verificationStatus,
+}: ProfileViewProps) {
   const age = profile?.birthdate ? calculateAge(profile.birthdate) : undefined;
   const location = [profile?.city, profile?.state, profile?.country].filter(Boolean).join(", ");
   const nameLabel = profile?.display_name || fallbackName || "Add your name";
@@ -33,7 +41,10 @@ export function ProfileView({ profile, connectionTypes, originCountries, fallbac
         <Text className="text-2xl font-semibold text-white">{nameLabel.charAt(0).toUpperCase()}</Text>
       </View>
 
-      <Text className="font-display text-2xl text-ink-900">{nameLabel}</Text>
+      <View className="flex-row items-center gap-2">
+        <Text className="font-display text-2xl text-ink-900">{nameLabel}</Text>
+        <VerifiedBadge status={verificationStatus} />
+      </View>
       <Text className="-mt-3 text-sm text-ink-400">
         {[age ? `${age}` : null, location || null].filter(Boolean).join(" · ")}
       </Text>

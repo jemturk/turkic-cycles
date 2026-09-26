@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,6 +8,8 @@ import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { useMyConnectionTypes } from "@/hooks/useOnboarding";
 import { useOriginCountriesWithConsent, useRecordSwipe } from "@/hooks/useDiscover";
+import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
+import { useBlockUser } from "@/hooks/useSettings";
 import { ProfileView } from "@/components/ProfileView";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 
@@ -22,7 +24,9 @@ export default function OtherProfile() {
   const { data: profile } = useMyProfile(userId);
   const { data: connectionTypes } = useMyConnectionTypes(userId);
   const { data: originCountries } = useOriginCountriesWithConsent(userId);
+  const { data: verificationStatus } = useOtherUserVerificationStatus(userId);
   const recordSwipe = useRecordSwipe(circleId, session?.user.id);
+  const blockUser = useBlockUser(session?.user.id);
   const [matchedName, setMatchedName] = useState<string | null>(null);
 
   const showSwipeActions = fromDiscover === "true" && !!circleId;
@@ -49,7 +53,25 @@ export default function OtherProfile() {
           <Ionicons name="chevron-back" size={24} color="#2B2320" />
         </Pressable>
 
-        <ProfileView profile={profile} connectionTypes={connectionTypes} originCountries={originCountries} />
+        <ProfileView
+          profile={profile}
+          connectionTypes={connectionTypes}
+          originCountries={originCountries}
+          verificationStatus={verificationStatus}
+        />
+
+        <View className="flex-row gap-4">
+          <Pressable onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}>
+            <Text className="text-sm font-medium text-ink-400">Report</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              blockUser.mutate(userId, { onSuccess: () => router.back() });
+            }}
+          >
+            <Text className="text-sm font-medium text-ink-400">Block</Text>
+          </Pressable>
+        </View>
 
         {showSwipeActions ? (
           <View className="mt-4 flex-row items-center justify-center gap-6">

@@ -7,9 +7,11 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-na
 
 import { useSession } from "@/hooks/useSession";
 import { useDiscoverCandidates, useRecordSwipe } from "@/hooks/useDiscover";
+import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
 import { calculateAge } from "@/lib/age";
 import { CONNECTION_TYPE_LABELS } from "@/constants/connectionTypes";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 
 export default function Discover() {
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
@@ -21,6 +23,7 @@ export default function Discover() {
   const [matchedName, setMatchedName] = useState<string | null>(null);
 
   const candidate = candidates?.[0];
+  const { data: candidateVerification } = useOtherUserVerificationStatus(candidate?.userId);
   const opacity = useSharedValue(1);
 
   useEffect(() => {
@@ -71,10 +74,13 @@ export default function Discover() {
               </View>
 
               <View className="gap-2">
-                <Text className="font-display text-2xl text-white">
-                  {candidate.displayName}
-                  {candidate.birthdate ? `, ${calculateAge(candidate.birthdate)}` : ""}
-                </Text>
+                <View className="flex-row items-center gap-2">
+                  <Text className="font-display text-2xl text-white">
+                    {candidate.displayName}
+                    {candidate.birthdate ? `, ${calculateAge(candidate.birthdate)}` : ""}
+                  </Text>
+                  <VerifiedBadge status={candidateVerification} color="white" />
+                </View>
                 <Text className="text-sm text-white/90">
                   {[candidate.city, candidate.state].filter(Boolean).join(", ")}
                 </Text>
