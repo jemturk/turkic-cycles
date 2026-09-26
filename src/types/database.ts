@@ -210,6 +210,38 @@ export type Database = {
           },
         ]
       }
+      matches: {
+        Row: {
+          circle_id: string
+          connection_type: string | null
+          created_at: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          circle_id: string
+          connection_type?: string | null
+          created_at?: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          circle_id?: string
+          connection_type?: string | null
+          created_at?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_sensitive: {
         Row: {
           citizenship_status_detail: string | null
@@ -369,6 +401,41 @@ export type Database = {
         }
         Relationships: []
       }
+      swipes: {
+        Row: {
+          action: string
+          actor_id: string
+          circle_id: string
+          created_at: string
+          target_id: string
+          updated_at: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          circle_id: string
+          created_at?: string
+          target_id: string
+          updated_at?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          circle_id?: string
+          created_at?: string
+          target_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "swipes_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_connection_types: {
         Row: {
           connection_type: string
@@ -392,7 +459,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_origin_countries_with_consent: {
+        Args: { target_ids: string[] }
+        Returns: {
+          origin_countries: string[]
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

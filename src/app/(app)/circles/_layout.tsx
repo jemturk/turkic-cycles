@@ -6,6 +6,7 @@ export default function CirclesLayout() {
       <Stack.Screen name="index" />
       <Stack.Screen name="[circleId]/index" />
       <Stack.Screen name="[circleId]/members" />
+      <Stack.Screen name="[circleId]/discover" />
     </Stack>
   );
 }

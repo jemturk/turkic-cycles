@@ -109,7 +109,12 @@ export default function CircleDetail() {
               </View>
               <View className="flex-row flex-wrap gap-4">
                 {membersPreview.map((member) => (
-                  <View key={member.userId} className="items-center gap-1" style={{ width: 56 }}>
+                  <Pressable
+                    key={member.userId}
+                    className="items-center gap-1"
+                    style={{ width: 56 }}
+                    onPress={() => router.push(`/(app)/profile/${member.userId}`)}
+                  >
                     <View className="h-12 w-12 items-center justify-center rounded-full bg-coral-500">
                       <Text className="text-base font-semibold text-white">
                         {(member.displayName || "?").charAt(0).toUpperCase()}
@@ -118,14 +123,14 @@ export default function CircleDetail() {
                     <Text className="text-xs text-ink-700" numberOfLines={1}>
                       {member.displayName || "Member"}
                     </Text>
-                  </View>
+                  </Pressable>
                 ))}
               </View>
             </View>
           ) : null}
 
           <View className="mt-2">
-            <Button label="Meet members" onPress={() => router.push(`/(app)/circles/${circle.id}/members`)} />
+            <Button label="Meet members" onPress={() => router.push(`/(app)/circles/${circle.id}/discover`)} />
           </View>
         </View>
       </ScrollView>

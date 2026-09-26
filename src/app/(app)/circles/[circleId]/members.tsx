@@ -22,7 +22,12 @@ export default function CircleMembers() {
 
         <View className="flex-row flex-wrap gap-4">
           {(members ?? []).map((member) => (
-            <View key={member.userId} className="items-center gap-1" style={{ width: 72 }}>
+            <Pressable
+              key={member.userId}
+              className="items-center gap-1"
+              style={{ width: 72 }}
+              onPress={() => router.push(`/(app)/profile/${member.userId}`)}
+            >
               <View className="h-14 w-14 items-center justify-center rounded-full bg-coral-500">
                 <Text className="text-lg font-semibold text-white">
                   {(member.displayName || "?").charAt(0).toUpperCase()}
@@ -31,7 +36,7 @@ export default function CircleMembers() {
               <Text className="text-xs text-ink-700" numberOfLines={1}>
                 {member.displayName || "Member"}
               </Text>
-            </View>
+            </Pressable>
           ))}
         </View>
       </ScrollView>
