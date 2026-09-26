@@ -1,0 +1,30 @@
+import { Pressable, Text } from "react-native";
+import type { ReactNode } from "react";
+
+type ButtonProps = {
+  label: string;
+  onPress: () => void;
+  variant?: "primary" | "secondary";
+  disabled?: boolean;
+  rightSlot?: ReactNode;
+};
+
+export function Button({ label, onPress, variant = "primary", disabled }: ButtonProps) {
+  const isPrimary = variant === "primary";
+
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled}
+      className={[
+        "w-full items-center justify-center rounded-full py-4",
+        isPrimary ? "bg-coral-500" : "bg-transparent border border-coral-500",
+        disabled ? "opacity-50" : "",
+      ].join(" ")}
+    >
+      <Text className={isPrimary ? "text-base font-semibold text-white" : "text-base font-semibold text-coral-500"}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
