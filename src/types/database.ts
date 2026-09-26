@@ -39,6 +39,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      blocked_users: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       circle_events: {
         Row: {
           circle_id: string
@@ -215,6 +233,7 @@ export type Database = {
           circle_id: string
           connection_type: string | null
           created_at: string
+          id: string
           user_a: string
           user_b: string
         }
@@ -222,6 +241,7 @@ export type Database = {
           circle_id: string
           connection_type?: string | null
           created_at?: string
+          id?: string
           user_a: string
           user_b: string
         }
@@ -229,6 +249,7 @@ export type Database = {
           circle_id?: string
           connection_type?: string | null
           created_at?: string
+          id?: string
           user_a?: string
           user_b?: string
         }
@@ -238,6 +259,41 @@ export type Database = {
             columns: ["circle_id"]
             isOneToOne: false
             referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          match_id: string
+          read_at: string | null
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          match_id: string
+          read_at?: string | null
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          match_id?: string
+          read_at?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
             referencedColumns: ["id"]
           },
         ]
@@ -466,6 +522,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      is_blocked: { Args: { a: string; b: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
