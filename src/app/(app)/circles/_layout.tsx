@@ -4,9 +4,7 @@ export default function CirclesLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
-      <Stack.Screen name="[circleId]/index" />
-      <Stack.Screen name="[circleId]/members" />
-      <Stack.Screen name="[circleId]/discover" />
+      <Stack.Screen name="[circleId]" />
     </Stack>
   );
 }
