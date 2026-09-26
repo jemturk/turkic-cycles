@@ -18,7 +18,9 @@ See `/home/jem/.claude/plans/magical-dancing-yao.md` for the full architecture a
    ```bash
    npx expo start        # then press i / a / w, or scan the QR code with Expo Go
    npx expo start --web  # web only
-   ```
+
+## Local Install
+ANDROID_HOME="/home/jem/Android/Sdk" ANDROID_SDK_ROOT="/home/jem/Android/Sdk" npx expo run:android 2>&1
 
 ## Project structure
 
@@ -43,4 +45,6 @@ npx supabase gen types typescript --project-id <ref> > src/types/database.ts   #
 
 ## Current status
 
-Phase 0 (scaffold + auth) is done: sign up / log in against real Supabase auth, a redirect gate routing between auth → onboarding → the 5-tab app shell, and the `profiles`/`subscriptions` schema with RLS. Onboarding and the rest of the tabs are stubbed pending Phases 1–5 — see the plan doc for what's next.
+Phase 0 (scaffold + auth) is done: sign up / log in against real Supabase auth, a redirect gate routing between auth → onboarding → the 5-tab app shell, and the `profiles`/`subscriptions` schema with RLS.
+
+Phase 1 (onboarding + profile) is done: a 4-step onboarding wizard (connection types + basics, languages/interests, residency/origin/travel with consent, branching per-connection-type questions) writes to `profiles` plus `user_connection_types`/`questionnaire_responses`/`profile_sensitive`/`consent_records`, and the profile tab has a real view/edit screen. The rest of the tabs are stubbed pending Phases 2–5 — see the plan doc for what's next.

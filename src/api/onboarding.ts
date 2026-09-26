@@ -1,0 +1,198 @@
+import { supabase } from "@/api/client";
+import type { ConnectionType } from "@/constants/connectionTypes";
+import type {
+  CoreQuestionnaire,
+  OnboardingStep1,
+  OnboardingStep2,
+  OnboardingStep3,
+} from "@/schemas/questionnaire/core";
+import type { Step4Answers } from "@/schemas/questionnaire/step4";
+import type { ProfileEditValues } from "@/schemas/questionnaire/profileEdit";
+import { completeOnboarding, updateProfileFields } from "@/api/profiles";
+
+export async function updateConnectionTypes(userId: string, types: ConnectionType[]) {
+  const { error: deleteError } = await supabase
+    .from("user_connection_types")
+    .delete()
+    .eq("user_id", userId);
+  if (deleteError) throw deleteError;
+
+  if (types.length === 0) return;
+
+  const { error: insertError } = await supabase
+    .from("user_connection_types")
+    .insert(types.map((connection_type) => ({ user_id: userId, connection_type })));
+  if (insertError) throw insertError;
+}
+
+export async function submitOnboardingStep1(userId: string, values: OnboardingStep1) {
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      display_name: values.displayName,
+      birthdate: values.birthdate,
+      city: values.city,
+      state: values.state,
+      country: values.country,
+    })
+    .eq("id", userId);
+  if (error) throw error;
+
+  await updateConnectionTypes(userId, values.connectionTypes);
+}
+
+export async function upsertQuestionnaireCore(userId: string, core: Partial<CoreQuestionnaire>) {
+  const { error } = await supabase
+    .from("questionnaire_responses")
+    .upsert({ user_id: userId, core }, { onConflict: "user_id" });
+  if (error) throw error;
+}
+
+export async function upsertQuestionnaireAnswers(userId: string, answers: Partial<Step4Answers>) {
+  const { error } = await supabase
+    .from("questionnaire_responses")
+    .upsert({ user_id: userId, answers }, { onConflict: "user_id" });
+  if (error) throw error;
+}
+
+// Shared by onboarding step-3 and profile-edit: origin_countries lives in its own
+// self-only table with a consent trail (never a direct grant to other users).
+export async function updateOriginCountriesWithConsent(userId: string, originCountries: string[]) {
+  const { error: sensitiveError } = await supabase
+    .from("profile_sensitive")
+    .upsert({ user_id: userId, origin_countries: originCountries }, { onConflict: "user_id" });
+  if (sensitiveError) throw sensitiveError;
+
+  // Schema already guarantees consentOriginCountries is true by the time this runs.
+  const { error: consentError } = await supabase.from("consent_records").insert({
+    user_id: userId,
+    field_key: "origin_countries",
+    granted: true,
+    purpose: "matching",
+  });
+  if (consentError) throw consentError;
+}
+
+export async function submitOnboardingStep2(
+  userId: string,
+  values: OnboardingStep2,
+  corePayload: Partial<CoreQuestionnaire>
+) {
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      languages: values.languages,
+      interests: values.interests,
+      hobbies: values.hobbies,
+      occupation: values.occupation,
+    })
+    .eq("id", userId);
+  if (error) throw error;
+
+  await upsertQuestionnaireCore(userId, corePayload);
+}
+
+export async function submitOnboardingStep3(
+  userId: string,
+  values: OnboardingStep3,
+  corePayload: Partial<CoreQuestionnaire>
+) {
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      travel_frequency: values.travelFrequency,
+      travel_style: values.travelStyle,
+      us_residency: values.usResidency,
+      us_citizenship: values.usCitizenship,
+      european_citizenship: values.europeanCitizenship,
+    })
+    .eq("id", userId);
+  if (error) throw error;
+
+  await upsertQuestionnaireCore(userId, corePayload);
+  await updateOriginCountriesWithConsent(userId, values.originCountries);
+}
+
+export async function submitOnboardingStep4AndComplete(
+  userId: string,
+  answers: Partial<Step4Answers>
+) {
+  await upsertQuestionnaireAnswers(userId, answers);
+  await completeOnboarding(userId);
+}
+
+// Composite save for the profile-edit screen: touches every table the onboarding
+// wizard writes to, in one call, since edit is a single form rather than a wizard.
+export async function saveProfileEdit(userId: string, values: ProfileEditValues) {
+  await updateProfileFields(userId, {
+    display_name: values.displayName,
+    bio: values.bio || null,
+    birthdate: values.birthdate,
+    city: values.city,
+    state: values.state,
+    country: values.country,
+    languages: values.languages,
+    interests: values.interests,
+    hobbies: values.hobbies,
+    occupation: values.occupation,
+    travel_frequency: values.travelFrequency,
+    travel_style: values.travelStyle,
+    us_residency: values.usResidency,
+    us_citizenship: values.usCitizenship,
+    european_citizenship: values.europeanCitizenship,
+  });
+
+  await updateConnectionTypes(userId, values.connectionTypes);
+  await updateOriginCountriesWithConsent(userId, values.originCountries);
+
+  const corePayload: Partial<CoreQuestionnaire> = {
+    languages: values.languages,
+    interests: values.interests,
+    hobbies: values.hobbies,
+    occupation: values.occupation,
+    usResidency: values.usResidency,
+    usCitizenship: values.usCitizenship,
+    europeanCitizenship: values.europeanCitizenship,
+    travelFrequency: values.travelFrequency,
+    travelStyle: values.travelStyle,
+  };
+  await upsertQuestionnaireCore(userId, corePayload);
+
+  const { romantic, business, business_mentor, academic_mentor, spiritual_mentor } = values;
+  await upsertQuestionnaireAnswers(userId, {
+    romantic,
+    business,
+    business_mentor,
+    academic_mentor,
+    spiritual_mentor,
+  });
+}
+
+export async function getMyConnectionTypes(userId: string): Promise<ConnectionType[]> {
+  const { data, error } = await supabase
+    .from("user_connection_types")
+    .select("connection_type")
+    .eq("user_id", userId);
+  if (error) throw error;
+  return (data ?? []).map((row) => row.connection_type as ConnectionType);
+}
+
+export async function getMyQuestionnaireResponses(userId: string) {
+  const { data, error } = await supabase
+    .from("questionnaire_responses")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function getMyProfileSensitive(userId: string) {
+  const { data, error } = await supabase
+    .from("profile_sensitive")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}

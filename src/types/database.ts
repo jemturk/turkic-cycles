@@ -39,6 +39,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      consent_records: {
+        Row: {
+          field_key: string
+          granted: boolean
+          granted_at: string
+          id: string
+          purpose: string
+          revoked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          field_key: string
+          granted: boolean
+          granted_at?: string
+          id?: string
+          purpose: string
+          revoked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          field_key?: string
+          granted?: boolean
+          granted_at?: string
+          id?: string
+          purpose?: string
+          revoked_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profile_sensitive: {
+        Row: {
+          citizenship_status_detail: string | null
+          created_at: string
+          origin_countries: string[]
+          religious_affiliation: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          citizenship_status_detail?: string | null
+          created_at?: string
+          origin_countries?: string[]
+          religious_affiliation?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          citizenship_status_detail?: string | null
+          created_at?: string
+          origin_countries?: string[]
+          religious_affiliation?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           app_locale: string
@@ -114,6 +171,33 @@ export type Database = {
         }
         Relationships: []
       }
+      questionnaire_responses: {
+        Row: {
+          answers: Json
+          core: Json
+          created_at: string
+          schema_version: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          core?: Json
+          created_at?: string
+          schema_version?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          core?: Json
+          created_at?: string
+          schema_version?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           current_period_end: string | null
@@ -140,6 +224,24 @@ export type Database = {
           stripe_subscription_id?: string | null
           tier?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_connection_types: {
+        Row: {
+          connection_type: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          connection_type: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          connection_type?: string
+          created_at?: string
           user_id?: string
         }
         Relationships: []

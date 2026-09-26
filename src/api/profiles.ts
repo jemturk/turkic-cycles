@@ -1,4 +1,10 @@
 import { supabase } from "@/api/client";
+import type { TablesUpdate } from "@/types/database";
+
+export async function updateProfileFields(userId: string, partial: TablesUpdate<"profiles">) {
+  const { error } = await supabase.from("profiles").update(partial).eq("id", userId);
+  if (error) throw error;
+}
 
 export async function getMyProfile(userId: string) {
   const { data, error } = await supabase
