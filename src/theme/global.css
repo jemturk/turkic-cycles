@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Web only: the app is mobile-first and looks stretched full-bleed on a wide desktop
+   viewport. This gives the page itself a neutral backdrop so the phone-width column
+   (constrained in src/app/_layout.tsx) reads as a deliberate frame rather than a
+   wrong-looking full-width layout. Harmless at actual mobile widths, where the
+   content already fills the viewport and this backdrop never shows. */
+html,
+body {
+  background-color: #ece3db;
+}
