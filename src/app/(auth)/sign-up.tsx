@@ -17,7 +17,10 @@ export default function SignUp() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<AuthCredentials>({ resolver: zodResolver(authCredentialsSchema) });
+  } = useForm<AuthCredentials>({
+    resolver: zodResolver(authCredentialsSchema),
+    defaultValues: { email: "", password: "" },
+  });
 
   const onSubmit = async (values: AuthCredentials) => {
     setIsSubmitting(true);

@@ -2,6 +2,10 @@
 module.exports = {
   content: ["./src/app/**/*.{js,jsx,ts,tsx}", "./src/components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
+  // "class" avoids a NativeWind web bug where the default "media" strategy throws
+  // "Cannot manually set color scheme" on first load (react-native-css-interop's
+  // stylesheet-injection race unconditionally calls colorScheme.set()).
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
