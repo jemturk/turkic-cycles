@@ -18,9 +18,17 @@ See `/home/jem/.claude/plans/magical-dancing-yao.md` for the full architecture a
    ```bash
    npx expo start        # then press i / a / w, or scan the QR code with Expo Go
    npx expo start --web  # web only
+   ```
 
-## Local Install
-ANDROID_HOME="/home/jem/Android/Sdk" ANDROID_SDK_ROOT="/home/jem/Android/Sdk" npx expo run:android 2>&1
+## Local install (native build on a connected device)
+
+Requires the Android SDK (`ANDROID_HOME`/`ANDROID_SDK_ROOT` set) and a device connected via
+`adb` (USB debugging enabled) or a running emulator:
+
+```bash
+npx expo run:android   # builds a debug APK locally and installs it on the device
+npx expo run:ios       # macOS + Xcode only
+```
 
 ## Project structure
 
@@ -47,4 +55,6 @@ npx supabase gen types typescript --project-id <ref> > src/types/database.ts   #
 
 Phase 0 (scaffold + auth) is done: sign up / log in against real Supabase auth, a redirect gate routing between auth → onboarding → the 5-tab app shell, and the `profiles`/`subscriptions` schema with RLS.
 
-Phase 1 (onboarding + profile) is done: a 4-step onboarding wizard (connection types + basics, languages/interests, residency/origin/travel with consent, branching per-connection-type questions) writes to `profiles` plus `user_connection_types`/`questionnaire_responses`/`profile_sensitive`/`consent_records`, and the profile tab has a real view/edit screen. The rest of the tabs are stubbed pending Phases 2–5 — see the plan doc for what's next.
+Phase 1 (onboarding + profile) is done: a 4-step onboarding wizard (connection types + basics, languages/interests, residency/origin/travel with consent, branching per-connection-type questions) writes to `profiles` plus `user_connection_types`/`questionnaire_responses`/`profile_sensitive`/`consent_records`, and the profile tab has a real view/edit screen.
+
+Phase 2 (Circles) is done: a seeded list of 5 community circles (join/leave), a circle detail screen with an upcoming event + RSVP and a members preview, and a full members grid. Backed by `circles`/`circle_members`/`circle_events`/`event_rsvps`, with `profiles` read access widened (one phase earlier than originally planned) to circle-mates only. The rest of the tabs (Connections, Chat, Settings) are stubbed pending Phases 3–5 — see the plan doc for what's next.
