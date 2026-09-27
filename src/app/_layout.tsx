@@ -1,6 +1,6 @@
 import "@/theme/global.css";
 import { useEffect } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -30,6 +30,23 @@ export default function RootLayout() {
     }
   }, [fontsLoaded]);
 
+  useEffect(() => {
+    // web.output is "single" (SPA), so +html.tsx root-document customization never
+    // applies -- Expo always serves its own fixed template regardless. Set
+    // theme-color here instead: without it, some mobile browsers tint their own
+    // chrome (address bar, the strip behind the home indicator) by sampling the
+    // page's body background, which is the neutral desktop-framing color from
+    // global.css, not this screen's own white/coral tones.
+    if (Platform.OS !== "web") return;
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "theme-color");
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", "#ffffff");
+  }, []);
+
   if (!fontsLoaded) {
     return null;
   }
@@ -42,7 +59,7 @@ export default function RootLayout() {
               viewports, framed against the neutral backdrop set in global.css.
               A no-op on native/mobile-web, where the viewport is already
               narrower than max-w-[480px]. */}
-          <View className="mx-auto w-full max-w-[480px] flex-1 web:shadow-2xl">
+          <View className="mx-auto w-full max-w-[480px] flex-1 bg-coral-50 web:shadow-2xl">
             <Slot />
           </View>
         </QueryClientProvider>
