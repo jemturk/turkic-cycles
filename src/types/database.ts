@@ -371,6 +371,7 @@ export type Database = {
           languages: string[]
           occupation: string | null
           onboarding_completed_at: string | null
+          onboarding_step: number
           profile_visibility: string
           push_notifications_enabled: boolean
           state: string | null
@@ -398,6 +399,7 @@ export type Database = {
           languages?: string[]
           occupation?: string | null
           onboarding_completed_at?: string | null
+          onboarding_step?: number
           profile_visibility?: string
           push_notifications_enabled?: boolean
           state?: string | null
@@ -425,6 +427,7 @@ export type Database = {
           languages?: string[]
           occupation?: string | null
           onboarding_completed_at?: string | null
+          onboarding_step?: number
           profile_visibility?: string
           push_notifications_enabled?: boolean
           state?: string | null

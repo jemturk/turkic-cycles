@@ -4,6 +4,13 @@ import { Redirect } from "expo-router";
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 
+const ONBOARDING_STEP_ROUTES: Record<number, "/(onboarding)/step-1" | "/(onboarding)/step-2" | "/(onboarding)/step-3" | "/(onboarding)/step-4"> = {
+  1: "/(onboarding)/step-1",
+  2: "/(onboarding)/step-2",
+  3: "/(onboarding)/step-3",
+  4: "/(onboarding)/step-4",
+};
+
 export default function Index() {
   const { session, isLoading: sessionLoading } = useSession();
   const { data: profile, isLoading: profileLoading } = useMyProfile(session?.user.id);
@@ -21,7 +28,8 @@ export default function Index() {
   }
 
   if (!profile?.onboarding_completed_at) {
-    return <Redirect href="/(onboarding)/step-1" />;
+    const step = profile?.onboarding_step ?? 1;
+    return <Redirect href={ONBOARDING_STEP_ROUTES[step] ?? ONBOARDING_STEP_ROUTES[1]} />;
   }
 
   return <Redirect href="/(app)/circles" />;

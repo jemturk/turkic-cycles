@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { supabase } from "@/api/client";
 import { useSession } from "@/hooks/useSession";
 import { useSubmitOnboardingStep1 } from "@/hooks/useOnboarding";
 import { useOnboardingStore } from "@/stores/onboarding";
@@ -49,11 +50,23 @@ export default function OnboardingStep1Screen() {
     });
   };
 
+  // step-1 is always reached via a redirect (post sign-up/login), never a push, so
+  // there's no screen to pop back to -- and there's nowhere else for an
+  // authenticated-but-incomplete-profile user to land (the root gate would just send
+  // them right back here). Signing out and going to login is the only real "back":
+  // whatever they already completed is saved server-side, so logging in again resumes
+  // at the right step via profiles.onboarding_step.
+  const onBack = async () => {
+    store.reset();
+    await supabase.auth.signOut();
+    router.replace("/(auth)/login");
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-coral-50">
       <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
         <OnboardingProgress step={1} totalSteps={4} />
-        <Ionicons name="chevron-back" size={24} color="#2B2320" onPress={() => router.back()} />
+        <Ionicons name="chevron-back" size={24} color="#2B2320" onPress={onBack} />
 
         <Text className="mt-2 font-display text-3xl text-ink-900">Tell us about you</Text>
         <Text className="text-base text-ink-700">Let&apos;s start with the basics.</Text>

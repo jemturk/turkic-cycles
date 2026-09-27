@@ -34,6 +34,7 @@ export async function submitOnboardingStep1(userId: string, values: OnboardingSt
       city: values.city,
       state: values.state,
       country: values.country,
+      onboarding_step: 2,
     })
     .eq("id", userId);
   if (error) throw error;
@@ -85,6 +86,7 @@ export async function submitOnboardingStep2(
       interests: values.interests,
       hobbies: values.hobbies,
       occupation: values.occupation,
+      onboarding_step: 3,
     })
     .eq("id", userId);
   if (error) throw error;
@@ -105,6 +107,7 @@ export async function submitOnboardingStep3(
       us_residency: values.usResidency,
       us_citizenship: values.usCitizenship,
       european_citizenship: values.europeanCitizenship,
+      onboarding_step: 4,
     })
     .eq("id", userId);
   if (error) throw error;
