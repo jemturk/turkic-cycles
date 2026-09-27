@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as Linking from "expo-linking";
 
 import { supabase } from "@/api/client";
 import { signUpCredentialsSchema, type SignUpCredentials } from "@/schemas/auth";
@@ -13,6 +14,7 @@ import { TextField } from "@/components/TextField";
 
 export default function SignUp() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sentEmail, setSentEmail] = useState<string | null>(null);
   const {
     control,
     handleSubmit,
@@ -24,11 +26,21 @@ export default function SignUp() {
 
   const onSubmit = async (values: SignUpCredentials) => {
     setIsSubmitting(true);
-    const { error } = await supabase.auth.signUp(values);
+    const { data, error } = await supabase.auth.signUp({
+      ...values,
+      options: { emailRedirectTo: Linking.createURL("confirm") },
+    });
     setIsSubmitting(false);
 
     if (error) {
       Alert.alert("Couldn't sign up", error.message);
+      return;
+    }
+
+    if (!data.session) {
+      // No session means email confirmation is required before sign-in --
+      // show the "check your email" state instead of entering the app.
+      setSentEmail(values.email);
       return;
     }
 
@@ -45,44 +57,55 @@ export default function SignUp() {
         <Text className="mt-8 font-display text-3xl text-ink-900">Create your account</Text>
         <Text className="mt-2 text-base text-ink-700">Join the Turkic Circles community.</Text>
 
-        <View className="mt-8 gap-4">
-          <Controller
-            control={control}
-            name="email"
-            render={({ field }) => (
-              <TextField
-                label="Email"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                onChangeText={field.onChange}
-                value={field.value}
-                error={errors.email?.message}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <TextField
-                label="Password"
-                secureTextEntry
-                onChangeText={field.onChange}
-                value={field.value}
-                error={errors.password?.message}
-              />
-            )}
-          />
-          {!errors.password ? (
-            <Text className="-mt-2 text-xs text-ink-400">
-              8+ characters, with uppercase, lowercase, a number, and a special character.
+        {sentEmail ? (
+          <View className="mt-8 gap-2 rounded-2xl border border-teal-500 bg-white p-4">
+            <Text className="font-display text-lg text-ink-900">Check your email</Text>
+            <Text className="text-sm text-ink-700">
+              We sent a confirmation link to {sentEmail}. Open it to finish creating your account.
             </Text>
-          ) : null}
-        </View>
+          </View>
+        ) : (
+          <>
+            <View className="mt-8 gap-4">
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <TextField
+                    label="Email"
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    onChangeText={field.onChange}
+                    value={field.value}
+                    error={errors.email?.message}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <TextField
+                    label="Password"
+                    secureTextEntry
+                    onChangeText={field.onChange}
+                    value={field.value}
+                    error={errors.password?.message}
+                  />
+                )}
+              />
+              {!errors.password ? (
+                <Text className="-mt-2 text-xs text-ink-400">
+                  8+ characters, with uppercase, lowercase, a number, and a special character.
+                </Text>
+              ) : null}
+            </View>
 
-        <View className="mt-8">
-          <Button label="Create account" onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
-        </View>
+            <View className="mt-8">
+              <Button label="Create account" onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
+            </View>
+          </>
+        )}
       </View>
     </SafeAreaView>
   );
