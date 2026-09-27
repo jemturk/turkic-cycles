@@ -1,24 +1,51 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const TAB_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
-  circles: "sparkles-outline",
-  connections: "heart-outline",
-  chat: "chatbubble-outline",
-  profile: "person-outline",
-  settings: "settings-outline",
+const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
+  circles: { active: "sparkles", inactive: "sparkles-outline" },
+  connections: { active: "people", inactive: "people-outline" },
+  chat: { active: "chatbubble", inactive: "chatbubble-outline" },
+  profile: { active: "person", inactive: "person-outline" },
+  settings: { active: "settings", inactive: "settings-outline" },
 };
 
 export default function AppTabsLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: "#D9663D",
-        tabBarInactiveTintColor: "#8A7C76",
-        tabBarIcon: ({ color, size }) => (
-          <Ionicons name={TAB_ICONS[route.name] ?? "ellipse-outline"} size={size} color={color} />
-        ),
+        tabBarInactiveTintColor: "#A99C95",
+        tabBarLabelStyle: { fontSize: 11, fontWeight: "600", marginTop: 0 },
+        tabBarStyle: {
+          height: 62 + insets.bottom,
+          paddingBottom: insets.bottom + 6,
+          paddingTop: 8,
+          backgroundColor: "#FFFFFF",
+          borderTopWidth: 0,
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          shadowColor: "#2B2320",
+          shadowOpacity: 0.1,
+          shadowRadius: 20,
+          shadowOffset: { width: 0, height: -6 },
+          elevation: 16,
+        },
+        tabBarIcon: ({ focused, color, size }) => {
+          const icons = TAB_ICONS[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };
+          return (
+            <View
+              className={focused ? "items-center justify-center rounded-full bg-coral-50" : "items-center justify-center"}
+              style={{ width: 40, height: 28 }}
+            >
+              <Ionicons name={focused ? icons.active : icons.inactive} size={size - 2} color={color} />
+            </View>
+          );
+        },
       })}
     >
       <Tabs.Screen name="circles" options={{ title: "Circles" }} />
