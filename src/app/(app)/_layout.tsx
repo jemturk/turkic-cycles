@@ -26,14 +26,11 @@ export default function AppTabsLayout() {
           paddingBottom: insets.bottom + 6,
           paddingTop: 8,
           backgroundColor: "#FFFFFF",
-          borderTopWidth: 0,
+          borderTopWidth: 1,
+          borderTopColor: "#F1E7E0",
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
-          shadowColor: "#2B2320",
-          shadowOpacity: 0.1,
-          shadowRadius: 20,
-          shadowOffset: { width: 0, height: -6 },
-          elevation: 16,
+          elevation: 0,
         },
         tabBarIcon: ({ focused, color, size }) => {
           const icons = TAB_ICONS[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };
