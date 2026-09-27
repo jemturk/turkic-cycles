@@ -16,7 +16,7 @@ import {
   useUpsertRsvp,
 } from "@/hooks/useCircles";
 import {
-  CIRCLE_TOPIC_BANNER_BG,
+  CIRCLE_TOPIC_COLORS,
   CIRCLE_TOPIC_ICONS,
   RSVP_STATUSES,
   type CircleTopic,
@@ -51,12 +51,12 @@ export default function CircleDetail() {
   return (
     <SafeAreaView className="flex-1 bg-coral-50" edges={["top", "left", "right"]}>
       <ScrollView className="flex-1" contentContainerClassName="gap-4 pb-10">
-        <View className={`h-44 items-center justify-center px-6 ${CIRCLE_TOPIC_BANNER_BG[topic]}`}>
-          <Pressable className="absolute left-6 top-4" onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
+        <View className={`h-32 justify-between px-6 pt-4 ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
+          <Pressable onPress={() => router.back()}>
+            <Ionicons name="chevron-back" size={24} color="#2B2320" />
           </Pressable>
-          <View className="h-20 w-20 items-center justify-center rounded-full bg-white/25">
-            <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={36} color="#FFFFFF" />
+          <View className="mb-4 self-start rounded-xl bg-white/70 p-2">
+            <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={28} color={CIRCLE_TOPIC_COLORS[topic].fg} />
           </View>
         </View>
 
