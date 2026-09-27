@@ -51,11 +51,11 @@ export default function CircleDetail() {
   return (
     <SafeAreaView className="flex-1 bg-coral-50" edges={["top", "left", "right"]}>
       <ScrollView className="flex-1" contentContainerClassName="gap-4 pb-10">
-        <View className={`h-32 justify-between px-6 pt-4 ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
+        <View className={`h-20 flex-row items-center gap-3 px-6 pt-4 ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
           <Pressable onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={24} color="#2B2320" />
           </Pressable>
-          <View className="mb-4 self-start rounded-xl bg-white/70 p-2">
+          <View className="rounded-xl bg-white/70 p-2">
             <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={28} color={CIRCLE_TOPIC_COLORS[topic].fg} />
           </View>
         </View>
