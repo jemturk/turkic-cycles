@@ -71,6 +71,12 @@ export default function Login() {
               />
             )}
           />
+          <Text
+            className="self-end text-sm font-medium text-coral-500"
+            onPress={() => router.push("/(auth)/forgot-password")}
+          >
+            Forgot password?
+          </Text>
         </View>
 
         <View className="mt-8">
