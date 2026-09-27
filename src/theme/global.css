@@ -5,9 +5,21 @@
 /* Web only: the app is mobile-first and looks stretched full-bleed on a wide desktop
    viewport. This gives the page itself a neutral backdrop so the phone-width column
    (constrained in src/app/_layout.tsx) reads as a deliberate frame rather than a
-   wrong-looking full-width layout. Harmless at actual mobile widths, where the
-   content already fills the viewport and this backdrop never shows. */
+   wrong-looking full-width layout. */
 html,
 body {
   background-color: #ece3db;
+}
+
+/* At phone-width viewports (matching the app's own max-w-[480px] breakpoint) the
+   backdrop above is never meant to be visible -- but real mobile browsers can still
+   reveal a sliver of it at the very bottom edge (address bar / home-indicator chrome),
+   which then reads as a mismatched beige strip under the app's own white tab bar.
+   Default to white there instead, regardless of the exact cause, since white always
+   blends with the tab bar. */
+@media (max-width: 480px) {
+  html,
+  body {
+    background-color: #ffffff;
+  }
 }

@@ -20,10 +20,10 @@ export default function AppTabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: "#D9663D",
         tabBarInactiveTintColor: "#A99C95",
-        tabBarLabelStyle: { fontSize: 11, fontWeight: "600", marginTop: 0 },
+        tabBarLabelStyle: { fontSize: 11, lineHeight: 15, fontWeight: "600", marginTop: 2 },
         tabBarStyle: {
-          height: 62 + insets.bottom,
-          paddingBottom: insets.bottom + 6,
+          height: 76 + insets.bottom,
+          paddingBottom: insets.bottom + 12,
           paddingTop: 8,
           backgroundColor: "#FFFFFF",
           borderTopWidth: 1,
