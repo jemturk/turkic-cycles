@@ -31,7 +31,13 @@
       "expo-status-bar",
       "expo-font",
       "expo-localization",
-      "expo-splash-screen"
+      "expo-splash-screen",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Turkic Circles needs access to your photos so you can set a profile picture."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

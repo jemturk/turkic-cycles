@@ -25,6 +25,7 @@ export default function OwnProfile() {
           originCountries={sensitive?.origin_countries}
           fallbackName={session?.user.email}
           verificationStatus={verification?.status}
+          ownUserId={session?.user.id}
         />
 
         <View className="mt-4">
