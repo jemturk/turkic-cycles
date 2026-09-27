@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { supabase } from "@/api/client";
 import { useSession } from "@/hooks/useSession";
+import { passwordComplexitySchema } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 
@@ -16,8 +17,9 @@ export default function Account() {
   const [isSaving, setIsSaving] = useState(false);
 
   async function onChangePassword() {
-    if (newPassword.length < 8) {
-      setStatus("Password must be at least 8 characters.");
+    const result = passwordComplexitySchema.safeParse(newPassword);
+    if (!result.success) {
+      setStatus(result.error.issues[0].message);
       return;
     }
     setIsSaving(true);
@@ -64,6 +66,9 @@ export default function Account() {
             value={newPassword}
             onChangeText={setNewPassword}
           />
+          <Text className="-mt-2 text-xs text-ink-400">
+            8+ characters, with uppercase, lowercase, a number, and a special character.
+          </Text>
           {status ? <Text className="text-sm text-ink-700">{status}</Text> : null}
           <Button label={isSaving ? "Saving..." : "Change password"} disabled={isSaving} onPress={onChangePassword} />
         </View>

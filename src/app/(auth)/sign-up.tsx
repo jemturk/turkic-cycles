@@ -7,7 +7,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { supabase } from "@/api/client";
-import { authCredentialsSchema, type AuthCredentials } from "@/schemas/auth";
+import { signUpCredentialsSchema, type SignUpCredentials } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 
@@ -17,12 +17,12 @@ export default function SignUp() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<AuthCredentials>({
-    resolver: zodResolver(authCredentialsSchema),
+  } = useForm<SignUpCredentials>({
+    resolver: zodResolver(signUpCredentialsSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = async (values: AuthCredentials) => {
+  const onSubmit = async (values: SignUpCredentials) => {
     setIsSubmitting(true);
     const { error } = await supabase.auth.signUp(values);
     setIsSubmitting(false);
@@ -73,6 +73,11 @@ export default function SignUp() {
               />
             )}
           />
+          {!errors.password ? (
+            <Text className="-mt-2 text-xs text-ink-400">
+              8+ characters, with uppercase, lowercase, a number, and a special character.
+            </Text>
+          ) : null}
         </View>
 
         <View className="mt-8">
