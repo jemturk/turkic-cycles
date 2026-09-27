@@ -35,6 +35,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "45279546-0064-4468-9831-91daa4a2ef1b"
+      }
+    },
+    "owner": "jemturk"
   }
 }
