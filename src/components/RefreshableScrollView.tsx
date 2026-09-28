@@ -5,11 +5,11 @@ import {
   RefreshControl,
   ScrollView,
   View,
+  type GestureResponderEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
   type ScrollViewProps,
 } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 type RefreshableScrollViewProps = ScrollViewProps & {
@@ -20,13 +20,37 @@ type RefreshableScrollViewProps = ScrollViewProps & {
 const PULL_THRESHOLD = 64;
 const MAX_PULL = 100;
 
+// react-native-web passes touch handlers something much closer to the raw DOM
+// TouchEvent than RN's own normalized nativeEvent: pageY lives on an entry in
+// `touches` (or, once a touch has ended, `changedTouches`), not on nativeEvent
+// directly. Confirmed with a real synthetic TouchEvent, not assumed -- the initial
+// version read nativeEvent.pageY directly and silently got `undefined` every time.
+function touchPageY(e: GestureResponderEvent): number | undefined {
+  const native = e.nativeEvent as unknown as {
+    pageY?: number;
+    touches?: { pageY: number }[];
+    changedTouches?: { pageY: number }[];
+  };
+  return native.pageY ?? native.touches?.[0]?.pageY ?? native.changedTouches?.[0]?.pageY;
+}
+
 // react-native-web has no pull-to-refresh gesture built in -- RN's own
-// RefreshControl (used below on native) is a documented no-op there. The one
-// community package for this (react-native-web-refresh-control) turned out to be
-// broken on this project's react-native-web version: confirmed via direct testing
-// that it throws ("findNodeHandle is not supported on web") on every drag and
-// never calls onRefresh. Built on react-native-gesture-handler + reanimated
-// instead, both already dependencies here, rather than adding another one.
+// RefreshControl (used below on native) is a documented no-op there.
+//
+// Web history here, in order of what was tried and confirmed not to work rather
+// than assumed:
+//  1. The community package for exactly this gap (react-native-web-refresh-control)
+//     throws ("findNodeHandle is not supported on web") on every drag and never
+//     calls onRefresh -- confirmed directly, not just from its own caveats.
+//  2. A react-native-gesture-handler Pan gesture worked in a *mouse*-drag test, but
+//     didn't fire on a real phone's touch drag -- gesture-handler's web layer sets
+//     its own touch-action on the wrapped view, which fought the ScrollView's own
+//     touch handling for real touch input in a way a synthetic mouse drag never
+//     exercises.
+// This version drops both in favor of plain onTouchStart/Move/End directly on the
+// ScrollView itself -- passive listeners that only ever read coordinates, never
+// call preventDefault or claim the gesture, so the browser's/ScrollView's own touch
+// scrolling is never in competition with anything.
 export function RefreshableScrollView({ refreshing, onRefresh, children, ...scrollViewProps }: RefreshableScrollViewProps) {
   if (Platform.OS !== "web") {
     return (
@@ -53,9 +77,10 @@ function WebPullToRefresh({
   onScroll,
   ...scrollViewProps
 }: RefreshableScrollViewProps) {
-  // Read from the gesture (UI thread) callbacks -- a ref avoids a state update
-  // (and re-render) on every scroll frame just to know "are we at the top".
   const scrollY = useRef(0);
+  // Set on touch start only when already scrolled to the top; null whenever a
+  // touch begins mid-list, so mid-list scrolling is never mistaken for a pull.
+  const startY = useRef<number | null>(null);
   const pull = useSharedValue(0);
 
   useEffect(() => {
@@ -71,33 +96,34 @@ function WebPullToRefresh({
     onScroll?.(e);
   }
 
-  const pan = Gesture.Pan()
-    // Only claims the gesture once a drag is clearly vertical and downward;
-    // any horizontal or upward movement fails it immediately, handing the
-    // gesture back to the ScrollView's own native scrolling.
-    .activeOffsetY(15)
-    .failOffsetY(-15)
-    .failOffsetX([-15, 15])
-    /* eslint-disable react-hooks/refs, react-hooks/immutability --
-       these onUpdate/onEnd callbacks are reanimated worklets: they're written
-       inline here but only ever execute later, on the UI thread, during a real
-       gesture -- never during this component's own render. Mutating a shared
-       value's .value from inside them is reanimated's own documented API, not
-       a stray render-time ref write; the plugin's static analysis can't tell
-       "defined during render" apart from "runs later as a worklet". */
-    .onUpdate((e) => {
-      if (scrollY.current > 1) return;
-      pull.value = Math.max(0, Math.min(e.translationY, MAX_PULL));
-    })
-    .onEnd(() => {
-      if (pull.value > PULL_THRESHOLD && scrollY.current <= 1) {
-        pull.value = withTiming(PULL_THRESHOLD, { duration: 150 });
-        onRefresh();
-      } else {
-        pull.value = withTiming(0, { duration: 150 });
-      }
-    });
-  /* eslint-enable react-hooks/refs, react-hooks/immutability */
+  function handleTouchStart(e: GestureResponderEvent) {
+    startY.current = scrollY.current <= 1 ? (touchPageY(e) ?? null) : null;
+  }
+
+  // pull is a reanimated shared value; writing .value is its own documented API,
+  // not a stray render-time ref write -- these handlers only ever run from a real
+  // touch event, never during this component's render, but the lint rule can't
+  // tell "defined during render" apart from "runs later as an event handler".
+  function handleTouchMove(e: GestureResponderEvent) {
+    if (startY.current === null || scrollY.current > 1) return;
+    const y = touchPageY(e);
+    if (y === undefined) return;
+    const delta = y - startY.current;
+    // eslint-disable-next-line react-hooks/immutability
+    pull.value = Math.max(0, Math.min(delta, MAX_PULL));
+  }
+
+  function handleTouchEnd() {
+    if (startY.current === null) return;
+    startY.current = null;
+    if (pull.value > PULL_THRESHOLD) {
+      // eslint-disable-next-line react-hooks/immutability
+      pull.value = withTiming(PULL_THRESHOLD, { duration: 150 });
+      onRefresh();
+    } else {
+      pull.value = withTiming(0, { duration: 150 });
+    }
+  }
 
   const indicatorStyle = useAnimatedStyle(() => ({
     height: pull.value,
@@ -105,18 +131,21 @@ function WebPullToRefresh({
   }));
 
   return (
-    <GestureDetector gesture={pan}>
-      <View style={{ flex: 1 }}>
-        <Animated.View
-          className="items-center justify-center overflow-hidden"
-          style={indicatorStyle}
-        >
-          <ActivityIndicator color="#D9663D" />
-        </Animated.View>
-        <ScrollView {...scrollViewProps} onScroll={handleScroll} scrollEventThrottle={16}>
-          {children}
-        </ScrollView>
-      </View>
-    </GestureDetector>
+    <View style={{ flex: 1 }}>
+      <Animated.View className="items-center justify-center overflow-hidden" style={indicatorStyle}>
+        <ActivityIndicator color="#D9663D" />
+      </Animated.View>
+      <ScrollView
+        {...scrollViewProps}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
+      >
+        {children}
+      </ScrollView>
+    </View>
   );
 }
