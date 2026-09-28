@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useMyConnectionTypes, useSubmitOnboardingStep4AndComplete } from "@/hooks/useOnboarding";
@@ -15,6 +16,7 @@ import { OnboardingProgress } from "@/components/OnboardingProgress";
 import { BranchingQuestionsFields } from "@/components/BranchingQuestionsFields";
 
 export default function OnboardingStep4() {
+  const { t } = useTranslation();
   const { session } = useSession();
   const store = useOnboardingStore();
   const { data: savedConnectionTypes } = useMyConnectionTypes(session?.user.id);
@@ -57,13 +59,15 @@ export default function OnboardingStep4() {
         <OnboardingProgress step={4} totalSteps={4} />
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
-        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">A few more questions</Text>
+        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">
+          {t("onboarding.step4.heading")}
+        </Text>
 
         <BranchingQuestionsFields control={control} errors={errors} connectionTypes={connectionTypes} />
 
         <View className="mt-2">
           <Button
-            label={submitStep4.isPending ? "Saving..." : "Finish"}
+            label={submitStep4.isPending ? t("onboarding.saving") : t("onboarding.step4.finish")}
             disabled={submitStep4.isPending}
             onPress={handleSubmit(onSubmit)}
           />

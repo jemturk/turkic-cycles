@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
 import { Button } from "@/components/Button";
 
 export default function ConfirmEmail() {
+  const { t } = useTranslation();
   const params = useLocalSearchParams<{ token_hash?: string; type?: string }>();
   const [status, setStatus] = useState<"verifying" | "done" | "error">("verifying");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -36,9 +38,10 @@ export default function ConfirmEmail() {
         return;
       }
 
-      setErrorMessage("This confirmation link is invalid or has expired.");
+      setErrorMessage(t("auth.confirm.invalidLink"));
       setStatus("error");
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.token_hash, params.type]);
 
   useEffect(() => {
@@ -53,14 +56,14 @@ export default function ConfirmEmail() {
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <View className="flex-1 items-center justify-center px-6">
         {status === "verifying" ? (
-          <Text className="text-base text-ink-700 dark:text-ink-200">Confirming your email...</Text>
+          <Text className="text-base text-ink-700 dark:text-ink-200">{t("auth.confirm.verifying")}</Text>
         ) : status === "done" ? (
-          <Text className="text-base text-ink-700 dark:text-ink-200">Email confirmed! Taking you in...</Text>
+          <Text className="text-base text-ink-700 dark:text-ink-200">{t("auth.confirm.done")}</Text>
         ) : (
           <>
             <Text className="text-center text-base text-ink-700 dark:text-ink-200">{errorMessage}</Text>
             <View className="mt-6">
-              <Button label="Back to log in" onPress={() => router.replace("/(auth)/login")} />
+              <Button label={t("auth.confirm.backToLogin")} onPress={() => router.replace("/(auth)/login")} />
             </View>
           </>
         )}

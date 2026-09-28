@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as Linking from "expo-linking";
+import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
 import { signUpCredentialsSchema, type SignUpCredentials } from "@/schemas/auth";
@@ -13,6 +14,7 @@ import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 
 export default function SignUp() {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sentEmail, setSentEmail] = useState<string | null>(null);
   const {
@@ -33,7 +35,7 @@ export default function SignUp() {
     setIsSubmitting(false);
 
     if (error) {
-      Alert.alert("Couldn't sign up", error.message);
+      Alert.alert(t("auth.signUp.errorTitle"), error.message);
       return;
     }
 
@@ -54,14 +56,16 @@ export default function SignUp() {
       <View className="flex-1 px-6 pt-6">
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
-        <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">Create your account</Text>
-        <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">Join the Turkic Circles community.</Text>
+        <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">{t("auth.signUp.heading")}</Text>
+        <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">{t("auth.signUp.subheading")}</Text>
 
         {sentEmail ? (
           <View className="mt-8 gap-2 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
-            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">Check your email</Text>
+            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
+              {t("auth.signUp.checkEmailTitle")}
+            </Text>
             <Text className="text-sm text-ink-700 dark:text-ink-200">
-              We sent a confirmation link to {sentEmail}. Open it to finish creating your account.
+              {t("auth.signUp.checkEmailBody", { email: sentEmail })}
             </Text>
           </View>
         ) : (
@@ -72,7 +76,7 @@ export default function SignUp() {
                 name="email"
                 render={({ field }) => (
                   <TextField
-                    label="Email"
+                    label={t("auth.signUp.email")}
                     autoCapitalize="none"
                     keyboardType="email-address"
                     onChangeText={field.onChange}
@@ -86,7 +90,7 @@ export default function SignUp() {
                 name="password"
                 render={({ field }) => (
                   <TextField
-                    label="Password"
+                    label={t("auth.signUp.password")}
                     secureTextEntry
                     onChangeText={field.onChange}
                     value={field.value}
@@ -95,14 +99,12 @@ export default function SignUp() {
                 )}
               />
               {!errors.password ? (
-                <Text className="-mt-2 text-xs text-ink-400">
-                  8+ characters, with uppercase, lowercase, a number, and a special character.
-                </Text>
+                <Text className="-mt-2 text-xs text-ink-400">{t("auth.signUp.passwordHint")}</Text>
               ) : null}
             </View>
 
             <View className="mt-8">
-              <Button label="Create account" onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
+              <Button label={t("auth.signUp.submit")} onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
             </View>
           </>
         )}

@@ -3,6 +3,7 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
@@ -14,6 +15,7 @@ import { ProfileView } from "@/components/ProfileView";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 
 export default function OtherProfile() {
+  const { t } = useTranslation();
   const { userId, circleId, fromDiscover } = useLocalSearchParams<{
     userId: string;
     circleId?: string;
@@ -37,7 +39,7 @@ export default function OtherProfile() {
       {
         onSuccess: (isMatch) => {
           if (isMatch) {
-            setMatchedName(profile?.display_name ?? "them");
+            setMatchedName(profile?.display_name ?? t("discover.them"));
           } else {
             router.back();
           }
@@ -62,28 +64,28 @@ export default function OtherProfile() {
 
         <View className="flex-row gap-4">
           <Pressable onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}>
-            <Text className="text-sm font-medium text-ink-400">Report</Text>
+            <Text className="text-sm font-medium text-ink-400">{t("discover.report")}</Text>
           </Pressable>
           <Pressable
             onPress={() => {
               blockUser.mutate(userId, { onSuccess: () => router.back() });
             }}
           >
-            <Text className="text-sm font-medium text-ink-400">Block</Text>
+            <Text className="text-sm font-medium text-ink-400">{t("discover.block")}</Text>
           </Pressable>
         </View>
 
         {showSwipeActions ? (
           <View className="mt-4 flex-row items-center justify-center gap-6">
             <Pressable
-              accessibilityLabel="Pass"
+              accessibilityLabel={t("discover.pass")}
               className="h-14 w-14 items-center justify-center rounded-full bg-white dark:bg-ink-800"
               onPress={() => onSwipe("pass")}
             >
               <Ionicons name="close" size={24} color="#8A7C76" />
             </Pressable>
             <Pressable
-              accessibilityLabel="Like"
+              accessibilityLabel={t("discover.like")}
               className="h-16 w-16 items-center justify-center rounded-full bg-coral-500"
               onPress={() => onSwipe("like")}
             >

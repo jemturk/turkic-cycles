@@ -1,0 +1,474 @@
+{
+  "tabs": {
+    "circles": "Circles",
+    "connections": "Connections",
+    "chat": "Chat",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "welcome": {
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get started",
+    "alreadyHaveAccount": "Already have an account?",
+    "logIn": "Log in",
+    "slide1Title": "Turkic Circles",
+    "slide1Body": "Meaningful connections within the Turkic and Turkic-adjacent community — join circles, meet people, belong somewhere.",
+    "slide2Title": "Join Circles",
+    "slide2Body": "Browse and join community groups built around your city, culture, and interests — from everyday hangouts to business networks.",
+    "slide3Title": "Discover & Connect",
+    "slide3Body": "Meet people within your circles for friendship, romance, business, or mentorship — matching adapts to what you're looking for.",
+    "slide4Title": "Safe by Design",
+    "slide4Body": "Get verified, share your plans before meeting up, and block or report anyone — your safety comes first, always."
+  },
+  "auth": {
+    "login": {
+      "heading": "Welcome back",
+      "subheading": "Log in to your Turkic Circles account.",
+      "email": "Email",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Log in",
+      "errorTitle": "Couldn't log in"
+    },
+    "signUp": {
+      "heading": "Create your account",
+      "subheading": "Join the Turkic Circles community.",
+      "email": "Email",
+      "password": "Password",
+      "passwordHint": "8+ characters, with uppercase, lowercase, a number, and a special character.",
+      "submit": "Create account",
+      "errorTitle": "Couldn't sign up",
+      "checkEmailTitle": "Check your email",
+      "checkEmailBody": "We sent a confirmation link to {{email}}. Open it to finish creating your account."
+    },
+    "forgotPassword": {
+      "heading": "Reset your password",
+      "subheading": "Enter your email and we'll send you a link to set a new password.",
+      "email": "Email",
+      "submit": "Send reset link",
+      "sending": "Sending...",
+      "errorTitle": "Couldn't send reset link",
+      "checkEmailTitle": "Check your email",
+      "checkEmailBody": "If an account exists for {{email}}, a reset link is on its way."
+    },
+    "resetPassword": {
+      "heading": "Set a new password",
+      "subheading": "Choose a new password for your account.",
+      "newPassword": "New password",
+      "passwordHint": "8+ characters, with uppercase, lowercase, a number, and a special character.",
+      "verifying": "Verifying your link...",
+      "invalidLink": "This reset link is invalid or has expired.",
+      "backToLogin": "Back to log in",
+      "submit": "Set new password",
+      "saving": "Saving..."
+    },
+    "confirm": {
+      "verifying": "Confirming your email...",
+      "done": "Email confirmed! Taking you in...",
+      "invalidLink": "This confirmation link is invalid or has expired.",
+      "backToLogin": "Back to log in"
+    }
+  },
+  "circles": {
+    "title": "Circles",
+    "subtitle": "Find your people — join circles built around what matters to you.",
+    "joined": "Joined",
+    "join": "Join",
+    "membersCount_one": "{{count}} member",
+    "membersCount_other": "{{count}} members",
+    "meetMembers": "Meet members",
+    "members": "Members",
+    "seeAll": "See all {{count}}",
+    "rsvpLabel": "RSVP",
+    "rsvp": {
+      "going": "Going",
+      "interested": "Interested",
+      "not_going": "Not going"
+    }
+  },
+  "discover": {
+    "title": "Discover",
+    "empty": "No one new to discover right now.",
+    "lookingFor": "Looking for: {{type}}",
+    "pass": "Pass",
+    "save": "Save",
+    "like": "Like",
+    "them": "them",
+    "report": "Report",
+    "block": "Block",
+    "itsAMatch": "It's a match!",
+    "bothLiked": "You and {{name}} both liked each other.",
+    "keepExploring": "Keep exploring"
+  },
+  "connections": {
+    "title": "Connections",
+    "newConnections": "New connections",
+    "empty": "No new connections yet — keep discovering in your circles."
+  },
+  "chat": {
+    "title": "Chat",
+    "empty": "No conversations yet.",
+    "member": "Member",
+    "typeMessage": "Type a message...",
+    "send": "Send",
+    "youMatched": "You matched · {{date}}"
+  },
+  "onboarding": {
+    "next": "Next",
+    "saving": "Saving...",
+    "step1": {
+      "heading": "Tell us about you",
+      "subheading": "Let's start with the basics.",
+      "yourName": "Your name",
+      "lookingFor": "What are you looking for?",
+      "city": "City",
+      "stateRegion": "State / region",
+      "country": "Country"
+    },
+    "step2": {
+      "heading": "What do you enjoy?",
+      "subheading": "Languages, interests, and what you do.",
+      "languagesYouSpeak": "Languages you speak",
+      "typeLanguage": "Type a language",
+      "interests": "Interests",
+      "hobbies": "Hobbies",
+      "occupation": "Occupation"
+    },
+    "step3": {
+      "heading": "Residency & travel",
+      "originCountries": "Origin countries (up to 3)",
+      "typeCountry": "Type a country",
+      "consentOriginCountries": "I consent to sharing my origin country info for matching purposes.",
+      "usResident": "US resident?",
+      "usCitizen": "US citizen?",
+      "europeanCitizen": "European citizen?",
+      "travelFrequency": "How often do you travel?",
+      "travelStyle": "Travel style"
+    },
+    "step4": {
+      "heading": "A few more questions",
+      "finish": "Finish"
+    }
+  },
+  "avatar": {
+    "changePhoto": "Change profile picture",
+    "namedPhoto": "{{name}}'s photo",
+    "profilePhoto": "Profile photo",
+    "photoAccessNeededTitle": "Photo access needed",
+    "photoAccessNeededBody": "Enable photo access in Settings to set a profile picture.",
+    "uploadErrorTitle": "Couldn't upload photo"
+  },
+  "profile": {
+    "addYourName": "Add your name",
+    "languages": "Languages",
+    "interests": "Interests",
+    "hobbies": "Hobbies",
+    "travelStyle": "Travel style",
+    "originCountries": "Origin countries",
+    "editProfile": "Edit profile"
+  },
+  "fields": {
+    "yourName": "Your name",
+    "bio": "Bio",
+    "city": "City",
+    "stateRegion": "State / region",
+    "country": "Country",
+    "occupation": "Occupation",
+    "lookingFor": "What are you looking for?",
+    "languagesYouSpeak": "Languages you speak",
+    "typeLanguage": "Type a language",
+    "interests": "Interests",
+    "hobbies": "Hobbies",
+    "originCountries": "Origin countries (up to 3)",
+    "typeCountry": "Type a country",
+    "consentOriginCountries": "I consent to sharing my origin country info for matching purposes.",
+    "usResident": "US resident?",
+    "usCitizen": "US citizen?",
+    "europeanCitizen": "European citizen?",
+    "travelFrequency": "How often do you travel?",
+    "travelStyle": "Travel style",
+    "editProfileHeading": "Edit profile"
+  },
+  "common": {
+    "member": "Member",
+    "back": "Back",
+    "cancel": "Cancel",
+    "saveChanges": "Save changes",
+    "saving": "Saving...",
+    "loading": "Loading...",
+    "yes": "Yes",
+    "no": "No",
+    "dateOfBirth": "Date of birth",
+    "dayPlaceholder": "DD",
+    "monthPlaceholder": "MM",
+    "yearPlaceholder": "YYYY"
+  },
+  "constants": {
+    "connectionTypes": {
+      "friend": "Friend",
+      "romantic": "Romantic relationship",
+      "business": "Business connection",
+      "business_mentor": "Business mentor",
+      "academic_mentor": "Academic mentor",
+      "spiritual_mentor": "Spiritual mentor"
+    },
+    "businessRoles": {
+      "networking": "Networking",
+      "job_seeking": "Job seeking",
+      "business_partner": "Business partner",
+      "franchise": "Franchise",
+      "hiring": "Hiring"
+    },
+    "mentorRoles": {
+      "seeking": "Seeking a mentor",
+      "offering": "Offering mentorship"
+    },
+    "other": "Other",
+    "interests": {
+      "Family": "Family",
+      "Kids": "Kids",
+      "Travel": "Travel",
+      "Night life": "Night life",
+      "Exercise": "Exercise",
+      "Self-development": "Self-development",
+      "Horoscope": "Horoscope"
+    },
+    "hobbies": {
+      "Swim": "Swim",
+      "Tennis": "Tennis",
+      "Soccer": "Soccer",
+      "Ski": "Ski",
+      "Paint": "Paint",
+      "Sing": "Sing",
+      "Play an instrument": "Play an instrument",
+      "Music": "Music"
+    },
+    "travelStyles": {
+      "Trying new restaurants": "Trying new restaurants",
+      "Visiting museums": "Visiting museums",
+      "Seeing the city": "Seeing the city",
+      "Seeing the rural area": "Seeing the rural area",
+      "Meeting locals & talking with them": "Meeting locals & talking with them"
+    },
+    "languages": {
+      "English": "English",
+      "Turkish": "Turkish",
+      "Azerbaijani": "Azerbaijani",
+      "Uzbek": "Uzbek",
+      "Kazakh": "Kazakh",
+      "Kyrgyz": "Kyrgyz",
+      "Turkmen": "Turkmen",
+      "Russian": "Russian",
+      "Arabic": "Arabic"
+    },
+    "originCountries": {
+      "Türkiye": "Türkiye",
+      "Azerbaijan": "Azerbaijan",
+      "Uzbekistan": "Uzbekistan",
+      "Cyprus": "Cyprus",
+      "Bulgaria": "Bulgaria",
+      "Greece": "Greece"
+    },
+    "travelFrequencies": {
+      "none": "None",
+      "some": "Some — 1–2 times a year",
+      "moderate": "Moderately — 3–4 times a year",
+      "frequent": "Frequently — more than 4 times a year"
+    },
+    "circleTopics": {
+      "culture": "Culture",
+      "business": "Business",
+      "newcomers": "Newcomers",
+      "family": "Family",
+      "creative": "Creative"
+    },
+    "relationshipIntent": {
+      "casual": "Casual",
+      "long_term": "Long-term",
+      "marriage": "Marriage",
+      "not_sure": "Not sure yet"
+    },
+    "wantsKids": {
+      "yes": "Yes",
+      "no": "No",
+      "open": "Open to it",
+      "has_kids_already": "I already have kids"
+    },
+    "importance": {
+      "not_important": "Not important",
+      "somewhat": "Somewhat important",
+      "very_important": "Very important"
+    },
+    "experienceLevels": {
+      "student": "Student",
+      "early_career": "Early career",
+      "mid_career": "Mid career",
+      "senior": "Senior",
+      "executive": "Executive"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "edit": "Edit",
+    "appLanguage": "App language",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "account": "Account",
+    "safety": "Safety",
+    "getVerified": "Get verified",
+    "verification": {
+      "unverified": "Not verified",
+      "pending": "Pending review",
+      "verified": "Verified",
+      "failed": "Verification failed"
+    },
+    "safetyCenter": "Safety Center",
+    "matchingPreferences": "Matching preferences",
+    "privacy": "Privacy",
+    "profileVisibility": "Profile visibility",
+    "visible": "Visible",
+    "hidden": "Hidden",
+    "blockedUsers": "Blocked users",
+    "dataAndPrivacy": "Data & privacy",
+    "notifications": "Notifications",
+    "pushNotifications": "Push notifications",
+    "emailNotifications": "Email notifications",
+    "community": "Community",
+    "aboutApp": "About Turkic Circles",
+    "communityGuidelines": "Community guidelines",
+    "helpAndSupport": "Help & support",
+    "logOut": "Log out",
+    "deleteAccountWarning": "This marks your account for deletion. You'll be signed out, and your data will be permanently removed within a few days.",
+    "cancel": "Cancel",
+    "confirmDelete": "Yes, delete my account",
+    "deleteAccount": "Delete account",
+    "accountScreen": {
+      "heading": "Account",
+      "email": "Email",
+      "phone": "Phone",
+      "notAvailableYet": "Not available yet",
+      "linkedAccounts": "Linked accounts",
+      "newPassword": "New password",
+      "passwordUpdated": "Password updated.",
+      "changePassword": "Change password"
+    },
+    "verificationScreen": {
+      "heading": "Get the Verified badge",
+      "subheading": "Verified members are trusted faster in every circle — and it helps keep every conversation on Turkic Circles real.",
+      "pendingReview": "Pending review",
+      "pendingBody": "We'll review your submission and update your badge soon.",
+      "verifiedBody": "You're verified ✓",
+      "selfieTitle": "Take a quick selfie",
+      "selfieBody": "We match it to your profile photos",
+      "idTitle": "Upload a government ID",
+      "idBody": "Passport, driver's license, or national ID",
+      "required": "Required",
+      "disclaimer": "Your ID is only used to confirm your selfie matches. Manual review for now — real ID verification (Stripe Identity) is coming soon.",
+      "submitting": "Submitting...",
+      "submit": "Upload ID to finish"
+    },
+    "matchingPreferencesScreen": {
+      "heading": "Matching preferences",
+      "notWiredUp": "These don't filter Discover yet — they're saved for when that's wired up.",
+      "ageMin": "Age min",
+      "ageMax": "Age max",
+      "maxDistance": "Max distance (miles)",
+      "showMeSpeakersOf": "Show me speakers of",
+      "save": "Save"
+    },
+    "blockedUsersScreen": {
+      "heading": "Blocked users",
+      "empty": "You haven't blocked anyone.",
+      "unblock": "Unblock"
+    },
+    "staticPages": {
+      "about": {
+        "title": "About Turkic Circles",
+        "body": "Turkic Circles is a connections app for the Turkic and Turkic-adjacent diaspora — friendship, romance, business, and mentorship, all in one community rather than four separate products."
+      },
+      "guidelines": {
+        "title": "Community guidelines",
+        "body": "Be respectful, be honest about who you are, and treat every conversation the way you'd want to be treated. Harassment, hate speech, and impersonation are never allowed and will result in account action."
+      },
+      "help": {
+        "title": "Help & support",
+        "body": "Questions or issues? This is a placeholder support page — real contact details land alongside a real support channel."
+      },
+      "privacy": {
+        "title": "Data & privacy",
+        "body": "Your sensitive fields (origin, religion, citizenship detail) are stored separately from the rest of your profile and are only ever shared with your explicit, revocable consent. See the Safety Center for more."
+      }
+    },
+    "safetyCenterScreen": {
+      "heading": "Safety Center",
+      "subheading": "Tools and resources to help you connect with confidence.",
+      "verificationTitle": "Verification",
+      "verificationSubtitle": "Confirm your identity and earn the badge",
+      "sharePlansTitle": "Share your plans",
+      "sharePlansSubtitle": "Send date details to someone you trust",
+      "reportBlockTitle": "Report or block someone",
+      "reportBlockSubtitle": "From any profile or conversation",
+      "meetingTipsTitle": "Meeting safely tips",
+      "meetingTipsSubtitle": "First dates, video chat, and red flags",
+      "communityGuidelinesTitle": "Community guidelines",
+      "contactSupportTitle": "Contact support",
+      "emergencyDisclaimer": "In an emergency, always contact local emergency services first — this app is not a substitute for immediate help."
+    },
+    "reportScreen": {
+      "heading": "Report or block someone",
+      "openFromProfile": "Open this from a profile or conversation to report or block that person.",
+      "reason": "Reason",
+      "additionalDetails": "Additional details (optional)",
+      "submitting": "Submitting...",
+      "submitReport": "Submit report",
+      "reasons": {
+        "harassment": "Harassment or abuse",
+        "fake_profile": "Fake profile",
+        "inappropriate": "Inappropriate content",
+        "safety_concern": "Safety concern",
+        "other": "Other"
+      }
+    },
+    "sharePlansScreen": {
+      "heading": "Share your plans",
+      "subheading": "Let a trusted contact know where you'll be — just in case.",
+      "whoMeeting": "Who are you meeting?",
+      "where": "Where",
+      "date": "Date (YYYY-MM-DD)",
+      "time": "Time (24h)",
+      "trustedContacts": "Trusted contacts",
+      "namePlaceholder": "Name",
+      "phonePlaceholder": "Phone",
+      "addContact": "+ Add contact",
+      "checkInAfter": "Check in after (minutes)",
+      "yourTrustedContact": "Your trusted contact",
+      "theirNameFallback": "their",
+      "willGetText": "{{contacts}} will get {{name}} name, the location, and time by text.",
+      "checkinNote": " We'll ask if you're okay at {{time}}.",
+      "followUpNote": " If you don't respond, we'll follow up. (SMS delivery is stubbed for now — no message is actually sent yet.)",
+      "sharing": "Sharing...",
+      "sharePlans": "Share plans"
+    }
+  },
+  "branching": {
+    "allSet": "Nothing else to answer for the connection types you picked — you're all set.",
+    "romanticTitle": "Romantic connections",
+    "lookingFor": "What are you looking for?",
+    "kids": "Kids?",
+    "religionImportance": "Importance of shared religion",
+    "cultureImportance": "Importance of shared culture",
+    "businessTitle": "Business connections",
+    "businessConnectionKind": "What kind of business connection?",
+    "industry": "Industry",
+    "experienceLevel": "Experience level",
+    "seekingOrOffering": "Are you seeking or offering?",
+    "field": "Field",
+    "mentorTypes": {
+      "business_mentor": "Business mentorship",
+      "academic_mentor": "Academic mentorship",
+      "spiritual_mentor": "Spiritual mentorship"
+    }
+  }
+}

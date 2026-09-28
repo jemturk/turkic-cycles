@@ -1,0 +1,474 @@
+{
+  "tabs": {
+    "circles": "Çemberler",
+    "connections": "Bağlantılar",
+    "chat": "Sohbet",
+    "profile": "Profil",
+    "settings": "Ayarlar"
+  },
+  "welcome": {
+    "skip": "Geç",
+    "next": "İleri",
+    "getStarted": "Başlayın",
+    "alreadyHaveAccount": "Zaten hesabın var mı?",
+    "logIn": "Giriş yap",
+    "slide1Title": "Turkic Circles",
+    "slide1Body": "Türk ve Türk soylu toplulukları arasında anlamlı bağlantılar kurun — çemberlere katılın, insanlarla tanışın, bir yere ait olun.",
+    "slide2Title": "Çemberlere Katıl",
+    "slide2Body": "Şehrine, kültürüne ve ilgi alanlarına göre oluşturulmuş topluluk gruplarına göz at ve katıl — günlük buluşmalardan iş ağlarına kadar.",
+    "slide3Title": "Keşfet ve Bağlan",
+    "slide3Body": "Çemberlerindeki insanlarla arkadaşlık, romantik ilişki, iş ya da mentorluk için tanış — eşleştirme aradığın şeye göre uyarlanır.",
+    "slide4Title": "Tasarım Gereği Güvenli",
+    "slide4Body": "Kimliğini doğrula, buluşmadan önce planlarını paylaş, istediğin kişiyi engelle ya da bildir — güvenliğin her zaman önce gelir."
+  },
+  "auth": {
+    "login": {
+      "heading": "Tekrar hoş geldin",
+      "subheading": "Turkic Circles hesabına giriş yap.",
+      "email": "E-posta",
+      "password": "Şifre",
+      "forgotPassword": "Şifreni mi unuttun?",
+      "submit": "Giriş yap",
+      "errorTitle": "Giriş yapılamadı"
+    },
+    "signUp": {
+      "heading": "Hesabını oluştur",
+      "subheading": "Turkic Circles topluluğuna katıl.",
+      "email": "E-posta",
+      "password": "Şifre",
+      "passwordHint": "En az 8 karakter; büyük harf, küçük harf, rakam ve özel karakter içermeli.",
+      "submit": "Hesap oluştur",
+      "errorTitle": "Kayıt olunamadı",
+      "checkEmailTitle": "E-postanı kontrol et",
+      "checkEmailBody": "{{email}} adresine bir onay bağlantısı gönderdik. Hesabını oluşturmayı tamamlamak için bağlantıyı aç."
+    },
+    "forgotPassword": {
+      "heading": "Şifreni sıfırla",
+      "subheading": "E-postanı gir, sana yeni bir şifre belirlemen için bir bağlantı gönderelim.",
+      "email": "E-posta",
+      "submit": "Sıfırlama bağlantısı gönder",
+      "sending": "Gönderiliyor...",
+      "errorTitle": "Sıfırlama bağlantısı gönderilemedi",
+      "checkEmailTitle": "E-postanı kontrol et",
+      "checkEmailBody": "{{email}} için bir hesap varsa, sıfırlama bağlantısı yolda."
+    },
+    "resetPassword": {
+      "heading": "Yeni bir şifre belirle",
+      "subheading": "Hesabın için yeni bir şifre seç.",
+      "newPassword": "Yeni şifre",
+      "passwordHint": "En az 8 karakter; büyük harf, küçük harf, rakam ve özel karakter içermeli.",
+      "verifying": "Bağlantın doğrulanıyor...",
+      "invalidLink": "Bu sıfırlama bağlantısı geçersiz veya süresi dolmuş.",
+      "backToLogin": "Girişe dön",
+      "submit": "Yeni şifreyi kaydet",
+      "saving": "Kaydediliyor..."
+    },
+    "confirm": {
+      "verifying": "E-postan doğrulanıyor...",
+      "done": "E-posta doğrulandı! Seni içeri alıyoruz...",
+      "invalidLink": "Bu onay bağlantısı geçersiz veya süresi dolmuş.",
+      "backToLogin": "Girişe dön"
+    }
+  },
+  "circles": {
+    "title": "Çemberler",
+    "subtitle": "Kendi insanlarını bul — senin için önemli olan konular etrafında kurulmuş çemberlere katıl.",
+    "joined": "Katıldın",
+    "join": "Katıl",
+    "membersCount_one": "{{count}} üye",
+    "membersCount_other": "{{count}} üye",
+    "meetMembers": "Üyelerle tanış",
+    "members": "Üyeler",
+    "seeAll": "Tümünü gör · {{count}}",
+    "rsvpLabel": "Katılım durumu",
+    "rsvp": {
+      "going": "Katılıyorum",
+      "interested": "İlgileniyorum",
+      "not_going": "Katılmıyorum"
+    }
+  },
+  "discover": {
+    "title": "Keşfet",
+    "empty": "Şu an keşfedecek yeni biri yok.",
+    "lookingFor": "Aradığı: {{type}}",
+    "pass": "Geç",
+    "save": "Kaydet",
+    "like": "Beğen",
+    "them": "onlar",
+    "report": "Bildir",
+    "block": "Engelle",
+    "itsAMatch": "Bu bir eşleşme!",
+    "bothLiked": "Sen ve {{name}} birbirinizi beğendiniz.",
+    "keepExploring": "Keşfetmeye devam et"
+  },
+  "connections": {
+    "title": "Bağlantılar",
+    "newConnections": "Yeni bağlantılar",
+    "empty": "Henüz yeni bağlantın yok — çemberlerinde keşfetmeye devam et."
+  },
+  "chat": {
+    "title": "Sohbet",
+    "empty": "Henüz bir konuşman yok.",
+    "member": "Üye",
+    "typeMessage": "Bir mesaj yaz...",
+    "send": "Gönder",
+    "youMatched": "Eşleştiniz · {{date}}"
+  },
+  "onboarding": {
+    "next": "İleri",
+    "saving": "Kaydediliyor...",
+    "step1": {
+      "heading": "Kendinden bahset",
+      "subheading": "Temel bilgilerle başlayalım.",
+      "yourName": "Adın",
+      "lookingFor": "Ne arıyorsun?",
+      "city": "Şehir",
+      "stateRegion": "Eyalet / bölge",
+      "country": "Ülke"
+    },
+    "step2": {
+      "heading": "Neyden hoşlanırsın?",
+      "subheading": "Diller, ilgi alanların ve yaptıkların.",
+      "languagesYouSpeak": "Konuştuğun diller",
+      "typeLanguage": "Bir dil yaz",
+      "interests": "İlgi alanları",
+      "hobbies": "Hobiler",
+      "occupation": "Meslek"
+    },
+    "step3": {
+      "heading": "İkamet ve seyahat",
+      "originCountries": "Köken ülkeler (en fazla 3)",
+      "typeCountry": "Bir ülke yaz",
+      "consentOriginCountries": "Eşleştirme amacıyla köken ülke bilgimin paylaşılmasına onay veriyorum.",
+      "usResident": "ABD'de ikamet ediyor musun?",
+      "usCitizen": "ABD vatandaşı mısın?",
+      "europeanCitizen": "Avrupa vatandaşı mısın?",
+      "travelFrequency": "Ne sıklıkla seyahat edersin?",
+      "travelStyle": "Seyahat tarzı"
+    },
+    "step4": {
+      "heading": "Birkaç soru daha",
+      "finish": "Bitir"
+    }
+  },
+  "avatar": {
+    "changePhoto": "Profil fotoğrafını değiştir",
+    "namedPhoto": "{{name}} fotoğrafı",
+    "profilePhoto": "Profil fotoğrafı",
+    "photoAccessNeededTitle": "Fotoğraf erişimi gerekli",
+    "photoAccessNeededBody": "Profil fotoğrafı ayarlamak için Ayarlar'dan fotoğraf erişimini etkinleştir.",
+    "uploadErrorTitle": "Fotoğraf yüklenemedi"
+  },
+  "profile": {
+    "addYourName": "Adını ekle",
+    "languages": "Diller",
+    "interests": "İlgi alanları",
+    "hobbies": "Hobiler",
+    "travelStyle": "Seyahat tarzı",
+    "originCountries": "Köken ülkeler",
+    "editProfile": "Profili düzenle"
+  },
+  "fields": {
+    "yourName": "Adın",
+    "bio": "Biyografi",
+    "city": "Şehir",
+    "stateRegion": "Eyalet / bölge",
+    "country": "Ülke",
+    "occupation": "Meslek",
+    "lookingFor": "Ne arıyorsun?",
+    "languagesYouSpeak": "Konuştuğun diller",
+    "typeLanguage": "Bir dil yaz",
+    "interests": "İlgi alanları",
+    "hobbies": "Hobiler",
+    "originCountries": "Köken ülkeler (en fazla 3)",
+    "typeCountry": "Bir ülke yaz",
+    "consentOriginCountries": "Eşleştirme amacıyla köken ülke bilgimin paylaşılmasına onay veriyorum.",
+    "usResident": "ABD'de ikamet ediyor musun?",
+    "usCitizen": "ABD vatandaşı mısın?",
+    "europeanCitizen": "Avrupa vatandaşı mısın?",
+    "travelFrequency": "Ne sıklıkla seyahat edersin?",
+    "travelStyle": "Seyahat tarzı",
+    "editProfileHeading": "Profili düzenle"
+  },
+  "common": {
+    "member": "Üye",
+    "back": "Geri",
+    "cancel": "Vazgeç",
+    "saveChanges": "Değişiklikleri kaydet",
+    "saving": "Kaydediliyor...",
+    "loading": "Yükleniyor...",
+    "yes": "Evet",
+    "no": "Hayır",
+    "dateOfBirth": "Doğum tarihi",
+    "dayPlaceholder": "GG",
+    "monthPlaceholder": "AA",
+    "yearPlaceholder": "YYYY"
+  },
+  "constants": {
+    "connectionTypes": {
+      "friend": "Arkadaş",
+      "romantic": "Romantik ilişki",
+      "business": "İş bağlantısı",
+      "business_mentor": "İş mentoru",
+      "academic_mentor": "Akademik mentor",
+      "spiritual_mentor": "Manevi mentor"
+    },
+    "businessRoles": {
+      "networking": "Ağ kurma",
+      "job_seeking": "İş arama",
+      "business_partner": "İş ortağı",
+      "franchise": "Bayilik",
+      "hiring": "İşe alım"
+    },
+    "mentorRoles": {
+      "seeking": "Mentor arıyorum",
+      "offering": "Mentorluk sunuyorum"
+    },
+    "other": "Diğer",
+    "interests": {
+      "Family": "Aile",
+      "Kids": "Çocuklar",
+      "Travel": "Seyahat",
+      "Night life": "Gece hayatı",
+      "Exercise": "Egzersiz",
+      "Self-development": "Kişisel gelişim",
+      "Horoscope": "Astroloji"
+    },
+    "hobbies": {
+      "Swim": "Yüzme",
+      "Tennis": "Tenis",
+      "Soccer": "Futbol",
+      "Ski": "Kayak",
+      "Paint": "Resim yapma",
+      "Sing": "Şarkı söyleme",
+      "Play an instrument": "Enstrüman çalma",
+      "Music": "Müzik"
+    },
+    "travelStyles": {
+      "Trying new restaurants": "Yeni restoranlar denemek",
+      "Visiting museums": "Müzeleri ziyaret etmek",
+      "Seeing the city": "Şehri gezmek",
+      "Seeing the rural area": "Kırsal bölgeleri görmek",
+      "Meeting locals & talking with them": "Yerel halkla tanışıp sohbet etmek"
+    },
+    "languages": {
+      "English": "İngilizce",
+      "Turkish": "Türkçe",
+      "Azerbaijani": "Azerbaycanca",
+      "Uzbek": "Özbekçe",
+      "Kazakh": "Kazakça",
+      "Kyrgyz": "Kırgızca",
+      "Turkmen": "Türkmence",
+      "Russian": "Rusça",
+      "Arabic": "Arapça"
+    },
+    "originCountries": {
+      "Türkiye": "Türkiye",
+      "Azerbaijan": "Azerbaycan",
+      "Uzbekistan": "Özbekistan",
+      "Cyprus": "Kıbrıs",
+      "Bulgaria": "Bulgaristan",
+      "Greece": "Yunanistan"
+    },
+    "travelFrequencies": {
+      "none": "Hiç",
+      "some": "Biraz — yılda 1-2 kez",
+      "moderate": "Orta düzeyde — yılda 3-4 kez",
+      "frequent": "Sık sık — yılda 4'ten fazla"
+    },
+    "circleTopics": {
+      "culture": "Kültür",
+      "business": "İş",
+      "newcomers": "Yeni gelenler",
+      "family": "Aile",
+      "creative": "Yaratıcı"
+    },
+    "relationshipIntent": {
+      "casual": "Gündelik",
+      "long_term": "Uzun vadeli",
+      "marriage": "Evlilik",
+      "not_sure": "Henüz emin değilim"
+    },
+    "wantsKids": {
+      "yes": "Evet",
+      "no": "Hayır",
+      "open": "Açığım",
+      "has_kids_already": "Zaten çocuğum var"
+    },
+    "importance": {
+      "not_important": "Önemli değil",
+      "somewhat": "Biraz önemli",
+      "very_important": "Çok önemli"
+    },
+    "experienceLevels": {
+      "student": "Öğrenci",
+      "early_career": "Kariyerin başında",
+      "mid_career": "Orta kariyer",
+      "senior": "Kıdemli",
+      "executive": "Üst düzey yönetici"
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "edit": "Düzenle",
+    "appLanguage": "Uygulama dili",
+    "theme": "Tema",
+    "light": "Açık",
+    "dark": "Koyu",
+    "account": "Hesap",
+    "safety": "Güvenlik",
+    "getVerified": "Onaylan",
+    "verification": {
+      "unverified": "Onaylanmadı",
+      "pending": "İnceleniyor",
+      "verified": "Onaylandı",
+      "failed": "Onay başarısız"
+    },
+    "safetyCenter": "Güvenlik Merkezi",
+    "matchingPreferences": "Eşleştirme tercihleri",
+    "privacy": "Gizlilik",
+    "profileVisibility": "Profil görünürlüğü",
+    "visible": "Görünür",
+    "hidden": "Gizli",
+    "blockedUsers": "Engellenen kullanıcılar",
+    "dataAndPrivacy": "Veri ve gizlilik",
+    "notifications": "Bildirimler",
+    "pushNotifications": "Anlık bildirimler",
+    "emailNotifications": "E-posta bildirimleri",
+    "community": "Topluluk",
+    "aboutApp": "Turkic Circles Hakkında",
+    "communityGuidelines": "Topluluk kuralları",
+    "helpAndSupport": "Yardım ve destek",
+    "logOut": "Çıkış yap",
+    "deleteAccountWarning": "Bu, hesabını silinmek üzere işaretler. Oturumun kapatılacak ve verilerin birkaç gün içinde kalıcı olarak kaldırılacak.",
+    "cancel": "Vazgeç",
+    "confirmDelete": "Evet, hesabımı sil",
+    "deleteAccount": "Hesabı sil",
+    "accountScreen": {
+      "heading": "Hesap",
+      "email": "E-posta",
+      "phone": "Telefon",
+      "notAvailableYet": "Henüz kullanılamıyor",
+      "linkedAccounts": "Bağlı hesaplar",
+      "newPassword": "Yeni şifre",
+      "passwordUpdated": "Şifre güncellendi.",
+      "changePassword": "Şifreyi değiştir"
+    },
+    "verificationScreen": {
+      "heading": "Onaylı rozeti al",
+      "subheading": "Onaylı üyeler her çemberde daha hızlı güvenilir — ve Turkic Circles'daki her konuşmanın gerçek olmasına yardımcı olur.",
+      "pendingReview": "İnceleniyor",
+      "pendingBody": "Başvurunu inceleyip rozetini yakında güncelleyeceğiz.",
+      "verifiedBody": "Onaylandın ✓",
+      "selfieTitle": "Hızlıca bir selfie çek",
+      "selfieBody": "Profil fotoğraflarınla eşleştiriyoruz",
+      "idTitle": "Resmi bir kimlik belgesi yükle",
+      "idBody": "Pasaport, ehliyet veya kimlik kartı",
+      "required": "Zorunlu",
+      "disclaimer": "Kimliğin yalnızca selfie'nle eşleştiğini doğrulamak için kullanılır. Şimdilik manuel inceleme yapılıyor — gerçek kimlik doğrulaması (Stripe Identity) yakında geliyor.",
+      "submitting": "Gönderiliyor...",
+      "submit": "Bitirmek için kimlik yükle"
+    },
+    "matchingPreferencesScreen": {
+      "heading": "Eşleştirme tercihleri",
+      "notWiredUp": "Bunlar henüz Keşfet'i filtrelemiyor — bağlandığında kullanılmak üzere kaydediliyor.",
+      "ageMin": "En düşük yaş",
+      "ageMax": "En yüksek yaş",
+      "maxDistance": "Maksimum mesafe (mil)",
+      "showMeSpeakersOf": "Bana şu dilleri konuşanları göster",
+      "save": "Kaydet"
+    },
+    "blockedUsersScreen": {
+      "heading": "Engellenen kullanıcılar",
+      "empty": "Henüz kimseyi engellemedin.",
+      "unblock": "Engeli kaldır"
+    },
+    "staticPages": {
+      "about": {
+        "title": "Turkic Circles Hakkında",
+        "body": "Turkic Circles, Türk ve Türk soylu diaspora için bir bağlantı uygulamasıdır — arkadaşlık, romantik ilişki, iş ve mentorluk, dört ayrı ürün yerine tek bir toplulukta bir araya geliyor."
+      },
+      "guidelines": {
+        "title": "Topluluk kuralları",
+        "body": "Saygılı ol, kim olduğun konusunda dürüst ol ve her konuşmaya kendine davranılmasını istediğin şekilde davran. Taciz, nefret söylemi ve kimliğe bürünme asla kabul edilmez ve hesabına işlem yapılmasına neden olur."
+      },
+      "help": {
+        "title": "Yardım ve destek",
+        "body": "Soruların veya sorunların mı var? Bu geçici bir destek sayfası — gerçek iletişim bilgileri gerçek bir destek kanalıyla birlikte gelecek."
+      },
+      "privacy": {
+        "title": "Veri ve gizlilik",
+        "body": "Hassas alanların (köken, din, vatandaşlık bilgisi) profilinin geri kalanından ayrı olarak saklanır ve yalnızca senin açık, geri alınabilir onayınla paylaşılır. Daha fazlası için Güvenlik Merkezi'ne bak."
+      }
+    },
+    "safetyCenterScreen": {
+      "heading": "Güvenlik Merkezi",
+      "subheading": "Kendinden emin bir şekilde bağlantı kurmana yardımcı araçlar ve kaynaklar.",
+      "verificationTitle": "Onaylama",
+      "verificationSubtitle": "Kimliğini doğrula ve rozeti kazan",
+      "sharePlansTitle": "Planlarını paylaş",
+      "sharePlansSubtitle": "Buluşma detaylarını güvendiğin birine gönder",
+      "reportBlockTitle": "Birini bildir veya engelle",
+      "reportBlockSubtitle": "Herhangi bir profil veya konuşmadan",
+      "meetingTipsTitle": "Güvenli buluşma ipuçları",
+      "meetingTipsSubtitle": "İlk buluşmalar, görüntülü sohbet ve dikkat edilmesi gerekenler",
+      "communityGuidelinesTitle": "Topluluk kuralları",
+      "contactSupportTitle": "Destek ile iletişime geç",
+      "emergencyDisclaimer": "Acil bir durumda her zaman önce yerel acil durum hizmetlerine başvur — bu uygulama acil yardımın yerini tutmaz."
+    },
+    "reportScreen": {
+      "heading": "Birini bildir veya engelle",
+      "openFromProfile": "O kişiyi bildirmek veya engellemek için bunu bir profilden veya konuşmadan aç.",
+      "reason": "Neden",
+      "additionalDetails": "Ek detaylar (isteğe bağlı)",
+      "submitting": "Gönderiliyor...",
+      "submitReport": "Bildirimi gönder",
+      "reasons": {
+        "harassment": "Taciz veya istismar",
+        "fake_profile": "Sahte profil",
+        "inappropriate": "Uygunsuz içerik",
+        "safety_concern": "Güvenlik endişesi",
+        "other": "Diğer"
+      }
+    },
+    "sharePlansScreen": {
+      "heading": "Planlarını paylaş",
+      "subheading": "Güvendiğin birine nerede olacağını bildir — ihtiyaten.",
+      "whoMeeting": "Kiminle buluşuyorsun?",
+      "where": "Nerede",
+      "date": "Tarih (YYYY-AA-GG)",
+      "time": "Saat (24 saat)",
+      "trustedContacts": "Güvenilir kişiler",
+      "namePlaceholder": "İsim",
+      "phonePlaceholder": "Telefon",
+      "addContact": "+ Kişi ekle",
+      "checkInAfter": "Şu kadar dakika sonra kontrol et",
+      "yourTrustedContact": "Güvenilir kişin",
+      "theirNameFallback": "onun",
+      "willGetText": "{{contacts}} kişisine {{name}} ismini, konumu ve saati mesajla gönderilecek.",
+      "checkinNote": " {{time}} saatinde iyi olup olmadığını soracağız.",
+      "followUpNote": " Yanıt vermezsen takip edeceğiz. (SMS gönderimi şimdilik yer tutucu — henüz gerçek bir mesaj gönderilmiyor.)",
+      "sharing": "Paylaşılıyor...",
+      "sharePlans": "Planları paylaş"
+    }
+  },
+  "branching": {
+    "allSet": "Seçtiğin bağlantı türleri için başka cevaplanacak bir şey yok — hazırsın.",
+    "romanticTitle": "Romantik bağlantılar",
+    "lookingFor": "Ne arıyorsun?",
+    "kids": "Çocuk?",
+    "religionImportance": "Ortak dinin önemi",
+    "cultureImportance": "Ortak kültürün önemi",
+    "businessTitle": "İş bağlantıları",
+    "businessConnectionKind": "Ne tür bir iş bağlantısı?",
+    "industry": "Sektör",
+    "experienceLevel": "Deneyim seviyesi",
+    "seekingOrOffering": "Arıyor musun yoksa sunuyor musun?",
+    "field": "Alan",
+    "mentorTypes": {
+      "business_mentor": "İş mentorluğu",
+      "academic_mentor": "Akademik mentorluk",
+      "spiritual_mentor": "Manevi mentorluk"
+    }
+  }
+}

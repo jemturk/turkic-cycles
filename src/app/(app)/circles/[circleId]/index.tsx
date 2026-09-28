@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import {
@@ -29,6 +30,7 @@ import { SingleSelectChips } from "@/components/SingleSelectChips";
 const MEMBERS_PREVIEW_COUNT = 6;
 
 export default function CircleDetail() {
+  const { t } = useTranslation();
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
   const { session } = useSession();
   const userId = session?.user.id;
@@ -74,7 +76,7 @@ export default function CircleDetail() {
           <View className="flex-row items-start justify-between gap-3">
             <Text className="flex-1 font-display text-2xl text-ink-900 dark:text-ink-50">{circle.name}</Text>
             <Chip
-              label={isJoined ? "Joined" : "Join"}
+              label={isJoined ? t("circles.joined") : t("circles.join")}
               selected={isJoined}
               disabled={joinCircle.isPending || leaveCircle.isPending}
               onPress={() => {
@@ -85,7 +87,8 @@ export default function CircleDetail() {
           </View>
 
           <Text className="text-sm text-ink-400">
-            {circle.member_count} members{location ? ` · ${location}` : ""}
+            {t("circles.membersCount", { count: circle.member_count })}
+            {location ? ` · ${location}` : ""}
           </Text>
 
           {circle.description ? <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text> : null}
@@ -98,8 +101,8 @@ export default function CircleDetail() {
                 {event.location ? ` · ${event.location}` : ""}
               </Text>
               <SingleSelectChips
-                label="RSVP"
-                options={RSVP_STATUSES}
+                label={t("circles.rsvpLabel")}
+                options={RSVP_STATUSES.map((s) => ({ value: s.value, label: t(`circles.rsvp.${s.value}`) }))}
                 // event_rsvps.status is a text+check column (project convention, no
                 // native Postgres enum), so the generated type is plain `string`;
                 // the check constraint guarantees it's actually one of the 3 values.
@@ -112,9 +115,11 @@ export default function CircleDetail() {
           {membersPreview && membersPreview.length > 0 ? (
             <View className="gap-2">
               <View className="flex-row items-center justify-between">
-                <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">Members</Text>
+                <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("circles.members")}</Text>
                 <Pressable onPress={() => router.push(`/(app)/circles/${circle.id}/members`)}>
-                  <Text className="text-sm font-medium text-coral-600">See all {circle.member_count}</Text>
+                  <Text className="text-sm font-medium text-coral-600">
+                    {t("circles.seeAll", { count: circle.member_count })}
+                  </Text>
                 </Pressable>
               </View>
               <View className="flex-row flex-wrap gap-4">
@@ -131,7 +136,7 @@ export default function CircleDetail() {
                       </Text>
                     </View>
                     <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
-                      {member.displayName || "Member"}
+                      {member.displayName || t("common.member")}
                     </Text>
                   </Pressable>
                 ))}
@@ -140,7 +145,7 @@ export default function CircleDetail() {
           ) : null}
 
           <View className="mt-2">
-            <Button label="Meet members" onPress={() => router.push(`/(app)/circles/${circle.id}/discover`)} />
+            <Button label={t("circles.meetMembers")} onPress={() => router.push(`/(app)/circles/${circle.id}/discover`)} />
           </View>
         </View>
       </ScrollView>

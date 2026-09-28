@@ -4,12 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useMarkThreadRead, useMatchParticipant, useMessages, useSendMessage } from "@/hooks/useChat";
 import { TextField } from "@/components/TextField";
 
 export default function ChatThread() {
+  const { t } = useTranslation();
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
   const { session } = useSession();
   const userId = session?.user.id;
@@ -49,13 +51,15 @@ export default function ChatThread() {
             {(participant?.profile.display_name || "?").charAt(0).toUpperCase()}
           </Text>
         </View>
-        <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{participant?.profile.display_name || "Member"}</Text>
+        <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
+          {participant?.profile.display_name || t("common.member")}
+        </Text>
       </View>
 
       <ScrollView ref={scrollRef} className="flex-1 px-4 pt-4" contentContainerClassName="gap-3 pb-4">
         {participant?.match ? (
           <Text className="text-center text-xs text-ink-400">
-            You matched · {format(new Date(participant.match.created_at), "MMM d")}
+            {t("chat.youMatched", { date: format(new Date(participant.match.created_at), "MMM d") })}
           </Text>
         ) : null}
 
@@ -74,10 +78,10 @@ export default function ChatThread() {
 
       <View className="flex-row items-center gap-3 border-t border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
         <View className="flex-1">
-          <TextField placeholder="Type a message..." value={draft} onChangeText={setDraft} onSubmitEditing={onSend} />
+          <TextField placeholder={t("chat.typeMessage")} value={draft} onChangeText={setDraft} onSubmitEditing={onSend} />
         </View>
         <Pressable
-          accessibilityLabel="Send"
+          accessibilityLabel={t("chat.send")}
           className="h-12 w-12 items-center justify-center rounded-full bg-coral-500"
           onPress={onSend}
         >

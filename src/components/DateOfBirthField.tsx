@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { TextField } from "@/components/TextField";
 
@@ -18,6 +19,7 @@ function pad(n: string) {
 // this app targets web, so a cross-platform picker would need a second, separate
 // implementation just for web. Three fields work identically everywhere.
 export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldProps) {
+  const { t } = useTranslation();
   const [day, setDay] = useState(value?.slice(8, 10) ?? "");
   const [month, setMonth] = useState(value?.slice(5, 7) ?? "");
   const [year, setYear] = useState(value?.slice(0, 4) ?? "");
@@ -32,11 +34,11 @@ export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldPro
 
   return (
     <View className="gap-1.5">
-      <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">Date of birth</Text>
+      <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("common.dateOfBirth")}</Text>
       <View className="flex-row gap-2">
         <View className="flex-1">
           <TextField
-            placeholder="DD"
+            placeholder={t("common.dayPlaceholder")}
             keyboardType="number-pad"
             maxLength={2}
             value={day}
@@ -48,7 +50,7 @@ export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldPro
         </View>
         <View className="flex-1">
           <TextField
-            placeholder="MM"
+            placeholder={t("common.monthPlaceholder")}
             keyboardType="number-pad"
             maxLength={2}
             value={month}
@@ -60,7 +62,7 @@ export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldPro
         </View>
         <View className="w-24">
           <TextField
-            placeholder="YYYY"
+            placeholder={t("common.yearPlaceholder")}
             keyboardType="number-pad"
             maxLength={4}
             value={year}

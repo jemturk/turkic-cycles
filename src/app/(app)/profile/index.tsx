@@ -1,6 +1,7 @@
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
@@ -10,6 +11,7 @@ import { Button } from "@/components/Button";
 import { ProfileView } from "@/components/ProfileView";
 
 export default function OwnProfile() {
+  const { t } = useTranslation();
   const { session } = useSession();
   const { data: profile } = useMyProfile(session?.user.id);
   const { data: connectionTypes } = useMyConnectionTypes(session?.user.id);
@@ -29,7 +31,7 @@ export default function OwnProfile() {
         />
 
         <View className="mt-4">
-          <Button label="Edit profile" onPress={() => router.push("/(app)/profile/edit")} />
+          <Button label={t("profile.editProfile")} onPress={() => router.push("/(app)/profile/edit")} />
         </View>
       </ScrollView>
     </SafeAreaView>

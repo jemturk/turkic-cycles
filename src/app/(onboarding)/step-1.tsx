@@ -4,25 +4,26 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
 import { useSession } from "@/hooks/useSession";
 import { useSubmitOnboardingStep1 } from "@/hooks/useOnboarding";
 import { useOnboardingStore } from "@/stores/onboarding";
 import { onboardingStep1Schema, type OnboardingStep1 } from "@/schemas/questionnaire/core";
-import { CONNECTION_TYPES, CONNECTION_TYPE_LABELS } from "@/constants/connectionTypes";
+import { CONNECTION_TYPES } from "@/constants/connectionTypes";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
 import { DateOfBirthField } from "@/components/DateOfBirthField";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
 
-const CONNECTION_TYPE_OPTIONS = CONNECTION_TYPES.map((value) => ({
-  value,
-  label: CONNECTION_TYPE_LABELS[value],
-}));
-
 export default function OnboardingStep1Screen() {
+  const { t } = useTranslation();
+  const CONNECTION_TYPE_OPTIONS = CONNECTION_TYPES.map((value) => ({
+    value,
+    label: t(`constants.connectionTypes.${value}`),
+  }));
   const { session } = useSession();
   const store = useOnboardingStore();
   const submitStep1 = useSubmitOnboardingStep1(session?.user.id);
@@ -68,15 +69,17 @@ export default function OnboardingStep1Screen() {
         <OnboardingProgress step={1} totalSteps={4} />
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={onBack} />
 
-        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">Tell us about you</Text>
-        <Text className="text-base text-ink-700 dark:text-ink-200">Let&apos;s start with the basics.</Text>
+        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">
+          {t("onboarding.step1.heading")}
+        </Text>
+        <Text className="text-base text-ink-700 dark:text-ink-200">{t("onboarding.step1.subheading")}</Text>
 
         <Controller
           control={control}
           name="displayName"
           render={({ field }) => (
             <TextField
-              label="Your name"
+              label={t("onboarding.step1.yourName")}
               value={field.value}
               onChangeText={field.onChange}
               error={errors.displayName?.message}
@@ -89,7 +92,7 @@ export default function OnboardingStep1Screen() {
           name="connectionTypes"
           render={({ field }) => (
             <ChipGroup
-              label="What are you looking for?"
+              label={t("onboarding.step1.lookingFor")}
               options={CONNECTION_TYPE_OPTIONS}
               value={field.value ?? []}
               onChange={field.onChange}
@@ -102,7 +105,12 @@ export default function OnboardingStep1Screen() {
           control={control}
           name="city"
           render={({ field }) => (
-            <TextField label="City" value={field.value} onChangeText={field.onChange} error={errors.city?.message} />
+            <TextField
+              label={t("onboarding.step1.city")}
+              value={field.value}
+              onChangeText={field.onChange}
+              error={errors.city?.message}
+            />
           )}
         />
         <Controller
@@ -110,7 +118,7 @@ export default function OnboardingStep1Screen() {
           name="state"
           render={({ field }) => (
             <TextField
-              label="State / region"
+              label={t("onboarding.step1.stateRegion")}
               value={field.value}
               onChangeText={field.onChange}
               error={errors.state?.message}
@@ -122,7 +130,7 @@ export default function OnboardingStep1Screen() {
           name="country"
           render={({ field }) => (
             <TextField
-              label="Country"
+              label={t("onboarding.step1.country")}
               value={field.value}
               onChangeText={field.onChange}
               error={errors.country?.message}
@@ -140,7 +148,7 @@ export default function OnboardingStep1Screen() {
 
         <View className="mt-4">
           <Button
-            label={submitStep1.isPending ? "Saving..." : "Next"}
+            label={submitStep1.isPending ? t("onboarding.saving") : t("onboarding.next")}
             disabled={submitStep1.isPending}
             onPress={handleSubmit(onSubmit)}
           />

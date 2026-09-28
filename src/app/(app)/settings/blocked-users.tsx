@@ -2,11 +2,13 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useBlockedUsers, useUnblockUser } from "@/hooks/useSettings";
 
 export default function BlockedUsers() {
+  const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
   const { data: blocked } = useBlockedUsers(userId);
@@ -19,10 +21,12 @@ export default function BlockedUsers() {
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">Blocked users</Text>
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
+          {t("settings.blockedUsersScreen.heading")}
+        </Text>
 
         {!blocked || blocked.length === 0 ? (
-          <Text className="text-base text-ink-700 dark:text-ink-200">You haven&apos;t blocked anyone.</Text>
+          <Text className="text-base text-ink-700 dark:text-ink-200">{t("settings.blockedUsersScreen.empty")}</Text>
         ) : (
           blocked.map((user) => (
             <View
@@ -31,7 +35,9 @@ export default function BlockedUsers() {
             >
               <Text className="text-base text-ink-900 dark:text-ink-50">{user.displayName}</Text>
               <Pressable onPress={() => unblockUser.mutate(user.userId)}>
-                <Text className="text-sm font-medium text-coral-600">Unblock</Text>
+                <Text className="text-sm font-medium text-coral-600">
+                  {t("settings.blockedUsersScreen.unblock")}
+                </Text>
               </Pressable>
             </View>
           ))

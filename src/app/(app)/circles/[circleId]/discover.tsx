@@ -4,16 +4,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useDiscoverCandidates, useRecordSwipe } from "@/hooks/useDiscover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
 import { calculateAge } from "@/lib/age";
-import { CONNECTION_TYPE_LABELS } from "@/constants/connectionTypes";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 
 export default function Discover() {
+  const { t } = useTranslation();
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
   const { session } = useSession();
   const userId = session?.user.id;
@@ -53,11 +54,11 @@ export default function Discover() {
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="mt-4 font-display text-2xl text-ink-900 dark:text-ink-50">Discover</Text>
+        <Text className="mt-4 font-display text-2xl text-ink-900 dark:text-ink-50">{t("discover.title")}</Text>
 
         {isLoading ? null : !candidate ? (
           <View className="flex-1 items-center justify-center">
-            <Text className="text-base text-ink-700 dark:text-ink-200">No one new to discover right now.</Text>
+            <Text className="text-base text-ink-700 dark:text-ink-200">{t("discover.empty")}</Text>
           </View>
         ) : (
           <Animated.View style={animatedStyle} className="mt-4 flex-1">
@@ -97,7 +98,9 @@ export default function Discover() {
                   ))}
                   {candidate.connectionTypes.map((type) => (
                     <View key={type} className="rounded-full bg-white/20 px-3 py-1">
-                      <Text className="text-xs font-medium text-white">Looking for: {CONNECTION_TYPE_LABELS[type]}</Text>
+                      <Text className="text-xs font-medium text-white">
+                        {t("discover.lookingFor", { type: t(`constants.connectionTypes.${type}`) })}
+                      </Text>
                     </View>
                   ))}
                 </View>
@@ -106,21 +109,21 @@ export default function Discover() {
 
             <View className="mt-6 flex-row items-center justify-center gap-6">
               <Pressable
-                accessibilityLabel="Pass"
+                accessibilityLabel={t("discover.pass")}
                 className="h-14 w-14 items-center justify-center rounded-full bg-white dark:bg-ink-800"
                 onPress={() => onSwipe("pass")}
               >
                 <Ionicons name="close" size={24} color="#8A7C76" />
               </Pressable>
               <Pressable
-                accessibilityLabel="Save"
+                accessibilityLabel={t("discover.save")}
                 className="h-14 w-14 items-center justify-center rounded-full bg-teal-50"
                 onPress={() => onSwipe("save")}
               >
                 <Ionicons name="star" size={22} color="#2C8B80" />
               </Pressable>
               <Pressable
-                accessibilityLabel="Like"
+                accessibilityLabel={t("discover.like")}
                 className="h-16 w-16 items-center justify-center rounded-full bg-coral-500"
                 onPress={() => onSwipe("like")}
               >

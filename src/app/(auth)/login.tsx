@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
 import { authCredentialsSchema, type AuthCredentials } from "@/schemas/auth";
@@ -12,6 +13,7 @@ import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 
 export default function Login() {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     control,
@@ -28,7 +30,7 @@ export default function Login() {
     setIsSubmitting(false);
 
     if (error) {
-      Alert.alert("Couldn't log in", error.message);
+      Alert.alert(t("auth.login.errorTitle"), error.message);
       return;
     }
 
@@ -40,8 +42,8 @@ export default function Login() {
       <View className="flex-1 px-6 pt-6">
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
-        <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">Welcome back</Text>
-        <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">Log in to your Turkic Circles account.</Text>
+        <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">{t("auth.login.heading")}</Text>
+        <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">{t("auth.login.subheading")}</Text>
 
         <View className="mt-8 gap-4">
           <Controller
@@ -49,7 +51,7 @@ export default function Login() {
             name="email"
             render={({ field }) => (
               <TextField
-                label="Email"
+                label={t("auth.login.email")}
                 autoCapitalize="none"
                 keyboardType="email-address"
                 onChangeText={field.onChange}
@@ -63,7 +65,7 @@ export default function Login() {
             name="password"
             render={({ field }) => (
               <TextField
-                label="Password"
+                label={t("auth.login.password")}
                 secureTextEntry
                 onChangeText={field.onChange}
                 value={field.value}
@@ -75,12 +77,12 @@ export default function Login() {
             className="self-end text-sm font-medium text-coral-500"
             onPress={() => router.push("/(auth)/forgot-password")}
           >
-            Forgot password?
+            {t("auth.login.forgotPassword")}
           </Text>
         </View>
 
         <View className="mt-8">
-          <Button label="Log in" onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
+          <Button label={t("auth.login.submit")} onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
         </View>
       </View>
     </SafeAreaView>

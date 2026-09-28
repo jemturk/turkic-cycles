@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
 import { passwordComplexitySchema } from "@/schemas/auth";
@@ -9,6 +10,7 @@ import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 
 export default function ResetPassword() {
+  const { t } = useTranslation();
   const params = useLocalSearchParams<{ token_hash?: string; type?: string }>();
   const [isVerifying, setIsVerifying] = useState(true);
   const [verifyError, setVerifyError] = useState<string | null>(null);
@@ -39,9 +41,10 @@ export default function ResetPassword() {
         return;
       }
 
-      setVerifyError("This reset link is invalid or has expired.");
+      setVerifyError(t("auth.resetPassword.invalidLink"));
       setIsVerifying(false);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.token_hash, params.type]);
 
   async function onSubmit() {
@@ -66,29 +69,38 @@ export default function ResetPassword() {
   return (
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <View className="flex-1 px-6 pt-10">
-        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">Set a new password</Text>
+        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("auth.resetPassword.heading")}</Text>
 
         {isVerifying ? (
-          <Text className="mt-4 text-base text-ink-700 dark:text-ink-200">Verifying your link...</Text>
+          <Text className="mt-4 text-base text-ink-700 dark:text-ink-200">{t("auth.resetPassword.verifying")}</Text>
         ) : verifyError ? (
           <>
             <Text className="mt-4 text-base text-ink-700 dark:text-ink-200">{verifyError}</Text>
             <View className="mt-6">
-              <Button label="Back to log in" onPress={() => router.replace("/(auth)/login")} />
+              <Button label={t("auth.resetPassword.backToLogin")} onPress={() => router.replace("/(auth)/login")} />
             </View>
           </>
         ) : (
           <>
-            <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">Choose a new password for your account.</Text>
+            <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">
+              {t("auth.resetPassword.subheading")}
+            </Text>
             <View className="mt-8 gap-2">
-              <TextField label="New password" secureTextEntry value={password} onChangeText={setPassword} />
-              <Text className="text-xs text-ink-400">
-                8+ characters, with uppercase, lowercase, a number, and a special character.
-              </Text>
+              <TextField
+                label={t("auth.resetPassword.newPassword")}
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+              <Text className="text-xs text-ink-400">{t("auth.resetPassword.passwordHint")}</Text>
               {status ? <Text className="text-sm text-coral-600">{status}</Text> : null}
             </View>
             <View className="mt-8">
-              <Button label={isSaving ? "Saving..." : "Set new password"} disabled={isSaving} onPress={onSubmit} />
+              <Button
+                label={isSaving ? t("auth.resetPassword.saving") : t("auth.resetPassword.submit")}
+                disabled={isSaving}
+                onPress={onSubmit}
+              />
             </View>
           </>
         )}

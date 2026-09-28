@@ -3,6 +3,7 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useCreateReport } from "@/hooks/useSafety";
@@ -10,15 +11,11 @@ import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 
-const REASONS = [
-  { value: "harassment", label: "Harassment or abuse" },
-  { value: "fake_profile", label: "Fake profile" },
-  { value: "inappropriate", label: "Inappropriate content" },
-  { value: "safety_concern", label: "Safety concern" },
-  { value: "other", label: "Other" },
-];
+const REASON_VALUES = ["harassment", "fake_profile", "inappropriate", "safety_concern", "other"] as const;
 
 export default function Report() {
+  const { t } = useTranslation();
+  const REASONS = REASON_VALUES.map((value) => ({ value, label: t(`settings.reportScreen.reasons.${value}`) }));
   const { userId } = useLocalSearchParams<{ userId?: string }>();
   const { session } = useSession();
   const createReport = useCreateReport(session?.user.id);
@@ -41,18 +38,23 @@ export default function Report() {
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">Report or block someone</Text>
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">{t("settings.reportScreen.heading")}</Text>
         {!userId ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">
-            Open this from a profile or conversation to report or block that person.
+            {t("settings.reportScreen.openFromProfile")}
           </Text>
         ) : (
           <>
-            <SingleSelectChips label="Reason" options={REASONS} value={reason} onChange={setReason} />
-            <TextField label="Additional details (optional)" multiline value={details} onChangeText={setDetails} />
+            <SingleSelectChips label={t("settings.reportScreen.reason")} options={REASONS} value={reason} onChange={setReason} />
+            <TextField
+              label={t("settings.reportScreen.additionalDetails")}
+              multiline
+              value={details}
+              onChangeText={setDetails}
+            />
             <View className="mt-2">
               <Button
-                label={createReport.isPending ? "Submitting..." : "Submit report"}
+                label={createReport.isPending ? t("settings.reportScreen.submitting") : t("settings.reportScreen.submitReport")}
                 disabled={createReport.isPending || !reason}
                 onPress={onSubmit}
               />

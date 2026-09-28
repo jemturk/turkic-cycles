@@ -2,6 +2,7 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 type SafetyItem = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -11,40 +12,41 @@ type SafetyItem = {
 };
 
 export default function SafetyCenter() {
+  const { t } = useTranslation();
   const items: SafetyItem[] = [
     {
       icon: "shield-checkmark-outline",
-      title: "Verification",
-      subtitle: "Confirm your identity and earn the badge",
+      title: t("settings.safetyCenterScreen.verificationTitle"),
+      subtitle: t("settings.safetyCenterScreen.verificationSubtitle"),
       onPress: () => router.push("/(app)/settings/verification"),
     },
     {
       icon: "location-outline",
-      title: "Share your plans",
-      subtitle: "Send date details to someone you trust",
+      title: t("settings.safetyCenterScreen.sharePlansTitle"),
+      subtitle: t("settings.safetyCenterScreen.sharePlansSubtitle"),
       onPress: () => router.push("/(app)/settings/safety/share-plans"),
     },
     {
       icon: "flag-outline",
-      title: "Report or block someone",
-      subtitle: "From any profile or conversation",
+      title: t("settings.safetyCenterScreen.reportBlockTitle"),
+      subtitle: t("settings.safetyCenterScreen.reportBlockSubtitle"),
       onPress: () => router.push("/(app)/settings/safety/report"),
     },
     {
       icon: "information-circle-outline",
-      title: "Meeting safely tips",
-      subtitle: "First dates, video chat, and red flags",
+      title: t("settings.safetyCenterScreen.meetingTipsTitle"),
+      subtitle: t("settings.safetyCenterScreen.meetingTipsSubtitle"),
       onPress: () => router.push("/(app)/settings/static-page?topic=guidelines"),
     },
     {
       icon: "document-text-outline",
-      title: "Community guidelines",
+      title: t("settings.safetyCenterScreen.communityGuidelinesTitle"),
       subtitle: "",
       onPress: () => router.push("/(app)/settings/static-page?topic=guidelines"),
     },
     {
       icon: "headset-outline",
-      title: "Contact support",
+      title: t("settings.safetyCenterScreen.contactSupportTitle"),
       subtitle: "",
       onPress: () => router.push("/(app)/settings/static-page?topic=help"),
     },
@@ -57,9 +59,11 @@ export default function SafetyCenter() {
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">Safety Center</Text>
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
+          {t("settings.safetyCenterScreen.heading")}
+        </Text>
         <Text className="-mt-2 text-sm text-ink-700 dark:text-ink-200">
-          Tools and resources to help you connect with confidence.
+          {t("settings.safetyCenterScreen.subheading")}
         </Text>
 
         {items.map((item) => (
@@ -80,8 +84,7 @@ export default function SafetyCenter() {
         <View className="mt-2 flex-row gap-2 rounded-xl bg-coral-100 p-3">
           <Ionicons name="warning-outline" size={18} color="#C24F2A" />
           <Text className="flex-1 text-xs text-ink-700 dark:text-ink-200">
-            In an emergency, always contact local emergency services first — this app is not a
-            substitute for immediate help.
+            {t("settings.safetyCenterScreen.emergencyDisclaimer")}
           </Text>
         </View>
       </ScrollView>

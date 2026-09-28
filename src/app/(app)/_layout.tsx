@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
+import { useTranslation } from "react-i18next";
 
 const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
   circles: { active: "sparkles", inactive: "sparkles-outline" },
@@ -16,6 +17,7 @@ export default function AppTabsLayout() {
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -50,11 +52,11 @@ export default function AppTabsLayout() {
         },
       })}
     >
-      <Tabs.Screen name="circles" options={{ title: "Circles" }} />
-      <Tabs.Screen name="connections" options={{ title: "Connections" }} />
-      <Tabs.Screen name="chat" options={{ title: "Chat" }} />
-      <Tabs.Screen name="profile" options={{ title: "Profile" }} />
-      <Tabs.Screen name="settings" options={{ title: "Settings" }} />
+      <Tabs.Screen name="circles" options={{ title: t("tabs.circles") }} />
+      <Tabs.Screen name="connections" options={{ title: t("tabs.connections") }} />
+      <Tabs.Screen name="chat" options={{ title: t("tabs.chat") }} />
+      <Tabs.Screen name="profile" options={{ title: t("tabs.profile") }} />
+      <Tabs.Screen name="settings" options={{ title: t("tabs.settings") }} />
     </Tabs>
   );
 }

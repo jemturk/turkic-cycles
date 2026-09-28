@@ -1,44 +1,16 @@
 import { Text, View } from "react-native";
 import { Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import type { ConnectionType } from "@/constants/connectionTypes";
-import {
-  RELATIONSHIP_INTENT_LABELS,
-  WANTS_KIDS_LABELS,
-  IMPORTANCE_LABELS,
-} from "@/schemas/questionnaire/romantic";
-import {
-  BUSINESS_ROLES,
-  BUSINESS_ROLE_LABELS,
-  MENTOR_ROLES,
-  MENTOR_ROLE_LABELS,
-} from "@/constants/connectionTypes";
+import { RELATIONSHIP_INTENT_LABELS, WANTS_KIDS_LABELS, IMPORTANCE_LABELS } from "@/schemas/questionnaire/romantic";
+import { BUSINESS_ROLES, MENTOR_ROLES } from "@/constants/connectionTypes";
 import { EXPERIENCE_LEVELS } from "@/constants/experience";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 
-const RELATIONSHIP_INTENT_OPTIONS = Object.entries(RELATIONSHIP_INTENT_LABELS).map(([value, label]) => ({
-  value: value as keyof typeof RELATIONSHIP_INTENT_LABELS,
-  label,
-}));
-const WANTS_KIDS_OPTIONS = Object.entries(WANTS_KIDS_LABELS).map(([value, label]) => ({
-  value: value as keyof typeof WANTS_KIDS_LABELS,
-  label,
-}));
-const IMPORTANCE_OPTIONS = Object.entries(IMPORTANCE_LABELS).map(([value, label]) => ({
-  value: value as keyof typeof IMPORTANCE_LABELS,
-  label,
-}));
-const BUSINESS_ROLE_OPTIONS = BUSINESS_ROLES.map((value) => ({ value, label: BUSINESS_ROLE_LABELS[value] }));
-const MENTOR_ROLE_OPTIONS = MENTOR_ROLES.map((value) => ({ value, label: MENTOR_ROLE_LABELS[value] }));
-
 const MENTOR_TYPES = ["business_mentor", "academic_mentor", "spiritual_mentor"] as const;
-const MENTOR_TYPE_TITLES: Record<(typeof MENTOR_TYPES)[number], string> = {
-  business_mentor: "Business mentorship",
-  academic_mentor: "Academic mentorship",
-  spiritual_mentor: "Spiritual mentorship",
-};
 
 type BranchingQuestionsFieldsProps = {
   // control/errors typed `any` on purpose: this component is shared by the step-4
@@ -58,31 +30,50 @@ type BranchingQuestionsFieldsProps = {
 // step-4 wizard screen and the profile-edit screen — both need to render the
 // same branching questionnaire, just with a different surrounding form/submit.
 export function BranchingQuestionsFields({ control, errors, connectionTypes }: BranchingQuestionsFieldsProps) {
+  const { t } = useTranslation();
   const showRomantic = connectionTypes.includes("romantic");
   const showBusiness = connectionTypes.includes("business");
-  const mentorTypesShown = MENTOR_TYPES.filter((t) => connectionTypes.includes(t));
+  const mentorTypesShown = MENTOR_TYPES.filter((type) => connectionTypes.includes(type));
   const hasBranchingQuestions = showRomantic || showBusiness || mentorTypesShown.length > 0;
 
+  const relationshipIntentOptions = Object.keys(RELATIONSHIP_INTENT_LABELS).map((value) => ({
+    value: value as keyof typeof RELATIONSHIP_INTENT_LABELS,
+    label: t(`constants.relationshipIntent.${value}`),
+  }));
+  const wantsKidsOptions = Object.keys(WANTS_KIDS_LABELS).map((value) => ({
+    value: value as keyof typeof WANTS_KIDS_LABELS,
+    label: t(`constants.wantsKids.${value}`),
+  }));
+  const importanceOptions = Object.keys(IMPORTANCE_LABELS).map((value) => ({
+    value: value as keyof typeof IMPORTANCE_LABELS,
+    label: t(`constants.importance.${value}`),
+  }));
+  const businessRoleOptions = BUSINESS_ROLES.map((value) => ({
+    value,
+    label: t(`constants.businessRoles.${value}`),
+  }));
+  const mentorRoleOptions = MENTOR_ROLES.map((value) => ({ value, label: t(`constants.mentorRoles.${value}`) }));
+  const experienceLevelOptions = EXPERIENCE_LEVELS.map((level) => ({
+    value: level.value,
+    label: t(`constants.experienceLevels.${level.value}`),
+  }));
+
   if (!hasBranchingQuestions) {
-    return (
-      <Text className="text-base text-ink-700 dark:text-ink-200">
-        Nothing else to answer for the connection types you picked — you&apos;re all set.
-      </Text>
-    );
+    return <Text className="text-base text-ink-700 dark:text-ink-200">{t("branching.allSet")}</Text>;
   }
 
   return (
     <>
       {showRomantic ? (
         <View className="gap-4 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
-          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">Romantic connections</Text>
+          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{t("branching.romanticTitle")}</Text>
           <Controller
             control={control}
             name="romantic.relationshipIntent"
             render={({ field }) => (
               <SingleSelectChips
-                label="What are you looking for?"
-                options={RELATIONSHIP_INTENT_OPTIONS}
+                label={t("branching.lookingFor")}
+                options={relationshipIntentOptions}
                 value={field.value}
                 onChange={field.onChange}
                 error={errors.romantic?.relationshipIntent?.message}
@@ -94,8 +85,8 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
             name="romantic.wantsKids"
             render={({ field }) => (
               <SingleSelectChips
-                label="Kids?"
-                options={WANTS_KIDS_OPTIONS}
+                label={t("branching.kids")}
+                options={wantsKidsOptions}
                 value={field.value}
                 onChange={field.onChange}
                 error={errors.romantic?.wantsKids?.message}
@@ -107,8 +98,8 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
             name="romantic.sharedReligionImportance"
             render={({ field }) => (
               <SingleSelectChips
-                label="Importance of shared religion"
-                options={IMPORTANCE_OPTIONS}
+                label={t("branching.religionImportance")}
+                options={importanceOptions}
                 value={field.value}
                 onChange={field.onChange}
                 error={errors.romantic?.sharedReligionImportance?.message}
@@ -120,8 +111,8 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
             name="romantic.sharedCultureImportance"
             render={({ field }) => (
               <SingleSelectChips
-                label="Importance of shared culture"
-                options={IMPORTANCE_OPTIONS}
+                label={t("branching.cultureImportance")}
+                options={importanceOptions}
                 value={field.value}
                 onChange={field.onChange}
                 error={errors.romantic?.sharedCultureImportance?.message}
@@ -133,14 +124,14 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
 
       {showBusiness ? (
         <View className="gap-4 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
-          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">Business connections</Text>
+          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{t("branching.businessTitle")}</Text>
           <Controller
             control={control}
             name="business.roles"
             render={({ field }) => (
               <ChipGroup
-                label="What kind of business connection?"
-                options={BUSINESS_ROLE_OPTIONS}
+                label={t("branching.businessConnectionKind")}
+                options={businessRoleOptions}
                 value={field.value ?? []}
                 onChange={field.onChange}
                 error={errors.business?.roles?.message}
@@ -152,7 +143,7 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
             name="business.industry"
             render={({ field }) => (
               <TextField
-                label="Industry"
+                label={t("branching.industry")}
                 value={field.value ?? ""}
                 onChangeText={field.onChange}
                 error={errors.business?.industry?.message}
@@ -164,8 +155,8 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
             name="business.experienceLevel"
             render={({ field }) => (
               <SingleSelectChips
-                label="Experience level"
-                options={EXPERIENCE_LEVELS}
+                label={t("branching.experienceLevel")}
+                options={experienceLevelOptions}
                 value={field.value}
                 onChange={field.onChange}
                 error={errors.business?.experienceLevel?.message}
@@ -177,14 +168,16 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
 
       {mentorTypesShown.map((type) => (
         <View key={type} className="gap-4 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
-          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{MENTOR_TYPE_TITLES[type]}</Text>
+          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">
+            {t(`branching.mentorTypes.${type}`)}
+          </Text>
           <Controller
             control={control}
             name={`${type}.role`}
             render={({ field }) => (
               <SingleSelectChips
-                label="Are you seeking or offering?"
-                options={MENTOR_ROLE_OPTIONS}
+                label={t("branching.seekingOrOffering")}
+                options={mentorRoleOptions}
                 value={field.value}
                 onChange={field.onChange}
                 error={errors[type]?.role?.message}
@@ -196,7 +189,7 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
             name={`${type}.field`}
             render={({ field }) => (
               <TextField
-                label="Field"
+                label={t("branching.field")}
                 value={field.value ?? ""}
                 onChangeText={field.onChange}
                 error={errors[type]?.field?.message}
@@ -208,8 +201,8 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
             name={`${type}.experienceLevel`}
             render={({ field }) => (
               <SingleSelectChips
-                label="Experience level"
-                options={EXPERIENCE_LEVELS}
+                label={t("branching.experienceLevel")}
+                options={experienceLevelOptions}
                 value={field.value}
                 onChange={field.onChange}
                 error={errors[type]?.experienceLevel?.message}

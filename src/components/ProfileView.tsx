@@ -1,14 +1,26 @@
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { calculateAge } from "@/lib/age";
-import { CONNECTION_TYPE_LABELS } from "@/constants/connectionTypes";
 import type { ConnectionType } from "@/constants/connectionTypes";
 import type { Tables } from "@/types/database";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { Avatar } from "@/components/Avatar";
 import { EditableAvatar } from "@/components/EditableAvatar";
 
-function TagRow({ label, values }: { label: string; values: string[] | null | undefined }) {
+// `namespace` looks up each value's display label under constants.<namespace>.<value>;
+// values without a translation (freeform "Other" text a user typed in) just fall back
+// to showing themselves as-is via i18next's defaultValue.
+function TagRow({
+  label,
+  values,
+  namespace,
+}: {
+  label: string;
+  values: string[] | null | undefined;
+  namespace: string;
+}) {
+  const { t } = useTranslation();
   if (!values || values.length === 0) return null;
   return (
     <View className="gap-2">
@@ -16,7 +28,9 @@ function TagRow({ label, values }: { label: string; values: string[] | null | un
       <View className="flex-row flex-wrap gap-2">
         {values.map((value) => (
           <View key={value} className="rounded-full border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-3 py-1.5">
-            <Text className="text-xs font-medium text-ink-700 dark:text-ink-200">{value}</Text>
+            <Text className="text-xs font-medium text-ink-700 dark:text-ink-200">
+              {t(`constants.${namespace}.${value}`, { defaultValue: value })}
+            </Text>
           </View>
         ))}
       </View>
@@ -46,9 +60,10 @@ export function ProfileView({
   verificationStatus,
   ownUserId,
 }: ProfileViewProps) {
+  const { t } = useTranslation();
   const age = profile?.birthdate ? calculateAge(profile.birthdate) : undefined;
   const location = [profile?.city, profile?.state, profile?.country].filter(Boolean).join(", ");
-  const nameLabel = profile?.display_name || fallbackName || "Add your name";
+  const nameLabel = profile?.display_name || fallbackName || t("profile.addYourName");
 
   return (
     <View className="gap-4">
@@ -78,7 +93,9 @@ export function ProfileView({
           <View className="flex-row flex-wrap justify-center gap-2">
             {connectionTypes.map((type) => (
               <View key={type} className="rounded-full bg-coral-100 px-3 py-1.5">
-                <Text className="text-xs font-medium text-coral-600">{CONNECTION_TYPE_LABELS[type]}</Text>
+                <Text className="text-xs font-medium text-coral-600">
+                  {t(`constants.connectionTypes.${type}`)}
+                </Text>
               </View>
             ))}
           </View>
@@ -87,16 +104,16 @@ export function ProfileView({
 
       {profile?.languages?.length || profile?.interests?.length || profile?.hobbies?.length ? (
         <Card>
-          <TagRow label="Languages" values={profile?.languages} />
-          <TagRow label="Interests" values={profile?.interests} />
-          <TagRow label="Hobbies" values={profile?.hobbies} />
+          <TagRow label={t("profile.languages")} values={profile?.languages} namespace="languages" />
+          <TagRow label={t("profile.interests")} values={profile?.interests} namespace="interests" />
+          <TagRow label={t("profile.hobbies")} values={profile?.hobbies} namespace="hobbies" />
         </Card>
       ) : null}
 
       {profile?.travel_style?.length || originCountries?.length ? (
         <Card>
-          <TagRow label="Travel style" values={profile?.travel_style} />
-          <TagRow label="Origin countries" values={originCountries} />
+          <TagRow label={t("profile.travelStyle")} values={profile?.travel_style} namespace="travelStyles" />
+          <TagRow label={t("profile.originCountries")} values={originCountries} namespace="originCountries" />
         </Card>
       ) : null}
     </View>

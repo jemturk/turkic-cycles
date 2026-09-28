@@ -8,6 +8,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
+import i18n from "@/i18n";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
@@ -68,6 +69,19 @@ function ThemeSync() {
   return <StatusBar style={isDark ? "light" : "dark"} />;
 }
 
+// Applies the account's saved app language (Settings > App language) to i18next.
+function LocaleSync() {
+  const { session } = useSession();
+  const { data: profile } = useMyProfile(session?.user.id);
+  const locale = profile?.app_locale === "tr" ? "tr" : "en";
+
+  useEffect(() => {
+    i18n.changeLanguage(locale);
+  }, [locale]);
+
+  return null;
+}
+
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Fraunces_400Regular,
@@ -90,6 +104,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <ThemeSync />
+          <LocaleSync />
           {/* Constrains the app to a phone-width column on wide (web/desktop)
               viewports, framed against the neutral backdrop set in global.css.
               A no-op on native/mobile-web, where the viewport is already

@@ -4,40 +4,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/Button";
 
 type Slide = {
   icon: keyof typeof Ionicons.glyphMap;
   tint: "coral" | "teal";
-  title: string;
-  body: string;
+  titleKey: string;
+  bodyKey: string;
 };
 
 const SLIDES: Slide[] = [
-  {
-    icon: "infinite-outline",
-    tint: "coral",
-    title: "Turkic Circles",
-    body: "Meaningful connections within the Turkic and Turkic-adjacent community — join circles, meet people, belong somewhere.",
-  },
-  {
-    icon: "sparkles-outline",
-    tint: "teal",
-    title: "Join Circles",
-    body: "Browse and join community groups built around your city, culture, and interests — from everyday hangouts to business networks.",
-  },
-  {
-    icon: "heart-outline",
-    tint: "coral",
-    title: "Discover & Connect",
-    body: "Meet people within your circles for friendship, romance, business, or mentorship — matching adapts to what you're looking for.",
-  },
+  { icon: "infinite-outline", tint: "coral", titleKey: "welcome.slide1Title", bodyKey: "welcome.slide1Body" },
+  { icon: "sparkles-outline", tint: "teal", titleKey: "welcome.slide2Title", bodyKey: "welcome.slide2Body" },
+  { icon: "heart-outline", tint: "coral", titleKey: "welcome.slide3Title", bodyKey: "welcome.slide3Body" },
   {
     icon: "shield-checkmark-outline",
     tint: "teal",
-    title: "Safe by Design",
-    body: "Get verified, share your plans before meeting up, and block or report anyone — your safety comes first, always.",
+    titleKey: "welcome.slide4Title",
+    bodyKey: "welcome.slide4Body",
   },
 ];
 
@@ -47,6 +33,7 @@ const TINT_BG: Record<Slide["tint"], string> = {
 };
 
 export default function Welcome() {
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const opacity = useSharedValue(1);
   const slide = SLIDES[index];
@@ -73,7 +60,7 @@ export default function Welcome() {
           onPress={() => setIndex(SLIDES.length - 1)}
           style={{ opacity: isLast ? 0 : 1 }}
         >
-          <Text className="text-sm font-medium text-ink-400">Skip</Text>
+          <Text className="text-sm font-medium text-ink-400">{t("welcome.skip")}</Text>
         </Pressable>
 
         <View className="flex-1 items-center justify-center">
@@ -89,11 +76,11 @@ export default function Welcome() {
                     Turkic <Text className="text-coral-500">Circles</Text>
                   </>
                 ) : (
-                  slide.title
+                  t(slide.titleKey)
                 )}
               </Text>
               <Text className="w-full max-w-[320px] text-center text-base leading-6 text-ink-700 dark:text-ink-200">
-                {slide.body}
+                {t(slide.bodyKey)}
               </Text>
             </View>
           </Animated.View>
@@ -103,7 +90,7 @@ export default function Welcome() {
           <View className="flex-row items-center justify-center gap-2">
             {SLIDES.map((s, i) => (
               <View
-                key={s.title}
+                key={s.titleKey}
                 className={`h-2 rounded-full ${i === index ? "w-6 bg-coral-500" : "w-2 bg-coral-100"}`}
               />
             ))}
@@ -111,16 +98,16 @@ export default function Welcome() {
 
           {isLast ? (
             <View className="gap-3">
-              <Button label="Get started" onPress={() => router.push("/(auth)/sign-up")} />
+              <Button label={t("welcome.getStarted")} onPress={() => router.push("/(auth)/sign-up")} />
               <Text className="text-center text-sm text-ink-400">
-                Already have an account?{" "}
+                {t("welcome.alreadyHaveAccount")}{" "}
                 <Text className="font-semibold text-coral-500" onPress={() => router.push("/(auth)/login")}>
-                  Log in
+                  {t("welcome.logIn")}
                 </Text>
               </Text>
             </View>
           ) : (
-            <Button label="Next" onPress={next} />
+            <Button label={t("welcome.next")} onPress={next} />
           )}
         </View>
       </View>

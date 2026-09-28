@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useSubmitOnboardingStep2 } from "@/hooks/useOnboarding";
@@ -17,6 +18,7 @@ import { ChipGroup } from "@/components/ChipGroup";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
 
 export default function OnboardingStep2Screen() {
+  const { t } = useTranslation();
   const { session } = useSession();
   const store = useOnboardingStore();
   const submitStep2 = useSubmitOnboardingStep2(session?.user.id);
@@ -45,20 +47,23 @@ export default function OnboardingStep2Screen() {
         <OnboardingProgress step={2} totalSteps={4} />
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
-        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">What do you enjoy?</Text>
-        <Text className="text-base text-ink-700 dark:text-ink-200">Languages, interests, and what you do.</Text>
+        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">
+          {t("onboarding.step2.heading")}
+        </Text>
+        <Text className="text-base text-ink-700 dark:text-ink-200">{t("onboarding.step2.subheading")}</Text>
 
         <Controller
           control={control}
           name="languages"
           render={({ field }) => (
             <ChipGroup
-              label="Languages you speak"
+              label={t("onboarding.step2.languagesYouSpeak")}
               options={LANGUAGES}
               value={field.value ?? []}
               onChange={field.onChange}
-              otherOption={{ value: LANGUAGE_OTHER, placeholder: "Type a language" }}
+              otherOption={{ value: LANGUAGE_OTHER, placeholder: t("onboarding.step2.typeLanguage") }}
               error={errors.languages?.message}
+              namespace="languages"
             />
           )}
         />
@@ -67,7 +72,13 @@ export default function OnboardingStep2Screen() {
           control={control}
           name="interests"
           render={({ field }) => (
-            <ChipGroup label="Interests" options={INTERESTS} value={field.value ?? []} onChange={field.onChange} />
+            <ChipGroup
+              label={t("onboarding.step2.interests")}
+              options={INTERESTS}
+              value={field.value ?? []}
+              onChange={field.onChange}
+              namespace="interests"
+            />
           )}
         />
 
@@ -75,7 +86,13 @@ export default function OnboardingStep2Screen() {
           control={control}
           name="hobbies"
           render={({ field }) => (
-            <ChipGroup label="Hobbies" options={HOBBIES} value={field.value ?? []} onChange={field.onChange} />
+            <ChipGroup
+              label={t("onboarding.step2.hobbies")}
+              options={HOBBIES}
+              value={field.value ?? []}
+              onChange={field.onChange}
+              namespace="hobbies"
+            />
           )}
         />
 
@@ -84,7 +101,7 @@ export default function OnboardingStep2Screen() {
           name="occupation"
           render={({ field }) => (
             <TextField
-              label="Occupation"
+              label={t("onboarding.step2.occupation")}
               value={field.value}
               onChangeText={field.onChange}
               error={errors.occupation?.message}
@@ -94,7 +111,7 @@ export default function OnboardingStep2Screen() {
 
         <View className="mt-4">
           <Button
-            label={submitStep2.isPending ? "Saving..." : "Next"}
+            label={submitStep2.isPending ? t("onboarding.saving") : t("onboarding.next")}
             disabled={submitStep2.isPending}
             onPress={handleSubmit(onSubmit)}
           />

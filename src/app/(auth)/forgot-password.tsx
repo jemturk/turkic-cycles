@@ -4,12 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
+import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 
 export default function ForgotPassword() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
@@ -25,7 +27,7 @@ export default function ForgotPassword() {
     setIsSubmitting(false);
 
     if (error) {
-      Alert.alert("Couldn't send reset link", error.message);
+      Alert.alert(t("auth.forgotPassword.errorTitle"), error.message);
       return;
     }
 
@@ -40,23 +42,27 @@ export default function ForgotPassword() {
       <View className="flex-1 px-6 pt-6">
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
-        <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">Reset your password</Text>
+        <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">
+          {t("auth.forgotPassword.heading")}
+        </Text>
         <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">
-          Enter your email and we&apos;ll send you a link to set a new password.
+          {t("auth.forgotPassword.subheading")}
         </Text>
 
         {sent ? (
           <View className="mt-8 gap-2 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
-            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">Check your email</Text>
+            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
+              {t("auth.forgotPassword.checkEmailTitle")}
+            </Text>
             <Text className="text-sm text-ink-700 dark:text-ink-200">
-              If an account exists for {email.trim()}, a reset link is on its way.
+              {t("auth.forgotPassword.checkEmailBody", { email: email.trim() })}
             </Text>
           </View>
         ) : (
           <>
             <View className="mt-8 gap-4">
               <TextField
-                label="Email"
+                label={t("auth.forgotPassword.email")}
                 autoCapitalize="none"
                 keyboardType="email-address"
                 value={email}
@@ -66,7 +72,7 @@ export default function ForgotPassword() {
 
             <View className="mt-8">
               <Button
-                label={isSubmitting ? "Sending..." : "Send reset link"}
+                label={isSubmitting ? t("auth.forgotPassword.sending") : t("auth.forgotPassword.submit")}
                 disabled={isSubmitting || !email.trim()}
                 onPress={onSubmit}
               />

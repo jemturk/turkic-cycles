@@ -1,4 +1,5 @@
 import { Image, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 type AvatarProps = {
   uri?: string | null;
@@ -11,6 +12,7 @@ type AvatarProps = {
 // circle when avatar_url isn't set, which is every profile until this feature,
 // and still whenever someone hasn't uploaded a photo.
 export function Avatar({ uri, name, size }: AvatarProps) {
+  const { t } = useTranslation();
   const initial = (name || "?").charAt(0).toUpperCase();
 
   if (uri) {
@@ -18,7 +20,7 @@ export function Avatar({ uri, name, size }: AvatarProps) {
       <Image
         source={{ uri }}
         style={{ width: size, height: size, borderRadius: size / 2 }}
-        accessibilityLabel={name ? `${name}'s photo` : "Profile photo"}
+        accessibilityLabel={name ? t("avatar.namedPhoto", { name }) : t("avatar.profilePhoto")}
       />
     );
   }

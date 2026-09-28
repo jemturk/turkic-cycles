@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, Switch, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
 import { useSession } from "@/hooks/useSession";
@@ -17,13 +18,6 @@ import {
 import { useOnboardingStore } from "@/stores/onboarding";
 import { Button } from "@/components/Button";
 import { Chip } from "@/components/Chip";
-
-const VERIFICATION_LABELS: Record<string, string> = {
-  unverified: "Not verified",
-  pending: "Pending review",
-  verified: "Verified",
-  failed: "Verification failed",
-};
 
 function SectionHeader({ label }: { label: string }) {
   return <Text className="mt-2 text-xs font-medium uppercase text-ink-400">{label}</Text>;
@@ -50,6 +44,7 @@ function SettingsRow({
 }
 
 export default function Settings() {
+  const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
   const { data: profile } = useMyProfile(userId);
@@ -73,7 +68,7 @@ export default function Settings() {
   return (
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-8" contentContainerClassName="gap-3 pb-10">
-        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">Settings</Text>
+        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("settings.title")}</Text>
 
         <Pressable
           className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
@@ -86,15 +81,17 @@ export default function Settings() {
               </Text>
             </View>
             <View>
-              <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{profile?.display_name || "Add your name"}</Text>
+              <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
+                {profile?.display_name || t("profile.addYourName")}
+              </Text>
               {location ? <Text className="text-sm text-ink-400">{location}</Text> : null}
             </View>
           </View>
-          <Text className="text-sm font-medium text-coral-600">Edit</Text>
+          <Text className="text-sm font-medium text-coral-600">{t("settings.edit")}</Text>
         </Pressable>
 
         <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-          <Text className="text-base text-ink-900 dark:text-ink-50">App language</Text>
+          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.appLanguage")}</Text>
           <View className="flex-row gap-2">
             <Chip
               label="EN"
@@ -110,105 +107,102 @@ export default function Settings() {
         </View>
 
         <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-          <Text className="text-base text-ink-900 dark:text-ink-50">Theme</Text>
+          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.theme")}</Text>
           <View className="flex-row gap-2">
             <Chip
-              label="Light"
+              label={t("settings.light")}
               selected={(profile?.theme_preference ?? "light") === "light"}
               onPress={() => updateThemePreference.mutate("light")}
             />
             <Chip
-              label="Dark"
+              label={t("settings.dark")}
               selected={profile?.theme_preference === "dark"}
               onPress={() => updateThemePreference.mutate("dark")}
             />
           </View>
         </View>
 
-        <SectionHeader label="Account" />
-        <SettingsRow label="Account" onPress={() => router.push("/(app)/settings/account")} />
+        <SectionHeader label={t("settings.account")} />
+        <SettingsRow label={t("settings.account")} onPress={() => router.push("/(app)/settings/account")} />
 
-        <SectionHeader label="Safety" />
+        <SectionHeader label={t("settings.safety")} />
         <SettingsRow
-          label="Get verified"
-          value={VERIFICATION_LABELS[verification?.status ?? "unverified"]}
+          label={t("settings.getVerified")}
+          value={t(`settings.verification.${verification?.status ?? "unverified"}`)}
           onPress={() => router.push("/(app)/settings/verification")}
         />
-        <SettingsRow label="Safety Center" onPress={() => router.push("/(app)/settings/safety")} />
+        <SettingsRow label={t("settings.safetyCenter")} onPress={() => router.push("/(app)/settings/safety")} />
 
-        <SectionHeader label="Matching preferences" />
+        <SectionHeader label={t("settings.matchingPreferences")} />
         <SettingsRow
-          label="Matching preferences"
+          label={t("settings.matchingPreferences")}
           onPress={() => router.push("/(app)/settings/matching-preferences")}
         />
 
-        <SectionHeader label="Privacy" />
+        <SectionHeader label={t("settings.privacy")} />
         <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-          <Text className="text-base text-ink-900 dark:text-ink-50">Profile visibility</Text>
+          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.profileVisibility")}</Text>
           <View className="flex-row gap-2">
             <Chip
-              label="Visible"
+              label={t("settings.visible")}
               selected={(profile?.profile_visibility ?? "visible") === "visible"}
               onPress={() => updateVisibility.mutate("visible")}
             />
             <Chip
-              label="Hidden"
+              label={t("settings.hidden")}
               selected={profile?.profile_visibility === "hidden"}
               onPress={() => updateVisibility.mutate("hidden")}
             />
           </View>
         </View>
-        <SettingsRow label="Blocked users" onPress={() => router.push("/(app)/settings/blocked-users")} />
+        <SettingsRow label={t("settings.blockedUsers")} onPress={() => router.push("/(app)/settings/blocked-users")} />
         <SettingsRow
-          label="Data & privacy"
+          label={t("settings.dataAndPrivacy")}
           onPress={() => router.push("/(app)/settings/static-page?topic=privacy")}
         />
 
-        <SectionHeader label="Notifications" />
+        <SectionHeader label={t("settings.notifications")} />
         <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-          <Text className="text-base text-ink-900 dark:text-ink-50">Push notifications</Text>
+          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.pushNotifications")}</Text>
           <Switch
             value={profile?.push_notifications_enabled ?? true}
             onValueChange={(pushEnabled) => updateNotifications.mutate({ pushEnabled })}
           />
         </View>
         <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-          <Text className="text-base text-ink-900 dark:text-ink-50">Email notifications</Text>
+          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.emailNotifications")}</Text>
           <Switch
             value={profile?.email_notifications_enabled ?? false}
             onValueChange={(emailEnabled) => updateNotifications.mutate({ emailEnabled })}
           />
         </View>
 
-        <SectionHeader label="Community" />
-        <SettingsRow label="About Turkic Circles" onPress={() => router.push("/(app)/settings/static-page?topic=about")} />
+        <SectionHeader label={t("settings.community")} />
+        <SettingsRow label={t("settings.aboutApp")} onPress={() => router.push("/(app)/settings/static-page?topic=about")} />
         <SettingsRow
-          label="Community guidelines"
+          label={t("settings.communityGuidelines")}
           onPress={() => router.push("/(app)/settings/static-page?topic=guidelines")}
         />
-        <SettingsRow label="Help & support" onPress={() => router.push("/(app)/settings/static-page?topic=help")} />
+        <SettingsRow label={t("settings.helpAndSupport")} onPress={() => router.push("/(app)/settings/static-page?topic=help")} />
 
         <View className="mt-4">
-          <Button label="Log out" variant="secondary" onPress={signOut} />
+          <Button label={t("settings.logOut")} variant="secondary" onPress={signOut} />
         </View>
 
         {confirmingDelete ? (
           <View className="gap-2 rounded-xl border border-coral-500 bg-white dark:bg-ink-800 p-4">
-            <Text className="text-sm text-ink-700 dark:text-ink-200">
-              This marks your account for deletion. You&apos;ll be signed out, and your data will
-              be permanently removed within a few days.
-            </Text>
+            <Text className="text-sm text-ink-700 dark:text-ink-200">{t("settings.deleteAccountWarning")}</Text>
             <View className="flex-row gap-2">
-              <Button label="Cancel" variant="secondary" onPress={() => setConfirmingDelete(false)} />
+              <Button label={t("settings.cancel")} variant="secondary" onPress={() => setConfirmingDelete(false)} />
               <Button
-                label="Yes, delete my account"
+                label={t("settings.confirmDelete")}
                 onPress={() => requestDeletion.mutate(undefined, { onSuccess: signOut })}
               />
             </View>
           </View>
         ) : (
           <Pressable onPress={() => setConfirmingDelete(true)}>
-            <Text className="text-center text-sm font-medium text-coral-600">Delete account</Text>
+            <Text className="text-center text-sm font-medium text-coral-600">{t("settings.deleteAccount")}</Text>
           </Pressable>
         )}
       </ScrollView>

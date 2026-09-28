@@ -2,10 +2,12 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 import { useCircle, useCircleMembers } from "@/hooks/useCircles";
 
 export default function CircleMembers() {
+  const { t } = useTranslation();
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
   const { data: circle } = useCircle(circleId);
   const { data: members } = useCircleMembers(circleId);
@@ -17,8 +19,12 @@ export default function CircleMembers() {
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">{circle?.name ?? "Members"}</Text>
-        <Text className="-mt-2 text-sm text-ink-400">{circle?.member_count ?? 0} members</Text>
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
+          {circle?.name ?? t("circles.members")}
+        </Text>
+        <Text className="-mt-2 text-sm text-ink-400">
+          {t("circles.membersCount", { count: circle?.member_count ?? 0 })}
+        </Text>
 
         <View className="flex-row flex-wrap gap-4">
           {(members ?? []).map((member) => (
@@ -34,7 +40,7 @@ export default function CircleMembers() {
                 </Text>
               </View>
               <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
-                {member.displayName || "Member"}
+                {member.displayName || t("common.member")}
               </Text>
             </Pressable>
           ))}

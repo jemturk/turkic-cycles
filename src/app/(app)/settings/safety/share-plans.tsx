@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { addMinutes, format, isValid, parse } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useCreateSafetyPlan } from "@/hooks/useSafety";
@@ -13,6 +14,7 @@ import { Chip } from "@/components/Chip";
 import type { TrustedContact } from "@/api/safety";
 
 export default function SharePlans() {
+  const { t } = useTranslation();
   const { session } = useSession();
   const createPlan = useCreateSafetyPlan(session?.user.id);
 
@@ -57,24 +59,38 @@ export default function SharePlans() {
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">Share your plans</Text>
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
+          {t("settings.sharePlansScreen.heading")}
+        </Text>
         <Text className="-mt-2 text-sm text-ink-700 dark:text-ink-200">
-          Let a trusted contact know where you&apos;ll be — just in case.
+          {t("settings.sharePlansScreen.subheading")}
         </Text>
 
-        <TextField label="Who are you meeting?" value={meetingWith} onChangeText={setMeetingWith} />
-        <TextField label="Where" value={location} onChangeText={setLocation} />
+        <TextField label={t("settings.sharePlansScreen.whoMeeting")} value={meetingWith} onChangeText={setMeetingWith} />
+        <TextField label={t("settings.sharePlansScreen.where")} value={location} onChangeText={setLocation} />
 
         <View className="flex-row gap-3">
           <View className="flex-1">
-            <TextField label="Date (YYYY-MM-DD)" value={date} onChangeText={setDate} placeholder="2026-10-04" />
+            <TextField
+              label={t("settings.sharePlansScreen.date")}
+              value={date}
+              onChangeText={setDate}
+              placeholder="2026-10-04"
+            />
           </View>
           <View className="flex-1">
-            <TextField label="Time (24h)" value={time} onChangeText={setTime} placeholder="19:00" />
+            <TextField
+              label={t("settings.sharePlansScreen.time")}
+              value={time}
+              onChangeText={setTime}
+              placeholder="19:00"
+            />
           </View>
         </View>
 
-        <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">Trusted contacts</Text>
+        <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">
+          {t("settings.sharePlansScreen.trustedContacts")}
+        </Text>
         <View className="flex-row flex-wrap gap-2">
           {contacts.map((contact, i) => (
             <Chip
@@ -87,16 +103,16 @@ export default function SharePlans() {
         </View>
         <View className="flex-row gap-2">
           <View className="flex-1">
-            <TextField placeholder="Name" value={contactName} onChangeText={setContactName} />
+            <TextField placeholder={t("settings.sharePlansScreen.namePlaceholder")} value={contactName} onChangeText={setContactName} />
           </View>
           <View className="flex-1">
-            <TextField placeholder="Phone" value={contactPhone} onChangeText={setContactPhone} />
+            <TextField placeholder={t("settings.sharePlansScreen.phonePlaceholder")} value={contactPhone} onChangeText={setContactPhone} />
           </View>
         </View>
-        <Button variant="secondary" label="+ Add contact" onPress={addContact} />
+        <Button variant="secondary" label={t("settings.sharePlansScreen.addContact")} onPress={addContact} />
 
         <TextField
-          label="Check in after (minutes)"
+          label={t("settings.sharePlansScreen.checkInAfter")}
           keyboardType="number-pad"
           value={String(autoCheckinMinutes)}
           onChangeText={(v) => setAutoCheckinMinutes(Number(v) || 0)}
@@ -104,16 +120,23 @@ export default function SharePlans() {
 
         <View className="gap-2 rounded-xl bg-teal-50 p-3">
           <Text className="text-xs text-ink-700 dark:text-ink-200">
-            {contacts.length > 0 ? contacts.map((c) => c.name).join(", ") : "Your trusted contact"} will get{" "}
-            {meetingWith || "their"} name, the location, and time by text.
-            {checkinAt ? ` We'll ask if you're okay at ${format(checkinAt, "h:mm a")}.` : ""} If you don&apos;t
-            respond, we&apos;ll follow up. (SMS delivery is stubbed for now — no message is actually sent yet.)
+            {t("settings.sharePlansScreen.willGetText", {
+              contacts:
+                contacts.length > 0
+                  ? contacts.map((c) => c.name).join(", ")
+                  : t("settings.sharePlansScreen.yourTrustedContact"),
+              name: meetingWith || t("settings.sharePlansScreen.theirNameFallback"),
+            })}
+            {checkinAt
+              ? t("settings.sharePlansScreen.checkinNote", { time: format(checkinAt, "h:mm a") })
+              : ""}
+            {t("settings.sharePlansScreen.followUpNote")}
           </Text>
         </View>
 
         <View className="mt-2">
           <Button
-            label={createPlan.isPending ? "Sharing..." : "Share plans"}
+            label={createPlan.isPending ? t("settings.sharePlansScreen.sharing") : t("settings.sharePlansScreen.sharePlans")}
             disabled={createPlan.isPending || !meetingAtValid || contacts.length === 0}
             onPress={onSubmit}
           />

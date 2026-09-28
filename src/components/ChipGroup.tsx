@@ -1,13 +1,10 @@
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Chip } from "@/components/Chip";
 import { TextField } from "@/components/TextField";
 
 type Option<T extends string> = T | { value: T; label: string };
-
-function normalize<T extends string>(option: Option<T>): { value: T; label: string } {
-  return typeof option === "string" ? { value: option, label: option } : option;
-}
 
 type ChipGroupProps<T extends string> = {
   label: string;
@@ -17,6 +14,9 @@ type ChipGroupProps<T extends string> = {
   max?: number;
   otherOption?: { value: T; placeholder: string };
   error?: string;
+  /** Translates bare-string options (constants.<namespace>.<value>); object-shaped
+   * options keep their own given label as-is. */
+  namespace?: string;
 };
 
 // Multi-select chip field. When `otherOption` is set, an extra "Other" chip
@@ -30,7 +30,13 @@ export function ChipGroup<T extends string>({
   max,
   otherOption,
   error,
+  namespace,
 }: ChipGroupProps<T>) {
+  const { t } = useTranslation();
+  const normalize = (option: Option<T>): { value: T; label: string } =>
+    typeof option === "string"
+      ? { value: option, label: namespace ? t(`constants.${namespace}.${option}`, { defaultValue: option }) : option }
+      : option;
   const normalized = options.map(normalize);
   const knownValues = new Set(normalized.map((o) => o.value));
   const customValue = otherOption
@@ -81,7 +87,7 @@ export function ChipGroup<T extends string>({
         ))}
         {otherOption ? (
           <Chip
-            label="Other"
+            label={t("constants.other")}
             selected={isOtherSelected}
             onPress={toggleOther}
             disabled={!isOtherSelected && atMax}

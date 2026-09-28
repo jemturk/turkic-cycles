@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm, useWatch, Controller, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
@@ -15,7 +16,7 @@ import {
   useSaveProfileEdit,
 } from "@/hooks/useOnboarding";
 import { buildProfileEditSchema, type ProfileEditValues } from "@/schemas/questionnaire/profileEdit";
-import { CONNECTION_TYPES, CONNECTION_TYPE_LABELS } from "@/constants/connectionTypes";
+import { CONNECTION_TYPES } from "@/constants/connectionTypes";
 import { LANGUAGES, LANGUAGE_OTHER } from "@/constants/languages";
 import { INTERESTS, HOBBIES, TRAVEL_FREQUENCIES, TRAVEL_STYLES } from "@/constants/interests";
 import { ORIGIN_COUNTRIES, ORIGIN_MAX_SELECTIONS, ORIGIN_OTHER } from "@/constants/origins";
@@ -26,15 +27,15 @@ import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { SegmentedToggle } from "@/components/SegmentedToggle";
 import { BranchingQuestionsFields } from "@/components/BranchingQuestionsFields";
 
-const CONNECTION_TYPE_OPTIONS = CONNECTION_TYPES.map((value) => ({
-  value,
-  label: CONNECTION_TYPE_LABELS[value],
-}));
-
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
 
 export default function ProfileEdit() {
+  const { t } = useTranslation();
+  const CONNECTION_TYPE_OPTIONS = CONNECTION_TYPES.map((value) => ({
+    value,
+    label: t(`constants.connectionTypes.${value}`),
+  }));
   const { session } = useSession();
   const userId = session?.user.id;
   const { data: profile, isLoading: profileLoading } = useMyProfile(userId);
@@ -97,13 +98,13 @@ export default function ProfileEdit() {
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
-        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">Edit profile</Text>
+        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">{t("fields.editProfileHeading")}</Text>
 
         <Controller
           control={control}
           name="displayName"
           render={({ field }) => (
-            <TextField label="Your name" value={field.value} onChangeText={field.onChange} error={errors.displayName?.message} />
+            <TextField label={t("fields.yourName")} value={field.value} onChangeText={field.onChange} error={errors.displayName?.message} />
           )}
         />
         <Controller
@@ -111,7 +112,7 @@ export default function ProfileEdit() {
           name="bio"
           render={({ field }) => (
             <TextField
-              label="Bio"
+              label={t("fields.bio")}
               multiline
               numberOfLines={4}
               value={field.value}
@@ -125,7 +126,7 @@ export default function ProfileEdit() {
           name="connectionTypes"
           render={({ field }) => (
             <ChipGroup
-              label="What are you looking for?"
+              label={t("fields.lookingFor")}
               options={CONNECTION_TYPE_OPTIONS}
               value={field.value ?? []}
               onChange={field.onChange}
@@ -137,28 +138,28 @@ export default function ProfileEdit() {
           control={control}
           name="city"
           render={({ field }) => (
-            <TextField label="City" value={field.value} onChangeText={field.onChange} error={errors.city?.message} />
+            <TextField label={t("fields.city")} value={field.value} onChangeText={field.onChange} error={errors.city?.message} />
           )}
         />
         <Controller
           control={control}
           name="state"
           render={({ field }) => (
-            <TextField label="State / region" value={field.value} onChangeText={field.onChange} error={errors.state?.message} />
+            <TextField label={t("fields.stateRegion")} value={field.value} onChangeText={field.onChange} error={errors.state?.message} />
           )}
         />
         <Controller
           control={control}
           name="country"
           render={({ field }) => (
-            <TextField label="Country" value={field.value} onChangeText={field.onChange} error={errors.country?.message} />
+            <TextField label={t("fields.country")} value={field.value} onChangeText={field.onChange} error={errors.country?.message} />
           )}
         />
         <Controller
           control={control}
           name="occupation"
           render={({ field }) => (
-            <TextField label="Occupation" value={field.value} onChangeText={field.onChange} error={errors.occupation?.message} />
+            <TextField label={t("fields.occupation")} value={field.value} onChangeText={field.onChange} error={errors.occupation?.message} />
           )}
         />
 
@@ -167,12 +168,13 @@ export default function ProfileEdit() {
           name="languages"
           render={({ field }) => (
             <ChipGroup
-              label="Languages you speak"
+              label={t("fields.languagesYouSpeak")}
               options={LANGUAGES}
               value={field.value ?? []}
               onChange={field.onChange}
-              otherOption={{ value: LANGUAGE_OTHER, placeholder: "Type a language" }}
+              otherOption={{ value: LANGUAGE_OTHER, placeholder: t("fields.typeLanguage") }}
               error={errors.languages?.message}
+              namespace="languages"
             />
           )}
         />
@@ -180,32 +182,44 @@ export default function ProfileEdit() {
           control={control}
           name="interests"
           render={({ field }) => (
-            <ChipGroup label="Interests" options={INTERESTS} value={field.value ?? []} onChange={field.onChange} />
+            <ChipGroup
+              label={t("fields.interests")}
+              options={INTERESTS}
+              value={field.value ?? []}
+              onChange={field.onChange}
+              namespace="interests"
+            />
           )}
         />
         <Controller
           control={control}
           name="hobbies"
           render={({ field }) => (
-            <ChipGroup label="Hobbies" options={HOBBIES} value={field.value ?? []} onChange={field.onChange} />
+            <ChipGroup
+              label={t("fields.hobbies")}
+              options={HOBBIES}
+              value={field.value ?? []}
+              onChange={field.onChange}
+              namespace="hobbies"
+            />
           )}
         />
 
         <Controller
           control={control}
           name="usResidency"
-          render={({ field }) => <SegmentedToggle label="US resident?" value={!!field.value} onChange={field.onChange} />}
+          render={({ field }) => <SegmentedToggle label={t("fields.usResident")} value={!!field.value} onChange={field.onChange} />}
         />
         <Controller
           control={control}
           name="usCitizenship"
-          render={({ field }) => <SegmentedToggle label="US citizen?" value={!!field.value} onChange={field.onChange} />}
+          render={({ field }) => <SegmentedToggle label={t("fields.usCitizen")} value={!!field.value} onChange={field.onChange} />}
         />
         <Controller
           control={control}
           name="europeanCitizenship"
           render={({ field }) => (
-            <SegmentedToggle label="European citizen?" value={!!field.value} onChange={field.onChange} />
+            <SegmentedToggle label={t("fields.europeanCitizen")} value={!!field.value} onChange={field.onChange} />
           )}
         />
 
@@ -214,13 +228,14 @@ export default function ProfileEdit() {
           name="originCountries"
           render={({ field }) => (
             <ChipGroup
-              label="Origin countries (up to 3)"
+              label={t("fields.originCountries")}
               options={ORIGIN_COUNTRIES}
               value={field.value ?? []}
               onChange={field.onChange}
               max={ORIGIN_MAX_SELECTIONS}
-              otherOption={{ value: ORIGIN_OTHER, placeholder: "Type a country" }}
+              otherOption={{ value: ORIGIN_OTHER, placeholder: t("fields.typeCountry") }}
               error={errors.originCountries?.message}
+              namespace="originCountries"
             />
           )}
         />
@@ -234,7 +249,7 @@ export default function ProfileEdit() {
             >
               <Ionicons name={field.value === true ? "checkbox" : "square-outline"} size={22} color="#D9663D" />
               <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">
-                I consent to sharing my origin country info for matching purposes.
+                {t("fields.consentOriginCountries")}
               </Text>
             </Pressable>
           )}
@@ -248,8 +263,11 @@ export default function ProfileEdit() {
           name="travelFrequency"
           render={({ field }) => (
             <SingleSelectChips
-              label="How often do you travel?"
-              options={TRAVEL_FREQUENCIES}
+              label={t("fields.travelFrequency")}
+              options={TRAVEL_FREQUENCIES.map((f) => ({
+                value: f.value,
+                label: t(`constants.travelFrequencies.${f.value}`),
+              }))}
               value={field.value}
               onChange={field.onChange}
               error={errors.travelFrequency?.message}
@@ -260,7 +278,13 @@ export default function ProfileEdit() {
           control={control}
           name="travelStyle"
           render={({ field }) => (
-            <ChipGroup label="Travel style" options={TRAVEL_STYLES} value={field.value ?? []} onChange={field.onChange} />
+            <ChipGroup
+              label={t("fields.travelStyle")}
+              options={TRAVEL_STYLES}
+              value={field.value ?? []}
+              onChange={field.onChange}
+              namespace="travelStyles"
+            />
           )}
         />
 
@@ -268,7 +292,7 @@ export default function ProfileEdit() {
 
         <View className="mt-4">
           <Button
-            label={saveProfileEdit.isPending ? "Saving..." : "Save changes"}
+            label={saveProfileEdit.isPending ? t("common.saving") : t("common.saveChanges")}
             disabled={saveProfileEdit.isPending}
             onPress={handleSubmit(onSubmit)}
           />
