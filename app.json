@@ -38,7 +38,8 @@
           "photosPermission": "Turkic Circles needs access to your photos so you can set a profile picture.",
           "cameraPermission": "Turkic Circles needs access to your camera so you can take a profile picture."
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
