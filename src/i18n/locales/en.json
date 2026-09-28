@@ -157,7 +157,11 @@
     "profilePhoto": "Profile photo",
     "photoAccessNeededTitle": "Photo access needed",
     "photoAccessNeededBody": "Enable photo access in Settings to set a profile picture.",
-    "uploadErrorTitle": "Couldn't upload photo"
+    "cameraAccessNeededTitle": "Camera access needed",
+    "cameraAccessNeededBody": "Enable camera access in Settings to take a profile picture.",
+    "uploadErrorTitle": "Couldn't upload photo",
+    "takePhoto": "Take Photo",
+    "chooseFromLibrary": "Choose from Library"
   },
   "profile": {
     "addYourName": "Add your name",

@@ -157,7 +157,11 @@
     "profilePhoto": "Profil fotoğrafı",
     "photoAccessNeededTitle": "Fotoğraf erişimi gerekli",
     "photoAccessNeededBody": "Profil fotoğrafı ayarlamak için Ayarlar'dan fotoğraf erişimini etkinleştir.",
-    "uploadErrorTitle": "Fotoğraf yüklenemedi"
+    "cameraAccessNeededTitle": "Kamera erişimi gerekli",
+    "cameraAccessNeededBody": "Profil fotoğrafı çekmek için Ayarlar'dan kamera erişimini etkinleştir.",
+    "uploadErrorTitle": "Fotoğraf yüklenemedi",
+    "takePhoto": "Fotoğraf Çek",
+    "chooseFromLibrary": "Galeriden Seç"
   },
   "profile": {
     "addYourName": "Adını ekle",
