@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -6,15 +6,21 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/hooks/useSession";
 import { useNewConnections } from "@/hooks/useChat";
 import { Avatar } from "@/components/Avatar";
+import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 
 export default function Connections() {
   const { t } = useTranslation();
   const { session } = useSession();
-  const { data: connections } = useNewConnections(session?.user.id);
+  const { data: connections, refetch, isRefetching } = useNewConnections(session?.user.id);
 
   return (
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-8" contentContainerClassName="gap-4 pb-10">
+      <RefreshableScrollView
+        refreshing={isRefetching}
+        onRefresh={refetch}
+        className="flex-1 px-6 pt-8"
+        contentContainerClassName="gap-4 pb-10"
+      >
         <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("connections.title")}</Text>
 
         <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("connections.newConnections")}</Text>
@@ -38,7 +44,7 @@ export default function Connections() {
             ))}
           </View>
         )}
-      </ScrollView>
+      </RefreshableScrollView>
     </SafeAreaView>
   );
 }

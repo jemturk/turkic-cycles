@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,12 +8,13 @@ import { useSession } from "@/hooks/useSession";
 import { useCircles, useJoinCircle, useMyCircleMemberships } from "@/hooks/useCircles";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { Chip } from "@/components/Chip";
+import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 
 export default function Circles() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
-  const { data: circles } = useCircles();
+  const { data: circles, refetch, isRefetching } = useCircles();
   const { data: memberships } = useMyCircleMemberships(userId);
   const joinCircle = useJoinCircle(userId);
 
@@ -21,7 +22,12 @@ export default function Circles() {
 
   return (
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-8" contentContainerClassName="gap-4 pb-10">
+      <RefreshableScrollView
+        refreshing={isRefetching}
+        onRefresh={refetch}
+        className="flex-1 px-6 pt-8"
+        contentContainerClassName="gap-4 pb-10"
+      >
         <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("circles.title")}</Text>
         <Text className="-mt-2 text-base text-ink-700 dark:text-ink-200">{t("circles.subtitle")}</Text>
 
@@ -62,7 +68,7 @@ export default function Circles() {
             </Pressable>
           );
         })}
-      </ScrollView>
+      </RefreshableScrollView>
     </SafeAreaView>
   );
 }
