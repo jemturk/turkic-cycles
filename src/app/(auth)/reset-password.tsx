@@ -64,22 +64,22 @@ export default function ResetPassword() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <View className="flex-1 px-6 pt-10">
-        <Text className="font-display text-3xl text-ink-900">Set a new password</Text>
+        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">Set a new password</Text>
 
         {isVerifying ? (
-          <Text className="mt-4 text-base text-ink-700">Verifying your link...</Text>
+          <Text className="mt-4 text-base text-ink-700 dark:text-ink-200">Verifying your link...</Text>
         ) : verifyError ? (
           <>
-            <Text className="mt-4 text-base text-ink-700">{verifyError}</Text>
+            <Text className="mt-4 text-base text-ink-700 dark:text-ink-200">{verifyError}</Text>
             <View className="mt-6">
               <Button label="Back to log in" onPress={() => router.replace("/(auth)/login")} />
             </View>
           </>
         ) : (
           <>
-            <Text className="mt-2 text-base text-ink-700">Choose a new password for your account.</Text>
+            <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">Choose a new password for your account.</Text>
             <View className="mt-8 gap-2">
               <TextField label="New password" secureTextEntry value={password} onChangeText={setPassword} />
               <Text className="text-xs text-ink-400">

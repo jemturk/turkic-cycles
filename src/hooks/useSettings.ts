@@ -9,6 +9,7 @@ import {
   updateAppLocale,
   updateNotificationPreferences,
   updateProfileVisibility,
+  updateThemePreference,
   upsertMatchingPreferences,
 } from "@/api/settings";
 
@@ -47,6 +48,14 @@ export function useUpdateAppLocale(userId: string | undefined) {
   const invalidate = useInvalidateProfile(userId);
   return useMutation({
     mutationFn: (locale: "en" | "tr") => updateAppLocale(userId as string, locale),
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdateThemePreference(userId: string | undefined) {
+  const invalidate = useInvalidateProfile(userId);
+  return useMutation({
+    mutationFn: (theme: "light" | "dark") => updateThemePreference(userId as string, theme),
     onSuccess: invalidate,
   });
 }

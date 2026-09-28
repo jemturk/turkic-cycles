@@ -47,10 +47,10 @@ export default function OtherProfile() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
         <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#2B2320" />
+          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
         <ProfileView
@@ -77,7 +77,7 @@ export default function OtherProfile() {
           <View className="mt-4 flex-row items-center justify-center gap-6">
             <Pressable
               accessibilityLabel="Pass"
-              className="h-14 w-14 items-center justify-center rounded-full bg-white"
+              className="h-14 w-14 items-center justify-center rounded-full bg-white dark:bg-ink-800"
               onPress={() => onSwipe("pass")}
             >
               <Ionicons name="close" size={24} color="#8A7C76" />

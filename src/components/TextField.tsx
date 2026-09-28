@@ -13,10 +13,10 @@ export function TextField({ label, error, secureTextEntry, ...inputProps }: Text
 
   return (
     <View className="gap-1.5">
-      {label ? <Text className="text-sm font-medium text-ink-700">{label}</Text> : null}
+      {label ? <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{label}</Text> : null}
       <View className="justify-center">
         <TextInput
-          className={`rounded-xl border border-coral-100 bg-white px-4 py-3 text-base text-ink-900 ${
+          className={`rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3 text-base text-ink-900 dark:text-ink-50 ${
             canToggleVisibility ? "pr-11" : ""
           }`}
           placeholderTextColor="#8A7C76"

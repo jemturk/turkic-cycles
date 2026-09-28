@@ -63,13 +63,13 @@ export default function OnboardingStep1Screen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
         <OnboardingProgress step={1} totalSteps={4} />
-        <Ionicons name="chevron-back" size={24} color="#2B2320" onPress={onBack} />
+        <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={onBack} />
 
-        <Text className="mt-2 font-display text-3xl text-ink-900">Tell us about you</Text>
-        <Text className="text-base text-ink-700">Let&apos;s start with the basics.</Text>
+        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">Tell us about you</Text>
+        <Text className="text-base text-ink-700 dark:text-ink-200">Let&apos;s start with the basics.</Text>
 
         <Controller
           control={control}

@@ -68,7 +68,7 @@ export function ChipGroup<T extends string>({
 
   return (
     <View className="gap-1.5">
-      <Text className="text-sm font-medium text-ink-700">{label}</Text>
+      <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{label}</Text>
       <View className="flex-row flex-wrap gap-2">
         {normalized.map((option) => (
           <Chip

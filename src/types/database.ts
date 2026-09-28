@@ -375,6 +375,7 @@ export type Database = {
           profile_visibility: string
           push_notifications_enabled: boolean
           state: string | null
+          theme_preference: string
           travel_frequency: string | null
           travel_style: string[]
           updated_at: string
@@ -403,6 +404,7 @@ export type Database = {
           profile_visibility?: string
           push_notifications_enabled?: boolean
           state?: string | null
+          theme_preference?: string
           travel_frequency?: string | null
           travel_style?: string[]
           updated_at?: string
@@ -431,6 +433,7 @@ export type Database = {
           profile_visibility?: string
           push_notifications_enabled?: boolean
           state?: string | null
+          theme_preference?: string
           travel_frequency?: string | null
           travel_style?: string[]
           updated_at?: string

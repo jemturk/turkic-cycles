@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useColorScheme } from "nativewind";
 
 const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
   circles: { active: "sparkles", inactive: "sparkles-outline" },
@@ -13,21 +14,25 @@ const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inacti
 
 export default function AppTabsLayout() {
   const insets = useSafeAreaInsets();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === "dark";
 
   return (
     <Tabs
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: "#D9663D",
-        tabBarInactiveTintColor: "#A99C95",
+        tabBarInactiveTintColor: isDark ? "#8A7C76" : "#A99C95",
         tabBarLabelStyle: { fontSize: 11, lineHeight: 15, fontWeight: "600", marginTop: 2 },
         tabBarStyle: {
           height: 76 + insets.bottom,
           paddingBottom: insets.bottom + 12,
           paddingTop: 8,
-          backgroundColor: "#FFFFFF",
+          // Inline styles, not classNames -- React Navigation's tabBarStyle isn't
+          // resolved through NativeWind, so dark mode has to be handled here in JS.
+          backgroundColor: isDark ? "#352C27" : "#FFFFFF",
           borderTopWidth: 1,
-          borderTopColor: "#F1E7E0",
+          borderTopColor: isDark ? "#4A3F3A" : "#F1E7E0",
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
           elevation: 0,
@@ -36,7 +41,7 @@ export default function AppTabsLayout() {
           const icons = TAB_ICONS[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };
           return (
             <View
-              className={focused ? "items-center justify-center rounded-full bg-coral-50" : "items-center justify-center"}
+              className={focused ? "items-center justify-center rounded-full bg-coral-50 dark:bg-ink-950" : "items-center justify-center"}
               style={{ width: 40, height: 28 }}
             >
               <Ionicons name={focused ? icons.active : icons.inactive} size={size - 2} color={color} />

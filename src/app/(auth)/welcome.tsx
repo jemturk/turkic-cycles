@@ -66,7 +66,7 @@ export default function Welcome() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <View className="flex-1 justify-between px-6 pb-6 pt-10">
         <Pressable
           className="self-end"
@@ -83,7 +83,7 @@ export default function Welcome() {
             </View>
 
             <View className="w-full items-center gap-3">
-              <Text className="w-full text-center font-display text-3xl text-ink-900">
+              <Text className="w-full text-center font-display text-3xl text-ink-900 dark:text-ink-50">
                 {index === 0 ? (
                   <>
                     Turkic <Text className="text-coral-500">Circles</Text>
@@ -92,7 +92,7 @@ export default function Welcome() {
                   slide.title
                 )}
               </Text>
-              <Text className="w-full max-w-[320px] text-center text-base leading-6 text-ink-700">
+              <Text className="w-full max-w-[320px] text-center text-base leading-6 text-ink-700 dark:text-ink-200">
                 {slide.body}
               </Text>
             </View>

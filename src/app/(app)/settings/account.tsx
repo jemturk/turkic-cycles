@@ -36,26 +36,26 @@ export default function Account() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
         <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#2B2320" />
+          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900">Account</Text>
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">Account</Text>
 
         <View className="gap-1">
-          <Text className="text-sm font-medium text-ink-700">Email</Text>
-          <Text className="text-base text-ink-900">{session?.user.email}</Text>
+          <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">Email</Text>
+          <Text className="text-base text-ink-900 dark:text-ink-50">{session?.user.email}</Text>
         </View>
 
         <View className="gap-1">
-          <Text className="text-sm font-medium text-ink-700">Phone</Text>
+          <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">Phone</Text>
           <Text className="text-base text-ink-400">Not available yet</Text>
         </View>
 
         <View className="gap-1">
-          <Text className="text-sm font-medium text-ink-700">Linked accounts</Text>
+          <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">Linked accounts</Text>
           <Text className="text-base text-ink-400">Not available yet</Text>
         </View>
 
@@ -69,7 +69,7 @@ export default function Account() {
           <Text className="-mt-2 text-xs text-ink-400">
             8+ characters, with uppercase, lowercase, a number, and a special character.
           </Text>
-          {status ? <Text className="text-sm text-ink-700">{status}</Text> : null}
+          {status ? <Text className="text-sm text-ink-700 dark:text-ink-200">{status}</Text> : null}
           <Button label={isSaving ? "Saving..." : "Change password"} disabled={isSaving} onPress={onChangePassword} />
         </View>
       </ScrollView>

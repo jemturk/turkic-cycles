@@ -13,23 +13,23 @@ export default function BlockedUsers() {
   const unblockUser = useUnblockUser(userId);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
         <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#2B2320" />
+          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900">Blocked users</Text>
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">Blocked users</Text>
 
         {!blocked || blocked.length === 0 ? (
-          <Text className="text-base text-ink-700">You haven&apos;t blocked anyone.</Text>
+          <Text className="text-base text-ink-700 dark:text-ink-200">You haven&apos;t blocked anyone.</Text>
         ) : (
           blocked.map((user) => (
             <View
               key={user.userId}
-              className="flex-row items-center justify-between rounded-xl border border-coral-100 bg-white px-4 py-3"
+              className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
             >
-              <Text className="text-base text-ink-900">{user.displayName}</Text>
+              <Text className="text-base text-ink-900 dark:text-ink-50">{user.displayName}</Text>
               <Pressable onPress={() => unblockUser.mutate(user.userId)}>
                 <Text className="text-sm font-medium text-coral-600">Unblock</Text>
               </Pressable>

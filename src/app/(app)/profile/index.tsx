@@ -17,7 +17,7 @@ export default function OwnProfile() {
   const { data: verification } = useMyVerificationStatus(session?.user.id);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
         <ProfileView
           profile={profile}

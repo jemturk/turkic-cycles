@@ -75,13 +75,13 @@ export default function MatchingPreferences() {
   const { data: preferences, isLoading } = useMatchingPreferences(userId);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
         <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#2B2320" />
+          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900">Matching preferences</Text>
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">Matching preferences</Text>
         <Text className="-mt-2 text-sm text-ink-400">
           These don&apos;t filter Discover yet — they&apos;re saved for when that&apos;s wired up.
         </Text>

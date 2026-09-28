@@ -47,17 +47,17 @@ export default function Discover() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <View className="flex-1 px-6 pt-6">
         <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#2B2320" />
+          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="mt-4 font-display text-2xl text-ink-900">Discover</Text>
+        <Text className="mt-4 font-display text-2xl text-ink-900 dark:text-ink-50">Discover</Text>
 
         {isLoading ? null : !candidate ? (
           <View className="flex-1 items-center justify-center">
-            <Text className="text-base text-ink-700">No one new to discover right now.</Text>
+            <Text className="text-base text-ink-700 dark:text-ink-200">No one new to discover right now.</Text>
           </View>
         ) : (
           <Animated.View style={animatedStyle} className="mt-4 flex-1">
@@ -107,7 +107,7 @@ export default function Discover() {
             <View className="mt-6 flex-row items-center justify-center gap-6">
               <Pressable
                 accessibilityLabel="Pass"
-                className="h-14 w-14 items-center justify-center rounded-full bg-white"
+                className="h-14 w-14 items-center justify-center rounded-full bg-white dark:bg-ink-800"
                 onPress={() => onSwipe("pass")}
               >
                 <Ionicons name="close" size={24} color="#8A7C76" />

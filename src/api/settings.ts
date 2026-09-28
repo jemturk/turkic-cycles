@@ -47,6 +47,10 @@ export function updateAppLocale(userId: string, locale: "en" | "tr") {
   return updateProfile(userId, { app_locale: locale });
 }
 
+export function updateThemePreference(userId: string, theme: "light" | "dark") {
+  return updateProfile(userId, { theme_preference: theme });
+}
+
 export function updateProfileVisibility(userId: string, visibility: "visible" | "hidden") {
   return updateProfile(userId, { profile_visibility: visibility });
 }

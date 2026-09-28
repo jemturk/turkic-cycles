@@ -65,7 +65,7 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
 
   if (!hasBranchingQuestions) {
     return (
-      <Text className="text-base text-ink-700">
+      <Text className="text-base text-ink-700 dark:text-ink-200">
         Nothing else to answer for the connection types you picked — you&apos;re all set.
       </Text>
     );
@@ -74,8 +74,8 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
   return (
     <>
       {showRomantic ? (
-        <View className="gap-4 rounded-2xl border border-coral-100 bg-white p-4">
-          <Text className="font-display text-xl text-ink-900">Romantic connections</Text>
+        <View className="gap-4 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
+          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">Romantic connections</Text>
           <Controller
             control={control}
             name="romantic.relationshipIntent"
@@ -132,8 +132,8 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
       ) : null}
 
       {showBusiness ? (
-        <View className="gap-4 rounded-2xl border border-coral-100 bg-white p-4">
-          <Text className="font-display text-xl text-ink-900">Business connections</Text>
+        <View className="gap-4 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
+          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">Business connections</Text>
           <Controller
             control={control}
             name="business.roles"
@@ -176,8 +176,8 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
       ) : null}
 
       {mentorTypesShown.map((type) => (
-        <View key={type} className="gap-4 rounded-2xl border border-coral-100 bg-white p-4">
-          <Text className="font-display text-xl text-ink-900">{MENTOR_TYPE_TITLES[type]}</Text>
+        <View key={type} className="gap-4 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
+          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{MENTOR_TYPE_TITLES[type]}</Text>
           <Controller
             control={control}
             name={`${type}.role`}

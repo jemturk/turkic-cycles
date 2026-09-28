@@ -36,12 +36,12 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <View className="flex-1 px-6 pt-6">
-        <Ionicons name="chevron-back" size={24} color="#2B2320" onPress={() => router.back()} />
+        <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
-        <Text className="mt-8 font-display text-3xl text-ink-900">Welcome back</Text>
-        <Text className="mt-2 text-base text-ink-700">Log in to your Turkic Circles account.</Text>
+        <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">Welcome back</Text>
+        <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">Log in to your Turkic Circles account.</Text>
 
         <View className="mt-8 gap-4">
           <Controller

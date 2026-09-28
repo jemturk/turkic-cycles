@@ -11,17 +11,17 @@ export default function Chat() {
   const { data: threads } = useMessageThreads(session?.user.id);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-8" contentContainerClassName="gap-4 pb-10">
-        <Text className="font-display text-3xl text-ink-900">Chat</Text>
+        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">Chat</Text>
 
         {!threads || threads.length === 0 ? (
-          <Text className="text-base text-ink-700">No conversations yet.</Text>
+          <Text className="text-base text-ink-700 dark:text-ink-200">No conversations yet.</Text>
         ) : (
           threads.map((thread) => (
             <Pressable
               key={thread.matchId}
-              className="flex-row items-center gap-3 rounded-2xl border border-coral-100 bg-white p-4"
+              className="flex-row items-center gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
               onPress={() => router.push(`/(app)/chat/${thread.matchId}`)}
             >
               <View className="h-12 w-12 items-center justify-center rounded-full bg-coral-500">
@@ -31,8 +31,8 @@ export default function Chat() {
               </View>
 
               <View className="flex-1 gap-0.5">
-                <Text className="font-display text-lg text-ink-900">{thread.otherDisplayName}</Text>
-                <Text className="text-sm text-ink-700" numberOfLines={1}>
+                <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{thread.otherDisplayName}</Text>
+                <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={1}>
                   {thread.lastMessageBody}
                 </Text>
               </View>

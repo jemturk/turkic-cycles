@@ -50,17 +50,17 @@ export default function SignUp() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <View className="flex-1 px-6 pt-6">
-        <Ionicons name="chevron-back" size={24} color="#2B2320" onPress={() => router.back()} />
+        <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
-        <Text className="mt-8 font-display text-3xl text-ink-900">Create your account</Text>
-        <Text className="mt-2 text-base text-ink-700">Join the Turkic Circles community.</Text>
+        <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">Create your account</Text>
+        <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">Join the Turkic Circles community.</Text>
 
         {sentEmail ? (
-          <View className="mt-8 gap-2 rounded-2xl border border-teal-500 bg-white p-4">
-            <Text className="font-display text-lg text-ink-900">Check your email</Text>
-            <Text className="text-sm text-ink-700">
+          <View className="mt-8 gap-2 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
+            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">Check your email</Text>
+            <Text className="text-sm text-ink-700 dark:text-ink-200">
               We sent a confirmation link to {sentEmail}. Open it to finish creating your account.
             </Text>
           </View>

@@ -18,10 +18,10 @@ export default function Circles() {
   const joinedIds = new Set(memberships ?? []);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-8" contentContainerClassName="gap-4 pb-10">
-        <Text className="font-display text-3xl text-ink-900">Circles</Text>
-        <Text className="-mt-2 text-base text-ink-700">
+        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">Circles</Text>
+        <Text className="-mt-2 text-base text-ink-700 dark:text-ink-200">
           Find your people — join circles built around what matters to you.
         </Text>
 
@@ -32,15 +32,15 @@ export default function Circles() {
             <Pressable
               key={circle.id}
               onPress={() => router.push(`/(app)/circles/${circle.id}`)}
-              className="flex-row gap-3 rounded-2xl border border-coral-100 bg-white p-4"
+              className="flex-row gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
             >
               <View className={`h-12 w-12 items-center justify-center rounded-xl ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
                 <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_COLORS[topic].fg} />
               </View>
 
               <View className="flex-1 gap-1">
-                <Text className="font-display text-lg text-ink-900">{circle.name}</Text>
-                <Text className="text-sm text-ink-700" numberOfLines={2}>
+                <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{circle.name}</Text>
+                <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={2}>
                   {circle.description}
                 </Text>
                 <Text className="text-xs text-ink-400">

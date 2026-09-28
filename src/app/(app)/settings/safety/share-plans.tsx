@@ -51,14 +51,14 @@ export default function SharePlans() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
         <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#2B2320" />
+          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900">Share your plans</Text>
-        <Text className="-mt-2 text-sm text-ink-700">
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">Share your plans</Text>
+        <Text className="-mt-2 text-sm text-ink-700 dark:text-ink-200">
           Let a trusted contact know where you&apos;ll be — just in case.
         </Text>
 
@@ -74,7 +74,7 @@ export default function SharePlans() {
           </View>
         </View>
 
-        <Text className="text-sm font-medium text-ink-700">Trusted contacts</Text>
+        <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">Trusted contacts</Text>
         <View className="flex-row flex-wrap gap-2">
           {contacts.map((contact, i) => (
             <Chip
@@ -103,7 +103,7 @@ export default function SharePlans() {
         />
 
         <View className="gap-2 rounded-xl bg-teal-50 p-3">
-          <Text className="text-xs text-ink-700">
+          <Text className="text-xs text-ink-700 dark:text-ink-200">
             {contacts.length > 0 ? contacts.map((c) => c.name).join(", ") : "Your trusted contact"} will get{" "}
             {meetingWith || "their"} name, the location, and time by text.
             {checkinAt ? ` We'll ask if you're okay at ${format(checkinAt, "h:mm a")}.` : ""} If you don&apos;t

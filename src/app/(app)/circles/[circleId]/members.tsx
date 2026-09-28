@@ -11,13 +11,13 @@ export default function CircleMembers() {
   const { data: members } = useCircleMembers(circleId);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
         <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#2B2320" />
+          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="font-display text-2xl text-ink-900">{circle?.name ?? "Members"}</Text>
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">{circle?.name ?? "Members"}</Text>
         <Text className="-mt-2 text-sm text-ink-400">{circle?.member_count ?? 0} members</Text>
 
         <View className="flex-row flex-wrap gap-4">
@@ -33,7 +33,7 @@ export default function CircleMembers() {
                   {(member.displayName || "?").charAt(0).toUpperCase()}
                 </Text>
               </View>
-              <Text className="text-xs text-ink-700" numberOfLines={1}>
+              <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
                 {member.displayName || "Member"}
               </Text>
             </Pressable>

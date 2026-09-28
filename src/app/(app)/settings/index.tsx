@@ -12,6 +12,7 @@ import {
   useUpdateAppLocale,
   useUpdateNotificationPreferences,
   useUpdateProfileVisibility,
+  useUpdateThemePreference,
 } from "@/hooks/useSettings";
 import { useOnboardingStore } from "@/stores/onboarding";
 import { Button } from "@/components/Button";
@@ -40,9 +41,9 @@ function SettingsRow({
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center justify-between rounded-xl border border-coral-100 bg-white px-4 py-3"
+      className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
     >
-      <Text className="text-base text-ink-900">{label}</Text>
+      <Text className="text-base text-ink-900 dark:text-ink-50">{label}</Text>
       {value ? <Text className="text-sm text-ink-400">{value}</Text> : null}
     </Pressable>
   );
@@ -54,6 +55,7 @@ export default function Settings() {
   const { data: profile } = useMyProfile(userId);
   const { data: verification } = useMyVerificationStatus(userId);
   const updateAppLocale = useUpdateAppLocale(userId);
+  const updateThemePreference = useUpdateThemePreference(userId);
   const updateNotifications = useUpdateNotificationPreferences(userId);
   const updateVisibility = useUpdateProfileVisibility(userId);
   const requestDeletion = useRequestAccountDeletion(userId);
@@ -69,12 +71,12 @@ export default function Settings() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-8" contentContainerClassName="gap-3 pb-10">
-        <Text className="font-display text-3xl text-ink-900">Settings</Text>
+        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">Settings</Text>
 
         <Pressable
-          className="flex-row items-center justify-between rounded-xl border border-coral-100 bg-white px-4 py-3"
+          className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
           onPress={() => router.push("/(app)/profile/edit")}
         >
           <View className="flex-row items-center gap-3">
@@ -84,15 +86,15 @@ export default function Settings() {
               </Text>
             </View>
             <View>
-              <Text className="font-display text-lg text-ink-900">{profile?.display_name || "Add your name"}</Text>
+              <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{profile?.display_name || "Add your name"}</Text>
               {location ? <Text className="text-sm text-ink-400">{location}</Text> : null}
             </View>
           </View>
           <Text className="text-sm font-medium text-coral-600">Edit</Text>
         </Pressable>
 
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 bg-white px-4 py-3">
-          <Text className="text-base text-ink-900">App language</Text>
+        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+          <Text className="text-base text-ink-900 dark:text-ink-50">App language</Text>
           <View className="flex-row gap-2">
             <Chip
               label="EN"
@@ -103,6 +105,22 @@ export default function Settings() {
               label="TR"
               selected={profile?.app_locale === "tr"}
               onPress={() => updateAppLocale.mutate("tr")}
+            />
+          </View>
+        </View>
+
+        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+          <Text className="text-base text-ink-900 dark:text-ink-50">Dark mode</Text>
+          <View className="flex-row gap-2">
+            <Chip
+              label="Light"
+              selected={(profile?.theme_preference ?? "light") === "light"}
+              onPress={() => updateThemePreference.mutate("light")}
+            />
+            <Chip
+              label="Dark"
+              selected={profile?.theme_preference === "dark"}
+              onPress={() => updateThemePreference.mutate("dark")}
             />
           </View>
         </View>
@@ -125,8 +143,8 @@ export default function Settings() {
         />
 
         <SectionHeader label="Privacy" />
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 bg-white px-4 py-3">
-          <Text className="text-base text-ink-900">Profile visibility</Text>
+        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+          <Text className="text-base text-ink-900 dark:text-ink-50">Profile visibility</Text>
           <View className="flex-row gap-2">
             <Chip
               label="Visible"
@@ -147,15 +165,15 @@ export default function Settings() {
         />
 
         <SectionHeader label="Notifications" />
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 bg-white px-4 py-3">
-          <Text className="text-base text-ink-900">Push notifications</Text>
+        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+          <Text className="text-base text-ink-900 dark:text-ink-50">Push notifications</Text>
           <Switch
             value={profile?.push_notifications_enabled ?? true}
             onValueChange={(pushEnabled) => updateNotifications.mutate({ pushEnabled })}
           />
         </View>
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 bg-white px-4 py-3">
-          <Text className="text-base text-ink-900">Email notifications</Text>
+        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+          <Text className="text-base text-ink-900 dark:text-ink-50">Email notifications</Text>
           <Switch
             value={profile?.email_notifications_enabled ?? false}
             onValueChange={(emailEnabled) => updateNotifications.mutate({ emailEnabled })}
@@ -175,8 +193,8 @@ export default function Settings() {
         </View>
 
         {confirmingDelete ? (
-          <View className="gap-2 rounded-xl border border-coral-500 bg-white p-4">
-            <Text className="text-sm text-ink-700">
+          <View className="gap-2 rounded-xl border border-coral-500 bg-white dark:bg-ink-800 p-4">
+            <Text className="text-sm text-ink-700 dark:text-ink-200">
               This marks your account for deletion. You&apos;ll be signed out, and your data will
               be permanently removed within a few days.
             </Text>

@@ -50,15 +50,15 @@ export default function ConfirmEmail() {
   }, [status]);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <View className="flex-1 items-center justify-center px-6">
         {status === "verifying" ? (
-          <Text className="text-base text-ink-700">Confirming your email...</Text>
+          <Text className="text-base text-ink-700 dark:text-ink-200">Confirming your email...</Text>
         ) : status === "done" ? (
-          <Text className="text-base text-ink-700">Email confirmed! Taking you in...</Text>
+          <Text className="text-base text-ink-700 dark:text-ink-200">Email confirmed! Taking you in...</Text>
         ) : (
           <>
-            <Text className="text-center text-base text-ink-700">{errorMessage}</Text>
+            <Text className="text-center text-base text-ink-700 dark:text-ink-200">{errorMessage}</Text>
             <View className="mt-6">
               <Button label="Back to log in" onPress={() => router.replace("/(auth)/login")} />
             </View>

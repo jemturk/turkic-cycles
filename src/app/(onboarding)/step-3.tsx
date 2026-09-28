@@ -49,12 +49,12 @@ export default function OnboardingStep3Screen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
         <OnboardingProgress step={3} totalSteps={4} />
-        <Ionicons name="chevron-back" size={24} color="#2B2320" onPress={() => router.back()} />
+        <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
-        <Text className="mt-2 font-display text-3xl text-ink-900">Residency & travel</Text>
+        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">Residency & travel</Text>
 
         <Controller
           control={control}
@@ -107,7 +107,7 @@ export default function OnboardingStep3Screen() {
                 size={22}
                 color="#D9663D"
               />
-              <Text className="flex-1 text-sm text-ink-700">
+              <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">
                 I consent to sharing my origin country info for matching purposes.
               </Text>
             </Pressable>

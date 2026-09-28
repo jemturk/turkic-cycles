@@ -32,7 +32,7 @@ export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldPro
 
   return (
     <View className="gap-1.5">
-      <Text className="text-sm font-medium text-ink-700">Date of birth</Text>
+      <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">Date of birth</Text>
       <View className="flex-row gap-2">
         <View className="flex-1">
           <TextField

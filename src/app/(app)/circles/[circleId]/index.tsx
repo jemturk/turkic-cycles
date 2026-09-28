@@ -59,11 +59,11 @@ export default function CircleDetail() {
   const location = [circle.city, circle.state, circle.country].filter(Boolean).join(", ");
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50" edges={["top", "left", "right"]}>
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["top", "left", "right"]}>
       <ScrollView className="flex-1" contentContainerClassName="gap-4 pb-10">
         <View className={`h-16 flex-row items-center gap-3 px-6 ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
           <Pressable onPress={goBack}>
-            <Ionicons name="chevron-back" size={24} color="#2B2320" />
+            <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
           </Pressable>
           <View className="rounded-xl bg-white/70 p-2">
             <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={28} color={CIRCLE_TOPIC_COLORS[topic].fg} />
@@ -72,7 +72,7 @@ export default function CircleDetail() {
 
         <View className="gap-4 px-6">
           <View className="flex-row items-start justify-between gap-3">
-            <Text className="flex-1 font-display text-2xl text-ink-900">{circle.name}</Text>
+            <Text className="flex-1 font-display text-2xl text-ink-900 dark:text-ink-50">{circle.name}</Text>
             <Chip
               label={isJoined ? "Joined" : "Join"}
               selected={isJoined}
@@ -88,12 +88,12 @@ export default function CircleDetail() {
             {circle.member_count} members{location ? ` · ${location}` : ""}
           </Text>
 
-          {circle.description ? <Text className="text-base text-ink-700">{circle.description}</Text> : null}
+          {circle.description ? <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text> : null}
 
           {event ? (
-            <View className="gap-3 rounded-2xl border border-coral-100 bg-white p-4">
-              <Text className="font-display text-lg text-ink-900">{event.title}</Text>
-              <Text className="text-sm text-ink-700">
+            <View className="gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
+              <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{event.title}</Text>
+              <Text className="text-sm text-ink-700 dark:text-ink-200">
                 {format(new Date(event.starts_at), "EEE, MMM d · h:mm a")}
                 {event.location ? ` · ${event.location}` : ""}
               </Text>
@@ -112,7 +112,7 @@ export default function CircleDetail() {
           {membersPreview && membersPreview.length > 0 ? (
             <View className="gap-2">
               <View className="flex-row items-center justify-between">
-                <Text className="text-sm font-medium text-ink-700">Members</Text>
+                <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">Members</Text>
                 <Pressable onPress={() => router.push(`/(app)/circles/${circle.id}/members`)}>
                   <Text className="text-sm font-medium text-coral-600">See all {circle.member_count}</Text>
                 </Pressable>
@@ -130,7 +130,7 @@ export default function CircleDetail() {
                         {(member.displayName || "?").charAt(0).toUpperCase()}
                       </Text>
                     </View>
-                    <Text className="text-xs text-ink-700" numberOfLines={1}>
+                    <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
                       {member.displayName || "Member"}
                     </Text>
                   </Pressable>

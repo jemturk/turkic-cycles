@@ -36,19 +36,19 @@ export default function ForgotPassword() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
       <View className="flex-1 px-6 pt-6">
-        <Ionicons name="chevron-back" size={24} color="#2B2320" onPress={() => router.back()} />
+        <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
-        <Text className="mt-8 font-display text-3xl text-ink-900">Reset your password</Text>
-        <Text className="mt-2 text-base text-ink-700">
+        <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">Reset your password</Text>
+        <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">
           Enter your email and we&apos;ll send you a link to set a new password.
         </Text>
 
         {sent ? (
-          <View className="mt-8 gap-2 rounded-2xl border border-teal-500 bg-white p-4">
-            <Text className="font-display text-lg text-ink-900">Check your email</Text>
-            <Text className="text-sm text-ink-700">
+          <View className="mt-8 gap-2 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
+            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">Check your email</Text>
+            <Text className="text-sm text-ink-700 dark:text-ink-200">
               If an account exists for {email.trim()}, a reset link is on its way.
             </Text>
           </View>

@@ -24,9 +24,16 @@ module.exports = {
           600: "#206E65",
         },
         ink: {
+          // 50/200/800/950 exist only for dark mode (primary text, secondary text,
+          // card surface, and page background respectively) -- 900/700/400 above are
+          // the original light-mode-only scale used everywhere else.
+          950: "#171310",
           900: "#2B2320",
+          800: "#352C27",
           700: "#4A3F3A",
           400: "#8A7C76",
+          200: "#C9BFB9",
+          50: "#F5F1EE",
         },
       },
       fontFamily: {
