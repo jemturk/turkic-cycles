@@ -11,21 +11,10 @@ export const CIRCLE_TOPIC_ICONS: Record<CircleTopic, keyof typeof Ionicons.glyph
   creative: "musical-notes-outline",
 };
 
+// One color per topic, each genuinely distinct from the others and from a white
+// card background -- shared by the circles list's icon badges and the circle detail
+// page's header band, so a circle reads as the same color in both places.
 export const CIRCLE_TOPIC_COLORS: Record<CircleTopic, { bg: string; fg: string }> = {
-  culture: { bg: "bg-teal-50", fg: "#2C8B80" },
-  business: { bg: "bg-coral-50", fg: "#D9663D" },
-  newcomers: { bg: "bg-teal-50", fg: "#2C8B80" },
-  family: { bg: "bg-coral-50", fg: "#D9663D" },
-  creative: { bg: "bg-teal-50", fg: "#2C8B80" },
-};
-
-// A distinct variant for the circles list's small icon badges specifically: the pale
-// -50 tints above all read as near-white on that screen's white cards, and culture/
-// newcomers/creative (as well as business/family) share the exact same tint, so nothing
-// there actually distinguished 5 topics from each other. This gives all 5 their own
-// visibly different color, without touching CIRCLE_TOPIC_COLORS (still used as-is for
-// the circle detail page's header band).
-export const CIRCLE_TOPIC_BADGE_COLORS: Record<CircleTopic, { bg: string; fg: string }> = {
   culture: { bg: "bg-teal-50", fg: "#206E65" },
   business: { bg: "bg-coral-100", fg: "#C24F2A" },
   newcomers: { bg: "bg-gold-100", fg: "#9C7A28" },
