@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 
@@ -32,6 +32,16 @@ export default function CircleDetail() {
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
   const { session } = useSession();
   const userId = session?.user.id;
+  const navigation = useRouter();
+
+  // Reachable via a direct URL/refresh on web (e.g. a shared link), which has no
+  // in-app history to pop -- router.back() would then silently no-op. Same class of
+  // bug as the onboarding step-1 back button fixed earlier: fall back to the circles
+  // list instead of assuming a push always happened first.
+  function goBack() {
+    if (navigation.canGoBack()) router.back();
+    else router.replace("/(app)/circles");
+  }
 
   const { data: circle } = useCircle(circleId);
   const { data: memberships } = useMyCircleMemberships(userId);
@@ -52,7 +62,7 @@ export default function CircleDetail() {
     <SafeAreaView className="flex-1 bg-coral-50" edges={["top", "left", "right"]}>
       <ScrollView className="flex-1" contentContainerClassName="gap-4 pb-10">
         <View className={`h-20 flex-row items-center gap-3 px-6 pt-4 ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
-          <Pressable onPress={() => router.back()}>
+          <Pressable onPress={goBack}>
             <Ionicons name="chevron-back" size={24} color="#2B2320" />
           </Pressable>
           <View className="rounded-xl bg-white/70 p-2">
