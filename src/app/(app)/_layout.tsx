@@ -42,10 +42,7 @@ export default function AppTabsLayout() {
         tabBarIcon: ({ focused, color, size }) => {
           const icons = TAB_ICONS[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };
           return (
-            <View
-              className={focused ? "items-center justify-center rounded-full bg-coral-50 dark:bg-ink-950" : "items-center justify-center"}
-              style={{ width: 40, height: 28 }}
-            >
+            <View className="items-center justify-center" style={{ width: 40, height: 28 }}>
               <Ionicons name={focused ? icons.active : icons.inactive} size={size - 2} color={color} />
             </View>
           );
