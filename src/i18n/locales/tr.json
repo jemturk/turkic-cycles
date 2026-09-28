@@ -161,7 +161,9 @@
     "cameraAccessNeededBody": "Profil fotoğrafı çekmek için Ayarlar'dan kamera erişimini etkinleştir.",
     "uploadErrorTitle": "Fotoğraf yüklenemedi",
     "takePhoto": "Fotoğraf Çek",
-    "chooseFromLibrary": "Galeriden Seç"
+    "chooseFromLibrary": "Galeriden Seç",
+    "removePhoto": "Fotoğrafı Kaldır",
+    "removeErrorTitle": "Fotoğraf kaldırılamadı"
   },
   "profile": {
     "addYourName": "Adını ekle",

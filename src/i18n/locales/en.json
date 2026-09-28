@@ -161,7 +161,9 @@
     "cameraAccessNeededBody": "Enable camera access in Settings to take a profile picture.",
     "uploadErrorTitle": "Couldn't upload photo",
     "takePhoto": "Take Photo",
-    "chooseFromLibrary": "Choose from Library"
+    "chooseFromLibrary": "Choose from Library",
+    "removePhoto": "Remove Photo",
+    "removeErrorTitle": "Couldn't remove photo"
   },
   "profile": {
     "addYourName": "Add your name",

@@ -32,3 +32,17 @@ export async function uploadAvatar(userId: string, uri: string, mimeType: string
 
   return avatarUrl;
 }
+
+export async function deleteAvatar(userId: string) {
+  // The stored file's extension isn't tracked anywhere separately from avatar_url
+  // itself (which we're about to clear) -- remove every extension this app ever
+  // uploads under, so a photo re-uploaded under a different format in the past
+  // doesn't linger as an orphaned file. Removing a path that doesn't exist is a
+  // no-op, not an error.
+  const paths = Object.values(EXTENSION_BY_MIME_TYPE).map((ext) => `${userId}/avatar.${ext}`);
+  const { error: removeError } = await supabase.storage.from("avatars").remove(paths);
+  if (removeError) throw removeError;
+
+  const { error: updateError } = await supabase.from("profiles").update({ avatar_url: null }).eq("id", userId);
+  if (updateError) throw updateError;
+}

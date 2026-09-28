@@ -4,7 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { useUploadAvatar } from "@/hooks/useAvatar";
+import { useDeleteAvatar, useUploadAvatar } from "@/hooks/useAvatar";
 import { Avatar } from "@/components/Avatar";
 
 type EditableAvatarProps = {
@@ -26,7 +26,16 @@ const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = {
 export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps) {
   const { t } = useTranslation();
   const uploadAvatar = useUploadAvatar(userId);
+  const deleteAvatar = useDeleteAvatar(userId);
+  const isPending = uploadAvatar.isPending || deleteAvatar.isPending;
   const [sheetVisible, setSheetVisible] = useState(false);
+
+  function onRemove() {
+    setSheetVisible(false);
+    deleteAvatar.mutate(undefined, {
+      onError: (error) => Alert.alert(t("avatar.removeErrorTitle"), error.message),
+    });
+  }
 
   async function pickFrom(source: "camera" | "library") {
     setSheetVisible(false);
@@ -64,11 +73,11 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
     <>
       <Pressable
         onPress={() => setSheetVisible(true)}
-        disabled={uploadAvatar.isPending}
+        disabled={isPending}
         accessibilityLabel={t("avatar.changePhoto")}
       >
         <Avatar uri={uri} name={name} size={size} />
-        {uploadAvatar.isPending ? (
+        {isPending ? (
           <View
             className="absolute items-center justify-center rounded-full bg-ink-900/40"
             style={{ width: size, height: size }}
@@ -104,6 +113,12 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
               <Ionicons name="image-outline" size={22} color="#D9663D" />
               <Text className="text-base text-ink-900 dark:text-ink-50">{t("avatar.chooseFromLibrary")}</Text>
             </Pressable>
+            {uri ? (
+              <Pressable className="flex-row items-center gap-3 rounded-xl p-3" onPress={onRemove}>
+                <Ionicons name="trash-outline" size={22} color="#C24F2A" />
+                <Text className="text-base text-coral-600">{t("avatar.removePhoto")}</Text>
+              </Pressable>
+            ) : null}
             <Pressable className="mt-2 items-center rounded-xl p-3" onPress={() => setSheetVisible(false)}>
               <Text className="text-base font-medium text-ink-400">{t("common.cancel")}</Text>
             </Pressable>
