@@ -27,8 +27,8 @@ export default function AppTabsLayout() {
         tabBarInactiveTintColor: isDark ? "#8A7C76" : "#A99C95",
         tabBarLabelStyle: { fontSize: 11, lineHeight: 15, fontWeight: "600", marginTop: 2 },
         tabBarStyle: {
-          height: 76 + insets.bottom,
-          paddingBottom: insets.bottom + 12,
+          height: 70 + insets.bottom,
+          paddingBottom: insets.bottom + 8,
           paddingTop: 8,
           // Inline styles, not classNames -- React Navigation's tabBarStyle isn't
           // resolved through NativeWind, so dark mode has to be handled here in JS.
