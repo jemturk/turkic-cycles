@@ -43,9 +43,11 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
       return;
     }
 
+    // A profile picture is a selfie almost by definition -- front camera by default,
+    // same as every other app's "take a profile picture" flow.
     const result =
       source === "camera"
-        ? await ImagePicker.launchCameraAsync(PICKER_OPTIONS)
+        ? await ImagePicker.launchCameraAsync({ ...PICKER_OPTIONS, cameraType: ImagePicker.CameraType.front })
         : await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS);
     // Web doesn't reliably report `canceled` for the camera capture flow, so also
     // bail out if there's simply no asset to upload.
