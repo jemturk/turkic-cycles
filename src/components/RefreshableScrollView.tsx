@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import {
-  ActivityIndicator,
   Platform,
   RefreshControl,
   ScrollView,
@@ -10,7 +9,46 @@ import {
   type NativeSyntheticEvent,
   type ScrollViewProps,
 } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
+
+const SPINNER_SIZE = 28;
+const SPINNER_BORDER_WIDTH = 3;
+
+// RN's own ActivityIndicator renders as a chunky, static-looking partial ring on web
+// (confirmed by the user's screenshot) -- there's no web-native equivalent of the OS's
+// own spinner, so this fakes the familiar Material/Google spinner look instead: a
+// faint full ring with one solid-colored arc, continuously rotated.
+function WebSpinner({ color }: { color: string }) {
+  const rotation = useSharedValue(0);
+
+  useEffect(() => {
+    rotation.value = withRepeat(withTiming(360, { duration: 700, easing: Easing.linear }), -1, false);
+  }, [rotation]);
+
+  const style = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
+
+  return (
+    <Animated.View
+      style={[
+        {
+          width: SPINNER_SIZE,
+          height: SPINNER_SIZE,
+          borderRadius: SPINNER_SIZE / 2,
+          borderWidth: SPINNER_BORDER_WIDTH,
+          borderColor: `${color}33`,
+          borderTopColor: color,
+        },
+        style,
+      ]}
+    />
+  );
+}
 
 type RefreshableScrollViewProps = ScrollViewProps & {
   refreshing: boolean;
@@ -132,8 +170,10 @@ function WebPullToRefresh({
 
   return (
     <View style={{ flex: 1 }}>
-      <Animated.View className="items-center justify-center overflow-hidden" style={indicatorStyle}>
-        <ActivityIndicator color="#D9663D" />
+      <Animated.View
+        style={[{ width: "100%", alignItems: "center", justifyContent: "center", overflow: "hidden" }, indicatorStyle]}
+      >
+        <WebSpinner color="#D9663D" />
       </Animated.View>
       <ScrollView
         {...scrollViewProps}
