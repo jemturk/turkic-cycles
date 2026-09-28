@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { useCircle, useCircleMembers } from "@/hooks/useCircles";
+import { Avatar } from "@/components/Avatar";
 
 export default function CircleMembers() {
   const { t } = useTranslation();
@@ -34,11 +35,7 @@ export default function CircleMembers() {
               style={{ width: 72 }}
               onPress={() => router.push(`/(app)/profile/${member.userId}`)}
             >
-              <View className="h-14 w-14 items-center justify-center rounded-full bg-coral-500">
-                <Text className="text-lg font-semibold text-white">
-                  {(member.displayName || "?").charAt(0).toUpperCase()}
-                </Text>
-              </View>
+              <Avatar uri={member.avatarUrl} name={member.displayName} size={56} />
               <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
                 {member.displayName || t("common.member")}
               </Text>

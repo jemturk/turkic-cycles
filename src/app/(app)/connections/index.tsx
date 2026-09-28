@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useNewConnections } from "@/hooks/useChat";
+import { Avatar } from "@/components/Avatar";
 
 export default function Connections() {
   const { t } = useTranslation();
@@ -29,11 +30,7 @@ export default function Connections() {
                 style={{ width: 72 }}
                 onPress={() => router.push(`/(app)/chat/${connection.matchId}`)}
               >
-                <View className="h-14 w-14 items-center justify-center rounded-full bg-coral-500">
-                  <Text className="text-lg font-semibold text-white">
-                    {connection.otherDisplayName.charAt(0).toUpperCase()}
-                  </Text>
-                </View>
+                <Avatar uri={connection.otherAvatarUrl} name={connection.otherDisplayName} size={56} />
                 <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
                   {connection.otherDisplayName}
                 </Text>

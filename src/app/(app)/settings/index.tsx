@@ -18,6 +18,7 @@ import {
 import { useOnboardingStore } from "@/stores/onboarding";
 import { Button } from "@/components/Button";
 import { Chip } from "@/components/Chip";
+import { Avatar } from "@/components/Avatar";
 
 function SectionHeader({ label }: { label: string }) {
   return <Text className="mt-2 text-xs font-medium uppercase text-ink-400">{label}</Text>;
@@ -75,11 +76,7 @@ export default function Settings() {
           onPress={() => router.push("/(app)/profile/edit")}
         >
           <View className="flex-row items-center gap-3">
-            <View className="h-11 w-11 items-center justify-center rounded-full bg-coral-500">
-              <Text className="text-base font-semibold text-white">
-                {(profile?.display_name || "?").charAt(0).toUpperCase()}
-              </Text>
-            </View>
+            <Avatar uri={profile?.avatar_url} name={profile?.display_name} size={44} />
             <View>
               <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
                 {profile?.display_name || t("profile.addYourName")}

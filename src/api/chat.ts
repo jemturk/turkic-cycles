@@ -7,6 +7,7 @@ export type MatchWithParticipant = {
   createdAt: string;
   otherUserId: string;
   otherDisplayName: string;
+  otherAvatarUrl: string | null;
 };
 
 async function attachOtherParticipant(
@@ -18,11 +19,11 @@ async function attachOtherParticipant(
   const otherUserIds = matches.map((m) => (m.user_a === userId ? m.user_b : m.user_a));
   const { data: profiles, error } = await supabase
     .from("profiles")
-    .select("id, display_name")
+    .select("id, display_name, avatar_url")
     .in("id", otherUserIds);
   if (error) throw error;
 
-  const nameById = new Map((profiles ?? []).map((p) => [p.id, p.display_name]));
+  const profileById = new Map((profiles ?? []).map((p) => [p.id, p]));
 
   return matches.map((m) => {
     const otherUserId = m.user_a === userId ? m.user_b : m.user_a;
@@ -31,7 +32,8 @@ async function attachOtherParticipant(
       circleId: m.circle_id,
       createdAt: m.created_at,
       otherUserId,
-      otherDisplayName: nameById.get(otherUserId) || "Member",
+      otherDisplayName: profileById.get(otherUserId)?.display_name || "Member",
+      otherAvatarUrl: profileById.get(otherUserId)?.avatar_url ?? null,
     };
   });
 }

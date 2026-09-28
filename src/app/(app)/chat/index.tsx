@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useMessageThreads } from "@/hooks/useChat";
+import { Avatar } from "@/components/Avatar";
 
 export default function Chat() {
   const { t } = useTranslation();
@@ -26,11 +27,7 @@ export default function Chat() {
               className="flex-row items-center gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
               onPress={() => router.push(`/(app)/chat/${thread.matchId}`)}
             >
-              <View className="h-12 w-12 items-center justify-center rounded-full bg-coral-500">
-                <Text className="text-base font-semibold text-white">
-                  {thread.otherDisplayName.charAt(0).toUpperCase()}
-                </Text>
-              </View>
+              <Avatar uri={thread.otherAvatarUrl} name={thread.otherDisplayName} size={48} />
 
               <View className="flex-1 gap-0.5">
                 <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{thread.otherDisplayName}</Text>

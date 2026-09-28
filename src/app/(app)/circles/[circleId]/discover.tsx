@@ -12,6 +12,7 @@ import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
 import { calculateAge } from "@/lib/age";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { Avatar } from "@/components/Avatar";
 
 export default function Discover() {
   const { t } = useTranslation();
@@ -67,11 +68,12 @@ export default function Discover() {
               onPress={() => router.push(`/(app)/profile/${candidate.userId}?circleId=${circleId}&fromDiscover=true`)}
             >
               <View className="mb-8 items-center">
-                <View className="h-24 w-24 items-center justify-center rounded-full bg-white/30">
-                  <Text className="text-4xl font-semibold text-white">
-                    {candidate.displayName.charAt(0).toUpperCase()}
-                  </Text>
-                </View>
+                <Avatar
+                  uri={candidate.avatarUrl}
+                  name={candidate.displayName}
+                  size={96}
+                  fallbackClassName="bg-white/30"
+                />
               </View>
 
               <View className="gap-2">

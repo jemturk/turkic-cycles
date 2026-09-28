@@ -26,6 +26,7 @@ import {
 import { Button } from "@/components/Button";
 import { Chip } from "@/components/Chip";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
+import { Avatar } from "@/components/Avatar";
 
 const MEMBERS_PREVIEW_COUNT = 6;
 
@@ -130,11 +131,7 @@ export default function CircleDetail() {
                     style={{ width: 56 }}
                     onPress={() => router.push(`/(app)/profile/${member.userId}`)}
                   >
-                    <View className="h-12 w-12 items-center justify-center rounded-full bg-coral-500">
-                      <Text className="text-base font-semibold text-white">
-                        {(member.displayName || "?").charAt(0).toUpperCase()}
-                      </Text>
-                    </View>
+                    <Avatar uri={member.avatarUrl} name={member.displayName} size={48} />
                     <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
                       {member.displayName || t("common.member")}
                     </Text>

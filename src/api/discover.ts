@@ -4,6 +4,7 @@ import type { ConnectionType } from "@/constants/connectionTypes";
 export type DiscoverCandidate = {
   userId: string;
   displayName: string;
+  avatarUrl: string | null;
   birthdate: string | null;
   city: string | null;
   state: string | null;
@@ -40,7 +41,10 @@ export async function listDiscoverCandidates(circleId: string, userId: string): 
 
   const [{ data: profileRows, error: profileError }, { data: typeRows, error: typeError }, originCountriesById] =
     await Promise.all([
-      supabase.from("profiles").select("id, display_name, birthdate, city, state, occupation").in("id", candidateIds),
+      supabase
+        .from("profiles")
+        .select("id, display_name, avatar_url, birthdate, city, state, occupation")
+        .in("id", candidateIds),
       supabase.from("user_connection_types").select("user_id, connection_type").in("user_id", candidateIds),
       getOriginCountriesWithConsent(candidateIds),
     ]);
@@ -57,6 +61,7 @@ export async function listDiscoverCandidates(circleId: string, userId: string): 
   return (profileRows ?? []).map((profile) => ({
     userId: profile.id,
     displayName: profile.display_name,
+    avatarUrl: profile.avatar_url,
     birthdate: profile.birthdate,
     city: profile.city,
     state: profile.state,

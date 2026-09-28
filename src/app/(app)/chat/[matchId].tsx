@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/hooks/useSession";
 import { useMarkThreadRead, useMatchParticipant, useMessages, useSendMessage } from "@/hooks/useChat";
 import { TextField } from "@/components/TextField";
+import { Avatar } from "@/components/Avatar";
 
 export default function ChatThread() {
   const { t } = useTranslation();
@@ -46,11 +47,11 @@ export default function ChatThread() {
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
-        <View className="h-10 w-10 items-center justify-center rounded-full bg-coral-500">
-          <Text className="text-base font-semibold text-white">
-            {(participant?.profile.display_name || "?").charAt(0).toUpperCase()}
-          </Text>
-        </View>
+        <Avatar
+          uri={participant?.profile.avatar_url}
+          name={participant?.profile.display_name}
+          size={40}
+        />
         <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
           {participant?.profile.display_name || t("common.member")}
         </Text>
