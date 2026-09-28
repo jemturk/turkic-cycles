@@ -19,6 +19,20 @@ export const CIRCLE_TOPIC_COLORS: Record<CircleTopic, { bg: string; fg: string }
   creative: { bg: "bg-teal-50", fg: "#2C8B80" },
 };
 
+// A distinct variant for the circles list's small icon badges specifically: the pale
+// -50 tints above all read as near-white on that screen's white cards, and culture/
+// newcomers/creative (as well as business/family) share the exact same tint, so nothing
+// there actually distinguished 5 topics from each other. This gives all 5 their own
+// visibly different color, without touching CIRCLE_TOPIC_COLORS (still used as-is for
+// the circle detail page's header band).
+export const CIRCLE_TOPIC_BADGE_COLORS: Record<CircleTopic, { bg: string; fg: string }> = {
+  culture: { bg: "bg-teal-50", fg: "#206E65" },
+  business: { bg: "bg-coral-100", fg: "#C24F2A" },
+  newcomers: { bg: "bg-gold-100", fg: "#9C7A28" },
+  family: { bg: "bg-ink-100", fg: "#4A3F3A" },
+  creative: { bg: "bg-teal-100", fg: "#206E65" },
+};
+
 export const RSVP_STATUSES = [
   { value: "going", label: "Going" },
   { value: "interested", label: "Interested" },

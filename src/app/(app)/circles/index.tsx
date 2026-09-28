@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useCircles, useJoinCircle, useMyCircleMemberships } from "@/hooks/useCircles";
-import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
+import { CIRCLE_TOPIC_BADGE_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { Chip } from "@/components/Chip";
 
 export default function Circles() {
@@ -34,8 +34,8 @@ export default function Circles() {
               onPress={() => router.push(`/(app)/circles/${circle.id}`)}
               className="flex-row gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
             >
-              <View className={`h-12 w-12 items-center justify-center rounded-xl ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
-                <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_COLORS[topic].fg} />
+              <View className={`h-12 w-12 items-center justify-center rounded-xl ${CIRCLE_TOPIC_BADGE_COLORS[topic].bg}`}>
+                <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_BADGE_COLORS[topic].fg} />
               </View>
 
               <View className="flex-1 gap-1">
