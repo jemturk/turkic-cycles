@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useFocusEffect } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -20,9 +20,18 @@ export function useNewConnections(userId: string | undefined) {
     enabled: !!userId,
   });
 
-  useFocusEffect(() => {
-    if (userId) query.refetch();
-  });
+  // The callback MUST be memoized: useFocusEffect re-runs it whenever its identity
+  // changes, and refetch() itself changes this query's isFetching/data, which
+  // changes `query`'s identity on the next render -- an inline (non-memoized)
+  // callback here closes over that new `query` every render, so useFocusEffect
+  // sees a "new" callback and refetches again, forever. This is why the pull
+  // indicator/spinner could spin indefinitely instead of settling once refetched.
+  useFocusEffect(
+    useCallback(() => {
+      if (userId) query.refetch();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId])
+  );
 
   return query;
 }
@@ -34,9 +43,13 @@ export function useMessageThreads(userId: string | undefined) {
     enabled: !!userId,
   });
 
-  useFocusEffect(() => {
-    if (userId) query.refetch();
-  });
+  // See useNewConnections above for why this must be memoized.
+  useFocusEffect(
+    useCallback(() => {
+      if (userId) query.refetch();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId])
+  );
 
   return query;
 }

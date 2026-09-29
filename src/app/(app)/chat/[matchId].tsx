@@ -51,7 +51,13 @@ export default function ChatThread() {
   return (
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["top", "left", "right"]}>
       <View className="flex-row items-center gap-3 border-b border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-        <Pressable onPress={() => router.back()}>
+        {/* Deliberately not router.back(): a thread can be reached from outside its
+            own stack (a push notification tap, a deep link), in which case there's
+            nothing local to pop back to and it falls through to whatever the
+            surrounding navigation history happens to be (e.g. the Circles tab) --
+            replace with the thread list explicitly so this button's destination
+            never depends on how the thread was opened. */}
+        <Pressable onPress={() => router.replace("/(app)/chat")}>
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
         <Avatar
