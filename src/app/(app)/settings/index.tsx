@@ -13,6 +13,7 @@ import {
   useUpdateAppLocale,
   useUpdateNotificationPreferences,
   useUpdateProfileVisibility,
+  useUpdateTextSize,
   useUpdateThemePreference,
 } from "@/hooks/useSettings";
 import { useOnboardingStore } from "@/stores/onboarding";
@@ -52,6 +53,7 @@ export default function Settings() {
   const { data: verification } = useMyVerificationStatus(userId);
   const updateAppLocale = useUpdateAppLocale(userId);
   const updateThemePreference = useUpdateThemePreference(userId);
+  const updateTextSize = useUpdateTextSize(userId);
   const updateNotifications = useUpdateNotificationPreferences(userId);
   const updateVisibility = useUpdateProfileVisibility(userId);
   const requestDeletion = useRequestAccountDeletion(userId);
@@ -115,6 +117,27 @@ export default function Settings() {
               label={t("settings.dark")}
               selected={profile?.theme_preference === "dark"}
               onPress={() => updateThemePreference.mutate("dark")}
+            />
+          </View>
+        </View>
+
+        <View className="gap-2 rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.textSize")}</Text>
+          <View className="flex-row gap-2">
+            <Chip
+              label={t("settings.textSizeSmall")}
+              selected={profile?.text_size === "small"}
+              onPress={() => updateTextSize.mutate("small")}
+            />
+            <Chip
+              label={t("settings.textSizeDefault")}
+              selected={(profile?.text_size ?? "default") === "default"}
+              onPress={() => updateTextSize.mutate("default")}
+            />
+            <Chip
+              label={t("settings.textSizeLarge")}
+              selected={profile?.text_size === "large"}
+              onPress={() => updateTextSize.mutate("large")}
             />
           </View>
         </View>

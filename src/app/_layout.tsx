@@ -6,7 +6,7 @@ import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useColorScheme } from "nativewind";
+import { rem, useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
 import i18n from "@/i18n";
 import * as SplashScreen from "expo-splash-screen";
@@ -82,6 +82,29 @@ function LocaleSync() {
   return null;
 }
 
+// NativeWind's "rem" unit backs every Tailwind text-size utility (text-sm, text-base,
+// etc. are all defined in rem by Tailwind's own default scale, unmodified in this
+// project's tailwind.config.js) -- so scaling this one runtime value scales every
+// screen's text together, with no per-component changes needed anywhere else.
+// "default" reproduces each platform's own untouched baseline exactly (14 native /
+// 16 web -- NativeWind and the web <html> default disagree with each other, a
+// pre-existing quirk unrelated to this feature), so picking "Default" is a no-op
+// for anyone who never touches this setting.
+const REM_BASE = Platform.OS === "web" ? 16 : 14;
+const TEXT_SIZE_MULTIPLIER: Record<string, number> = { small: 0.85, default: 1, large: 1.15 };
+
+function TextSizeSync() {
+  const { session } = useSession();
+  const { data: profile } = useMyProfile(session?.user.id);
+  const textSize = profile?.text_size ?? "default";
+
+  useEffect(() => {
+    rem.set(REM_BASE * (TEXT_SIZE_MULTIPLIER[textSize] ?? 1));
+  }, [textSize]);
+
+  return null;
+}
+
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Fraunces_400Regular,
@@ -105,6 +128,7 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <ThemeSync />
           <LocaleSync />
+          <TextSizeSync />
           {/* Constrains the app to a phone-width column on wide (web/desktop)
               viewports, framed against the neutral backdrop set in global.css.
               A no-op on native/mobile-web, where the viewport is already

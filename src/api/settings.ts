@@ -51,6 +51,10 @@ export function updateThemePreference(userId: string, theme: "light" | "dark") {
   return updateProfile(userId, { theme_preference: theme });
 }
 
+export function updateTextSize(userId: string, textSize: "small" | "default" | "large") {
+  return updateProfile(userId, { text_size: textSize });
+}
+
 export function updateProfileVisibility(userId: string, visibility: "visible" | "hidden") {
   return updateProfile(userId, { profile_visibility: visibility });
 }

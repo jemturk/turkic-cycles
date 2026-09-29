@@ -9,6 +9,7 @@ import {
   updateAppLocale,
   updateNotificationPreferences,
   updateProfileVisibility,
+  updateTextSize,
   updateThemePreference,
   upsertMatchingPreferences,
 } from "@/api/settings";
@@ -56,6 +57,14 @@ export function useUpdateThemePreference(userId: string | undefined) {
   const invalidate = useInvalidateProfile(userId);
   return useMutation({
     mutationFn: (theme: "light" | "dark") => updateThemePreference(userId as string, theme),
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdateTextSize(userId: string | undefined) {
+  const invalidate = useInvalidateProfile(userId);
+  return useMutation({
+    mutationFn: (textSize: "small" | "default" | "large") => updateTextSize(userId as string, textSize),
     onSuccess: invalidate,
   });
 }
