@@ -190,11 +190,15 @@ export default function Settings() {
           <View className="gap-2 rounded-xl border border-coral-500 bg-white dark:bg-ink-800 p-4">
             <Text className="text-sm text-ink-700 dark:text-ink-200">{t("settings.deleteAccountWarning")}</Text>
             <View className="flex-row gap-2">
-              <Button label={t("settings.cancel")} variant="secondary" onPress={() => setConfirmingDelete(false)} />
-              <Button
-                label={t("settings.confirmDelete")}
-                onPress={() => requestDeletion.mutate(undefined, { onSuccess: signOut })}
-              />
+              <View className="flex-1">
+                <Button label={t("settings.cancel")} variant="secondary" onPress={() => setConfirmingDelete(false)} />
+              </View>
+              <View className="flex-1">
+                <Button
+                  label={t("settings.confirmDelete")}
+                  onPress={() => requestDeletion.mutate(undefined, { onSuccess: signOut })}
+                />
+              </View>
             </View>
           </View>
         ) : (
