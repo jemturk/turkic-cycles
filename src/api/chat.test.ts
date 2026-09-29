@@ -1,5 +1,5 @@
 import { ok, queueSupabaseResponses, type SupabaseResponse } from "@/test-utils/supabaseMock";
-import { listNewConnections, listMessageThreads } from "./chat";
+import { listNewConnections, listMessageThreads, markMessageDelivered } from "./chat";
 
 const mockFrom = jest.fn();
 jest.mock("@/api/client", () => ({
@@ -121,5 +121,18 @@ describe("listMessageThreads", () => {
     });
     const result = await listMessageThreads("me");
     expect(result[0].unreadCount).toBe(0);
+  });
+});
+
+describe("markMessageDelivered", () => {
+  it("only updates the target message, and only if not already delivered", async () => {
+    queueResponses({ messages: [ok(null)] });
+
+    await markMessageDelivered("msg-1");
+
+    const chain = mockFrom.mock.results[0].value;
+    expect(chain.update).toHaveBeenCalledWith(expect.objectContaining({ delivered_at: expect.any(String) }));
+    expect(chain.eq).toHaveBeenCalledWith("id", "msg-1");
+    expect(chain.is).toHaveBeenCalledWith("delivered_at", null);
   });
 });

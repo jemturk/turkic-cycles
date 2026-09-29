@@ -5,6 +5,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
 
+import { useSession } from "@/hooks/useSession";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+
 const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
   circles: { active: "sparkles", inactive: "sparkles-outline" },
   connections: { active: "people", inactive: "people-outline" },
@@ -18,6 +21,8 @@ export default function AppTabsLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
   const { t } = useTranslation();
+  const { session } = useSession();
+  usePushNotifications(session?.user.id);
 
   return (
     <Tabs

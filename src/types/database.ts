@@ -294,6 +294,7 @@ export type Database = {
         Row: {
           body: string
           created_at: string
+          delivered_at: string | null
           id: string
           match_id: string
           read_at: string | null
@@ -302,6 +303,7 @@ export type Database = {
         Insert: {
           body: string
           created_at?: string
+          delivered_at?: string | null
           id?: string
           match_id: string
           read_at?: string | null
@@ -310,6 +312,7 @@ export type Database = {
         Update: {
           body?: string
           created_at?: string
+          delivered_at?: string | null
           id?: string
           match_id?: string
           read_at?: string | null
@@ -463,6 +466,30 @@ export type Database = {
           updated_at?: string
           us_citizenship?: boolean
           us_residency?: boolean
+        }
+        Relationships: []
+      }
+      push_tokens: {
+        Row: {
+          created_at: string
+          id: string
+          platform: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          platform: string
+          token: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          platform?: string
+          token?: string
+          user_id?: string
         }
         Relationships: []
       }

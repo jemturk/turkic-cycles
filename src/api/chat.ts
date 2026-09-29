@@ -149,3 +149,16 @@ export async function markThreadRead(matchId: string, userId: string) {
     .is("read_at", null);
   if (error) throw error;
 }
+
+// Called by the recipient's own device the moment it receives the push for this
+// message -- distinct from markThreadRead (which fires only once they open that
+// specific thread): this can fire while the app is merely open somewhere, giving
+// "delivered" its own meaning separate from "read".
+export async function markMessageDelivered(messageId: string) {
+  const { error } = await supabase
+    .from("messages")
+    .update({ delivered_at: new Date().toISOString() })
+    .eq("id", messageId)
+    .is("delivered_at", null);
+  if (error) throw error;
+}

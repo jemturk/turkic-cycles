@@ -82,7 +82,7 @@ export default function ChatThread() {
                 <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
                 {isOwn ? (
                   <Ionicons
-                    name={message.read_at ? "checkmark-done" : "checkmark"}
+                    name={message.read_at || message.delivered_at ? "checkmark-done" : "checkmark"}
                     size={14}
                     color={message.read_at ? "#D9663D" : "#A99C95"}
                   />
