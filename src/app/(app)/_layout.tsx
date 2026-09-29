@@ -4,6 +4,12 @@ import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
+// Not part of expo-router's public API (no top-level @react-navigation/elements
+// dependency exists in this project -- it's vendored inside expo-router itself),
+// but the only way to reach the tab bar's underlying Pressable to kill the default
+// Android ripple below. This path mirrors react-navigation's own package layout, so
+// it's very unlikely to move within this SDK's lifetime.
+import { PlatformPressable } from "expo-router/build/react-navigation/elements/PlatformPressable";
 
 import { useSession } from "@/hooks/useSession";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
@@ -52,6 +58,10 @@ export default function AppTabsLayout() {
             </View>
           );
         },
+        // Kills the default gray Android ripple blob behind whichever tab is
+        // pressed -- web has no equivalent effect, and the plain instant icon-color
+        // swap (no ripple) is the preferred look on native too.
+        tabBarButton: (props) => <PlatformPressable {...props} pressColor="transparent" />,
       })}
     >
       <Tabs.Screen name="circles" options={{ title: t("tabs.circles") }} />
