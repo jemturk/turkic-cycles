@@ -93,16 +93,31 @@ function LocaleSync() {
 const REM_BASE = Platform.OS === "web" ? 16 : 14;
 const TEXT_SIZE_MULTIPLIER: Record<string, number> = { small: 0.85, default: 1, large: 1.15 };
 
-function TextSizeSync() {
+// Wraps (rather than sits beside) the app content, and remounts it by key when
+// textSize changes. Confirmed on-device: NativeWind's rem observable *does* update
+// correctly on Android (the Settings chips, which read the very same profile query,
+// select/deselect live) -- but already-mounted native Text components don't
+// reliably re-render just from that observable changing, a real gap this session's
+// on-device testing found that neither the docs nor a source read predicted. A full
+// remount sidesteps it: every Text in the fresh tree computes its size from
+// scratch, so it's correct regardless of whether the reactive path works.
+function TextSizeSync({ children }: { children: React.ReactNode }) {
   const { session } = useSession();
   const { data: profile } = useMyProfile(session?.user.id);
   const textSize = profile?.text_size ?? "default";
 
-  useEffect(() => {
-    rem.set(REM_BASE * (TEXT_SIZE_MULTIPLIER[textSize] ?? 1));
-  }, [textSize]);
+  // Set synchronously during render, not in an effect -- an effect runs after the
+  // fresh (remounted) tree's first render, which would then be computed from the
+  // *old* rem value, the exact failure mode being worked around here. rem.set is
+  // idempotent, so calling it on every render of this rarely-rendering component
+  // is harmless.
+  rem.set(REM_BASE * (TEXT_SIZE_MULTIPLIER[textSize] ?? 1));
 
-  return null;
+  return (
+    <View key={textSize} style={{ flex: 1 }}>
+      {children}
+    </View>
+  );
 }
 
 export default function RootLayout() {
@@ -128,14 +143,15 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <ThemeSync />
           <LocaleSync />
-          <TextSizeSync />
-          {/* Constrains the app to a phone-width column on wide (web/desktop)
-              viewports, framed against the neutral backdrop set in global.css.
-              A no-op on native/mobile-web, where the viewport is already
-              narrower than max-w-[480px]. */}
-          <View className="mx-auto w-full max-w-[480px] flex-1 bg-coral-50 dark:bg-ink-950 web:shadow-2xl">
-            <Slot />
-          </View>
+          <TextSizeSync>
+            {/* Constrains the app to a phone-width column on wide (web/desktop)
+                viewports, framed against the neutral backdrop set in global.css.
+                A no-op on native/mobile-web, where the viewport is already
+                narrower than max-w-[480px]. */}
+            <View className="mx-auto w-full max-w-[480px] flex-1 bg-coral-50 dark:bg-ink-950 web:shadow-2xl">
+              <Slot />
+            </View>
+          </TextSizeSync>
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
