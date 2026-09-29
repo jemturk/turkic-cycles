@@ -171,7 +171,7 @@ export default function Welcome() {
       <View className="flex-1 justify-between pb-6 pt-10">
         <Pressable
           className="self-end px-6"
-          onPress={() => goToIndex(SLIDES.length - 1)}
+          onPress={() => router.push("/(auth)/login")}
           style={{ opacity: isLast ? 0 : 1 }}
         >
           <Text className="text-sm font-medium text-ink-400">{t("welcome.skip")}</Text>
