@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
@@ -81,9 +81,9 @@ export default function ChatThread() {
               <View className="mt-1 flex-row items-center gap-1">
                 <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
                 {isOwn ? (
-                  <Ionicons
-                    name={message.read_at || message.delivered_at ? "checkmark-done" : "checkmark"}
-                    size={14}
+                  <MaterialIcons
+                    name={message.read_at || message.delivered_at ? "done-all" : "done"}
+                    size={16}
                     color={message.read_at ? "#D9663D" : "#A99C95"}
                   />
                 ) : null}
