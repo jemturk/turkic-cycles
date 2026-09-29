@@ -121,7 +121,7 @@ export default function Settings() {
           </View>
         </View>
 
-        <View className="gap-2 rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.textSize")}</Text>
           <View className="flex-row gap-2">
             <Chip
