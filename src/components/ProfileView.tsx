@@ -4,9 +4,12 @@ import { useTranslation } from "react-i18next";
 import { calculateAge } from "@/lib/age";
 import type { ConnectionType } from "@/constants/connectionTypes";
 import type { Tables } from "@/types/database";
+import { useProfilePhotos } from "@/hooks/useGallery";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { Avatar } from "@/components/Avatar";
 import { EditableAvatar } from "@/components/EditableAvatar";
+import { PhotoGallery } from "@/components/PhotoGallery";
+import { EditablePhotoGallery } from "@/components/EditablePhotoGallery";
 
 // `namespace` looks up each value's display label under constants.<namespace>.<value>;
 // values without a translation (freeform "Other" text a user typed in) just fall back
@@ -64,6 +67,8 @@ export function ProfileView({
   const age = profile?.birthdate ? calculateAge(profile.birthdate) : undefined;
   const location = [profile?.city, profile?.state, profile?.country].filter(Boolean).join(", ");
   const nameLabel = profile?.display_name || fallbackName || t("profile.addYourName");
+  const photosUserId = ownUserId ?? profile?.id;
+  const { data: photos } = useProfilePhotos(photosUserId);
 
   return (
     <View className="gap-4">
@@ -101,6 +106,16 @@ export function ProfileView({
           </View>
         ) : null}
       </Card>
+
+      {ownUserId ? (
+        <Card>
+          <EditablePhotoGallery userId={ownUserId} photos={photos} />
+        </Card>
+      ) : photos && photos.length > 0 ? (
+        <Card>
+          <PhotoGallery photos={photos} />
+        </Card>
+      ) : null}
 
       {profile?.languages?.length || profile?.interests?.length || profile?.hobbies?.length ? (
         <Card>

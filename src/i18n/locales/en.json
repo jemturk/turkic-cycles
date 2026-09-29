@@ -165,6 +165,18 @@
     "removePhoto": "Remove Photo",
     "removeErrorTitle": "Couldn't remove photo"
   },
+  "gallery": {
+    "title": "Photos",
+    "addPhoto": "Add photo",
+    "removePhoto": "Remove photo",
+    "photoAccessNeededTitle": "Photo access needed",
+    "photoAccessNeededBody": "Enable photo access in Settings to add photos.",
+    "uploadErrorTitle": "Couldn't add photo",
+    "removeErrorTitle": "Couldn't remove photo",
+    "reorderErrorTitle": "Couldn't reorder photos",
+    "maxReachedTitle": "That's the max",
+    "maxReachedBody": "You can have up to {{max}} photos. Remove one to add another."
+  },
   "profile": {
     "addYourName": "Add your name",
     "languages": "Languages",

@@ -165,6 +165,18 @@
     "removePhoto": "Fotoğrafı Kaldır",
     "removeErrorTitle": "Fotoğraf kaldırılamadı"
   },
+  "gallery": {
+    "title": "Fotoğraflar",
+    "addPhoto": "Fotoğraf ekle",
+    "removePhoto": "Fotoğrafı kaldır",
+    "photoAccessNeededTitle": "Fotoğraf erişimi gerekli",
+    "photoAccessNeededBody": "Fotoğraf eklemek için Ayarlar'dan fotoğraf erişimini etkinleştir.",
+    "uploadErrorTitle": "Fotoğraf eklenemedi",
+    "removeErrorTitle": "Fotoğraf kaldırılamadı",
+    "reorderErrorTitle": "Fotoğraflar yeniden sıralanamadı",
+    "maxReachedTitle": "Maksimuma ulaştın",
+    "maxReachedBody": "En fazla {{max}} fotoğrafın olabilir. Yeni eklemek için birini kaldır."
+  },
   "profile": {
     "addYourName": "Adını ekle",
     "languages": "Diller",
