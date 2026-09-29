@@ -29,7 +29,9 @@
       "password": "Password",
       "forgotPassword": "Forgot password?",
       "submit": "Log in",
-      "errorTitle": "Couldn't log in"
+      "errorTitle": "Couldn't log in",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
     },
     "signUp": {
       "heading": "Create your account",

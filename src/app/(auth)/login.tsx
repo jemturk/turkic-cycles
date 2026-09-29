@@ -81,8 +81,14 @@ export default function Login() {
           </Text>
         </View>
 
-        <View className="mt-8">
+        <View className="mt-8 gap-3">
           <Button label={t("auth.login.submit")} onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
+          <Text className="text-center text-sm text-ink-400">
+            {t("auth.login.noAccount")}{" "}
+            <Text className="font-semibold text-coral-500" onPress={() => router.push("/(auth)/sign-up")}>
+              {t("auth.login.signUp")}
+            </Text>
+          </Text>
         </View>
       </View>
     </SafeAreaView>

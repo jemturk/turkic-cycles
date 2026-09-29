@@ -29,7 +29,9 @@
       "password": "Şifre",
       "forgotPassword": "Şifreni mi unuttun?",
       "submit": "Giriş yap",
-      "errorTitle": "Giriş yapılamadı"
+      "errorTitle": "Giriş yapılamadı",
+      "noAccount": "Hesabın yok mu?",
+      "signUp": "Kayıt ol"
     },
     "signUp": {
       "heading": "Hesabını oluştur",
