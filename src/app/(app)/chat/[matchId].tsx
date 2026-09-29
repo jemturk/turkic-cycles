@@ -49,7 +49,7 @@ export default function ChatThread() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["top", "left", "right"]}>
       <View className="flex-row items-center gap-3 border-b border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
