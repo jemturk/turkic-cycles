@@ -92,7 +92,10 @@ function LocaleSync() {
 // already-mounted, and even freshly remounted, native Text components don't
 // actually pick up a changed rem value, matching what that API's own docs already
 // said (a source-level read of the runtime wasn't enough to safely rule out).
-const TEXT_SIZE_MULTIPLIER: Record<string, number> = { small: 0.85, default: 1, large: 1.15 };
+// "default" is deliberately no longer an exact 1.0/no-op -- feedback was that even
+// the untouched baseline read too small, not just "small" and "large" relative to
+// it, so the whole range shifted up rather than just widening the gaps.
+const TEXT_SIZE_MULTIPLIER: Record<string, number> = { small: 0.95, default: 1.1, large: 1.3 };
 
 function TextSizeSync({ children }: { children: React.ReactNode }) {
   const { session } = useSession();
