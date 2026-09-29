@@ -75,6 +75,19 @@ export function useMessages(matchId: string | undefined) {
           });
         }
       )
+      // The other participant's markThreadRead sets read_at on rows I sent -- this
+      // is what flips a message's own tick from "sent" to "read" live, without
+      // waiting for this screen to be revisited/refetched.
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "messages", filter: `match_id=eq.${matchId}` },
+        (payload) => {
+          const updated = payload.new as Tables<"messages">;
+          queryClient.setQueryData<Tables<"messages">[]>(queryKey, (current) =>
+            current?.map((m) => (m.id === updated.id ? updated : m))
+          );
+        }
+      )
       .subscribe();
 
     return () => {

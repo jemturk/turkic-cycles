@@ -8,7 +8,9 @@ import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useMarkThreadRead, useMatchParticipant, useMessages, useSendMessage } from "@/hooks/useChat";
+import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 import { Avatar } from "@/components/Avatar";
+import { TypingDots } from "@/components/TypingDots";
 
 export default function ChatThread() {
   const { t } = useTranslation();
@@ -20,6 +22,7 @@ export default function ChatThread() {
   const { data: messages } = useMessages(matchId);
   const sendMessage = useSendMessage(matchId, userId);
   const markThreadRead = useMarkThreadRead(matchId, userId);
+  const { isOtherTyping, notifyTyping } = useTypingIndicator(matchId, userId);
 
   const [draft, setDraft] = useState("");
   const scrollRef = useRef<ScrollView>(null);
@@ -31,7 +34,12 @@ export default function ChatThread() {
 
   useEffect(() => {
     scrollRef.current?.scrollToEnd({ animated: true });
-  }, [messages?.length]);
+  }, [messages?.length, isOtherTyping]);
+
+  function onDraftChange(text: string) {
+    setDraft(text);
+    if (text.trim()) notifyTyping();
+  }
 
   function onSend() {
     const body = draft.trim();
@@ -70,10 +78,21 @@ export default function ChatThread() {
               <View className={`max-w-[80%] rounded-2xl px-4 py-3 ${isOwn ? "bg-coral-500" : "bg-white dark:bg-ink-800"}`}>
                 <Text className={isOwn ? "text-base text-white" : "text-base text-ink-900 dark:text-ink-50"}>{message.body}</Text>
               </View>
-              <Text className="mt-1 text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
+              <View className="mt-1 flex-row items-center gap-1">
+                <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
+                {isOwn ? (
+                  <Ionicons
+                    name={message.read_at ? "checkmark-done" : "checkmark"}
+                    size={14}
+                    color={message.read_at ? "#D9663D" : "#A99C95"}
+                  />
+                ) : null}
+              </View>
             </View>
           );
         })}
+
+        {isOtherTyping ? <TypingDots /> : null}
       </ScrollView>
 
       <View className="px-4 pb-4 pt-2">
@@ -97,7 +116,7 @@ export default function ChatThread() {
             placeholder={t("chat.typeMessage")}
             placeholderTextColor="#8A7C76"
             value={draft}
-            onChangeText={setDraft}
+            onChangeText={onDraftChange}
             onSubmitEditing={onSend}
           />
           <Pressable
