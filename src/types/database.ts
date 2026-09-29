@@ -325,6 +325,30 @@ export type Database = {
           },
         ]
       }
+      profile_photos: {
+        Row: {
+          created_at: string
+          id: string
+          position: number
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          position: number
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          position?: number
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profile_sensitive: {
         Row: {
           citizenship_status_detail: string | null
@@ -348,30 +372,6 @@ export type Database = {
           origin_countries?: string[]
           religious_affiliation?: string | null
           updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      profile_photos: {
-        Row: {
-          created_at: string
-          id: string
-          position: number
-          storage_path: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          position: number
-          storage_path: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          position?: number
-          storage_path?: string
           user_id?: string
         }
         Relationships: []
