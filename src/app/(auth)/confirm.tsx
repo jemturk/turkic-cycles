@@ -18,12 +18,14 @@ export default function ConfirmEmail() {
       // Same dual-path handling as reset-password.tsx: web's detectSessionInUrl may
       // already have established a session from the link, or it may carry a
       // token_hash+type pair that needs to be exchanged explicitly.
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        setStatus("done");
-        return;
-      }
-
+      //
+      // The token_hash exchange is checked FIRST and always run when present --
+      // never skipped just because *a* session already exists. If the browser still
+      // holds a different, unrelated session (e.g. still signed in as another
+      // account when this link is opened), checking "is there a session" first would
+      // treat that leftover session as proof this link's confirmation succeeded,
+      // silently leaving the wrong account signed in instead of the one the link was
+      // actually sent to.
       if (params.token_hash && params.type) {
         const { error } = await supabase.auth.verifyOtp({
           token_hash: params.token_hash,
@@ -34,6 +36,12 @@ export default function ConfirmEmail() {
           setStatus("error");
           return;
         }
+        setStatus("done");
+        return;
+      }
+
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
         setStatus("done");
         return;
       }

@@ -25,18 +25,24 @@ export default function ResetPassword() {
       // carry a token_hash+type pair (Supabase's current default email template)
       // that needs to be exchanged for a session explicitly -- handle both, since
       // which one arrives depends on the project's email template configuration.
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        setIsVerifying(false);
-        return;
-      }
-
+      //
+      // The token_hash exchange is checked FIRST and always run when present --
+      // never skipped just because *a* session already exists. Otherwise, opening a
+      // recovery link for one account while still signed into a different account
+      // would leave that other, unrelated session in place, and the password change
+      // below would silently apply to the wrong account.
       if (params.token_hash && params.type) {
         const { error } = await supabase.auth.verifyOtp({
           token_hash: params.token_hash,
           type: params.type as "recovery",
         });
         setVerifyError(error?.message ?? null);
+        setIsVerifying(false);
+        return;
+      }
+
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
         setIsVerifying(false);
         return;
       }
