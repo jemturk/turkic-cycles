@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/Button";
+import { AppMark } from "@/components/AppMark";
 
 type Slide = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -194,7 +195,11 @@ export default function Welcome() {
                   className="items-center justify-center px-6"
                 >
                   <View className="w-full items-center gap-6">
-                    {Mockup ? (
+                    {i === 0 ? (
+                      <View className="h-24 w-24 items-center justify-center rounded-3xl bg-white dark:bg-ink-800">
+                        <AppMark size={72} />
+                      </View>
+                    ) : Mockup ? (
                       <View className="w-full max-w-[300px]">
                         <Mockup />
                       </View>
