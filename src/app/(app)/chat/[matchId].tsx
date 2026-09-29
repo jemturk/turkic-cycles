@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useMarkThreadRead, useMatchParticipant, useMessages, useSendMessage } from "@/hooks/useChat";
-import { TextField } from "@/components/TextField";
 import { Avatar } from "@/components/Avatar";
 
 export default function ChatThread() {
@@ -77,17 +76,39 @@ export default function ChatThread() {
         })}
       </ScrollView>
 
-      <View className="flex-row items-center gap-3 border-t border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-        <View className="flex-1">
-          <TextField placeholder={t("chat.typeMessage")} value={draft} onChangeText={setDraft} onSubmitEditing={onSend} />
-        </View>
-        <Pressable
-          accessibilityLabel={t("chat.send")}
-          className="h-12 w-12 items-center justify-center rounded-full bg-coral-500"
-          onPress={onSend}
+      <View className="px-4 pb-4 pt-2">
+        <View
+          className="flex-row items-center gap-2 rounded-full bg-white dark:bg-ink-800 py-2 pl-4 pr-2"
+          style={{
+            shadowColor: "#000000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.08,
+            shadowRadius: 12,
+            elevation: 3,
+          }}
         >
-          <Ionicons name="send" size={18} color="white" />
-        </Pressable>
+          <TextInput
+            className="flex-1 text-base text-ink-900 dark:text-ink-50"
+            // This is the first bare, borderless TextInput in the app (every other
+            // one sits inside TextField's own bordered box, which already masks the
+            // browser's default focus ring) -- react-native-web's outlineStyle prop
+            // suppresses that ring, keeping the pill's edge clean when focused.
+            style={{ outlineStyle: "none" } as never}
+            placeholder={t("chat.typeMessage")}
+            placeholderTextColor="#8A7C76"
+            value={draft}
+            onChangeText={setDraft}
+            onSubmitEditing={onSend}
+          />
+          <Pressable
+            accessibilityLabel={t("chat.send")}
+            disabled={!draft.trim()}
+            className={`h-10 w-10 items-center justify-center rounded-full ${draft.trim() ? "bg-coral-500" : "bg-coral-100 dark:bg-ink-700"}`}
+            onPress={onSend}
+          >
+            <Ionicons name="arrow-up" size={20} color="white" />
+          </Pressable>
+        </View>
       </View>
     </SafeAreaView>
   );
