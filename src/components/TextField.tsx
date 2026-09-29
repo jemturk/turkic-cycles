@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Pressable, Text, TextInput, View, type TextInputProps } from "react-native";
+import { Pressable, TextInput, View, type TextInputProps } from "react-native";
+import { Text } from "@/components/Text";
 import { Ionicons } from "@expo/vector-icons";
 
 type TextFieldProps = TextInputProps & {

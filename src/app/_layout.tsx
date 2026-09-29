@@ -6,7 +6,7 @@ import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { rem, useColorScheme } from "nativewind";
+import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
 import i18n from "@/i18n";
 import * as SplashScreen from "expo-splash-screen";
@@ -19,6 +19,7 @@ import {
 
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
+import { TextScaleProvider } from "@/hooks/useTextScale";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -82,42 +83,23 @@ function LocaleSync() {
   return null;
 }
 
-// NativeWind's "rem" unit backs every Tailwind text-size utility (text-sm, text-base,
-// etc. are all defined in rem by Tailwind's own default scale, unmodified in this
-// project's tailwind.config.js) -- so scaling this one runtime value scales every
-// screen's text together, with no per-component changes needed anywhere else.
-// "default" reproduces each platform's own untouched baseline exactly (14 native /
-// 16 web -- NativeWind and the web <html> default disagree with each other, a
-// pre-existing quirk unrelated to this feature), so picking "Default" is a no-op
-// for anyone who never touches this setting.
-const REM_BASE = Platform.OS === "web" ? 16 : 14;
+// Applies the account's saved text size (Settings > Text size) via plain React
+// Context, consumed by src/components/Text.tsx -- every screen in this app imports
+// Text from there instead of "react-native" directly, specifically so this
+// propagates through ordinary React re-renders. An earlier version of this tried
+// scaling NativeWind's own "rem" unit instead, which would have needed no
+// per-component changes at all -- confirmed on real Android hardware (twice) that
+// already-mounted, and even freshly remounted, native Text components don't
+// actually pick up a changed rem value, matching what that API's own docs already
+// said (a source-level read of the runtime wasn't enough to safely rule out).
 const TEXT_SIZE_MULTIPLIER: Record<string, number> = { small: 0.85, default: 1, large: 1.15 };
 
-// Wraps (rather than sits beside) the app content, and remounts it by key when
-// textSize changes. Confirmed on-device: NativeWind's rem observable *does* update
-// correctly on Android (the Settings chips, which read the very same profile query,
-// select/deselect live) -- but already-mounted native Text components don't
-// reliably re-render just from that observable changing, a real gap this session's
-// on-device testing found that neither the docs nor a source read predicted. A full
-// remount sidesteps it: every Text in the fresh tree computes its size from
-// scratch, so it's correct regardless of whether the reactive path works.
 function TextSizeSync({ children }: { children: React.ReactNode }) {
   const { session } = useSession();
   const { data: profile } = useMyProfile(session?.user.id);
   const textSize = profile?.text_size ?? "default";
 
-  // Set synchronously during render, not in an effect -- an effect runs after the
-  // fresh (remounted) tree's first render, which would then be computed from the
-  // *old* rem value, the exact failure mode being worked around here. rem.set is
-  // idempotent, so calling it on every render of this rarely-rendering component
-  // is harmless.
-  rem.set(REM_BASE * (TEXT_SIZE_MULTIPLIER[textSize] ?? 1));
-
-  return (
-    <View key={textSize} style={{ flex: 1 }}>
-      {children}
-    </View>
-  );
+  return <TextScaleProvider scale={TEXT_SIZE_MULTIPLIER[textSize] ?? 1}>{children}</TextScaleProvider>;
 }
 
 export default function RootLayout() {

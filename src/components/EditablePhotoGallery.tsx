@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState, useCallback } from "react";
-import { Alert, Image, LayoutAnimation, PanResponder, Platform, Pressable, Text, UIManager, View } from "react-native";
+import { Alert, Image, LayoutAnimation, PanResponder, Platform, Pressable, UIManager, View } from "react-native";
+import { Text } from "@/components/Text";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
