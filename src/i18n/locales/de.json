@@ -1,0 +1,504 @@
+{
+  "tabs": {
+    "circles": "Kreise",
+    "connections": "Verbindungen",
+    "chat": "Chat",
+    "profile": "Profil",
+    "settings": "Einstellungen"
+  },
+  "welcome": {
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "getStarted": "Loslegen",
+    "alreadyHaveAccount": "Du hast bereits ein Konto?",
+    "logIn": "Anmelden",
+    "slide1Title": "Turkic Circles",
+    "slide1Body": "Bedeutungsvolle Verbindungen innerhalb der turksprachigen und turknahen Gemeinschaft — tritt Kreisen bei, lerne Menschen kennen, finde deinen Platz.",
+    "slide2Title": "Kreisen beitreten",
+    "slide2Body": "Entdecke und tritt Gemeinschaftsgruppen bei, die auf deiner Stadt, Kultur und deinen Interessen basieren — von zwanglosen Treffen bis zu Business-Netzwerken.",
+    "slide3Title": "Entdecken & Verbinden",
+    "slide3Body": "Lerne Menschen in deinen Kreisen kennen — für Freundschaft, Romantik, Business oder Mentoring — das Matching passt sich dem an, wonach du suchst.",
+    "slide4Title": "Sicher von Anfang an",
+    "slide4Body": "Lass dich verifizieren, teile deine Pläne vor einem Treffen und blockiere oder melde jeden — deine Sicherheit steht immer an erster Stelle."
+  },
+  "auth": {
+    "login": {
+      "heading": "Willkommen zurück",
+      "subheading": "Melde dich bei deinem Turkic-Circles-Konto an.",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "forgotPassword": "Passwort vergessen?",
+      "submit": "Anmelden",
+      "errorTitle": "Anmeldung fehlgeschlagen",
+      "noAccount": "Noch kein Konto?",
+      "signUp": "Registrieren"
+    },
+    "signUp": {
+      "heading": "Konto erstellen",
+      "subheading": "Werde Teil der Turkic-Circles-Community.",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "passwordHint": "Mindestens 8 Zeichen, mit Groß- und Kleinbuchstaben, einer Zahl und einem Sonderzeichen.",
+      "submit": "Konto erstellen",
+      "errorTitle": "Registrierung fehlgeschlagen",
+      "checkEmailTitle": "Prüfe deine E-Mails",
+      "checkEmailBody": "Wir haben einen Bestätigungslink an {{email}} gesendet. Öffne ihn, um dein Konto fertig einzurichten."
+    },
+    "forgotPassword": {
+      "heading": "Passwort zurücksetzen",
+      "subheading": "Gib deine E-Mail-Adresse ein, und wir senden dir einen Link zum Festlegen eines neuen Passworts.",
+      "email": "E-Mail",
+      "submit": "Link zum Zurücksetzen senden",
+      "sending": "Wird gesendet...",
+      "errorTitle": "Link konnte nicht gesendet werden",
+      "checkEmailTitle": "Prüfe deine E-Mails",
+      "checkEmailBody": "Falls ein Konto für {{email}} existiert, ist ein Link zum Zurücksetzen bereits unterwegs."
+    },
+    "resetPassword": {
+      "heading": "Neues Passwort festlegen",
+      "subheading": "Wähle ein neues Passwort für dein Konto.",
+      "newPassword": "Neues Passwort",
+      "passwordHint": "Mindestens 8 Zeichen, mit Groß- und Kleinbuchstaben, einer Zahl und einem Sonderzeichen.",
+      "verifying": "Dein Link wird überprüft...",
+      "invalidLink": "Dieser Link zum Zurücksetzen ist ungültig oder abgelaufen.",
+      "backToLogin": "Zurück zur Anmeldung",
+      "submit": "Neues Passwort festlegen",
+      "saving": "Wird gespeichert..."
+    },
+    "confirm": {
+      "verifying": "E-Mail wird bestätigt...",
+      "done": "E-Mail bestätigt! Du wirst weitergeleitet...",
+      "invalidLink": "Dieser Bestätigungslink ist ungültig oder abgelaufen.",
+      "backToLogin": "Zurück zur Anmeldung"
+    }
+  },
+  "circles": {
+    "title": "Kreise",
+    "subtitle": "Finde deine Leute — tritt Kreisen bei, die sich um das drehen, was dir wichtig ist.",
+    "searchPlaceholder": "Kreise durchsuchen",
+    "noResults": "Keine Kreise gefunden für „{{query}}“",
+    "joined": "Beigetreten",
+    "join": "Beitreten",
+    "membersCount_one": "{{count}} Mitglied",
+    "membersCount_other": "{{count}} Mitglieder",
+    "meetMembers": "Mitglieder kennenlernen",
+    "members": "Mitglieder",
+    "seeAll": "Alle {{count}} ansehen",
+    "rsvpLabel": "Zusage",
+    "rsvp": {
+      "going": "Ich komme",
+      "interested": "Interessiert",
+      "not_going": "Ich komme nicht"
+    }
+  },
+  "discover": {
+    "title": "Entdecken",
+    "empty": "Gerade niemand Neues zu entdecken.",
+    "lookingFor": "Sucht: {{type}}",
+    "pass": "Weiter",
+    "save": "Merken",
+    "like": "Gefällt mir",
+    "them": "sie/ihn",
+    "report": "Melden",
+    "block": "Blockieren",
+    "itsAMatch": "Es ist ein Match!",
+    "bothLiked": "Du und {{name}} habt euch gegenseitig gemocht.",
+    "keepExploring": "Weiter entdecken"
+  },
+  "connections": {
+    "title": "Verbindungen",
+    "matched": "Gematcht",
+    "connected": "Verbunden",
+    "emptyMatched": "Noch keine neuen Matches — entdecke weiter in deinen Kreisen.",
+    "emptyConnected": "Noch keine Unterhaltungen — sag doch Hallo zu einem Match."
+  },
+  "chat": {
+    "title": "Chat",
+    "empty": "Noch keine Unterhaltungen.",
+    "member": "Mitglied",
+    "typeMessage": "Nachricht schreiben...",
+    "send": "Senden",
+    "youMatched": "Ihr habt gematcht · {{date}}"
+  },
+  "onboarding": {
+    "next": "Weiter",
+    "saving": "Wird gespeichert...",
+    "step1": {
+      "heading": "Erzähl uns von dir",
+      "subheading": "Fangen wir mit dem Wichtigsten an.",
+      "yourName": "Dein Name",
+      "lookingFor": "Wonach suchst du?",
+      "city": "Stadt",
+      "stateRegion": "Bundesland / Region",
+      "country": "Land"
+    },
+    "step2": {
+      "heading": "Was gefällt dir?",
+      "subheading": "Sprachen, Interessen und was du machst.",
+      "languagesYouSpeak": "Sprachen, die du sprichst",
+      "typeLanguage": "Sprache eingeben",
+      "interests": "Interessen",
+      "hobbies": "Hobbys",
+      "occupation": "Beruf"
+    },
+    "step3": {
+      "heading": "Wohnsitz & Reisen",
+      "originCountries": "Herkunftsländer (bis zu 3)",
+      "typeCountry": "Land eingeben",
+      "consentOriginCountries": "Ich stimme zu, dass meine Herkunftsland-Angaben für das Matching verwendet werden.",
+      "usResident": "Wohnhaft in den USA?",
+      "usCitizen": "US-Staatsbürger?",
+      "europeanCitizen": "Europäischer Staatsbürger?",
+      "travelFrequency": "Wie oft reist du?",
+      "travelStyle": "Reisestil"
+    },
+    "step4": {
+      "heading": "Noch ein paar Fragen",
+      "finish": "Fertig"
+    }
+  },
+  "avatar": {
+    "changePhoto": "Profilbild ändern",
+    "namedPhoto": "Foto von {{name}}",
+    "profilePhoto": "Profilfoto",
+    "photoAccessNeededTitle": "Fotozugriff erforderlich",
+    "photoAccessNeededBody": "Aktiviere den Fotozugriff in den Einstellungen, um ein Profilbild festzulegen.",
+    "cameraAccessNeededTitle": "Kamerazugriff erforderlich",
+    "cameraAccessNeededBody": "Aktiviere den Kamerazugriff in den Einstellungen, um ein Profilbild aufzunehmen.",
+    "uploadErrorTitle": "Foto konnte nicht hochgeladen werden",
+    "takePhoto": "Foto aufnehmen",
+    "chooseFromLibrary": "Aus Mediathek wählen",
+    "removePhoto": "Foto entfernen",
+    "removeErrorTitle": "Foto konnte nicht entfernt werden"
+  },
+  "gallery": {
+    "title": "Fotos",
+    "addPhoto": "Foto hinzufügen",
+    "removePhoto": "Foto entfernen",
+    "photoAccessNeededTitle": "Fotozugriff erforderlich",
+    "photoAccessNeededBody": "Aktiviere den Fotozugriff in den Einstellungen, um Fotos hinzuzufügen.",
+    "uploadErrorTitle": "Foto konnte nicht hinzugefügt werden",
+    "removeErrorTitle": "Foto konnte nicht entfernt werden",
+    "reorderErrorTitle": "Fotos konnten nicht neu sortiert werden",
+    "maxReachedTitle": "Maximum erreicht",
+    "maxReachedBody": "Du kannst bis zu {{max}} Fotos haben. Entferne eins, um ein weiteres hinzuzufügen."
+  },
+  "profile": {
+    "addYourName": "Füge deinen Namen hinzu",
+    "languages": "Sprachen",
+    "interests": "Interessen",
+    "hobbies": "Hobbys",
+    "travelStyle": "Reisestil",
+    "originCountries": "Herkunftsländer",
+    "editProfile": "Profil bearbeiten",
+    "message": "Nachricht"
+  },
+  "fields": {
+    "yourName": "Dein Name",
+    "bio": "Über mich",
+    "city": "Stadt",
+    "stateRegion": "Bundesland / Region",
+    "country": "Land",
+    "occupation": "Beruf",
+    "lookingFor": "Wonach suchst du?",
+    "languagesYouSpeak": "Sprachen, die du sprichst",
+    "typeLanguage": "Sprache eingeben",
+    "interests": "Interessen",
+    "hobbies": "Hobbys",
+    "originCountries": "Herkunftsländer (bis zu 3)",
+    "typeCountry": "Land eingeben",
+    "consentOriginCountries": "Ich stimme zu, dass meine Herkunftsland-Angaben für das Matching verwendet werden.",
+    "usResident": "Wohnhaft in den USA?",
+    "usCitizen": "US-Staatsbürger?",
+    "europeanCitizen": "Europäischer Staatsbürger?",
+    "travelFrequency": "Wie oft reist du?",
+    "travelStyle": "Reisestil",
+    "editProfileHeading": "Profil bearbeiten"
+  },
+  "common": {
+    "member": "Mitglied",
+    "back": "Zurück",
+    "cancel": "Abbrechen",
+    "clear": "Löschen",
+    "saveChanges": "Änderungen speichern",
+    "saving": "Wird gespeichert...",
+    "loading": "Wird geladen...",
+    "yes": "Ja",
+    "no": "Nein",
+    "dateOfBirth": "Geburtsdatum",
+    "dayPlaceholder": "TT",
+    "monthPlaceholder": "MM",
+    "yearPlaceholder": "JJJJ"
+  },
+  "constants": {
+    "connectionTypes": {
+      "friend": "Freund/in",
+      "romantic": "Romantische Beziehung",
+      "business": "Geschäftliche Verbindung",
+      "business_mentor": "Business-Mentor/in",
+      "academic_mentor": "Akademische/r Mentor/in",
+      "spiritual_mentor": "Spirituelle/r Mentor/in"
+    },
+    "businessRoles": {
+      "networking": "Networking",
+      "job_seeking": "Jobsuche",
+      "business_partner": "Geschäftspartner/in",
+      "franchise": "Franchise",
+      "hiring": "Einstellung"
+    },
+    "mentorRoles": {
+      "seeking": "Sucht eine/n Mentor/in",
+      "offering": "Bietet Mentoring an"
+    },
+    "other": "Sonstiges",
+    "interests": {
+      "Family": "Familie",
+      "Kids": "Kinder",
+      "Travel": "Reisen",
+      "Night life": "Nachtleben",
+      "Exercise": "Sport",
+      "Self-development": "Persönliche Weiterentwicklung",
+      "Horoscope": "Horoskop"
+    },
+    "hobbies": {
+      "Swim": "Schwimmen",
+      "Tennis": "Tennis",
+      "Soccer": "Fußball",
+      "Ski": "Skifahren",
+      "Paint": "Malen",
+      "Sing": "Singen",
+      "Play an instrument": "Ein Instrument spielen",
+      "Music": "Musik"
+    },
+    "travelStyles": {
+      "Trying new restaurants": "Neue Restaurants ausprobieren",
+      "Visiting museums": "Museen besuchen",
+      "Seeing the city": "Die Stadt erkunden",
+      "Seeing the rural area": "Die ländliche Umgebung erkunden",
+      "Meeting locals & talking with them": "Einheimische treffen und mit ihnen sprechen"
+    },
+    "languages": {
+      "English": "Englisch",
+      "Turkish": "Türkisch",
+      "Azerbaijani": "Aserbaidschanisch",
+      "Uzbek": "Usbekisch",
+      "Kazakh": "Kasachisch",
+      "Kyrgyz": "Kirgisisch",
+      "Turkmen": "Turkmenisch",
+      "Russian": "Russisch",
+      "Arabic": "Arabisch"
+    },
+    "originCountries": {
+      "Türkiye": "Türkei",
+      "Azerbaijan": "Aserbaidschan",
+      "Uzbekistan": "Usbekistan",
+      "Cyprus": "Zypern",
+      "Bulgaria": "Bulgarien",
+      "Greece": "Griechenland"
+    },
+    "travelFrequencies": {
+      "none": "Nie",
+      "some": "Manchmal — 1–2 Mal im Jahr",
+      "moderate": "Mäßig — 3–4 Mal im Jahr",
+      "frequent": "Häufig — mehr als 4 Mal im Jahr"
+    },
+    "circleTopics": {
+      "culture": "Kultur",
+      "business": "Business",
+      "newcomers": "Neuankömmlinge",
+      "family": "Familie",
+      "creative": "Kreativ"
+    },
+    "relationshipIntent": {
+      "casual": "Locker",
+      "long_term": "Langfristig",
+      "marriage": "Ehe",
+      "not_sure": "Noch unsicher"
+    },
+    "wantsKids": {
+      "yes": "Ja",
+      "no": "Nein",
+      "open": "Offen dafür",
+      "has_kids_already": "Ich habe bereits Kinder"
+    },
+    "importance": {
+      "not_important": "Nicht wichtig",
+      "somewhat": "Einigermaßen wichtig",
+      "very_important": "Sehr wichtig"
+    },
+    "experienceLevels": {
+      "student": "Student/in",
+      "early_career": "Berufseinstieg",
+      "mid_career": "Mittlere Karrierestufe",
+      "senior": "Senior",
+      "executive": "Führungsebene"
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "edit": "Bearbeiten",
+    "appLanguage": "App-Sprache",
+    "theme": "Design",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "textSize": "Textgröße",
+    "textSizeSmall": "Klein",
+    "textSizeDefault": "Standard",
+    "textSizeLarge": "Groß",
+    "account": "Konto",
+    "safety": "Sicherheit",
+    "getVerified": "Verifizieren lassen",
+    "verification": {
+      "unverified": "Nicht verifiziert",
+      "pending": "Prüfung ausstehend",
+      "verified": "Verifiziert",
+      "failed": "Verifizierung fehlgeschlagen"
+    },
+    "safetyCenter": "Sicherheitscenter",
+    "matchingPreferences": "Matching-Einstellungen",
+    "privacy": "Datenschutz",
+    "profileVisibility": "Profilsichtbarkeit",
+    "visible": "Sichtbar",
+    "hidden": "Verborgen",
+    "blockedUsers": "Blockierte Nutzer",
+    "dataAndPrivacy": "Daten & Datenschutz",
+    "notifications": "Benachrichtigungen",
+    "pushNotifications": "Push-Benachrichtigungen",
+    "emailNotifications": "E-Mail-Benachrichtigungen",
+    "community": "Community",
+    "aboutApp": "Über Turkic Circles",
+    "communityGuidelines": "Community-Richtlinien",
+    "helpAndSupport": "Hilfe & Support",
+    "logOut": "Abmelden",
+    "deleteAccountWarning": "Dadurch wird dein Konto zur Löschung vorgemerkt. Du wirst abgemeldet, und deine Daten werden innerhalb weniger Tage endgültig gelöscht.",
+    "cancel": "Abbrechen",
+    "confirmDelete": "Ja, mein Konto löschen",
+    "deleteAccount": "Konto löschen",
+    "accountScreen": {
+      "heading": "Konto",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "notAvailableYet": "Noch nicht verfügbar",
+      "linkedAccounts": "Verknüpfte Konten",
+      "newPassword": "Neues Passwort",
+      "passwordUpdated": "Passwort aktualisiert.",
+      "changePassword": "Passwort ändern"
+    },
+    "verificationScreen": {
+      "heading": "Das Verifiziert-Abzeichen erhalten",
+      "subheading": "Verifizierte Mitglieder genießen in jedem Kreis schneller Vertrauen — und das hält jede Unterhaltung auf Turkic Circles echt.",
+      "pendingReview": "Prüfung ausstehend",
+      "pendingBody": "Wir prüfen deine Einreichung und aktualisieren dein Abzeichen bald.",
+      "verifiedBody": "Du bist verifiziert ✓",
+      "selfieTitle": "Mach ein kurzes Selfie",
+      "selfieBody": "Wir gleichen es mit deinen Profilfotos ab",
+      "idTitle": "Amtlichen Ausweis hochladen",
+      "idBody": "Reisepass, Führerschein oder Personalausweis",
+      "required": "Erforderlich",
+      "disclaimer": "Dein Ausweis dient nur dazu, deinen Selfie-Abgleich zu bestätigen. Derzeit erfolgt eine manuelle Prüfung — echte ID-Verifizierung (Stripe Identity) folgt bald.",
+      "submitting": "Wird gesendet...",
+      "submit": "Ausweis hochladen und abschließen"
+    },
+    "matchingPreferencesScreen": {
+      "heading": "Matching-Einstellungen",
+      "notWiredUp": "Diese filtern Discover noch nicht — sie werden gespeichert, bis das eingerichtet ist.",
+      "ageMin": "Alter min.",
+      "ageMax": "Alter max.",
+      "maxDistance": "Max. Entfernung (Meilen)",
+      "showMeSpeakersOf": "Zeig mir Sprecher von",
+      "save": "Speichern"
+    },
+    "blockedUsersScreen": {
+      "heading": "Blockierte Nutzer",
+      "empty": "Du hast noch niemanden blockiert.",
+      "unblock": "Blockierung aufheben"
+    },
+    "staticPages": {
+      "about": {
+        "title": "Über Turkic Circles",
+        "body": "Turkic Circles ist eine Verbindungs-App für die turksprachige und turknahe Diaspora — Freundschaft, Romantik, Business und Mentoring, alles in einer Community statt in vier getrennten Produkten."
+      },
+      "guidelines": {
+        "title": "Community-Richtlinien",
+        "body": "Sei respektvoll, sei ehrlich darüber, wer du bist, und behandle jede Unterhaltung so, wie du selbst behandelt werden möchtest. Belästigung, Hassrede und Identitätsvortäuschung sind niemals erlaubt und führen zu Konsequenzen für dein Konto."
+      },
+      "help": {
+        "title": "Hilfe & Support",
+        "body": "Fragen oder Probleme? Dies ist eine Platzhalter-Support-Seite — echte Kontaktdaten folgen zusammen mit einem echten Support-Kanal."
+      },
+      "privacy": {
+        "title": "Daten & Datenschutz",
+        "body": "Deine sensiblen Angaben (Herkunft, Religion, Staatsbürgerschaftsdetails) werden getrennt vom Rest deines Profils gespeichert und nur mit deiner ausdrücklichen, widerrufbaren Zustimmung weitergegeben. Mehr dazu im Sicherheitscenter."
+      }
+    },
+    "safetyCenterScreen": {
+      "heading": "Sicherheitscenter",
+      "subheading": "Werkzeuge und Ressourcen, damit du mit Vertrauen in Kontakt treten kannst.",
+      "verificationTitle": "Verifizierung",
+      "verificationSubtitle": "Bestätige deine Identität und verdiene dir das Abzeichen",
+      "sharePlansTitle": "Deine Pläne teilen",
+      "sharePlansSubtitle": "Sende Treffen-Details an eine Vertrauensperson",
+      "reportBlockTitle": "Jemanden melden oder blockieren",
+      "reportBlockSubtitle": "Über jedes Profil oder jede Unterhaltung",
+      "meetingTipsTitle": "Tipps für sichere Treffen",
+      "meetingTipsSubtitle": "Erste Dates, Videochat und Warnsignale",
+      "communityGuidelinesTitle": "Community-Richtlinien",
+      "contactSupportTitle": "Support kontaktieren",
+      "emergencyDisclaimer": "Wende dich im Notfall immer zuerst an den örtlichen Notdienst — diese App ist kein Ersatz für sofortige Hilfe."
+    },
+    "reportScreen": {
+      "heading": "Jemanden melden oder blockieren",
+      "openFromProfile": "Öffne dies über ein Profil oder eine Unterhaltung, um diese Person zu melden oder zu blockieren.",
+      "reason": "Grund",
+      "additionalDetails": "Weitere Details (optional)",
+      "submitting": "Wird gesendet...",
+      "submitReport": "Meldung absenden",
+      "reasons": {
+        "harassment": "Belästigung oder Missbrauch",
+        "fake_profile": "Gefälschtes Profil",
+        "inappropriate": "Unangemessene Inhalte",
+        "safety_concern": "Sicherheitsbedenken",
+        "other": "Sonstiges"
+      }
+    },
+    "sharePlansScreen": {
+      "heading": "Deine Pläne teilen",
+      "subheading": "Lass eine Vertrauensperson wissen, wo du sein wirst — nur für den Fall.",
+      "whoMeeting": "Wen triffst du?",
+      "where": "Wo",
+      "date": "Datum (JJJJ-MM-TT)",
+      "time": "Uhrzeit (24h)",
+      "trustedContacts": "Vertrauenspersonen",
+      "namePlaceholder": "Name",
+      "phonePlaceholder": "Telefon",
+      "addContact": "+ Kontakt hinzufügen",
+      "checkInAfter": "Check-in nach (Minuten)",
+      "yourTrustedContact": "Deine Vertrauensperson",
+      "theirNameFallback": "ihren",
+      "willGetText": "{{contacts}} erhält/erhalten {{name}} Namen, den Ort und die Uhrzeit per SMS.",
+      "checkinNote": " Wir fragen um {{time}}, ob bei dir alles in Ordnung ist.",
+      "followUpNote": " Falls du nicht antwortest, melden wir uns nach. (Der SMS-Versand ist aktuell nur simuliert — es wird noch keine Nachricht tatsächlich gesendet.)",
+      "sharing": "Wird geteilt...",
+      "sharePlans": "Pläne teilen"
+    }
+  },
+  "branching": {
+    "allSet": "Für die gewählten Verbindungsarten gibt es nichts weiter zu beantworten — du bist startklar.",
+    "romanticTitle": "Romantische Verbindungen",
+    "lookingFor": "Wonach suchst du?",
+    "kids": "Kinder?",
+    "religionImportance": "Wichtigkeit gemeinsamer Religion",
+    "cultureImportance": "Wichtigkeit gemeinsamer Kultur",
+    "businessTitle": "Geschäftliche Verbindungen",
+    "businessConnectionKind": "Welche Art von geschäftlicher Verbindung?",
+    "industry": "Branche",
+    "experienceLevel": "Erfahrungsstufe",
+    "seekingOrOffering": "Suchst du oder bietest du an?",
+    "field": "Bereich",
+    "mentorTypes": {
+      "business_mentor": "Business-Mentoring",
+      "academic_mentor": "Akademisches Mentoring",
+      "spiritual_mentor": "Spirituelles Mentoring"
+    }
+  }
+}

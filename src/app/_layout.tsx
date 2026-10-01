@@ -1,6 +1,6 @@
 import "@/theme/global.css";
 import "@/theme/icons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -20,6 +20,7 @@ import {
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { TextScaleProvider } from "@/hooks/useTextScale";
+import { AnimatedSplash } from "@/components/AnimatedSplash";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -71,10 +72,13 @@ function ThemeSync() {
 }
 
 // Applies the account's saved app language (Settings > App language) to i18next.
+const SUPPORTED_LOCALES = ["en", "tr", "ru", "de"];
+
 function LocaleSync() {
   const { session } = useSession();
   const { data: profile } = useMyProfile(session?.user.id);
-  const locale = profile?.app_locale === "tr" ? "tr" : "en";
+  const savedLocale = profile?.app_locale;
+  const locale = savedLocale && SUPPORTED_LOCALES.includes(savedLocale) ? savedLocale : "en";
 
   useEffect(() => {
     i18n.changeLanguage(locale);
@@ -111,6 +115,7 @@ export default function RootLayout() {
     Fraunces_600SemiBold,
     Fraunces_700Bold,
   });
+  const [showAnimatedSplash, setShowAnimatedSplash] = useState(true);
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -135,6 +140,12 @@ export default function RootLayout() {
                 narrower than max-w-[480px]. */}
             <View className="mx-auto w-full max-w-[480px] flex-1 bg-coral-50 dark:bg-ink-950 web:shadow-2xl">
               <Slot />
+              {/* Plays once the native (static-image) splash hands off to JS --
+                  gives the logo mark its own animated "assembly" moment instead
+                  of cutting straight to the app. */}
+              {showAnimatedSplash && (
+                <AnimatedSplash onFinish={() => setShowAnimatedSplash(false)} />
+              )}
             </View>
           </TextSizeSync>
         </QueryClientProvider>

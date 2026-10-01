@@ -8,6 +8,10 @@ export type MatchWithParticipant = {
   otherUserId: string;
   otherDisplayName: string;
   otherAvatarUrl: string | null;
+  otherBirthdate: string | null;
+  otherCity: string | null;
+  otherState: string | null;
+  otherCountry: string | null;
 };
 
 async function attachOtherParticipant(
@@ -19,7 +23,7 @@ async function attachOtherParticipant(
   const otherUserIds = matches.map((m) => (m.user_a === userId ? m.user_b : m.user_a));
   const { data: profiles, error } = await supabase
     .from("profiles")
-    .select("id, display_name, avatar_url")
+    .select("id, display_name, avatar_url, birthdate, city, state, country")
     .in("id", otherUserIds);
   if (error) throw error;
 
@@ -27,13 +31,18 @@ async function attachOtherParticipant(
 
   return matches.map((m) => {
     const otherUserId = m.user_a === userId ? m.user_b : m.user_a;
+    const otherProfile = profileById.get(otherUserId);
     return {
       matchId: m.id,
       circleId: m.circle_id,
       createdAt: m.created_at,
       otherUserId,
-      otherDisplayName: profileById.get(otherUserId)?.display_name || "Member",
-      otherAvatarUrl: profileById.get(otherUserId)?.avatar_url ?? null,
+      otherDisplayName: otherProfile?.display_name || "Member",
+      otherAvatarUrl: otherProfile?.avatar_url ?? null,
+      otherBirthdate: otherProfile?.birthdate ?? null,
+      otherCity: otherProfile?.city ?? null,
+      otherState: otherProfile?.state ?? null,
+      otherCountry: otherProfile?.country ?? null,
     };
   });
 }

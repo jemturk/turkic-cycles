@@ -130,7 +130,7 @@ export default function CircleDetail() {
                     key={member.userId}
                     className="items-center gap-1"
                     style={{ width: 56 }}
-                    onPress={() => router.push(`/(app)/profile/${member.userId}`)}
+                    onPress={() => router.replace(`/(app)/user/${member.userId}`)}
                   >
                     <Avatar uri={member.avatarUrl} name={member.displayName} size={48} />
                     <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>

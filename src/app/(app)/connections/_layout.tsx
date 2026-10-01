@@ -1,8 +1,9 @@
 import { Stack } from "expo-router";
+import { useStackScreenOptions } from "@/hooks/useStackScreenOptions";
 
 export default function ConnectionsLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack screenOptions={useStackScreenOptions()}>
       <Stack.Screen name="index" />
     </Stack>
   );

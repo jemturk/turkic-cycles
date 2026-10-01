@@ -66,7 +66,7 @@ export default function Discover() {
           <Animated.View style={animatedStyle} className="mt-4 flex-1">
             <Pressable
               className="flex-1 justify-end rounded-3xl bg-teal-500 p-6"
-              onPress={() => router.push(`/(app)/profile/${candidate.userId}?circleId=${circleId}&fromDiscover=true`)}
+              onPress={() => router.replace(`/(app)/user/${candidate.userId}?circleId=${circleId}&fromDiscover=true`)}
             >
               <View className="mb-8 items-center">
                 <Avatar

@@ -1,4 +1,5 @@
-import { Pressable, View } from "react-native";
+import { useMemo, useState } from "react";
+import { Pressable, TextInput, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -18,8 +19,19 @@ export default function Circles() {
   const { data: circles, refetch, isRefetching } = useCircles();
   const { data: memberships } = useMyCircleMemberships(userId);
   const joinCircle = useJoinCircle(userId);
+  const [query, setQuery] = useState("");
 
   const joinedIds = new Set(memberships ?? []);
+
+  // Client-side filter: circles are a small, fully-fetched list (useCircles has no
+  // pagination), so there's no need for a server-side search query here.
+  const filteredCircles = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return circles ?? [];
+    return (circles ?? []).filter((circle) =>
+      [circle.name, circle.description, circle.city].some((field) => field?.toLowerCase().includes(needle))
+    );
+  }, [circles, query]);
 
   return (
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
@@ -32,7 +44,30 @@ export default function Circles() {
         <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("circles.title")}</Text>
         <Text className="-mt-2 text-base text-ink-700 dark:text-ink-200">{t("circles.subtitle")}</Text>
 
-        {(circles ?? []).map((circle) => {
+        <View className="flex-row items-center gap-2 rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+          <Ionicons name="search" size={18} color="#8A7C76" />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder={t("circles.searchPlaceholder")}
+            placeholderTextColor="#8A7C76"
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="search"
+            className="flex-1 text-base text-ink-900 dark:text-ink-50"
+          />
+          {query ? (
+            <Pressable accessibilityLabel={t("common.clear")} hitSlop={8} onPress={() => setQuery("")}>
+              <Ionicons name="close-circle" size={18} color="#8A7C76" />
+            </Pressable>
+          ) : null}
+        </View>
+
+        {query && filteredCircles.length === 0 ? (
+          <Text className="text-center text-sm text-ink-400">{t("circles.noResults", { query })}</Text>
+        ) : null}
+
+        {filteredCircles.map((circle) => {
           const topic = circle.topic as CircleTopic;
           const isJoined = joinedIds.has(circle.id);
           return (

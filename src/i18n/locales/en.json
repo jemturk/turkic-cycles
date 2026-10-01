@@ -75,6 +75,8 @@
   "circles": {
     "title": "Circles",
     "subtitle": "Find your people — join circles built around what matters to you.",
+    "searchPlaceholder": "Search circles",
+    "noResults": "No circles match \"{{query}}\"",
     "joined": "Joined",
     "join": "Join",
     "membersCount_one": "{{count}} member",
@@ -105,8 +107,10 @@
   },
   "connections": {
     "title": "Connections",
-    "newConnections": "New connections",
-    "empty": "No new connections yet — keep discovering in your circles."
+    "matched": "Matched",
+    "connected": "Connected",
+    "emptyMatched": "No new matches yet — keep discovering in your circles.",
+    "emptyConnected": "No conversations yet — say hello to a match."
   },
   "chat": {
     "title": "Chat",
@@ -186,7 +190,8 @@
     "hobbies": "Hobbies",
     "travelStyle": "Travel style",
     "originCountries": "Origin countries",
-    "editProfile": "Edit profile"
+    "editProfile": "Edit profile",
+    "message": "Message"
   },
   "fields": {
     "yourName": "Your name",
@@ -214,6 +219,7 @@
     "member": "Member",
     "back": "Back",
     "cancel": "Cancel",
+    "clear": "Clear",
     "saveChanges": "Save changes",
     "saving": "Saving...",
     "loading": "Loading...",

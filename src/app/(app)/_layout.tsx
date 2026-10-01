@@ -69,6 +69,14 @@ export default function AppTabsLayout() {
       <Tabs.Screen name="chat" options={{ title: t("tabs.chat") }} />
       <Tabs.Screen name="profile" options={{ title: t("tabs.profile") }} />
       <Tabs.Screen name="settings" options={{ title: t("tabs.settings") }} />
+      {/* Viewing someone else's profile from Circles/Connections/Chat -- kept out of
+          the "profile" tab's own directory (see user/_layout.tsx) specifically so it
+          doesn't push onto that tab's Stack: a route living inside another tab's
+          folder stays on that tab's history even after you switch away, so opening a
+          match's profile used to leave THEIR profile showing the next time you tapped
+          your own Profile tab. href: null keeps it reachable via router.push without
+          a tab bar button of its own. */}
+      <Tabs.Screen name="user" options={{ href: null }} />
     </Tabs>
   );
 }

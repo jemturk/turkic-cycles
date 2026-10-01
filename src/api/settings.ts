@@ -43,7 +43,7 @@ export function updateNotificationPreferences(
   });
 }
 
-export function updateAppLocale(userId: string, locale: "en" | "tr") {
+export function updateAppLocale(userId: string, locale: "en" | "tr" | "ru" | "de") {
   return updateProfile(userId, { app_locale: locale });
 }
 

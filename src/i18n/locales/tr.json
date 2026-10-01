@@ -75,6 +75,8 @@
   "circles": {
     "title": "Çemberler",
     "subtitle": "Kendi insanlarını bul — senin için önemli olan konular etrafında kurulmuş çemberlere katıl.",
+    "searchPlaceholder": "Çemberlerde ara",
+    "noResults": "\"{{query}}\" ile eşleşen çember bulunamadı",
     "joined": "Katıldın",
     "join": "Katıl",
     "membersCount_one": "{{count}} üye",
@@ -105,8 +107,10 @@
   },
   "connections": {
     "title": "Bağlantılar",
-    "newConnections": "Yeni bağlantılar",
-    "empty": "Henüz yeni bağlantın yok — çemberlerinde keşfetmeye devam et."
+    "matched": "Eşleşmeler",
+    "connected": "Sohbetler",
+    "emptyMatched": "Henüz yeni eşleşmen yok — çemberlerinde keşfetmeye devam et.",
+    "emptyConnected": "Henüz bir konuşman yok — bir eşleşmene merhaba de."
   },
   "chat": {
     "title": "Sohbet",
@@ -186,7 +190,8 @@
     "hobbies": "Hobiler",
     "travelStyle": "Seyahat tarzı",
     "originCountries": "Köken ülkeler",
-    "editProfile": "Profili düzenle"
+    "editProfile": "Profili düzenle",
+    "message": "Mesaj"
   },
   "fields": {
     "yourName": "Adın",
@@ -214,6 +219,7 @@
     "member": "Üye",
     "back": "Geri",
     "cancel": "Vazgeç",
+    "clear": "Temizle",
     "saveChanges": "Değişiklikleri kaydet",
     "saving": "Kaydediliyor...",
     "loading": "Yükleniyor...",

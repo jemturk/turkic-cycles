@@ -61,14 +61,21 @@ export default function ChatThread() {
         <Pressable onPress={() => router.replace("/(app)/chat")}>
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
-        <Avatar
-          uri={participant?.profile.avatar_url}
-          name={participant?.profile.display_name}
-          size={40}
-        />
-        <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
-          {participant?.profile.display_name || t("common.member")}
-        </Text>
+        <Pressable
+          className="flex-1 flex-row items-center gap-3"
+          onPress={() => {
+            if (participant?.profile.id) router.replace(`/(app)/user/${participant.profile.id}?matchId=${matchId}`);
+          }}
+        >
+          <Avatar
+            uri={participant?.profile.avatar_url}
+            name={participant?.profile.display_name}
+            size={40}
+          />
+          <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
+            {participant?.profile.display_name || t("common.member")}
+          </Text>
+        </Pressable>
       </View>
 
       <ScrollView ref={scrollRef} className="flex-1 px-4 pt-4" contentContainerClassName="gap-3 pb-4">

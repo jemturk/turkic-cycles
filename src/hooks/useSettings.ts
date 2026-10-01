@@ -48,7 +48,7 @@ export function useUpdateNotificationPreferences(userId: string | undefined) {
 export function useUpdateAppLocale(userId: string | undefined) {
   const invalidate = useInvalidateProfile(userId);
   return useMutation({
-    mutationFn: (locale: "en" | "tr") => updateAppLocale(userId as string, locale),
+    mutationFn: (locale: "en" | "tr" | "ru" | "de") => updateAppLocale(userId as string, locale),
     onSuccess: invalidate,
   });
 }

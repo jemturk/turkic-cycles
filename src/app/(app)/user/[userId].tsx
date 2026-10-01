@@ -14,13 +14,15 @@ import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
 import { useBlockUser } from "@/hooks/useSettings";
 import { ProfileView } from "@/components/ProfileView";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
+import { Button } from "@/components/Button";
 
 export default function OtherProfile() {
   const { t } = useTranslation();
-  const { userId, circleId, fromDiscover } = useLocalSearchParams<{
+  const { userId, circleId, fromDiscover, matchId } = useLocalSearchParams<{
     userId: string;
     circleId?: string;
     fromDiscover?: string;
+    matchId?: string;
   }>();
   const { session } = useSession();
 
@@ -62,6 +64,10 @@ export default function OtherProfile() {
           originCountries={originCountries}
           verificationStatus={verificationStatus}
         />
+
+        {matchId ? (
+          <Button label={t("profile.message")} onPress={() => router.push(`/(app)/chat/${matchId}`)} />
+        ) : null}
 
         <View className="flex-row gap-4">
           <Pressable onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}>
