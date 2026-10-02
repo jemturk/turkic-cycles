@@ -52,29 +52,32 @@ export function AnimatedSplash({ onFinish }: { onFinish: () => void }) {
 
   const coralProps = useAnimatedProps(() => ({ cx: coralX.value }));
   const tealProps = useAnimatedProps(() => ({ cx: tealX.value }));
-  const containerStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ scale: scale.value }],
-  }));
+  // Opacity only on the full-screen backdrop -- scaling it too (as the logo's
+  // "pop" does) shrank the backdrop below full size, briefly exposing the app
+  // around its edges.
+  const containerStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+  const logoStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
   return (
     <Animated.View style={[styles.container, containerStyle]} pointerEvents="none">
-      <Svg width={120} height={120} viewBox="0 0 160 160">
-        <Defs>
-          <Mask id="animSplashStarCut" maskUnits="userSpaceOnUse" x="0" y="0" width="160" height="160">
-            <Rect x="0" y="0" width="160" height="160" fill="white" />
-            <Polygon
-              points={STAR_POINTS}
-              fill="black"
-              transform="translate(80,80) scale(0.2) translate(-100,-100)"
-            />
-          </Mask>
-        </Defs>
-        <G mask="url(#animSplashStarCut)">
-          <AnimatedCircle cy="80" r="52" fill="#D9663D" animatedProps={coralProps} />
-          <AnimatedCircle cy="80" r="52" fill="#2C8B80" animatedProps={tealProps} />
-        </G>
-      </Svg>
+      <Animated.View style={logoStyle}>
+        <Svg width={120} height={120} viewBox="0 0 160 160">
+          <Defs>
+            <Mask id="animSplashStarCut" maskUnits="userSpaceOnUse" x="0" y="0" width="160" height="160">
+              <Rect x="0" y="0" width="160" height="160" fill="white" />
+              <Polygon
+                points={STAR_POINTS}
+                fill="black"
+                transform="translate(80,80) scale(0.2) translate(-100,-100)"
+              />
+            </Mask>
+          </Defs>
+          <G mask="url(#animSplashStarCut)">
+            <AnimatedCircle cy="80" r="52" fill="#D9663D" animatedProps={coralProps} />
+            <AnimatedCircle cy="80" r="52" fill="#2C8B80" animatedProps={tealProps} />
+          </G>
+        </Svg>
+      </Animated.View>
     </Animated.View>
   );
 }
