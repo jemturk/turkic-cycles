@@ -1,6 +1,7 @@
-import { ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
@@ -20,7 +21,11 @@ export default function OwnProfile() {
 
   return (
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
+      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
+        <Pressable accessibilityLabel={t("common.back")} onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
+        </Pressable>
+
         <ProfileView
           profile={profile}
           connectionTypes={connectionTypes}
@@ -31,7 +36,7 @@ export default function OwnProfile() {
         />
 
         <View className="mt-4">
-          <Button label={t("profile.editProfile")} onPress={() => router.push("/(app)/profile/edit")} />
+          <Button label={t("profile.editProfile")} onPress={() => router.push("/(app)/me/edit")} />
         </View>
       </ScrollView>
     </SafeAreaView>

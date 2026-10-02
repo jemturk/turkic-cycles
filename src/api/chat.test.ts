@@ -35,6 +35,10 @@ describe("listNewConnections", () => {
         otherUserId: "bob",
         otherDisplayName: "Bob",
         otherAvatarUrl: null,
+        otherBirthdate: null,
+        otherCity: null,
+        otherState: null,
+        otherCountry: null,
       },
     ]);
   });

@@ -111,15 +111,13 @@ export default function Connections() {
   const emptyLabel = tab === "matched" ? t("connections.emptyMatched") : t("connections.emptyConnected");
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
       <RefreshableScrollView
         refreshing={isRefetchingMatched || isRefetchingConnected}
         onRefresh={refetch}
-        className="flex-1 px-6 pt-8"
+        className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-6 pb-10"
       >
-        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("connections.title")}</Text>
-
         <View className="flex-row rounded-full border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-1">
           {(["matched", "connected"] as const).map((value) => {
             const selected = tab === value;

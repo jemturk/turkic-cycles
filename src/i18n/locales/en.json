@@ -2,8 +2,8 @@
   "tabs": {
     "circles": "Circles",
     "connections": "Connections",
+    "search": "Search",
     "chat": "Chat",
-    "profile": "Profile",
     "settings": "Settings"
   },
   "welcome": {
@@ -73,10 +73,7 @@
     }
   },
   "circles": {
-    "title": "Circles",
     "subtitle": "Find your people — join circles built around what matters to you.",
-    "searchPlaceholder": "Search circles",
-    "noResults": "No circles match \"{{query}}\"",
     "joined": "Joined",
     "join": "Join",
     "membersCount_one": "{{count}} member",
@@ -90,6 +87,12 @@
       "interested": "Interested",
       "not_going": "Not going"
     }
+  },
+  "search": {
+    "placeholder": "Search circles and people",
+    "circles": "Circles",
+    "people": "People",
+    "noResults": "Nothing matches \"{{query}}\""
   },
   "discover": {
     "title": "Discover",
@@ -106,14 +109,12 @@
     "keepExploring": "Keep exploring"
   },
   "connections": {
-    "title": "Connections",
     "matched": "Matched",
     "connected": "Connected",
     "emptyMatched": "No new matches yet — keep discovering in your circles.",
     "emptyConnected": "No conversations yet — say hello to a match."
   },
   "chat": {
-    "title": "Chat",
     "empty": "No conversations yet.",
     "member": "Member",
     "typeMessage": "Type a message...",
@@ -191,7 +192,8 @@
     "travelStyle": "Travel style",
     "originCountries": "Origin countries",
     "editProfile": "Edit profile",
-    "message": "Message"
+    "message": "Message",
+    "myProfile": "My profile"
   },
   "fields": {
     "yourName": "Your name",
@@ -220,6 +222,7 @@
     "back": "Back",
     "cancel": "Cancel",
     "clear": "Clear",
+    "close": "Close",
     "saveChanges": "Save changes",
     "saving": "Saving...",
     "loading": "Loading...",
@@ -335,7 +338,6 @@
     }
   },
   "settings": {
-    "title": "Settings",
     "edit": "Edit",
     "appLanguage": "App language",
     "theme": "Theme",

@@ -3,6 +3,7 @@ import { Pressable, ScrollView, Switch, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
@@ -24,6 +25,20 @@ import { Avatar } from "@/components/Avatar";
 
 function SectionHeader({ label }: { label: string }) {
   return <Text className="mt-2 text-xs font-medium uppercase text-ink-400">{label}</Text>;
+}
+
+// Icon-only stand-in for a row's text label. The label still goes to screen
+// readers via accessibilityLabel.
+function RowIcon({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; label: string }) {
+  return (
+    <View
+      accessible
+      accessibilityLabel={label}
+      className="h-10 w-10 items-center justify-center rounded-lg bg-coral-50 dark:bg-ink-700"
+    >
+      <Ionicons name={icon} size={22} color="#D9663D" />
+    </View>
+  );
 }
 
 function SettingsRow({
@@ -70,13 +85,11 @@ export default function Settings() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-8" contentContainerClassName="gap-3 pb-10">
-        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("settings.title")}</Text>
-
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+      <ScrollView className="flex-1 px-6 pt-4" contentContainerClassName="gap-3 pb-10">
         <Pressable
           className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
-          onPress={() => router.push("/(app)/profile/edit")}
+          onPress={() => router.push("/(app)/me")}
         >
           <View className="flex-row items-center gap-3">
             <Avatar uri={profile?.avatar_url} name={profile?.display_name} size={44} />
@@ -87,11 +100,19 @@ export default function Settings() {
               {location ? <Text className="text-sm text-ink-400">{location}</Text> : null}
             </View>
           </View>
-          <Text className="text-sm font-medium text-coral-600">{t("settings.edit")}</Text>
+          <Pressable
+            hitSlop={8}
+            onPress={(e) => {
+              e.stopPropagation();
+              router.push("/(app)/me/edit");
+            }}
+          >
+            <RowIcon icon="pencil" label={t("settings.edit")} />
+          </Pressable>
         </Pressable>
 
         <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.appLanguage")}</Text>
+          <RowIcon icon="language-outline" label={t("settings.appLanguage")} />
           <View className="flex-row flex-wrap justify-end gap-2">
             <Chip
               label="EN"
@@ -117,7 +138,7 @@ export default function Settings() {
         </View>
 
         <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.theme")}</Text>
+          <RowIcon icon="contrast-outline" label={t("settings.theme")} />
           <View className="flex-row gap-2">
             <Chip
               label={t("settings.light")}
@@ -133,7 +154,7 @@ export default function Settings() {
         </View>
 
         <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
-          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.textSize")}</Text>
+          <RowIcon icon="text-outline" label={t("settings.textSize")} />
           <View className="flex-row gap-2">
             <Chip
               label={t("settings.textSizeSmall")}

@@ -16,15 +16,13 @@ export default function Chat() {
   const { data: threads, refetch, isRefetching } = useMessageThreads(session?.user.id);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
       <RefreshableScrollView
         refreshing={isRefetching}
         onRefresh={refetch}
-        className="flex-1 px-6 pt-8"
+        className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-4 pb-10"
       >
-        <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("chat.title")}</Text>
-
         {!threads || threads.length === 0 ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">{t("chat.empty")}</Text>
         ) : (

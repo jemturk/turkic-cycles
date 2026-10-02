@@ -2,8 +2,8 @@
   "tabs": {
     "circles": "Kreise",
     "connections": "Verbindungen",
+    "search": "Suche",
     "chat": "Chat",
-    "profile": "Profil",
     "settings": "Einstellungen"
   },
   "welcome": {
@@ -73,10 +73,7 @@
     }
   },
   "circles": {
-    "title": "Kreise",
     "subtitle": "Finde deine Leute — tritt Kreisen bei, die sich um das drehen, was dir wichtig ist.",
-    "searchPlaceholder": "Kreise durchsuchen",
-    "noResults": "Keine Kreise gefunden für „{{query}}“",
     "joined": "Beigetreten",
     "join": "Beitreten",
     "membersCount_one": "{{count}} Mitglied",
@@ -90,6 +87,12 @@
       "interested": "Interessiert",
       "not_going": "Ich komme nicht"
     }
+  },
+  "search": {
+    "placeholder": "Kreise und Personen suchen",
+    "circles": "Kreise",
+    "people": "Personen",
+    "noResults": "Keine Ergebnisse für „{{query}}“"
   },
   "discover": {
     "title": "Entdecken",
@@ -106,14 +109,12 @@
     "keepExploring": "Weiter entdecken"
   },
   "connections": {
-    "title": "Verbindungen",
     "matched": "Gematcht",
     "connected": "Verbunden",
     "emptyMatched": "Noch keine neuen Matches — entdecke weiter in deinen Kreisen.",
     "emptyConnected": "Noch keine Unterhaltungen — sag doch Hallo zu einem Match."
   },
   "chat": {
-    "title": "Chat",
     "empty": "Noch keine Unterhaltungen.",
     "member": "Mitglied",
     "typeMessage": "Nachricht schreiben...",
@@ -191,7 +192,8 @@
     "travelStyle": "Reisestil",
     "originCountries": "Herkunftsländer",
     "editProfile": "Profil bearbeiten",
-    "message": "Nachricht"
+    "message": "Nachricht",
+    "myProfile": "Mein Profil"
   },
   "fields": {
     "yourName": "Dein Name",
@@ -220,6 +222,7 @@
     "back": "Zurück",
     "cancel": "Abbrechen",
     "clear": "Löschen",
+    "close": "Schließen",
     "saveChanges": "Änderungen speichern",
     "saving": "Wird gespeichert...",
     "loading": "Wird geladen...",
@@ -335,7 +338,6 @@
     }
   },
   "settings": {
-    "title": "Einstellungen",
     "edit": "Bearbeiten",
     "appLanguage": "App-Sprache",
     "theme": "Design",

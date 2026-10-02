@@ -2,8 +2,8 @@
   "tabs": {
     "circles": "Çemberler",
     "connections": "Bağlantılar",
+    "search": "Ara",
     "chat": "Sohbet",
-    "profile": "Profil",
     "settings": "Ayarlar"
   },
   "welcome": {
@@ -73,10 +73,7 @@
     }
   },
   "circles": {
-    "title": "Çemberler",
     "subtitle": "Kendi insanlarını bul — senin için önemli olan konular etrafında kurulmuş çemberlere katıl.",
-    "searchPlaceholder": "Çemberlerde ara",
-    "noResults": "\"{{query}}\" ile eşleşen çember bulunamadı",
     "joined": "Katıldın",
     "join": "Katıl",
     "membersCount_one": "{{count}} üye",
@@ -90,6 +87,12 @@
       "interested": "İlgileniyorum",
       "not_going": "Katılmıyorum"
     }
+  },
+  "search": {
+    "placeholder": "Çember ve kişi ara",
+    "circles": "Çemberler",
+    "people": "Kişiler",
+    "noResults": "\"{{query}}\" ile eşleşen sonuç bulunamadı"
   },
   "discover": {
     "title": "Keşfet",
@@ -106,14 +109,12 @@
     "keepExploring": "Keşfetmeye devam et"
   },
   "connections": {
-    "title": "Bağlantılar",
     "matched": "Eşleşmeler",
     "connected": "Sohbetler",
     "emptyMatched": "Henüz yeni eşleşmen yok — çemberlerinde keşfetmeye devam et.",
     "emptyConnected": "Henüz bir konuşman yok — bir eşleşmene merhaba de."
   },
   "chat": {
-    "title": "Sohbet",
     "empty": "Henüz bir konuşman yok.",
     "member": "Üye",
     "typeMessage": "Bir mesaj yaz...",
@@ -191,7 +192,8 @@
     "travelStyle": "Seyahat tarzı",
     "originCountries": "Köken ülkeler",
     "editProfile": "Profili düzenle",
-    "message": "Mesaj"
+    "message": "Mesaj",
+    "myProfile": "Profilim"
   },
   "fields": {
     "yourName": "Adın",
@@ -220,6 +222,7 @@
     "back": "Geri",
     "cancel": "Vazgeç",
     "clear": "Temizle",
+    "close": "Kapat",
     "saveChanges": "Değişiklikleri kaydet",
     "saving": "Kaydediliyor...",
     "loading": "Yükleniyor...",
@@ -335,7 +338,6 @@
     }
   },
   "settings": {
-    "title": "Ayarlar",
     "edit": "Düzenle",
     "appLanguage": "Uygulama dili",
     "theme": "Tema",
