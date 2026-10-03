@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Build, publish, and install Turkic Circles.
+r"""Build, publish, and install Turkic Circles.
 
   -w  export the web build and deploy it to EAS Hosting (production)
   -a  build a release APK locally with Gradle
   -i  install the release APK on the connected device
+  -g  copy the release APK to C:\DEV\Cloud\Apk (keeps the newest 3 there)
 
-Flags combine (-wa, -ai, -wai, ...). Each step runs at most once, in the order
-web -> APK -> install. -i on its own installs the APK from the last build.
+Flags combine (-wa, -ai, -ag, -aig, ...). Each step runs at most once, in the
+order web -> APK -> install -> copy. -i or -g on their own use the APK from the
+last build.
 
 Before -w or -a, scripts/check_anon_access.py checks the live database for data or
 functions reachable with the public anon key, and stops the build if it finds any
@@ -14,6 +16,7 @@ functions reachable with the public anon key, and stops the build if it finds an
 """
 
 import argparse
+import json
 import os
 import shutil
 import subprocess
@@ -25,6 +28,8 @@ ROOT = Path(__file__).resolve().parent
 ANDROID_DIR = ROOT / "android"
 APK_PATH = ANDROID_DIR / "app" / "build" / "outputs" / "apk" / "release" / "app-release.apk"
 APP_ID = "com.turanci.app"
+APK_COPY_DIR = Path("C:/DEV/Cloud/Apk")
+APK_COPIES_TO_KEEP = 3
 IS_WINDOWS = os.name == "nt"
 
 # Where the local toolchain was installed. The SDK must live on a path without
@@ -151,6 +156,29 @@ def install_apk() -> None:
     run([adb, "shell", "monkey", "-p", APP_ID, "-c", "android.intent.category.LAUNCHER", "1"], env=env)
 
 
+def copy_apk() -> None:
+    step(f"Copying APK to {APK_COPY_DIR}")
+    if not APK_PATH.is_file():
+        raise BuildError(f"no APK at {APK_PATH} -- build one with -a")
+    # Version + the APK's own build time, so each build gets its own file and an
+    # older copy is never overwritten (copying the same build twice reuses the name).
+    version = json.loads((ROOT / "app.json").read_text(encoding="utf-8"))["expo"]["version"]
+    built_at = time.strftime("%Y%m%d-%H%M", time.localtime(APK_PATH.stat().st_mtime))
+    target = APK_COPY_DIR / f"turkic-circles-{version}-{built_at}.apk"
+    APK_COPY_DIR.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(APK_PATH, target)
+    print(f"Copied to {target}")
+
+    # Each APK is ~110 MB and the folder syncs to the cloud, so keep only the newest
+    # few. Sorted by modification time (copy2 keeps the APK's build time), not by
+    # name -- a name sort would put version 1.10.0 before 1.9.0. Only our own
+    # turkic-circles-*.apk files are ever deleted.
+    copies = sorted(APK_COPY_DIR.glob("turkic-circles-*.apk"), key=lambda p: p.stat().st_mtime, reverse=True)
+    for old in copies[APK_COPIES_TO_KEEP:]:
+        old.unlink()
+        print(f"Removed old copy {old.name}")
+
+
 def check_anon_access() -> None:
     step("Checking anonymous database access")
     # Same interpreter as this script, so it works however `python` resolves.
@@ -174,12 +202,13 @@ def main() -> int:
     parser.add_argument("-w", "--web", action="store_true", help="build and publish to web")
     parser.add_argument("-a", "--apk", action="store_true", help="build a release APK")
     parser.add_argument("-i", "--install", action="store_true", help="install the APK on the connected device")
+    parser.add_argument("-g", "--copy", action="store_true", help=f"copy the APK to {APK_COPY_DIR}")
     parser.add_argument(
         "--skip-anon-check", action="store_true", help="don't check the database for anonymous access first"
     )
     args = parser.parse_args()
 
-    if not (args.web or args.apk or args.install):
+    if not (args.web or args.apk or args.install or args.copy):
         parser.print_help()
         return 2
 
@@ -192,6 +221,8 @@ def main() -> int:
             build_apk()
         if args.install:
             install_apk()
+        if args.copy:
+            copy_apk()
     except BuildError as error:
         print(f"\nerror: {error}", file=sys.stderr)
         return 1
