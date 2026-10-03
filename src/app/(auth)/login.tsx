@@ -12,6 +12,7 @@ import { supabase } from "@/api/client";
 import { authCredentialsSchema, type AuthCredentials } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
+import { FormScrollView } from "@/components/FormScrollView";
 import { useCaptcha } from "@/hooks/useCaptcha";
 
 export default function Login() {
@@ -45,8 +46,8 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <View className="flex-1 px-6 pt-6">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1" contentContainerClassName="flex-grow px-6 pb-10 pt-6">
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
         <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">{t("auth.login.heading")}</Text>
@@ -81,7 +82,7 @@ export default function Login() {
             )}
           />
           <Text
-            className="self-end text-sm font-medium text-coral-500"
+            className="self-end text-sm font-medium text-primary-500"
             onPress={() => router.push("/(auth)/forgot-password")}
           >
             {t("auth.login.forgotPassword")}
@@ -97,12 +98,12 @@ export default function Login() {
           />
           <Text className="text-center text-sm text-ink-400">
             {t("auth.login.noAccount")}{" "}
-            <Text className="font-semibold text-coral-500" onPress={() => router.push("/(auth)/sign-up")}>
+            <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/sign-up")}>
               {t("auth.login.signUp")}
             </Text>
           </Text>
         </View>
-      </View>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

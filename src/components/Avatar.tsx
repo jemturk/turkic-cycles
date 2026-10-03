@@ -7,8 +7,8 @@ type AvatarProps = {
   name?: string | null;
   size: number;
   /** Fallback (no-photo) circle background, for screens whose existing initials
-   * circle doesn't use the default solid coral-500 (e.g. Discover's translucent
-   * white-on-teal card). Defaults to "bg-coral-500". */
+   * circle doesn't use the default solid primary-500 (e.g. Discover's translucent
+   * white-on-teal card). Defaults to "bg-primary-500". */
   fallbackClassName?: string;
 };
 
@@ -16,7 +16,7 @@ type AvatarProps = {
 // circle members, chat, connections, settings) -- falls back to an initial-letter
 // circle when avatar_url isn't set, which is every profile until this feature,
 // and still whenever someone hasn't uploaded a photo.
-export function Avatar({ uri, name, size, fallbackClassName = "bg-coral-500" }: AvatarProps) {
+export function Avatar({ uri, name, size, fallbackClassName = "bg-primary-500" }: AvatarProps) {
   const { t } = useTranslation();
   const initial = (name || "?").charAt(0).toUpperCase();
 

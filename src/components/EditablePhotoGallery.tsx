@@ -219,7 +219,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
           <Pressable
             onPress={onAddPress}
             disabled={addPhotos.isPending}
-            className="absolute items-center justify-center rounded-xl border-2 border-dashed border-coral-100 dark:border-ink-600"
+            className="absolute items-center justify-center rounded-xl border-2 border-dashed border-primary-100 dark:border-ink-600"
             style={{
               left: (order.length % COLUMNS) * (tileSize + GAP),
               top: Math.floor(order.length / COLUMNS) * (tileSize + GAP),
@@ -227,7 +227,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
               height: tileSize,
             }}
           >
-            <Ionicons name="add" size={28} color="#D9663D" />
+            <Ionicons name="add" size={28} color="#127A87" />
           </Pressable>
         ) : null}
       </View>

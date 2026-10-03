@@ -17,14 +17,29 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Approximated from the prototype — swap for real brand values when available.
-        coral: {
-          50: "#FDEDE5",
-          100: "#FBD9C9",
-          400: "#E68F68",
-          500: "#D9663D",
-          600: "#C24F2A",
+        // İznik Tile palette (from the "Palette Alternatives" design canvas), tuned:
+        // turquoise-leaning primary, coral-red accent, warm apricot-cream ground. The
+        // logo keeps its own coral + teal (AppMark.tsx) -- it's the brand mark, not UI
+        // chrome.
+        //
+        // primary: buttons, selected states, links, icons. 50 is the apricot-cream
+        // page ground and 100 the hairline border/tint -- the roles coral-50/100 had.
+        primary: {
+          50: "#FCEAD6",
+          100: "#D5EBEC",
+          400: "#3E9BA7",
+          500: "#127A87",
+          600: "#0E6470",
         },
+        // accent: unread dots, errors, warnings and destructive actions.
+        accent: {
+          50: "#FBE9E1",
+          100: "#F5CDBE",
+          500: "#C1440E",
+          600: "#9E370B",
+        },
+        // Turquoise, the tilework's second blue-green: trust and success (verified,
+        // confirmations, checkmarks) and the Discover card.
         teal: {
           50: "#E4F3F1",
           100: "#BFE3DD",

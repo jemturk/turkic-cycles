@@ -66,7 +66,7 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
   return (
     <>
       {showRomantic ? (
-        <View className="gap-4 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
+        <View className="gap-4 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
           <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{t("branching.romanticTitle")}</Text>
           <Controller
             control={control}
@@ -124,7 +124,7 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
       ) : null}
 
       {showBusiness ? (
-        <View className="gap-4 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
+        <View className="gap-4 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
           <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{t("branching.businessTitle")}</Text>
           <Controller
             control={control}
@@ -168,7 +168,7 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
       ) : null}
 
       {mentorTypesShown.map((type) => (
-        <View key={type} className="gap-4 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
+        <View key={type} className="gap-4 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
           <Text className="font-display text-xl text-ink-900 dark:text-ink-50">
             {t(`branching.mentorTypes.${type}`)}
           </Text>

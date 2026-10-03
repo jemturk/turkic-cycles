@@ -116,11 +116,15 @@ export async function submitOnboardingStep3(
   await updateOriginCountriesWithConsent(userId, values.originCountries);
 }
 
-export async function submitOnboardingStep4AndComplete(
-  userId: string,
-  answers: Partial<Step4Answers>
-) {
+export async function submitOnboardingStep4(userId: string, answers: Partial<Step4Answers>) {
   await upsertQuestionnaireAnswers(userId, answers);
+  await updateProfileFields(userId, { onboarding_step: 5 });
+}
+
+// Step 5 (photos) uploads as you pick, so finishing is just the completion stamp.
+// The database refuses it without a profile picture and one gallery photo
+// (migration 0026), so the app's own check can't be skipped.
+export async function submitOnboardingPhotosAndComplete(userId: string) {
   await completeOnboarding(userId);
 }
 

@@ -88,7 +88,7 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
             <ActivityIndicator color="#FFFFFF" />
           </View>
         ) : (
-          <View className="absolute bottom-0 right-0 items-center justify-center rounded-full bg-coral-500 p-1.5">
+          <View className="absolute bottom-0 right-0 items-center justify-center rounded-full bg-primary-500 p-1.5">
             <Ionicons name="camera" size={14} color="#FFFFFF" />
           </View>
         )}
@@ -113,20 +113,20 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
               className="flex-row items-center gap-3 rounded-2xl p-3"
               onPress={() => pickFrom("camera")}
             >
-              <Ionicons name="camera-outline" size={22} color="#D9663D" />
+              <Ionicons name="camera-outline" size={22} color="#127A87" />
               <Text className="text-base text-ink-900 dark:text-ink-50">{t("avatar.takePhoto")}</Text>
             </Pressable>
             <Pressable
               className="flex-row items-center gap-3 rounded-2xl p-3"
               onPress={() => pickFrom("library")}
             >
-              <Ionicons name="image-outline" size={22} color="#D9663D" />
+              <Ionicons name="image-outline" size={22} color="#127A87" />
               <Text className="text-base text-ink-900 dark:text-ink-50">{t("avatar.chooseFromLibrary")}</Text>
             </Pressable>
             {uri ? (
               <Pressable className="flex-row items-center gap-3 rounded-2xl p-3" onPress={onRemove}>
-                <Ionicons name="trash-outline" size={22} color="#C24F2A" />
-                <Text className="text-base text-coral-600">{t("avatar.removePhoto")}</Text>
+                <Ionicons name="trash-outline" size={22} color="#9E370B" />
+                <Text className="text-base text-accent-600">{t("avatar.removePhoto")}</Text>
               </Pressable>
             ) : null}
           </View>

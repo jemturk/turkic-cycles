@@ -31,7 +31,7 @@ function TagRow({
       <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{label}</Text>
       <View className="flex-row flex-wrap gap-2">
         {values.map((value) => (
-          <View key={value} className="rounded-full border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-3 py-1.5">
+          <View key={value} className="rounded-full border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-3 py-1.5">
             <Text className="text-xs font-medium text-ink-700 dark:text-ink-200">
               {t(`constants.${namespace}.${value}`, { defaultValue: value })}
             </Text>
@@ -98,8 +98,8 @@ export function ProfileView({
         {connectionTypes && connectionTypes.length > 0 ? (
           <View className="flex-row flex-wrap justify-center gap-2">
             {connectionTypes.map((type) => (
-              <View key={type} className="rounded-full bg-coral-100 px-3 py-1.5">
-                <Text className="text-xs font-medium text-coral-600">
+              <View key={type} className="rounded-full bg-primary-100 px-3 py-1.5">
+                <Text className="text-xs font-medium text-primary-600">
                   {t(`constants.connectionTypes.${type}`)}
                 </Text>
               </View>

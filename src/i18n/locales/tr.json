@@ -173,6 +173,15 @@
     "step4": {
       "heading": "Birkaç soru daha",
       "finish": "Bitir"
+    },
+    "step5": {
+      "heading": "Fotoğraflarını ekle",
+      "subheading": "İnsanlar yüzlerle bağ kurar. Bitirmek için bir profil fotoğrafı ve en az bir fotoğraf daha ekle.",
+      "profilePicture": "Profil fotoğrafı eklemek için dokun",
+      "morePhotos": "Diğer fotoğraflar",
+      "needProfilePicture": "Profil fotoğrafı",
+      "needPhoto": "En az bir fotoğraf daha",
+      "errorTitle": "Kurulum tamamlanamadı"
     }
   },
   "avatar": {

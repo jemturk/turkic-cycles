@@ -53,7 +53,7 @@ export default function OtherProfile() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
       <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
@@ -94,7 +94,7 @@ export default function OtherProfile() {
             </Pressable>
             <Pressable
               accessibilityLabel={t("discover.like")}
-              className="h-16 w-16 items-center justify-center rounded-full bg-coral-500"
+              className="h-16 w-16 items-center justify-center rounded-full bg-primary-500"
               onPress={() => onSwipe("like")}
             >
               <Ionicons name="heart" size={26} color="white" />

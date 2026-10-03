@@ -11,7 +11,7 @@ export default function GlobalDiscover() {
   const { t } = useTranslation();
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
       <View className="flex-1 px-6 pb-4 pt-2">
         <DiscoverDeck
           circleId={null}

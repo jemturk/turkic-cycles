@@ -33,7 +33,7 @@ export default function CircleEvents() {
   const shown = events?.[tab] ?? [];
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <CircleHeader name={circle.name} topic={circle.topic as CircleTopic} onBack={goBack} />
 
       <RefreshableScrollView
@@ -43,14 +43,14 @@ export default function CircleEvents() {
         contentContainerClassName="gap-4 pb-10"
       >
         {/* Same segmented control as the Connections tab. */}
-        <View className="flex-row rounded-full border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-1">
+        <View className="flex-row rounded-full border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-1">
           {(["upcoming", "past"] as const).map((value) => {
             const selected = tab === value;
             const count = events?.[value].length ?? 0;
             return (
               <Pressable
                 key={value}
-                className={`flex-1 items-center rounded-full py-2 ${selected ? "bg-coral-500" : ""}`}
+                className={`flex-1 items-center rounded-full py-2 ${selected ? "bg-primary-500" : ""}`}
                 onPress={() => setTab(value)}
               >
                 <Text className={`text-sm font-medium ${selected ? "text-white" : "text-ink-700 dark:text-ink-200"}`}>
@@ -72,7 +72,7 @@ export default function CircleEvents() {
           <Pressable
             key={event.id}
             onPress={() => router.push(`/(app)/circles/${circleId}/events/${event.id}`)}
-            className="flex-row items-center gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
+            className="flex-row items-center gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
           >
             <View className="flex-1 gap-1">
               <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{event.title}</Text>
@@ -85,7 +85,7 @@ export default function CircleEvents() {
                 </Text>
               ) : null}
               {event.going_count > 0 || event.interested_count > 0 ? (
-                <Text className="text-xs font-medium text-coral-600">
+                <Text className="text-xs font-medium text-primary-600">
                   {[
                     event.going_count > 0 ? t("circles.goingCount", { count: event.going_count }) : null,
                     event.interested_count > 0 ? t("circles.interestedCount", { count: event.interested_count }) : null,

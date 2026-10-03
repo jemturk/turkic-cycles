@@ -5,6 +5,7 @@ import { Platform, View } from "react-native";
 import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
@@ -130,25 +131,29 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <ThemeSync />
-          <LocaleSync />
-          <TextSizeSync>
-            {/* Constrains the app to a phone-width column on wide (web/desktop)
-                viewports, framed against the neutral backdrop set in global.css.
-                A no-op on native/mobile-web, where the viewport is already
-                narrower than max-w-[480px]. */}
-            <View className="mx-auto w-full max-w-[480px] flex-1 bg-coral-50 dark:bg-ink-950 web:shadow-2xl">
-              <Slot />
-              {/* Plays once the native (static-image) splash hands off to JS --
-                  gives the logo mark its own animated "assembly" moment instead
-                  of cutting straight to the app. */}
-              {showAnimatedSplash && (
-                <AnimatedSplash onFinish={() => setShowAnimatedSplash(false)} />
-              )}
-            </View>
-          </TextSizeSync>
-        </QueryClientProvider>
+        {/* Powers KeyboardAwareScrollView (FormScrollView) -- keeps the focused
+            field above the keyboard, which plain ScrollViews didn't do. */}
+        <KeyboardProvider>
+          <QueryClientProvider client={queryClient}>
+            <ThemeSync />
+            <LocaleSync />
+            <TextSizeSync>
+              {/* Constrains the app to a phone-width column on wide (web/desktop)
+                  viewports, framed against the neutral backdrop set in global.css.
+                  A no-op on native/mobile-web, where the viewport is already
+                  narrower than max-w-[480px]. */}
+              <View className="mx-auto w-full max-w-[480px] flex-1 bg-primary-50 dark:bg-ink-950 web:shadow-2xl">
+                <Slot />
+                {/* Plays once the native (static-image) splash hands off to JS --
+                    gives the logo mark its own animated "assembly" moment instead
+                    of cutting straight to the app. */}
+                {showAnimatedSplash && (
+                  <AnimatedSplash onFinish={() => setShowAnimatedSplash(false)} />
+                )}
+              </View>
+            </TextSizeSync>
+          </QueryClientProvider>
+        </KeyboardProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -39,7 +39,7 @@ export function SingleSelectChips<T extends string>({
           />
         ))}
       </View>
-      {error ? <Text className="text-xs text-coral-600">{error}</Text> : null}
+      {error ? <Text className="text-xs text-accent-600">{error}</Text> : null}
     </View>
   );
 }

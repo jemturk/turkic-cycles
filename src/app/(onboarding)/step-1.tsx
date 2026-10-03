@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -18,6 +18,7 @@ import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
 import { DateOfBirthField } from "@/components/DateOfBirthField";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
+import { FormScrollView } from "@/components/FormScrollView";
 
 export default function OnboardingStep1Screen() {
   const { t } = useTranslation();
@@ -65,9 +66,9 @@ export default function OnboardingStep1Screen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
-        <OnboardingProgress step={1} totalSteps={4} />
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
+        <OnboardingProgress step={1} totalSteps={5} />
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={onBack} />
 
         <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">
@@ -154,7 +155,7 @@ export default function OnboardingStep1Screen() {
             onPress={handleSubmit(onSubmit)}
           />
         </View>
-      </ScrollView>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

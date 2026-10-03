@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -18,6 +18,7 @@ import { ChipGroup } from "@/components/ChipGroup";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { SegmentedToggle } from "@/components/SegmentedToggle";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
+import { FormScrollView } from "@/components/FormScrollView";
 
 export default function OnboardingStep3Screen() {
   const { t } = useTranslation();
@@ -52,9 +53,9 @@ export default function OnboardingStep3Screen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
-        <OnboardingProgress step={3} totalSteps={4} />
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
+        <OnboardingProgress step={3} totalSteps={5} />
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
         <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">
@@ -115,7 +116,7 @@ export default function OnboardingStep3Screen() {
               <Ionicons
                 name={field.value === true ? "checkbox" : "square-outline"}
                 size={22}
-                color="#D9663D"
+                color="#127A87"
               />
               <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">
                 {t("onboarding.step3.consentOriginCountries")}
@@ -124,7 +125,7 @@ export default function OnboardingStep3Screen() {
           )}
         />
         {errors.consentOriginCountries?.message ? (
-          <Text className="-mt-2 text-xs text-coral-600">{errors.consentOriginCountries.message}</Text>
+          <Text className="-mt-2 text-xs text-accent-600">{errors.consentOriginCountries.message}</Text>
         ) : null}
 
         <Controller
@@ -165,7 +166,7 @@ export default function OnboardingStep3Screen() {
             onPress={handleSubmit(onSubmit)}
           />
         </View>
-      </ScrollView>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

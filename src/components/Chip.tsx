@@ -15,7 +15,7 @@ export function Chip({ label, selected, onPress, disabled }: ChipProps) {
       disabled={disabled}
       className={[
         "rounded-full border px-4 py-2",
-        selected ? "border-coral-500 bg-coral-500" : "border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800",
+        selected ? "border-primary-500 bg-primary-500" : "border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800",
         disabled ? "opacity-50" : "",
       ].join(" ")}
     >

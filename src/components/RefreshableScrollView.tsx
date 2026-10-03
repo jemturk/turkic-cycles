@@ -94,7 +94,7 @@ export function RefreshableScrollView({ refreshing, onRefresh, children, ...scro
     return (
       <ScrollView
         {...scrollViewProps}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#D9663D" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#127A87" />}
       >
         {children}
       </ScrollView>
@@ -173,7 +173,7 @@ function WebPullToRefresh({
       <Animated.View
         style={[{ width: "100%", alignItems: "center", justifyContent: "center", overflow: "hidden" }, indicatorStyle]}
       >
-        <WebSpinner color="#D9663D" />
+        <WebSpinner color="#127A87" />
       </Animated.View>
       <ScrollView
         {...scrollViewProps}

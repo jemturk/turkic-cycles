@@ -17,7 +17,7 @@ export function TextField({ label, error, secureTextEntry, ...inputProps }: Text
       {label ? <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{label}</Text> : null}
       <View className="justify-center">
         <TextInput
-          className={`rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3 text-base text-ink-900 dark:text-ink-50 ${
+          className={`rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3 text-base text-ink-900 dark:text-ink-50 ${
             canToggleVisibility ? "pr-11" : ""
           }`}
           placeholderTextColor="#8A7C76"
@@ -34,7 +34,7 @@ export function TextField({ label, error, secureTextEntry, ...inputProps }: Text
           </Pressable>
         ) : null}
       </View>
-      {error ? <Text className="text-xs text-coral-600">{error}</Text> : null}
+      {error ? <Text className="text-xs text-accent-600">{error}</Text> : null}
     </View>
   );
 }

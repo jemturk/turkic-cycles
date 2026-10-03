@@ -38,12 +38,12 @@ function PersonCard({
 
   return (
     <Pressable
-      className="items-center justify-center gap-2 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-2"
+      className="items-center justify-center gap-2 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-2"
       style={{ width, aspectRatio: 1 }}
       onPress={onPress}
     >
       {unreadCount && !onQuickChat ? (
-        <View className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full bg-coral-500" />
+        <View className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full bg-accent-500" />
       ) : null}
 
       <Avatar uri={person.otherAvatarUrl} name={person.otherDisplayName} size={56} />
@@ -70,15 +70,15 @@ function PersonCard({
         <Pressable
           accessibilityLabel={t("connections.connected")}
           hitSlop={8}
-          className="absolute right-2 top-2 h-8 w-8 items-center justify-center rounded-full bg-coral-50 dark:bg-ink-700"
+          className="absolute right-2 top-2 h-8 w-8 items-center justify-center rounded-full bg-primary-50 dark:bg-ink-700"
           onPress={(e) => {
             e.stopPropagation();
             onQuickChat();
           }}
         >
-          <Ionicons name="chatbubble-outline" size={16} className="text-coral-500" />
+          <Ionicons name="chatbubble-outline" size={16} className="text-primary-500" />
           {unreadCount ? (
-            <View className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border border-white bg-coral-500 dark:border-ink-800" />
+            <View className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border border-white bg-primary-500 dark:border-ink-800" />
           ) : null}
         </Pressable>
       ) : null}
@@ -119,21 +119,21 @@ export default function Connections() {
   const emptyLabel = tab === "matched" ? t("connections.emptyMatched") : t("connections.emptyConnected");
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
       <RefreshableScrollView
         refreshing={isRefetchingMatched || isRefetchingConnected}
         onRefresh={refetch}
         className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-6 pb-10"
       >
-        <View className="flex-row rounded-full border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-1">
+        <View className="flex-row rounded-full border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-1">
           {(["matched", "connected"] as const).map((value) => {
             const selected = tab === value;
             const count = (value === "matched" ? matched : connected)?.length ?? 0;
             return (
               <Pressable
                 key={value}
-                className={`flex-1 items-center rounded-full py-2 ${selected ? "bg-coral-500" : ""}`}
+                className={`flex-1 items-center rounded-full py-2 ${selected ? "bg-primary-500" : ""}`}
                 onPress={() => setTab(value)}
               >
                 <Text

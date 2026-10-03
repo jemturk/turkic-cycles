@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
@@ -11,6 +11,7 @@ import { useCreateReport } from "@/hooks/useSafety";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
+import { FormScrollView } from "@/components/FormScrollView";
 
 const REASON_VALUES = ["harassment", "fake_profile", "inappropriate", "safety_concern", "other"] as const;
 
@@ -33,8 +34,8 @@ export default function Report() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
@@ -62,7 +63,7 @@ export default function Report() {
             </View>
           </>
         )}
-      </ScrollView>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

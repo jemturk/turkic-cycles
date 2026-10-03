@@ -45,7 +45,7 @@ const SLIDES: Slide[] = [
 ];
 
 const TINT_BG: Record<Slide["tint"], string> = {
-  coral: "bg-coral-500",
+  coral: "bg-primary-500",
   teal: "bg-teal-500",
 };
 
@@ -57,7 +57,7 @@ const TINT_BG: Record<Slide["tint"], string> = {
 function CirclesMockup() {
   return (
     <View className="w-full gap-3">
-      <View className="flex-row items-center gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-3">
+      <View className="flex-row items-center gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-3">
         <View className="h-10 w-10 items-center justify-center rounded-xl bg-teal-50">
           <Ionicons name="people-outline" size={20} color="#2C8B80" />
         </View>
@@ -65,20 +65,20 @@ function CirclesMockup() {
           <Text className="font-display text-sm text-ink-900 dark:text-ink-50">Tampa Türkiye Circle</Text>
           <Text className="text-xs text-ink-400">12 members · Tampa</Text>
         </View>
-        <View className="justify-center rounded-full bg-coral-500 px-3 py-1">
+        <View className="justify-center rounded-full bg-primary-500 px-3 py-1">
           <Text className="text-xs font-medium text-white">Join</Text>
         </View>
       </View>
-      <View className="flex-row items-center gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-3">
-        <View className="h-10 w-10 items-center justify-center rounded-xl bg-coral-50">
-          <Ionicons name="briefcase-outline" size={20} color="#D9663D" />
+      <View className="flex-row items-center gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-3">
+        <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary-50">
+          <Ionicons name="briefcase-outline" size={20} color="#127A87" />
         </View>
         <View className="flex-1 gap-0.5">
           <Text className="font-display text-sm text-ink-900 dark:text-ink-50">NYC Business Network</Text>
           <Text className="text-xs text-ink-400">34 members · New York</Text>
         </View>
-        <View className="justify-center rounded-full border border-coral-500 px-3 py-1">
-          <Text className="text-xs font-medium text-coral-500">Join</Text>
+        <View className="justify-center rounded-full border border-primary-500 px-3 py-1">
+          <Text className="text-xs font-medium text-primary-500">Join</Text>
         </View>
       </View>
     </View>
@@ -109,7 +109,7 @@ function SafetyMockup() {
   return (
     <View className="w-full gap-3 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
       <View className="flex-row items-center gap-3">
-        <View className="h-10 w-10 items-center justify-center rounded-full bg-coral-500">
+        <View className="h-10 w-10 items-center justify-center rounded-full bg-primary-500">
           <Text className="text-base font-semibold text-white">A</Text>
         </View>
         <View className="flex-1">
@@ -162,7 +162,7 @@ export default function Welcome() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
       <View className="flex-1 justify-between pb-6 pt-10">
         <Pressable
           className="self-end px-6"
@@ -213,7 +213,7 @@ export default function Welcome() {
                       <Text className="w-full text-center font-display text-3xl text-ink-900 dark:text-ink-50">
                         {i === 0 ? (
                           <>
-                            Turkic <Text className="text-coral-500">Circles</Text>
+                            Turkic <Text className="text-primary-500">Circles</Text>
                           </>
                         ) : (
                           t(s.titleKey)
@@ -235,7 +235,7 @@ export default function Welcome() {
           <View className="flex-row items-center justify-center gap-2">
             {SLIDES.map((s, i) => (
               <Pressable key={s.titleKey} onPress={() => goToIndex(i)}>
-                <View className={`h-2 rounded-full ${i === index ? "w-6 bg-coral-500" : "w-2 bg-coral-100"}`} />
+                <View className={`h-2 rounded-full ${i === index ? "w-6 bg-primary-500" : "w-2 bg-primary-100"}`} />
               </Pressable>
             ))}
           </View>
@@ -245,7 +245,7 @@ export default function Welcome() {
               <Button label={t("welcome.getStarted")} onPress={() => router.push("/(auth)/sign-up")} />
               <Text className="text-center text-sm text-ink-400">
                 {t("welcome.alreadyHaveAccount")}{" "}
-                <Text className="font-semibold text-coral-500" onPress={() => router.push("/(auth)/login")}>
+                <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/login")}>
                   {t("welcome.logIn")}
                 </Text>
               </Text>

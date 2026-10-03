@@ -173,6 +173,15 @@
     "step4": {
       "heading": "A few more questions",
       "finish": "Finish"
+    },
+    "step5": {
+      "heading": "Add your photos",
+      "subheading": "People connect with faces. Add a profile picture and at least one more photo to finish.",
+      "profilePicture": "Tap to add your profile picture",
+      "morePhotos": "More photos",
+      "needProfilePicture": "Profile picture",
+      "needPhoto": "At least one more photo",
+      "errorTitle": "Couldn't finish setting up"
     }
   },
   "avatar": {

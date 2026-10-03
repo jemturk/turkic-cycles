@@ -45,10 +45,13 @@ export default function AppTabsLayout() {
         backBehavior="history"
         screenOptions={({ route }) => ({
           headerShown: false,
-          tabBarActiveTintColor: "#D9663D",
+          tabBarActiveTintColor: "#127A87",
           tabBarInactiveTintColor: isDark ? "#8A7C76" : "#A99C95",
           // Icons only; each tab's title still reaches screen readers as its label.
           tabBarShowLabel: false,
+          // Otherwise Android pushes the tab bar up on top of the keyboard while
+          // typing (in Chat, Edit profile, ...), eating into the visible form.
+          tabBarHideOnKeyboard: true,
           tabBarStyle: {
             height: 60 + insets.bottom,
             paddingBottom: insets.bottom + 8,

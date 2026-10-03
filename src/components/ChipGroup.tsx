@@ -98,7 +98,7 @@ export function ChipGroup<T extends string>({
       {otherOption && isOtherSelected ? (
         <TextField placeholder={otherOption.placeholder} value={customValue ?? ""} onChangeText={setOtherText} />
       ) : null}
-      {error ? <Text className="text-xs text-coral-600">{error}</Text> : null}
+      {error ? <Text className="text-xs text-accent-600">{error}</Text> : null}
     </View>
   );
 }

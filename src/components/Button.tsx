@@ -19,11 +19,11 @@ export function Button({ label, onPress, variant = "primary", disabled }: Button
       disabled={disabled}
       className={[
         "w-full items-center justify-center rounded-full py-4",
-        isPrimary ? "bg-coral-500" : "bg-transparent border border-coral-500",
+        isPrimary ? "bg-primary-500" : "bg-transparent border border-primary-500",
         disabled ? "opacity-50" : "",
       ].join(" ")}
     >
-      <Text className={isPrimary ? "text-base font-semibold text-white" : "text-base font-semibold text-coral-500"}>
+      <Text className={isPrimary ? "text-base font-semibold text-white" : "text-base font-semibold text-primary-500"}>
         {label}
       </Text>
     </Pressable>

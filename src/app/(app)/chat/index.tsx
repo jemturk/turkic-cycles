@@ -16,7 +16,7 @@ export default function Chat() {
   const { data: threads, refetch, isRefetching } = useMessageThreads(session?.user.id);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
       <RefreshableScrollView
         refreshing={isRefetching}
         onRefresh={refetch}
@@ -29,7 +29,7 @@ export default function Chat() {
           threads.map((thread) => (
             <Pressable
               key={thread.matchId}
-              className="flex-row items-center gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
+              className="flex-row items-center gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
               onPress={() => router.push(`/(app)/chat/${thread.matchId}`)}
             >
               <Avatar uri={thread.otherAvatarUrl} name={thread.otherDisplayName} size={48} />
@@ -45,7 +45,7 @@ export default function Chat() {
                 <Text className="text-xs text-ink-400">
                   {formatDistanceToNowStrict(new Date(thread.lastMessageAt), { addSuffix: false })}
                 </Text>
-                {thread.unreadCount > 0 ? <View className="h-2.5 w-2.5 rounded-full bg-coral-500" /> : null}
+                {thread.unreadCount > 0 ? <View className="h-2.5 w-2.5 rounded-full bg-accent-500" /> : null}
               </View>
             </Pressable>
           ))

@@ -173,6 +173,15 @@
     "step4": {
       "heading": "Noch ein paar Fragen",
       "finish": "Fertig"
+    },
+    "step5": {
+      "heading": "Füge deine Fotos hinzu",
+      "subheading": "Menschen verbinden sich über Gesichter. Füge ein Profilbild und mindestens ein weiteres Foto hinzu, um fertig zu werden.",
+      "profilePicture": "Tippe, um ein Profilbild hinzuzufügen",
+      "morePhotos": "Weitere Fotos",
+      "needProfilePicture": "Profilbild",
+      "needPhoto": "Mindestens ein weiteres Foto",
+      "errorTitle": "Einrichtung konnte nicht abgeschlossen werden"
     }
   },
   "avatar": {

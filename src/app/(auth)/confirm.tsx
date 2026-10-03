@@ -62,7 +62,7 @@ export default function ConfirmEmail() {
   }, [status]);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
       <View className="flex-1 items-center justify-center px-6">
         {status === "verifying" ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">{t("auth.confirm.verifying")}</Text>

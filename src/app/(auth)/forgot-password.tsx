@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/api/client";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
+import { FormScrollView } from "@/components/FormScrollView";
 import { useCaptcha } from "@/hooks/useCaptcha";
 
 export default function ForgotPassword() {
@@ -43,8 +44,8 @@ export default function ForgotPassword() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <View className="flex-1 px-6 pt-6">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1" contentContainerClassName="flex-grow px-6 pb-10 pt-6">
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
         <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">
@@ -85,7 +86,7 @@ export default function ForgotPassword() {
             </View>
           </>
         )}
-      </View>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

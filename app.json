@@ -9,12 +9,13 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
+      "icon": "./assets/icon-ios.png",
       "bundleIdentifier": "com.turanci.app"
     },
     "android": {
       "package": "com.turanci.app",
       "adaptiveIcon": {
-        "backgroundColor": "#FDEDE5",
+        "backgroundColor": "#FCEAD6",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -37,7 +38,7 @@
           "image": "./assets/splash-icon.png",
           "imageWidth": 160,
           "resizeMode": "contain",
-          "backgroundColor": "#FDEDE5"
+          "backgroundColor": "#FCEAD6"
         }
       ],
       [

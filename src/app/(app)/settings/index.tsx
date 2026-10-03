@@ -35,9 +35,9 @@ function RowIcon({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; label:
     <View
       accessible
       accessibilityLabel={label}
-      className="h-10 w-10 items-center justify-center rounded-lg bg-coral-50 dark:bg-ink-700"
+      className="h-10 w-10 items-center justify-center rounded-lg bg-primary-50 dark:bg-ink-700"
     >
-      <Ionicons name={icon} size={22} color="#D9663D" />
+      <Ionicons name={icon} size={22} color="#127A87" />
     </View>
   );
 }
@@ -54,7 +54,7 @@ function SettingsRow({
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
+      className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
     >
       <Text className="text-base text-ink-900 dark:text-ink-50">{label}</Text>
       {value ? <Text className="text-sm text-ink-400">{value}</Text> : null}
@@ -89,10 +89,10 @@ export default function Settings() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
       <ScrollView className="flex-1 px-6 pt-4" contentContainerClassName="gap-3 pb-10">
         <Pressable
-          className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
+          className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
           onPress={() => router.push("/(app)/me")}
         >
           <View className="flex-row items-center gap-3">
@@ -115,7 +115,7 @@ export default function Settings() {
           </Pressable>
         </Pressable>
 
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <RowIcon icon="language-outline" label={t("settings.appLanguage")} />
           <View className="flex-row flex-wrap justify-end gap-2">
             <Chip
@@ -141,7 +141,7 @@ export default function Settings() {
           </View>
         </View>
 
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <RowIcon icon="contrast-outline" label={t("settings.theme")} />
           <View className="flex-row gap-2">
             <Chip
@@ -157,7 +157,7 @@ export default function Settings() {
           </View>
         </View>
 
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <RowIcon icon="text-outline" label={t("settings.textSize")} />
           <View className="flex-row gap-2">
             <Chip
@@ -196,7 +196,7 @@ export default function Settings() {
         />
 
         <SectionHeader label={t("settings.privacy")} />
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.profileVisibility")}</Text>
           <View className="flex-row gap-2">
             <Chip
@@ -211,7 +211,7 @@ export default function Settings() {
             />
           </View>
         </View>
-        <View className="flex-row items-center justify-between gap-3 rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between gap-3 rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <View className="flex-1">
             <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.globalDiscover")}</Text>
             <Text className="text-sm text-ink-400">{t("settings.globalDiscoverHint")}</Text>
@@ -228,14 +228,14 @@ export default function Settings() {
         />
 
         <SectionHeader label={t("settings.notifications")} />
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.pushNotifications")}</Text>
           <Switch
             value={profile?.push_notifications_enabled ?? true}
             onValueChange={(pushEnabled) => updateNotifications.mutate({ pushEnabled })}
           />
         </View>
-        <View className="flex-row items-center justify-between rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.emailNotifications")}</Text>
           <Switch
             value={profile?.email_notifications_enabled ?? false}
@@ -256,7 +256,7 @@ export default function Settings() {
         </View>
 
         {confirmingDelete ? (
-          <View className="gap-2 rounded-xl border border-coral-500 bg-white dark:bg-ink-800 p-4">
+          <View className="gap-2 rounded-xl border border-accent-500 bg-white dark:bg-ink-800 p-4">
             <Text className="text-sm text-ink-700 dark:text-ink-200">{t("settings.deleteAccountWarning")}</Text>
             <View className="flex-row gap-2">
               <View className="flex-1">
@@ -278,7 +278,7 @@ export default function Settings() {
           </View>
         ) : (
           <Pressable onPress={() => setConfirmingDelete(true)}>
-            <Text className="text-center text-sm font-medium text-coral-600">{t("settings.deleteAccount")}</Text>
+            <Text className="text-center text-sm font-medium text-accent-600">{t("settings.deleteAccount")}</Text>
           </Pressable>
         )}
       </ScrollView>

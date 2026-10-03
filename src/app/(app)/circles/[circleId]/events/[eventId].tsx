@@ -56,7 +56,7 @@ export default function CircleEventDetail() {
   const location = [circle.city, circle.state, circle.country].filter(Boolean).join(", ");
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <CircleHeader name={circle.name} topic={topic} onBack={goBack} />
 
       <ScrollView className="flex-1" contentContainerClassName="gap-4 pb-10 pt-4">
@@ -80,7 +80,7 @@ export default function CircleEventDetail() {
           {circle.description ? <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text> : null}
 
           {event ? (
-            <View className="gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
+            <View className="gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
               <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{event.title}</Text>
               <Text className="text-sm text-ink-700 dark:text-ink-200">
                 {format(new Date(event.starts_at), "EEE, MMM d · h:mm a")}
@@ -103,7 +103,7 @@ export default function CircleEventDetail() {
               <View className="flex-row items-center justify-between">
                 <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("circles.members")}</Text>
                 <Pressable onPress={() => router.push(`/(app)/circles/${circle.id}/members`)}>
-                  <Text className="text-sm font-medium text-coral-600">
+                  <Text className="text-sm font-medium text-primary-600">
                     {t("circles.seeAll", { count: circle.member_count })}
                   </Text>
                 </Pressable>

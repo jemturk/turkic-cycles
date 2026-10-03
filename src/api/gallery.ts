@@ -13,7 +13,10 @@ export type ProfilePhoto = {
   url: string;
 };
 
+// storage_path is normally a path in the avatars bucket, but the mock users (see
+// migration 0026) store full image URLs there instead -- pass those through as-is.
 function publicUrl(storagePath: string): string {
+  if (/^https?:\/\//.test(storagePath)) return storagePath;
   return supabase.storage.from("avatars").getPublicUrl(storagePath).data.publicUrl;
 }
 

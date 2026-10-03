@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -27,6 +27,7 @@ import { ChipGroup } from "@/components/ChipGroup";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { SegmentedToggle } from "@/components/SegmentedToggle";
 import { BranchingQuestionsFields } from "@/components/BranchingQuestionsFields";
+import { FormScrollView } from "@/components/FormScrollView";
 
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
@@ -89,15 +90,15 @@ export default function ProfileEdit() {
 
   if (isLoading || !values) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-coral-50 dark:bg-ink-950">
-        <ActivityIndicator color="#D9663D" />
+      <SafeAreaView className="flex-1 items-center justify-center bg-primary-50 dark:bg-ink-950">
+        <ActivityIndicator color="#127A87" />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
         <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">{t("fields.editProfileHeading")}</Text>
 
@@ -248,7 +249,7 @@ export default function ProfileEdit() {
               className="flex-row items-start gap-2"
               onPress={() => field.onChange(field.value === true ? undefined : true)}
             >
-              <Ionicons name={field.value === true ? "checkbox" : "square-outline"} size={22} color="#D9663D" />
+              <Ionicons name={field.value === true ? "checkbox" : "square-outline"} size={22} color="#127A87" />
               <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">
                 {t("fields.consentOriginCountries")}
               </Text>
@@ -256,7 +257,7 @@ export default function ProfileEdit() {
           )}
         />
         {errors.consentOriginCountries?.message ? (
-          <Text className="-mt-2 text-xs text-coral-600">{errors.consentOriginCountries.message}</Text>
+          <Text className="-mt-2 text-xs text-accent-600">{errors.consentOriginCountries.message}</Text>
         ) : null}
 
         <Controller
@@ -298,7 +299,7 @@ export default function ProfileEdit() {
             onPress={handleSubmit(onSubmit)}
           />
         </View>
-      </ScrollView>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

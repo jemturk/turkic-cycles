@@ -4,11 +4,19 @@ import { Redirect } from "expo-router";
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 
-const ONBOARDING_STEP_ROUTES: Record<number, "/(onboarding)/step-1" | "/(onboarding)/step-2" | "/(onboarding)/step-3" | "/(onboarding)/step-4"> = {
+type OnboardingRoute =
+  | "/(onboarding)/step-1"
+  | "/(onboarding)/step-2"
+  | "/(onboarding)/step-3"
+  | "/(onboarding)/step-4"
+  | "/(onboarding)/step-5";
+
+const ONBOARDING_STEP_ROUTES: Record<number, OnboardingRoute> = {
   1: "/(onboarding)/step-1",
   2: "/(onboarding)/step-2",
   3: "/(onboarding)/step-3",
   4: "/(onboarding)/step-4",
+  5: "/(onboarding)/step-5",
 };
 
 export default function Index() {
@@ -17,8 +25,8 @@ export default function Index() {
 
   if (sessionLoading || (session && profileLoading)) {
     return (
-      <View className="flex-1 items-center justify-center bg-coral-50 dark:bg-ink-950">
-        <ActivityIndicator color="#D9663D" />
+      <View className="flex-1 items-center justify-center bg-primary-50 dark:bg-ink-950">
+        <ActivityIndicator color="#127A87" />
       </View>
     );
   }

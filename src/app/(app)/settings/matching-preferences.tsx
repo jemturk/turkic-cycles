@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -12,6 +12,7 @@ import { LANGUAGES, LANGUAGE_OTHER } from "@/constants/languages";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
+import { FormScrollView } from "@/components/FormScrollView";
 import type { Tables } from "@/types/database";
 
 type FormProps = {
@@ -94,8 +95,8 @@ export default function MatchingPreferences() {
   const { data: preferences, isLoading } = useMatchingPreferences(userId);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
@@ -106,7 +107,7 @@ export default function MatchingPreferences() {
         <Text className="-mt-2 text-sm text-ink-400">{t("settings.matchingPreferencesScreen.notWiredUp")}</Text>
 
         {isLoading ? null : <MatchingPreferencesForm preferences={preferences} userId={userId} />}
-      </ScrollView>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

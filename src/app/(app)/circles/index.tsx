@@ -30,7 +30,7 @@ export default function Circles() {
   const shownCircles = (circles ?? []).filter(isNearby);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
       <RefreshableScrollView
         refreshing={isRefetching}
         onRefresh={() => {
@@ -42,7 +42,7 @@ export default function Circles() {
       >
         <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.subtitle")}</Text>
 
-        <View className="flex-row items-center justify-between gap-3 rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between gap-3 rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <View className="flex-1">
             <Text className="text-base text-ink-900 dark:text-ink-50">{t("circles.local")}</Text>
             <Text className="text-xs text-ink-400">{t("circles.localHint")}</Text>
@@ -54,7 +54,7 @@ export default function Circles() {
           />
         </View>
         {localStatus === "denied" || localStatus === "unavailable" ? (
-          <Text className="-mt-2 text-xs text-coral-600">
+          <Text className="-mt-2 text-xs text-accent-600">
             {localStatus === "denied" ? t("circles.locationDenied") : t("circles.locationUnavailable")}
           </Text>
         ) : null}
@@ -70,7 +70,7 @@ export default function Circles() {
             <Pressable
               key={circle.id}
               onPress={() => router.push(`/(app)/circles/${circle.id}`)}
-              className="flex-row gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
+              className="flex-row gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
             >
               <View className={`h-12 w-12 items-center justify-center rounded-xl ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
                 <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_COLORS[topic].fg} />

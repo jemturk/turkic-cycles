@@ -121,7 +121,7 @@ export function DiscoverDeck({
             </Pressable>
             <Pressable
               accessibilityLabel={t("discover.like")}
-              className="h-16 w-16 items-center justify-center rounded-full bg-coral-500"
+              className="h-16 w-16 items-center justify-center rounded-full bg-primary-500"
               onPress={() => onSwipe("like")}
             >
               <Ionicons name="heart" size={26} color="white" />
