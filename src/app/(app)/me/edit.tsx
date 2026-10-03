@@ -4,7 +4,7 @@ import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useForm, useWatch, Controller, type Resolver } from "react-hook-form";
+import { useForm, useWatch, useController, Controller, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 
@@ -21,6 +21,7 @@ import { CONNECTION_TYPES } from "@/constants/connectionTypes";
 import { LANGUAGES, LANGUAGE_OTHER } from "@/constants/languages";
 import { INTERESTS, HOBBIES, TRAVEL_FREQUENCIES, TRAVEL_STYLES } from "@/constants/interests";
 import { ORIGIN_COUNTRIES, ORIGIN_MAX_SELECTIONS, ORIGIN_OTHER } from "@/constants/origins";
+import { canonicalCountry } from "@/constants/countries";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
@@ -28,6 +29,7 @@ import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { SegmentedToggle } from "@/components/SegmentedToggle";
 import { BranchingQuestionsFields } from "@/components/BranchingQuestionsFields";
 import { FormScrollView } from "@/components/FormScrollView";
+import { LocationFields } from "@/components/LocationFields";
 
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
@@ -58,7 +60,7 @@ export default function ProfileEdit() {
       connectionTypes: connectionTypes ?? [],
       city: profile.city ?? "",
       state: profile.state ?? "",
-      country: profile.country ?? "",
+      country: canonicalCountry(profile.country),
       birthdate: profile.birthdate ?? "",
       bio: profile.bio ?? "",
       languages: profile.languages ?? [],
@@ -83,6 +85,9 @@ export default function ProfileEdit() {
   } = useForm<ProfileEditValues>({ resolver, values });
 
   const watchedConnectionTypes = useWatch({ control, name: "connectionTypes" }) ?? [];
+  const country = useController({ control, name: "country" });
+  const city = useController({ control, name: "city" });
+  const state = useController({ control, name: "state" });
 
   const onSubmit = (formValues: ProfileEditValues) => {
     saveProfileEdit.mutate(formValues, { onSuccess: () => router.back() });
@@ -136,26 +141,14 @@ export default function ProfileEdit() {
             />
           )}
         />
-        <Controller
-          control={control}
-          name="city"
-          render={({ field }) => (
-            <TextField label={t("fields.city")} value={field.value} onChangeText={field.onChange} error={errors.city?.message} />
-          )}
-        />
-        <Controller
-          control={control}
-          name="state"
-          render={({ field }) => (
-            <TextField label={t("fields.stateRegion")} value={field.value} onChangeText={field.onChange} error={errors.state?.message} />
-          )}
-        />
-        <Controller
-          control={control}
-          name="country"
-          render={({ field }) => (
-            <TextField label={t("fields.country")} value={field.value} onChangeText={field.onChange} error={errors.country?.message} />
-          )}
+        <LocationFields
+          country={country.field.value}
+          city={city.field.value}
+          state={state.field.value}
+          onCountryChange={country.field.onChange}
+          onCityChange={city.field.onChange}
+          onStateChange={state.field.onChange}
+          errors={{ country: errors.country?.message, city: errors.city?.message, state: errors.state?.message }}
         />
         <Controller
           control={control}

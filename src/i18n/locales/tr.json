@@ -531,5 +531,20 @@
       "academic_mentor": "Akademik mentorluk",
       "spiritual_mentor": "Manevi mentorluk"
     }
+  },
+  "location": {
+    "country": "Ülke",
+    "selectCountry": "Ülkeni seç",
+    "searchCountries": "Ülke ara",
+    "suggested": "Önerilen",
+    "allCountries": "Tüm ülkeler",
+    "city": "Şehir",
+    "state": "Eyalet",
+    "province": "Eyalet / bölge",
+    "stateTerritory": "Eyalet / bölge",
+    "select": "{{field}} seç",
+    "search": "Ara",
+    "regionOptional": "Eyalet / bölge (isteğe bağlı)",
+    "noResults": "\"{{query}}\" için sonuç yok"
   }
 }

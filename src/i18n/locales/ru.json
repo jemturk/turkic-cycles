@@ -539,5 +539,20 @@
       "academic_mentor": "Академическое наставничество",
       "spiritual_mentor": "Духовное наставничество"
     }
+  },
+  "location": {
+    "country": "Страна",
+    "selectCountry": "Выберите страну",
+    "searchCountries": "Поиск страны",
+    "suggested": "Рекомендуемые",
+    "allCountries": "Все страны",
+    "city": "Город",
+    "state": "Штат",
+    "province": "Провинция / территория",
+    "stateTerritory": "Штат / территория",
+    "select": "Выберите: {{field}}",
+    "search": "Поиск",
+    "regionOptional": "Штат / регион (необязательно)",
+    "noResults": "Ничего не найдено по запросу «{{query}}»"
   }
 }

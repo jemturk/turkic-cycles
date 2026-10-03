@@ -531,5 +531,20 @@
       "academic_mentor": "Akademisches Mentoring",
       "spiritual_mentor": "Spirituelles Mentoring"
     }
+  },
+  "location": {
+    "country": "Land",
+    "selectCountry": "Wähle dein Land",
+    "searchCountries": "Länder suchen",
+    "suggested": "Vorschläge",
+    "allCountries": "Alle Länder",
+    "city": "Stadt",
+    "state": "Bundesstaat",
+    "province": "Provinz / Territorium",
+    "stateTerritory": "Bundesstaat / Territorium",
+    "select": "{{field}} wählen",
+    "search": "Suchen",
+    "regionOptional": "Bundesland / Region (optional)",
+    "noResults": "Keine Treffer für „{{query}}“"
   }
 }

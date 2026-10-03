@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { View } from "react-native";
+import { useRef, useState } from "react";
+import { TextInput, View } from "react-native";
 import { Text } from "@/components/Text";
 import { useTranslation } from "react-i18next";
 
@@ -24,6 +24,8 @@ export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldPro
   const [day, setDay] = useState(value?.slice(8, 10) ?? "");
   const [month, setMonth] = useState(value?.slice(5, 7) ?? "");
   const [year, setYear] = useState(value?.slice(0, 4) ?? "");
+  const monthRef = useRef<TextInput>(null);
+  const yearRef = useRef<TextInput>(null);
 
   function maybeEmit(d: string, m: string, y: string) {
     const dn = Number(d);
@@ -43,9 +45,13 @@ export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldPro
             keyboardType="number-pad"
             maxLength={2}
             value={day}
+            returnKeyType="next"
+            onSubmitEditing={() => monthRef.current?.focus()}
             onChangeText={(next) => {
               setDay(next);
               maybeEmit(next, month, year);
+              // Both digits typed: move on to the month without a tap.
+              if (next.length === 2) monthRef.current?.focus();
             }}
           />
         </View>
@@ -55,9 +61,13 @@ export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldPro
             keyboardType="number-pad"
             maxLength={2}
             value={month}
+            ref={monthRef}
+            returnKeyType="next"
+            onSubmitEditing={() => yearRef.current?.focus()}
             onChangeText={(next) => {
               setMonth(next);
               maybeEmit(day, next, year);
+              if (next.length === 2) yearRef.current?.focus();
             }}
           />
         </View>
@@ -67,6 +77,7 @@ export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldPro
             keyboardType="number-pad"
             maxLength={4}
             value={year}
+            ref={yearRef}
             onChangeText={(next) => {
               setYear(next);
               maybeEmit(day, month, next);

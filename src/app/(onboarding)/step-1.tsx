@@ -3,7 +3,7 @@ import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, useController, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 
@@ -11,12 +11,14 @@ import { supabase } from "@/api/client";
 import { useSession } from "@/hooks/useSession";
 import { useSubmitOnboardingStep1 } from "@/hooks/useOnboarding";
 import { useOnboardingStore } from "@/stores/onboarding";
-import { onboardingStep1Schema, type OnboardingStep1 } from "@/schemas/questionnaire/core";
+import { onboardingStep1FormSchema, type OnboardingStep1 } from "@/schemas/questionnaire/core";
+import { canonicalCountry } from "@/constants/countries";
 import { CONNECTION_TYPES } from "@/constants/connectionTypes";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
 import { DateOfBirthField } from "@/components/DateOfBirthField";
+import { LocationFields } from "@/components/LocationFields";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
 import { FormScrollView } from "@/components/FormScrollView";
 
@@ -35,8 +37,8 @@ export default function OnboardingStep1Screen() {
     handleSubmit,
     formState: { errors },
   } = useForm<OnboardingStep1>({
-    resolver: zodResolver(onboardingStep1Schema),
-    defaultValues: store.step1 ?? {
+    resolver: zodResolver(onboardingStep1FormSchema),
+    defaultValues: store.step1 ? { ...store.step1, country: canonicalCountry(store.step1.country) } : {
       displayName: "",
       connectionTypes: [],
       city: "",
@@ -45,6 +47,10 @@ export default function OnboardingStep1Screen() {
       birthdate: "",
     },
   });
+
+  const country = useController({ control, name: "country" });
+  const city = useController({ control, name: "city" });
+  const state = useController({ control, name: "state" });
 
   const onSubmit = (values: OnboardingStep1) => {
     store.setStep1(values);
@@ -103,41 +109,14 @@ export default function OnboardingStep1Screen() {
           )}
         />
 
-        <Controller
-          control={control}
-          name="city"
-          render={({ field }) => (
-            <TextField
-              label={t("onboarding.step1.city")}
-              value={field.value}
-              onChangeText={field.onChange}
-              error={errors.city?.message}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="state"
-          render={({ field }) => (
-            <TextField
-              label={t("onboarding.step1.stateRegion")}
-              value={field.value}
-              onChangeText={field.onChange}
-              error={errors.state?.message}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="country"
-          render={({ field }) => (
-            <TextField
-              label={t("onboarding.step1.country")}
-              value={field.value}
-              onChangeText={field.onChange}
-              error={errors.country?.message}
-            />
-          )}
+        <LocationFields
+          country={country.field.value}
+          city={city.field.value}
+          state={state.field.value}
+          onCountryChange={country.field.onChange}
+          onCityChange={city.field.onChange}
+          onStateChange={state.field.onChange}
+          errors={{ country: errors.country?.message, city: errors.city?.message, state: errors.state?.message }}
         />
 
         <Controller

@@ -531,5 +531,20 @@
       "academic_mentor": "Academic mentorship",
       "spiritual_mentor": "Spiritual mentorship"
     }
+  },
+  "location": {
+    "country": "Country",
+    "selectCountry": "Select your country",
+    "searchCountries": "Search countries",
+    "suggested": "Suggested",
+    "allCountries": "All countries",
+    "city": "City",
+    "state": "State",
+    "province": "Province / territory",
+    "stateTerritory": "State / territory",
+    "select": "Select {{field}}",
+    "search": "Search",
+    "regionOptional": "State / region (optional)",
+    "noResults": "No matches for \"{{query}}\""
   }
 }
