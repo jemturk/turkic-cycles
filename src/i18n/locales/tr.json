@@ -1,6 +1,7 @@
 {
   "tabs": {
     "circles": "Çemberler",
+    "discover": "Keşfet",
     "connections": "Bağlantılar",
     "search": "Ara",
     "chat": "Sohbet",
@@ -121,7 +122,8 @@
     "block": "Engelle",
     "itsAMatch": "Bu bir eşleşme!",
     "bothLiked": "Sen ve {{name}} birbirinizi beğendiniz.",
-    "keepExploring": "Keşfetmeye devam et"
+    "keepExploring": "Keşfetmeye devam et",
+    "globalEmpty": "Şu an keşfedecek yeni biri yok. Yakında tekrar bak."
   },
   "connections": {
     "matched": "Eşleşmeler",
@@ -377,6 +379,8 @@
     "profileVisibility": "Profil görünürlüğü",
     "visible": "Görünür",
     "hidden": "Gizli",
+    "globalDiscover": "Beni Keşfet'te göster",
+    "globalDiscoverHint": "Çemberlerin dışındaki kişiler seni Keşfet sekmesinde bulabilsin.",
     "blockedUsers": "Engellenen kullanıcılar",
     "dataAndPrivacy": "Veri ve gizlilik",
     "notifications": "Bildirimler",
@@ -387,7 +391,8 @@
     "communityGuidelines": "Topluluk kuralları",
     "helpAndSupport": "Yardım ve destek",
     "logOut": "Çıkış yap",
-    "deleteAccountWarning": "Bu, hesabını silinmek üzere işaretler. Oturumun kapatılacak ve verilerin birkaç gün içinde kalıcı olarak kaldırılacak.",
+    "deleteAccountWarning": "Bu işlem hesabını, profilini, fotoğraflarını, bağlantılarını ve mesajlarını kalıcı olarak siler. Geri alınamaz.",
+    "deleteAccountFailed": "Hesabın silinemedi. Lütfen tekrar dene.",
     "cancel": "Vazgeç",
     "confirmDelete": "Evet, hesabımı sil",
     "deleteAccount": "Hesabı sil",

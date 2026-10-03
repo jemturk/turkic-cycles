@@ -46,12 +46,13 @@ export async function addProfilePhoto(
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
   const path = `${userId}/gallery/${filename}`;
 
+  // ArrayBuffer, not Blob -- see uploadAvatar for why.
   const response = await fetch(uri);
-  const blob = await response.blob();
+  const body = await response.arrayBuffer();
 
   const { error: uploadError } = await supabase.storage
     .from("avatars")
-    .upload(path, blob, { contentType: mimeType });
+    .upload(path, body, { contentType: mimeType });
   if (uploadError) throw uploadError;
 
   const { data, error } = await supabase

@@ -14,6 +14,7 @@ export function CircleHeader({ name, topic, onBack }: { name: string; topic: Cir
   return (
     <AppHeader
       bgClassName={CIRCLE_TOPIC_COLORS[topic].bg}
+      iconColor="#2B2320"
       left={
         <View className="flex-1 flex-row items-center gap-2">
           <Pressable accessibilityLabel={t("common.back")} hitSlop={8} onPress={onBack}>

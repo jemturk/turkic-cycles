@@ -1,6 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { checkForMatch, getOriginCountriesWithConsent, listDiscoverCandidates, recordSwipe } from "@/api/discover";
+import {
+  checkForMatch,
+  getOriginCountriesWithConsent,
+  listDiscoverCandidates,
+  listGlobalDiscoverCandidates,
+  recordSwipe,
+} from "@/api/discover";
 
 export function useOriginCountriesWithConsent(targetUserId: string | undefined) {
   return useQuery({
@@ -13,11 +19,14 @@ export function useOriginCountriesWithConsent(targetUserId: string | undefined) 
   });
 }
 
-export function useDiscoverCandidates(circleId: string | undefined, userId: string | undefined) {
+// circleId: a circle's "Meet members" deck, or null for the global Discover tab.
+// undefined (e.g. a route param that hasn't resolved) keeps the query idle.
+export function useDiscoverCandidates(circleId: string | null | undefined, userId: string | undefined) {
   return useQuery({
     queryKey: ["discoverCandidates", circleId, userId],
-    queryFn: () => listDiscoverCandidates(circleId as string, userId as string),
-    enabled: !!circleId && !!userId,
+    queryFn: () =>
+      circleId === null ? listGlobalDiscoverCandidates() : listDiscoverCandidates(circleId as string, userId as string),
+    enabled: circleId !== undefined && !!userId,
   });
 }
 
@@ -26,19 +35,20 @@ type SwipeInput = {
   action: "like" | "pass" | "save";
 };
 
-export function useRecordSwipe(circleId: string | undefined, userId: string | undefined) {
+export function useRecordSwipe(circleId: string | null | undefined, userId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ targetId, action }: SwipeInput) => {
-      await recordSwipe(userId as string, targetId, circleId as string, action);
+      const scope = circleId ?? null;
+      await recordSwipe(userId as string, targetId, scope, action);
       if (action === "like") {
-        return checkForMatch(userId as string, targetId, circleId as string);
+        return checkForMatch(userId as string, targetId, scope);
       }
       return false;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["discoverCandidates", circleId, userId] });
+      queryClient.invalidateQueries({ queryKey: ["discoverCandidates", circleId ?? null, userId] });
     },
   });
 }

@@ -20,8 +20,8 @@ function SectionLabel({ label }: { label: string }) {
   return <Text className="px-1 pt-2 text-xs font-medium uppercase text-ink-400">{label}</Text>;
 }
 
-// Floating search over whatever screen is open, opened from the tab bar's Search
-// button rather than navigating to a page of its own. Searches only data the app
+// Floating search over whatever screen is open, opened from the search icon in
+// AppHeader rather than navigating to a page of its own. Searches only data the app
 // already loads for you -- every circle, plus people you're matched or chatting
 // with -- all client-side, so there's no new query that could expose other users.
 export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {

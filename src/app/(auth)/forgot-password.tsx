@@ -10,12 +10,14 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/api/client";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
+import { useCaptcha } from "@/hooks/useCaptcha";
 
 export default function ForgotPassword() {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+  const captcha = useCaptcha();
 
   async function onSubmit() {
     const trimmed = email.trim();
@@ -24,8 +26,10 @@ export default function ForgotPassword() {
     setIsSubmitting(true);
     const { error } = await supabase.auth.resetPasswordForEmail(trimmed, {
       redirectTo: Linking.createURL("reset-password"),
+      captchaToken: captcha.captchaToken,
     });
     setIsSubmitting(false);
+    captcha.reset();
 
     if (error) {
       Alert.alert(t("auth.forgotPassword.errorTitle"), error.message);
@@ -71,10 +75,11 @@ export default function ForgotPassword() {
               />
             </View>
 
-            <View className="mt-8">
+            <View className="mt-8 gap-4">
+              {captcha.widget}
               <Button
                 label={isSubmitting ? t("auth.forgotPassword.sending") : t("auth.forgotPassword.submit")}
-                disabled={isSubmitting || !email.trim()}
+                disabled={isSubmitting || !email.trim() || !captcha.ready}
                 onPress={onSubmit}
               />
             </View>

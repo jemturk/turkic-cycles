@@ -30,11 +30,12 @@ export default function OtherProfile() {
   const { data: connectionTypes } = useMyConnectionTypes(userId);
   const { data: originCountries } = useOriginCountriesWithConsent(userId);
   const { data: verificationStatus } = useOtherUserVerificationStatus(userId);
-  const recordSwipe = useRecordSwipe(circleId, session?.user.id);
+  // No circleId = opened from the global Discover tab, so swipes go to that scope.
+  const recordSwipe = useRecordSwipe(circleId ?? null, session?.user.id);
   const blockUser = useBlockUser(session?.user.id);
   const [matchedName, setMatchedName] = useState<string | null>(null);
 
-  const showSwipeActions = fromDiscover === "true" && !!circleId;
+  const showSwipeActions = fromDiscover === "true";
 
   function onSwipe(action: "like" | "pass") {
     recordSwipe.mutate(

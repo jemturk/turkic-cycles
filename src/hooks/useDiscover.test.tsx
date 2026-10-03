@@ -7,6 +7,7 @@ jest.mock("@/api/discover", () => ({
   recordSwipe: jest.fn(),
   checkForMatch: jest.fn(),
   listDiscoverCandidates: jest.fn(),
+  listGlobalDiscoverCandidates: jest.fn(),
   getOriginCountriesWithConsent: jest.fn(),
 }));
 
@@ -65,5 +66,22 @@ describe("useRecordSwipe", () => {
 
     expect(mockCheckForMatch).not.toHaveBeenCalled();
     expect(result.current.data).toBe(false);
+  });
+
+  it("records and checks global-scope swipes with a null circle, and refreshes the global deck", async () => {
+    mockRecordSwipe.mockResolvedValue(undefined);
+    mockCheckForMatch.mockResolvedValue(false);
+    const { wrapper, invalidateSpy } = setup();
+
+    const { result } = await renderHook(() => useRecordSwipe(null, "me"), { wrapper });
+    await act(async () => {
+      result.current.mutate({ targetId: "alice", action: "like" });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(mockRecordSwipe).toHaveBeenCalledWith("me", "alice", null, "like");
+    expect(mockCheckForMatch).toHaveBeenCalledWith("me", "alice", null);
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ["discoverCandidates", null, "me"] });
   });
 });

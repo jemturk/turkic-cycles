@@ -242,7 +242,7 @@ export type Database = {
       }
       matches: {
         Row: {
-          circle_id: string
+          circle_id: string | null
           connection_type: string | null
           created_at: string
           id: string
@@ -250,7 +250,7 @@ export type Database = {
           user_b: string
         }
         Insert: {
-          circle_id: string
+          circle_id?: string | null
           connection_type?: string | null
           created_at?: string
           id?: string
@@ -258,7 +258,7 @@ export type Database = {
           user_b: string
         }
         Update: {
-          circle_id?: string
+          circle_id?: string | null
           connection_type?: string | null
           created_at?: string
           id?: string
@@ -401,6 +401,7 @@ export type Database = {
           country: string | null
           created_at: string
           deletion_requested_at: string | null
+          discoverable: boolean
           display_name: string
           email_notifications_enabled: boolean
           european_citizenship: boolean
@@ -431,6 +432,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           deletion_requested_at?: string | null
+          discoverable?: boolean
           display_name?: string
           email_notifications_enabled?: boolean
           european_citizenship?: boolean
@@ -461,6 +463,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           deletion_requested_at?: string | null
+          discoverable?: boolean
           display_name?: string
           email_notifications_enabled?: boolean
           european_citizenship?: boolean
@@ -638,7 +641,7 @@ export type Database = {
         Row: {
           action: string
           actor_id: string
-          circle_id: string
+          circle_id: string | null
           created_at: string
           target_id: string
           updated_at: string
@@ -646,7 +649,7 @@ export type Database = {
         Insert: {
           action: string
           actor_id: string
-          circle_id: string
+          circle_id?: string | null
           created_at?: string
           target_id: string
           updated_at?: string
@@ -654,7 +657,7 @@ export type Database = {
         Update: {
           action?: string
           actor_id?: string
-          circle_id?: string
+          circle_id?: string | null
           created_at?: string
           target_id?: string
           updated_at?: string
@@ -720,7 +723,14 @@ export type Database = {
           user_id: string
         }[]
       }
+      can_view_profile: { Args: { target: string }; Returns: boolean }
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
+      list_global_discover_candidates: {
+        Args: { max_count?: number }
+        Returns: {
+          user_id: string
+        }[]
+      }
       process_overdue_safety_checkins: { Args: never; Returns: undefined }
     }
     Enums: {

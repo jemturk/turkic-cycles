@@ -42,7 +42,9 @@ function PersonCard({
       style={{ width, aspectRatio: 1 }}
       onPress={onPress}
     >
-      {unreadCount ? <View className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full bg-coral-500" /> : null}
+      {unreadCount && !onQuickChat ? (
+        <View className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full bg-coral-500" />
+      ) : null}
 
       <Avatar uri={person.otherAvatarUrl} name={person.otherDisplayName} size={56} />
 
@@ -61,17 +63,23 @@ function PersonCard({
         ) : null}
       </View>
 
+      {/* Top corner, not bottom: the square card has spare room above the avatar,
+          while the bottom corner sits on the meta line and covers the location.
+          The unread dot rides on this button so the two don't fight for the corner. */}
       {onQuickChat ? (
         <Pressable
           accessibilityLabel={t("connections.connected")}
           hitSlop={8}
-          className="absolute bottom-2 right-2 h-7 w-7 items-center justify-center rounded-full bg-coral-50 dark:bg-ink-700"
+          className="absolute right-2 top-2 h-8 w-8 items-center justify-center rounded-full bg-coral-50 dark:bg-ink-700"
           onPress={(e) => {
             e.stopPropagation();
             onQuickChat();
           }}
         >
-          <Ionicons name="chatbubble-outline" size={14} className="text-coral-500" />
+          <Ionicons name="chatbubble-outline" size={16} className="text-coral-500" />
+          {unreadCount ? (
+            <View className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border border-white bg-coral-500 dark:border-ink-800" />
+          ) : null}
         </Pressable>
       ) : null}
     </Pressable>

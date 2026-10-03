@@ -1,6 +1,7 @@
 {
   "tabs": {
     "circles": "Kreise",
+    "discover": "Entdecken",
     "connections": "Verbindungen",
     "search": "Suche",
     "chat": "Chat",
@@ -121,7 +122,8 @@
     "block": "Blockieren",
     "itsAMatch": "Es ist ein Match!",
     "bothLiked": "Du und {{name}} habt euch gegenseitig gemocht.",
-    "keepExploring": "Weiter entdecken"
+    "keepExploring": "Weiter entdecken",
+    "globalEmpty": "Gerade niemand Neues zu entdecken. Schau bald wieder vorbei."
   },
   "connections": {
     "matched": "Gematcht",
@@ -377,6 +379,8 @@
     "profileVisibility": "Profilsichtbarkeit",
     "visible": "Sichtbar",
     "hidden": "Verborgen",
+    "globalDiscover": "Mich in Entdecken zeigen",
+    "globalDiscoverHint": "Menschen außerhalb deiner Kreise können dich im Tab „Entdecken“ finden.",
     "blockedUsers": "Blockierte Nutzer",
     "dataAndPrivacy": "Daten & Datenschutz",
     "notifications": "Benachrichtigungen",
@@ -387,7 +391,8 @@
     "communityGuidelines": "Community-Richtlinien",
     "helpAndSupport": "Hilfe & Support",
     "logOut": "Abmelden",
-    "deleteAccountWarning": "Dadurch wird dein Konto zur Löschung vorgemerkt. Du wirst abgemeldet, und deine Daten werden innerhalb weniger Tage endgültig gelöscht.",
+    "deleteAccountWarning": "Dadurch werden dein Konto, Profil, Fotos, Verbindungen und Nachrichten dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden.",
+    "deleteAccountFailed": "Dein Konto konnte nicht gelöscht werden. Bitte versuche es erneut.",
     "cancel": "Abbrechen",
     "confirmDelete": "Ja, mein Konto löschen",
     "deleteAccount": "Konto löschen",

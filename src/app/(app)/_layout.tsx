@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
@@ -15,14 +14,20 @@ import { PlatformPressable } from "expo-router/build/react-navigation/elements/P
 import { useSession } from "@/hooks/useSession";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { SearchOverlay } from "@/components/SearchOverlay";
+import { AppMark } from "@/components/AppMark";
+import { useSearchOverlay } from "@/stores/searchOverlay";
 
 const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
-  circles: { active: "sparkles", inactive: "sparkles-outline" },
+  discover: { active: "sparkles", inactive: "sparkles-outline" },
   connections: { active: "people", inactive: "people-outline" },
-  search: { active: "search", inactive: "search-outline" },
   chat: { active: "chatbubble", inactive: "chatbubble-outline" },
   settings: { active: "settings", inactive: "settings-outline" },
 };
+
+// Circles' icon is the app logo, in its own colors rather than the tint -- so
+// it's dimmed instead of recolored when another tab is active. AppMark's circles
+// fill only ~65% of its viewBox height, hence the larger size than other icons.
+const LOGO_ICON_SIZE = 40;
 
 export default function AppTabsLayout() {
   const insets = useSafeAreaInsets();
@@ -31,7 +36,8 @@ export default function AppTabsLayout() {
   const { t } = useTranslation();
   const { session } = useSession();
   usePushNotifications(session?.user.id);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const searchOpen = useSearchOverlay((s) => s.open);
+  const setSearchOpen = useSearchOverlay((s) => s.setOpen);
 
   return (
     <>
@@ -41,9 +47,10 @@ export default function AppTabsLayout() {
           headerShown: false,
           tabBarActiveTintColor: "#D9663D",
           tabBarInactiveTintColor: isDark ? "#8A7C76" : "#A99C95",
-          tabBarLabelStyle: { fontSize: 11, lineHeight: 15, fontWeight: "600", marginTop: 2 },
+          // Icons only; each tab's title still reaches screen readers as its label.
+          tabBarShowLabel: false,
           tabBarStyle: {
-            height: 70 + insets.bottom,
+            height: 60 + insets.bottom,
             paddingBottom: insets.bottom + 8,
             paddingTop: 8,
             // Inline styles, not classNames -- React Navigation's tabBarStyle isn't
@@ -60,6 +67,13 @@ export default function AppTabsLayout() {
             elevation: 3,
           },
           tabBarIcon: ({ focused, color, size }) => {
+            if (route.name === "circles") {
+              return (
+                <View style={{ opacity: focused ? 1 : 0.45 }}>
+                  <AppMark size={LOGO_ICON_SIZE} />
+                </View>
+              );
+            }
             const icons = TAB_ICONS[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };
             return (
               <View className="items-center justify-center" style={{ width: 40, height: 28 }}>
@@ -75,18 +89,7 @@ export default function AppTabsLayout() {
       >
         <Tabs.Screen name="circles" options={{ title: t("tabs.circles") }} />
         <Tabs.Screen name="connections" options={{ title: t("tabs.connections") }} />
-        {/* Opens the floating SearchOverlay over the current screen instead of
-            switching tabs -- see search.tsx for why the route exists at all. */}
-        <Tabs.Screen
-          name="search"
-          options={{ title: t("tabs.search") }}
-          listeners={{
-            tabPress: (e) => {
-              e.preventDefault();
-              setSearchOpen(true);
-            },
-          }}
-        />
+        <Tabs.Screen name="discover" options={{ title: t("tabs.discover") }} />
         <Tabs.Screen name="chat" options={{ title: t("tabs.chat") }} />
         <Tabs.Screen name="settings" options={{ title: t("tabs.settings") }} />
         {/* Viewing someone else's profile from Circles/Connections/Chat -- kept in its

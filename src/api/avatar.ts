@@ -10,12 +10,15 @@ export async function uploadAvatar(userId: string, uri: string, mimeType: string
   const extension = EXTENSION_BY_MIME_TYPE[mimeType] ?? "jpg";
   const path = `${userId}/avatar.${extension}`;
 
+  // ArrayBuffer, not Blob: supabase-js wraps a Blob in FormData, and React Native's
+  // FormData drops the blob's type -- the bucket then sees "text/plain" and rejects
+  // it (allowed_mime_types). An ArrayBuffer goes up as the raw body with contentType.
   const response = await fetch(uri);
-  const blob = await response.blob();
+  const body = await response.arrayBuffer();
 
   const { error: uploadError } = await supabase.storage
     .from("avatars")
-    .upload(path, blob, { contentType: mimeType, upsert: true });
+    .upload(path, body, { contentType: mimeType, upsert: true });
   if (uploadError) throw uploadError;
 
   const { data } = supabase.storage.from("avatars").getPublicUrl(path);

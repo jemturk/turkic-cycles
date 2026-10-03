@@ -3,7 +3,7 @@ import type { Tables } from "@/types/database";
 
 export type MatchWithParticipant = {
   matchId: string;
-  circleId: string;
+  circleId: string | null; // null = matched on the global Discover tab
   createdAt: string;
   otherUserId: string;
   otherDisplayName: string;

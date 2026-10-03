@@ -20,6 +20,48 @@ export async function getOriginCountriesWithConsent(userIds: string[]): Promise<
   return new Map((data ?? []).map((row) => [row.user_id, row.origin_countries ?? []]));
 }
 
+// Profiles, connection types and consented origin countries for the given users,
+// returned in the same order as userIds.
+async function hydrateCandidates(userIds: string[]): Promise<DiscoverCandidate[]> {
+  const [{ data: profileRows, error: profileError }, { data: typeRows, error: typeError }, originCountriesById] =
+    await Promise.all([
+      supabase
+        .from("profiles")
+        .select("id, display_name, avatar_url, birthdate, city, state, occupation")
+        .in("id", userIds),
+      supabase.from("user_connection_types").select("user_id, connection_type").in("user_id", userIds),
+      getOriginCountriesWithConsent(userIds),
+    ]);
+  if (profileError) throw profileError;
+  if (typeError) throw typeError;
+
+  const connectionTypesById = new Map<string, ConnectionType[]>();
+  for (const row of typeRows ?? []) {
+    const existing = connectionTypesById.get(row.user_id) ?? [];
+    existing.push(row.connection_type as ConnectionType);
+    connectionTypesById.set(row.user_id, existing);
+  }
+
+  const profileById = new Map((profileRows ?? []).map((profile) => [profile.id, profile]));
+  return userIds.flatMap((id) => {
+    const profile = profileById.get(id);
+    if (!profile) return [];
+    return [
+      {
+        userId: profile.id,
+        displayName: profile.display_name,
+        avatarUrl: profile.avatar_url,
+        birthdate: profile.birthdate,
+        city: profile.city,
+        state: profile.state,
+        occupation: profile.occupation,
+        connectionTypes: connectionTypesById.get(profile.id) ?? [],
+        originCountries: originCountriesById.get(profile.id) ?? [],
+      },
+    ];
+  });
+}
+
 export async function listDiscoverCandidates(circleId: string, userId: string): Promise<DiscoverCandidate[]> {
   const { data: memberRows, error: memberError } = await supabase
     .from("circle_members")
@@ -39,42 +81,25 @@ export async function listDiscoverCandidates(circleId: string, userId: string): 
   const candidateIds = (memberRows ?? []).map((row) => row.user_id).filter((id) => !alreadySwiped.has(id));
   if (candidateIds.length === 0) return [];
 
-  const [{ data: profileRows, error: profileError }, { data: typeRows, error: typeError }, originCountriesById] =
-    await Promise.all([
-      supabase
-        .from("profiles")
-        .select("id, display_name, avatar_url, birthdate, city, state, occupation")
-        .in("id", candidateIds),
-      supabase.from("user_connection_types").select("user_id, connection_type").in("user_id", candidateIds),
-      getOriginCountriesWithConsent(candidateIds),
-    ]);
-  if (profileError) throw profileError;
-  if (typeError) throw typeError;
-
-  const connectionTypesById = new Map<string, ConnectionType[]>();
-  for (const row of typeRows ?? []) {
-    const existing = connectionTypesById.get(row.user_id) ?? [];
-    existing.push(row.connection_type as ConnectionType);
-    connectionTypesById.set(row.user_id, existing);
-  }
-
-  return (profileRows ?? []).map((profile) => ({
-    userId: profile.id,
-    displayName: profile.display_name,
-    avatarUrl: profile.avatar_url,
-    birthdate: profile.birthdate,
-    city: profile.city,
-    state: profile.state,
-    occupation: profile.occupation,
-    connectionTypes: connectionTypesById.get(profile.id) ?? [],
-    originCountries: originCountriesById.get(profile.id) ?? [],
-  }));
+  return hydrateCandidates(candidateIds);
 }
 
+// The Discover tab: anyone discoverable, picked (and ordered) server-side by
+// list_global_discover_candidates -- random for now, a matching algorithm later.
+export async function listGlobalDiscoverCandidates(): Promise<DiscoverCandidate[]> {
+  const { data, error } = await supabase.rpc("list_global_discover_candidates", { max_count: 20 });
+  if (error) throw error;
+  const candidateIds = (data ?? []).map((row) => row.user_id);
+  if (candidateIds.length === 0) return [];
+
+  return hydrateCandidates(candidateIds);
+}
+
+// circleId null = the global (Discover tab) scope, here and in checkForMatch.
 export async function recordSwipe(
   actorId: string,
   targetId: string,
-  circleId: string,
+  circleId: string | null,
   action: "like" | "pass" | "save"
 ) {
   const { error } = await supabase
@@ -83,16 +108,11 @@ export async function recordSwipe(
   if (error) throw error;
 }
 
-export async function checkForMatch(userId: string, targetId: string, circleId: string): Promise<boolean> {
+export async function checkForMatch(userId: string, targetId: string, circleId: string | null): Promise<boolean> {
   const userA = userId < targetId ? userId : targetId;
   const userB = userId < targetId ? targetId : userId;
-  const { data, error } = await supabase
-    .from("matches")
-    .select("*")
-    .eq("user_a", userA)
-    .eq("user_b", userB)
-    .eq("circle_id", circleId)
-    .maybeSingle();
+  const query = supabase.from("matches").select("*").eq("user_a", userA).eq("user_b", userB);
+  const { data, error } = await (circleId ? query.eq("circle_id", circleId) : query.is("circle_id", null)).maybeSingle();
   if (error) throw error;
   return !!data;
 }

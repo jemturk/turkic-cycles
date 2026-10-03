@@ -13,11 +13,13 @@ import { supabase } from "@/api/client";
 import { signUpCredentialsSchema, type SignUpCredentials } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
+import { useCaptcha } from "@/hooks/useCaptcha";
 
 export default function SignUp() {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sentEmail, setSentEmail] = useState<string | null>(null);
+  const captcha = useCaptcha();
   const {
     control,
     handleSubmit,
@@ -31,9 +33,10 @@ export default function SignUp() {
     setIsSubmitting(true);
     const { data, error } = await supabase.auth.signUp({
       ...values,
-      options: { emailRedirectTo: Linking.createURL("confirm") },
+      options: { emailRedirectTo: Linking.createURL("confirm"), captchaToken: captcha.captchaToken },
     });
     setIsSubmitting(false);
+    captcha.reset();
 
     if (error) {
       Alert.alert(t("auth.signUp.errorTitle"), error.message);
@@ -104,8 +107,13 @@ export default function SignUp() {
               ) : null}
             </View>
 
-            <View className="mt-8">
-              <Button label={t("auth.signUp.submit")} onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
+            <View className="mt-8 gap-4">
+              {captcha.widget}
+              <Button
+                label={t("auth.signUp.submit")}
+                onPress={handleSubmit(onSubmit)}
+                disabled={isSubmitting || !captcha.ready}
+              />
             </View>
           </>
         )}

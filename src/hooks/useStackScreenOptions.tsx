@@ -10,13 +10,13 @@ import { AppHeader } from "@/components/AppHeader";
 //
 // headerShown defaults to false here -- most screens draw their own in-body back
 // button -- but a tab's root screen opts back in (see e.g. circles/_layout.tsx) to
-// get AppHeader (logo + your avatar) instead of an in-body title.
+// get AppHeader (its title + your avatar) instead of an in-body title.
 export function useStackScreenOptions() {
   const { colorScheme } = useColorScheme();
 
   return {
     headerShown: false as const,
     contentStyle: { backgroundColor: colorScheme === "dark" ? "#171310" : "#FDEDE5" },
-    header: () => <AppHeader />,
+    header: ({ options }: { options: { title?: string } }) => <AppHeader title={options.title} />,
   };
 }

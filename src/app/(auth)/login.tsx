@@ -12,10 +12,12 @@ import { supabase } from "@/api/client";
 import { authCredentialsSchema, type AuthCredentials } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
+import { useCaptcha } from "@/hooks/useCaptcha";
 
 export default function Login() {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const captcha = useCaptcha();
   const {
     control,
     handleSubmit,
@@ -27,8 +29,12 @@ export default function Login() {
 
   const onSubmit = async (values: AuthCredentials) => {
     setIsSubmitting(true);
-    const { error } = await supabase.auth.signInWithPassword(values);
+    const { error } = await supabase.auth.signInWithPassword({
+      ...values,
+      options: { captchaToken: captcha.captchaToken },
+    });
     setIsSubmitting(false);
+    captcha.reset();
 
     if (error) {
       Alert.alert(t("auth.login.errorTitle"), error.message);
@@ -83,7 +89,12 @@ export default function Login() {
         </View>
 
         <View className="mt-8 gap-3">
-          <Button label={t("auth.login.submit")} onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
+          {captcha.widget}
+          <Button
+            label={t("auth.login.submit")}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isSubmitting || !captcha.ready}
+          />
           <Text className="text-center text-sm text-ink-400">
             {t("auth.login.noAccount")}{" "}
             <Text className="font-semibold text-coral-500" onPress={() => router.push("/(auth)/sign-up")}>

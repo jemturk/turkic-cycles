@@ -1,6 +1,7 @@
 {
   "tabs": {
     "circles": "Circles",
+    "discover": "Discover",
     "connections": "Connections",
     "search": "Search",
     "chat": "Chat",
@@ -121,7 +122,8 @@
     "block": "Block",
     "itsAMatch": "It's a match!",
     "bothLiked": "You and {{name}} both liked each other.",
-    "keepExploring": "Keep exploring"
+    "keepExploring": "Keep exploring",
+    "globalEmpty": "No one new to discover right now. Check back soon."
   },
   "connections": {
     "matched": "Matched",
@@ -377,6 +379,8 @@
     "profileVisibility": "Profile visibility",
     "visible": "Visible",
     "hidden": "Hidden",
+    "globalDiscover": "Show me in Discover",
+    "globalDiscoverHint": "Let people outside your circles find you on the Discover tab.",
     "blockedUsers": "Blocked users",
     "dataAndPrivacy": "Data & privacy",
     "notifications": "Notifications",
@@ -387,7 +391,8 @@
     "communityGuidelines": "Community guidelines",
     "helpAndSupport": "Help & support",
     "logOut": "Log out",
-    "deleteAccountWarning": "This marks your account for deletion. You'll be signed out, and your data will be permanently removed within a few days.",
+    "deleteAccountWarning": "This permanently deletes your account, profile, photos, connections and messages. It can't be undone.",
+    "deleteAccountFailed": "Couldn't delete your account. Please try again.",
     "cancel": "Cancel",
     "confirmDelete": "Yes, delete my account",
     "deleteAccount": "Delete account",

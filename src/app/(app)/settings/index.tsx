@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pressable, ScrollView, Switch, View } from "react-native";
+import { Alert, Pressable, ScrollView, Switch, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -11,8 +11,9 @@ import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { useMyVerificationStatus } from "@/hooks/useVerification";
 import {
-  useRequestAccountDeletion,
+  useDeleteAccount,
   useUpdateAppLocale,
+  useUpdateDiscoverable,
   useUpdateNotificationPreferences,
   useUpdateProfileVisibility,
   useUpdateTextSize,
@@ -72,15 +73,18 @@ export default function Settings() {
   const updateTextSize = useUpdateTextSize(userId);
   const updateNotifications = useUpdateNotificationPreferences(userId);
   const updateVisibility = useUpdateProfileVisibility(userId);
-  const requestDeletion = useRequestAccountDeletion(userId);
+  const updateDiscoverable = useUpdateDiscoverable(userId);
+  const deleteAccount = useDeleteAccount();
   const resetOnboardingStore = useOnboardingStore((s) => s.reset);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const location = [profile?.city, profile?.state].filter(Boolean).join(", ");
 
-  const signOut = async () => {
+  // local: after deleting the account the session is already invalid server-side,
+  // so a global sign-out would fail -- just drop the session on this device.
+  const signOut = async (scope: "global" | "local" = "global") => {
     resetOnboardingStore();
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope });
     router.replace("/");
   };
 
@@ -207,6 +211,16 @@ export default function Settings() {
             />
           </View>
         </View>
+        <View className="flex-row items-center justify-between gap-3 rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+          <View className="flex-1">
+            <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.globalDiscover")}</Text>
+            <Text className="text-sm text-ink-400">{t("settings.globalDiscoverHint")}</Text>
+          </View>
+          <Switch
+            value={profile?.discoverable ?? true}
+            onValueChange={(discoverable) => updateDiscoverable.mutate(discoverable)}
+          />
+        </View>
         <SettingsRow label={t("settings.blockedUsers")} onPress={() => router.push("/(app)/settings/blocked-users")} />
         <SettingsRow
           label={t("settings.dataAndPrivacy")}
@@ -238,7 +252,7 @@ export default function Settings() {
         <SettingsRow label={t("settings.helpAndSupport")} onPress={() => router.push("/(app)/settings/static-page?topic=help")} />
 
         <View className="mt-4">
-          <Button label={t("settings.logOut")} variant="secondary" onPress={signOut} />
+          <Button label={t("settings.logOut")} variant="secondary" onPress={() => signOut()} />
         </View>
 
         {confirmingDelete ? (
@@ -250,8 +264,14 @@ export default function Settings() {
               </View>
               <View className="flex-1">
                 <Button
-                  label={t("settings.confirmDelete")}
-                  onPress={() => requestDeletion.mutate(undefined, { onSuccess: signOut })}
+                  label={deleteAccount.isPending ? t("common.loading") : t("settings.confirmDelete")}
+                  disabled={deleteAccount.isPending}
+                  onPress={() =>
+                    deleteAccount.mutate(undefined, {
+                      onSuccess: () => signOut("local"),
+                      onError: () => Alert.alert(t("settings.deleteAccountFailed")),
+                    })
+                  }
                 />
               </View>
             </View>

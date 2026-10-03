@@ -1,5 +1,5 @@
 import { ok, queueSupabaseResponses, type SupabaseResponse } from "@/test-utils/supabaseMock";
-import { listDiscoverCandidates, checkForMatch } from "./discover";
+import { listDiscoverCandidates, listGlobalDiscoverCandidates, checkForMatch } from "./discover";
 
 const mockFrom = jest.fn();
 const mockRpc = jest.fn();
@@ -107,5 +107,55 @@ describe("checkForMatch", () => {
   it("returns false when no match row exists", async () => {
     queueResponses({ matches: [ok(null)] });
     expect(await checkForMatch("alice", "bob", "circle-1")).toBe(false);
+  });
+
+  it("looks only at global matches (circle_id is null) for the Discover tab's scope", async () => {
+    queueResponses({ matches: [ok({ id: "m1" })] });
+    expect(await checkForMatch("alice", "bob", null)).toBe(true);
+
+    const chain = mockFrom.mock.results[0].value;
+    expect(chain.is).toHaveBeenCalledWith("circle_id", null);
+    expect(chain.eq).not.toHaveBeenCalledWith("circle_id", expect.anything());
+  });
+});
+
+describe("listGlobalDiscoverCandidates", () => {
+  function profile(id: string, name: string) {
+    return { id, display_name: name, avatar_url: null, birthdate: null, city: null, state: null, occupation: null };
+  }
+
+  it("keeps the server's order, not the order profiles come back in", async () => {
+    mockRpc.mockImplementation((fn: string) =>
+      Promise.resolve(
+        fn === "list_global_discover_candidates"
+          ? ok([{ user_id: "carol" }, { user_id: "alice" }, { user_id: "bob" }])
+          : ok([])
+      )
+    );
+    queueResponses({
+      profiles: [ok([profile("alice", "Alice"), profile("bob", "Bob"), profile("carol", "Carol")])],
+      user_connection_types: [ok([])],
+    });
+
+    const result = await listGlobalDiscoverCandidates();
+    expect(result.map((c) => c.userId)).toEqual(["carol", "alice", "bob"]);
+  });
+
+  it("drops candidates whose profile couldn't be read", async () => {
+    mockRpc.mockImplementation((fn: string) =>
+      Promise.resolve(fn === "list_global_discover_candidates" ? ok([{ user_id: "alice" }, { user_id: "ghost" }]) : ok([]))
+    );
+    queueResponses({ profiles: [ok([profile("alice", "Alice")])], user_connection_types: [ok([])] });
+
+    expect((await listGlobalDiscoverCandidates()).map((c) => c.userId)).toEqual(["alice"]);
+  });
+
+  it("returns an empty array without further queries when no one is left", async () => {
+    mockRpc.mockResolvedValue(ok([]));
+    queueResponses({});
+
+    expect(await listGlobalDiscoverCandidates()).toEqual([]);
+    expect(mockFrom).not.toHaveBeenCalled();
+    expect(mockRpc).toHaveBeenCalledTimes(1);
   });
 });
