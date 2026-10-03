@@ -2,13 +2,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   getCircle,
+  getCircleEvent,
   getMyRsvp,
-  getNextCircleEvent,
   joinCircle,
   leaveCircle,
+  listCircleEvents,
   listCircleMembers,
   listCircles,
   listMyCircleMemberships,
+  listUpcomingEventCounts,
   upsertRsvp,
 } from "@/api/circles";
 
@@ -40,11 +42,23 @@ export function useCircleMembers(circleId: string | undefined, limit?: number) {
   });
 }
 
-export function useNextCircleEvent(circleId: string | undefined) {
+export function useUpcomingEventCounts() {
+  return useQuery({ queryKey: ["upcomingEventCounts"], queryFn: listUpcomingEventCounts });
+}
+
+export function useCircleEvents(circleId: string | undefined) {
   return useQuery({
-    queryKey: ["nextCircleEvent", circleId],
-    queryFn: () => getNextCircleEvent(circleId as string),
+    queryKey: ["circleEvents", circleId],
+    queryFn: () => listCircleEvents(circleId as string),
     enabled: !!circleId,
+  });
+}
+
+export function useCircleEvent(eventId: string | undefined) {
+  return useQuery({
+    queryKey: ["circleEvent", eventId],
+    queryFn: () => getCircleEvent(eventId as string),
+    enabled: !!eventId,
   });
 }
 
@@ -89,6 +103,9 @@ export function useUpsertRsvp(eventId: string | undefined, userId: string | unde
       upsertRsvp(eventId as string, userId as string, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myRsvp", eventId, userId] });
+      // going_count / interested_count are recomputed by a trigger on event_rsvps.
+      queryClient.invalidateQueries({ queryKey: ["circleEvents"] });
+      queryClient.invalidateQueries({ queryKey: ["circleEvent", eventId] });
     },
   });
 }

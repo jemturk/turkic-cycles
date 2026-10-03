@@ -1,5 +1,11 @@
 import { ok, queueSupabaseResponses, type SupabaseResponse } from "@/test-utils/supabaseMock";
-import { listMyCircleMemberships, listCircleMembers, getNextCircleEvent } from "./circles";
+import {
+  listMyCircleMemberships,
+  listCircleMembers,
+  listUpcomingEventCounts,
+  listCircleEvents,
+  getCircleEvent,
+} from "./circles";
 
 const mockFrom = jest.fn();
 jest.mock("@/api/client", () => ({
@@ -44,25 +50,47 @@ describe("listCircleMembers", () => {
   });
 });
 
-describe("getNextCircleEvent", () => {
-  it("returns the next upcoming event when one exists", async () => {
-    queueResponses({ circle_events: [ok({ id: "e1", starts_at: "2099-01-01" })] });
-    const result = await getNextCircleEvent("circle-1");
-    expect(result).toEqual({ id: "e1", starts_at: "2099-01-01" });
-    expect(mockFrom).toHaveBeenCalledTimes(1);
+describe("listUpcomingEventCounts", () => {
+  it("tallies upcoming events per circle", async () => {
+    queueResponses({ circle_events: [ok([{ circle_id: "c1" }, { circle_id: "c2" }, { circle_id: "c1" }])] });
+    expect(await listUpcomingEventCounts()).toEqual({ c1: 2, c2: 1 });
   });
 
-  it("falls back to the most recent past event when there's no upcoming one", async () => {
+  it("returns an empty map when nothing is upcoming", async () => {
+    queueResponses({ circle_events: [ok([])] });
+    expect(await listUpcomingEventCounts()).toEqual({});
+  });
+});
+
+describe("listCircleEvents", () => {
+  it("splits events into upcoming (soonest first) and past (most recent first)", async () => {
+    // Rows arrive ordered by starts_at ascending, as the real query requests.
     queueResponses({
-      circle_events: [ok(null), ok({ id: "e0", starts_at: "2020-01-01" })],
+      circle_events: [
+        ok([
+          { id: "past-old", starts_at: "2020-01-01" },
+          { id: "past-recent", starts_at: "2021-06-01" },
+          { id: "next", starts_at: "2099-01-01" },
+          { id: "later", starts_at: "2099-06-01" },
+        ]),
+      ],
     });
-    const result = await getNextCircleEvent("circle-1");
-    expect(result).toEqual({ id: "e0", starts_at: "2020-01-01" });
-    expect(mockFrom).toHaveBeenCalledTimes(2);
+
+    const { upcoming, past } = await listCircleEvents("circle-1");
+
+    expect(upcoming.map((e) => e.id)).toEqual(["next", "later"]);
+    expect(past.map((e) => e.id)).toEqual(["past-recent", "past-old"]);
   });
 
-  it("returns null when there are no events at all", async () => {
-    queueResponses({ circle_events: [ok(null), ok(null)] });
-    expect(await getNextCircleEvent("circle-1")).toBeNull();
+  it("returns two empty lists when the circle has no events", async () => {
+    queueResponses({ circle_events: [ok([])] });
+    expect(await listCircleEvents("circle-1")).toEqual({ upcoming: [], past: [] });
+  });
+});
+
+describe("getCircleEvent", () => {
+  it("returns the event row", async () => {
+    queueResponses({ circle_events: [ok({ id: "e1", title: "Meetup" })] });
+    expect(await getCircleEvent("e1")).toEqual({ id: "e1", title: "Meetup" });
   });
 });

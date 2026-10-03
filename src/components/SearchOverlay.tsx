@@ -81,6 +81,11 @@ export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:
               placeholderTextColor="#8A7C76"
               autoCapitalize="none"
               autoCorrect={false}
+              // Without these, mobile Chrome treats this as a fillable form field and
+              // shows its autofill bar (passwords / cards / addresses) above the
+              // keyboard.
+              autoComplete="off"
+              inputMode="search"
               returnKeyType="search"
               className="flex-1 text-base text-ink-900 dark:text-ink-50"
               // Suppresses the browser's default focus ring on web, same as the chat
@@ -123,7 +128,7 @@ export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:
                         </Text>
                         <Text className="text-xs text-ink-400" numberOfLines={1}>
                           {t("circles.membersCount", { count: circle.member_count })}
-                          {circle.city ? ` · ${circle.city}` : ""}
+                          {circle.city ? ` · ${[circle.city, circle.state].filter(Boolean).join(", ")}` : ""}
                         </Text>
                       </View>
                     </Pressable>

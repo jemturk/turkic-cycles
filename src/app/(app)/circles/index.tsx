@@ -1,4 +1,4 @@
-import { Pressable, View } from "react-native";
+import { Pressable, Switch, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -6,7 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
-import { useCircles, useJoinCircle, useMyCircleMemberships } from "@/hooks/useCircles";
+import { useCircles, useJoinCircle, useMyCircleMemberships, useUpcomingEventCounts } from "@/hooks/useCircles";
+import { useIsNearby, useLocalFilter } from "@/stores/localFilter";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { Chip } from "@/components/Chip";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
@@ -17,21 +18,52 @@ export default function Circles() {
   const userId = session?.user.id;
   const { data: circles, refetch, isRefetching } = useCircles();
   const { data: memberships } = useMyCircleMemberships(userId);
+  const { data: eventCounts, refetch: refetchEventCounts } = useUpcomingEventCounts();
   const joinCircle = useJoinCircle(userId);
+  const localEnabled = useLocalFilter((s) => s.enabled);
+  const localStatus = useLocalFilter((s) => s.status);
+  const setLocalEnabled = useLocalFilter((s) => s.setEnabled);
+  const isNearby = useIsNearby();
 
   const joinedIds = new Set(memberships ?? []);
+
+  const shownCircles = (circles ?? []).filter(isNearby);
 
   return (
     <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
       <RefreshableScrollView
         refreshing={isRefetching}
-        onRefresh={refetch}
+        onRefresh={() => {
+          refetch();
+          refetchEventCounts();
+        }}
         className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-4 pb-10"
       >
         <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.subtitle")}</Text>
 
-        {(circles ?? []).map((circle) => {
+        <View className="flex-row items-center justify-between gap-3 rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+          <View className="flex-1">
+            <Text className="text-base text-ink-900 dark:text-ink-50">{t("circles.local")}</Text>
+            <Text className="text-xs text-ink-400">{t("circles.localHint")}</Text>
+          </View>
+          <Switch
+            value={localEnabled || localStatus === "locating"}
+            disabled={localStatus === "locating"}
+            onValueChange={(on) => setLocalEnabled(on)}
+          />
+        </View>
+        {localStatus === "denied" || localStatus === "unavailable" ? (
+          <Text className="-mt-2 text-xs text-coral-600">
+            {localStatus === "denied" ? t("circles.locationDenied") : t("circles.locationUnavailable")}
+          </Text>
+        ) : null}
+
+        {localEnabled && circles && shownCircles.length === 0 ? (
+          <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.noLocalCircles")}</Text>
+        ) : null}
+
+        {shownCircles.map((circle) => {
           const topic = circle.topic as CircleTopic;
           const isJoined = joinedIds.has(circle.id);
           return (
@@ -51,8 +83,12 @@ export default function Circles() {
                 </Text>
                 <Text className="text-xs text-ink-400">
                   {t("circles.membersCount", { count: circle.member_count })}
-                  {circle.city ? ` · ${circle.city}` : ""}
+                  {" · "}
+                  {t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 })}
                 </Text>
+                {circle.city ? (
+                  <Text className="text-xs text-ink-400">{[circle.city, circle.state].filter(Boolean).join(", ")}</Text>
+                ) : null}
               </View>
 
               <View className="justify-center">

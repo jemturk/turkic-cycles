@@ -49,11 +49,15 @@ export default function AppTabsLayout() {
             // Inline styles, not classNames -- React Navigation's tabBarStyle isn't
             // resolved through NativeWind, so dark mode has to be handled here in JS.
             backgroundColor: isDark ? "#352C27" : "#FFFFFF",
-            borderTopWidth: 1,
-            borderTopColor: isDark ? "#4A3F3A" : "#F1E7E0",
+            borderTopWidth: 0,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
-            elevation: 0,
+            // Same soft shadow as AppHeader's bottom edge, cast upward instead.
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.08,
+            shadowRadius: 12,
+            elevation: 3,
           },
           tabBarIcon: ({ focused, color, size }) => {
             const icons = TAB_ICONS[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };

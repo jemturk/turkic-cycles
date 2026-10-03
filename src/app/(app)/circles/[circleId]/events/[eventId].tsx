@@ -2,54 +2,47 @@ import { Pressable, ScrollView, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import {
   useCircle,
+  useCircleEvent,
   useCircleMembers,
   useJoinCircle,
   useLeaveCircle,
   useMyCircleMemberships,
   useMyRsvp,
-  useNextCircleEvent,
   useUpsertRsvp,
 } from "@/hooks/useCircles";
-import {
-  CIRCLE_TOPIC_COLORS,
-  CIRCLE_TOPIC_ICONS,
-  RSVP_STATUSES,
-  type CircleTopic,
-  type RsvpStatus,
-} from "@/constants/circles";
+import { RSVP_STATUSES, type CircleTopic, type RsvpStatus } from "@/constants/circles";
 import { Button } from "@/components/Button";
 import { Chip } from "@/components/Chip";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { Avatar } from "@/components/Avatar";
+import { CircleHeader } from "@/components/CircleHeader";
 
 const MEMBERS_PREVIEW_COUNT = 6;
 
-export default function CircleDetail() {
+export default function CircleEventDetail() {
   const { t } = useTranslation();
-  const { circleId } = useLocalSearchParams<{ circleId: string }>();
+  const { circleId, eventId } = useLocalSearchParams<{ circleId: string; eventId: string }>();
   const { session } = useSession();
   const userId = session?.user.id;
   const navigation = useRouter();
 
   // Reachable via a direct URL/refresh on web (e.g. a shared link), which has no
-  // in-app history to pop -- router.back() would then silently no-op. Same class of
-  // bug as the onboarding step-1 back button fixed earlier: fall back to the circles
-  // list instead of assuming a push always happened first.
+  // in-app history to pop -- router.back() would then silently no-op. Fall back to
+  // the circle's events list instead of assuming a push always happened first.
   function goBack() {
     if (navigation.canGoBack()) router.back();
-    else router.replace("/(app)/circles");
+    else router.replace(`/(app)/circles/${circleId}`);
   }
 
   const { data: circle } = useCircle(circleId);
   const { data: memberships } = useMyCircleMemberships(userId);
-  const { data: event } = useNextCircleEvent(circleId);
+  const { data: event } = useCircleEvent(eventId);
   const { data: rsvp } = useMyRsvp(event?.id, userId);
   const { data: membersPreview } = useCircleMembers(circleId, MEMBERS_PREVIEW_COUNT);
   const joinCircle = useJoinCircle(userId);
@@ -63,20 +56,16 @@ export default function CircleDetail() {
   const location = [circle.city, circle.state, circle.country].filter(Boolean).join(", ");
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["top", "left", "right"]}>
-      <ScrollView className="flex-1" contentContainerClassName="gap-4 pb-10">
-        <View className={`h-16 flex-row items-center gap-3 px-6 ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
-          <Pressable onPress={goBack}>
-            <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
-          </Pressable>
-          <View className="rounded-xl bg-white/70 p-2">
-            <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={28} color={CIRCLE_TOPIC_COLORS[topic].fg} />
-          </View>
-        </View>
+    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right"]}>
+      <CircleHeader name={circle.name} topic={topic} onBack={goBack} />
 
+      <ScrollView className="flex-1" contentContainerClassName="gap-4 pb-10 pt-4">
         <View className="gap-4 px-6">
-          <View className="flex-row items-start justify-between gap-3">
-            <Text className="flex-1 font-display text-2xl text-ink-900 dark:text-ink-50">{circle.name}</Text>
+          <View className="flex-row items-center justify-between gap-3">
+            <Text className="flex-1 text-sm text-ink-400">
+              {t("circles.membersCount", { count: circle.member_count })}
+              {location ? ` · ${location}` : ""}
+            </Text>
             <Chip
               label={isJoined ? t("circles.joined") : t("circles.join")}
               selected={isJoined}
@@ -87,11 +76,6 @@ export default function CircleDetail() {
               }}
             />
           </View>
-
-          <Text className="text-sm text-ink-400">
-            {t("circles.membersCount", { count: circle.member_count })}
-            {location ? ` · ${location}` : ""}
-          </Text>
 
           {circle.description ? <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text> : null}
 

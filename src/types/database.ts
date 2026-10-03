@@ -63,7 +63,9 @@ export type Database = {
           created_at: string
           description: string | null
           ends_at: string | null
+          going_count: number
           id: string
+          interested_count: number
           location: string | null
           starts_at: string
           title: string
@@ -73,7 +75,9 @@ export type Database = {
           created_at?: string
           description?: string | null
           ends_at?: string | null
+          going_count?: number
           id?: string
+          interested_count?: number
           location?: string | null
           starts_at: string
           title: string
@@ -83,7 +87,9 @@ export type Database = {
           created_at?: string
           description?: string | null
           ends_at?: string | null
+          going_count?: number
           id?: string
+          interested_count?: number
           location?: string | null
           starts_at?: string
           title?: string
@@ -134,6 +140,8 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          latitude: number | null
+          longitude: number | null
           member_count: number
           name: string
           slug: string
@@ -147,6 +155,8 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           member_count?: number
           name: string
           slug: string
@@ -160,6 +170,8 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           member_count?: number
           name?: string
           slug?: string

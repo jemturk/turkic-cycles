@@ -65,29 +65,39 @@ export async function listCircleMembers(circleId: string, limit?: number) {
   }));
 }
 
-// Next upcoming event, or the most recent past one if none upcoming — so the detail
-// screen never looks broken once a seeded event's date has passed.
-export async function getNextCircleEvent(circleId: string) {
-  const { data: upcoming, error: upcomingError } = await supabase
+// Upcoming-event count per circle, for the circles list -- one query for all
+// circles rather than one per card.
+export async function listUpcomingEventCounts(): Promise<Record<string, number>> {
+  const { data, error } = await supabase
     .from("circle_events")
-    .select("*")
-    .eq("circle_id", circleId)
-    .gte("starts_at", new Date().toISOString())
-    .order("starts_at")
-    .limit(1)
-    .maybeSingle();
-  if (upcomingError) throw upcomingError;
-  if (upcoming) return upcoming;
+    .select("circle_id")
+    .gte("starts_at", new Date().toISOString());
+  if (error) throw error;
+  const counts: Record<string, number> = {};
+  for (const row of data ?? []) counts[row.circle_id] = (counts[row.circle_id] ?? 0) + 1;
+  return counts;
+}
 
-  const { data: past, error: pastError } = await supabase
+// Upcoming events soonest first; past events most recent first.
+export async function listCircleEvents(circleId: string) {
+  const { data, error } = await supabase
     .from("circle_events")
     .select("*")
     .eq("circle_id", circleId)
-    .order("starts_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  if (pastError) throw pastError;
-  return past;
+    .order("starts_at");
+  if (error) throw error;
+  const now = Date.now();
+  const events = data ?? [];
+  return {
+    upcoming: events.filter((e) => new Date(e.starts_at).getTime() >= now),
+    past: events.filter((e) => new Date(e.starts_at).getTime() < now).reverse(),
+  };
+}
+
+export async function getCircleEvent(eventId: string) {
+  const { data, error } = await supabase.from("circle_events").select("*").eq("id", eventId).single();
+  if (error) throw error;
+  return data;
 }
 
 export async function getMyRsvp(eventId: string, userId: string) {
