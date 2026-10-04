@@ -71,8 +71,8 @@ export function AnimatedSplash({ onFinish }: { onFinish: () => void }) {
             clipped -- which cut their outer edges flat at the start. Same scale as
             a 120px logo (0.75px per unit), just with 80 units of room per side. */}
         <Svg width={240} height={120} viewBox="-80 0 320 160">
-          <AnimatedCircle cy="80" r="52" fill="#D9663D" animatedProps={coralProps} />
-          <AnimatedCircle cy="80" r="52" fill="#2C8B80" animatedProps={tealProps} />
+          <AnimatedCircle cy="80" r="52" fill="#C1440E" animatedProps={coralProps} />
+          <AnimatedCircle cy="80" r="52" fill="#127A87" animatedProps={tealProps} />
           <AnimatedPolygon
             points={STAR_POINTS}
             fill="#FFFFFF"

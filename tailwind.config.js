@@ -19,8 +19,8 @@ module.exports = {
       colors: {
         // İznik Tile palette (from the "Palette Alternatives" design canvas), tuned:
         // turquoise-leaning primary, coral-red accent, warm apricot-cream ground. The
-        // logo keeps its own coral + teal (AppMark.tsx) -- it's the brand mark, not UI
-        // chrome.
+        // logo's two circles are the accent and primary too (AppMark.tsx, and the
+        // icon/splash images rendered from it).
         //
         // primary: buttons, selected states, links, icons. 50 is the apricot-cream
         // page ground and 100 the hairline border/tint -- the roles coral-50/100 had.
