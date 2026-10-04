@@ -1,4 +1,5 @@
-import { Tabs } from "expo-router";
+import { useEffect } from "react";
+import { Tabs, router, usePathname } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,6 +17,11 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { SearchOverlay } from "@/components/SearchOverlay";
 import { AppMark } from "@/components/AppMark";
 import { useSearchOverlay } from "@/stores/searchOverlay";
+import { alertCoverRequired, useHasCover } from "@/hooks/useCoverGuard";
+
+// The only screen reachable while the cover slot is empty: their own profile,
+// where the gallery lives.
+const COVER_SETUP_PATH = "/me";
 
 const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
   discover: { active: "sparkles", inactive: "sparkles-outline" },
@@ -39,10 +45,30 @@ export default function AppTabsLayout() {
   const searchOpen = useSearchOverlay((s) => s.open);
   const setSearchOpen = useSearchOverlay((s) => s.setOpen);
 
+  // No cover photo = no Discover card, so the profile is the only place to be
+  // until one is set. Catches every way out at once -- tab bar, deep links, the
+  // browser's back button -- by bouncing back; the tab bar and the profile's own
+  // back button also refuse up front (below, and in me/index.tsx) so there's no
+  // flash of another screen.
+  const hasCover = useHasCover(session?.user.id);
+  const pathname = usePathname();
+  const coverMissing = hasCover === false;
+  useEffect(() => {
+    if (coverMissing && pathname !== COVER_SETUP_PATH) router.replace("/(app)/me");
+  }, [coverMissing, pathname]);
+
   return (
     <>
       <Tabs
         backBehavior="history"
+        screenListeners={{
+          tabPress: (e) => {
+            if (coverMissing) {
+              e.preventDefault();
+              alertCoverRequired(t);
+            }
+          },
+        }}
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarActiveTintColor: "#127A87",

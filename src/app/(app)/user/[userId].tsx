@@ -15,6 +15,7 @@ import { useBlockUser } from "@/hooks/useSettings";
 import { ProfileView } from "@/components/ProfileView";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { Button } from "@/components/Button";
+import { SwipeButton } from "@/components/SwipeButton";
 
 export default function OtherProfile() {
   const { t } = useTranslation();
@@ -85,20 +86,8 @@ export default function OtherProfile() {
 
         {showSwipeActions ? (
           <View className="mt-4 flex-row items-center justify-center gap-6">
-            <Pressable
-              accessibilityLabel={t("discover.pass")}
-              className="h-14 w-14 items-center justify-center rounded-full bg-white dark:bg-ink-800"
-              onPress={() => onSwipe("pass")}
-            >
-              <Ionicons name="close" size={24} color="#8A7C76" />
-            </Pressable>
-            <Pressable
-              accessibilityLabel={t("discover.like")}
-              className="h-16 w-16 items-center justify-center rounded-full bg-primary-500"
-              onPress={() => onSwipe("like")}
-            >
-              <Ionicons name="heart" size={26} color="white" />
-            </Pressable>
+            <SwipeButton action="pass" onPress={() => onSwipe("pass")} />
+            <SwipeButton action="like" onPress={() => onSwipe("like")} />
           </View>
         ) : null}
       </ScrollView>

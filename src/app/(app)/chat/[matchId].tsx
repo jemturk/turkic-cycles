@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { Text } from "@/components/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -15,6 +15,7 @@ import { Avatar } from "@/components/Avatar";
 import { TypingDots } from "@/components/TypingDots";
 
 export default function ChatThread() {
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
   const { session } = useSession();
@@ -51,8 +52,24 @@ export default function ChatThread() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["top", "left", "right"]}>
-      <View className="flex-row items-center gap-3 border-b border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+    // No top edge on the SafeAreaView: the header pads itself for the status bar
+    // instead, so the white header runs up behind it like every other screen's
+    // (the SafeAreaView's padding would show the cream page background there).
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
+      <View
+        className="flex-row items-center gap-3 bg-white dark:bg-ink-800 px-4 pb-3"
+        style={{
+          paddingTop: insets.top + 12,
+          // Same soft shadow as AppHeader's bottom edge, in place of a tinted border
+          // line; zIndex keeps it drawn over the messages below.
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.08,
+          shadowRadius: 12,
+          elevation: 3,
+          zIndex: 1,
+        }}
+      >
         {/* Deliberately not router.back(): a thread can be reached from outside its
             own stack (a push notification tap, a deep link), in which case there's
             nothing local to pop back to and it falls through to whatever the
@@ -93,8 +110,9 @@ export default function ChatThread() {
             const isOwn = message.sender_id === userId;
             return (
               <View key={message.id} className={isOwn ? "items-end" : "items-start"}>
-                <View className={`max-w-[80%] rounded-2xl px-4 py-3 ${isOwn ? "bg-primary-500" : "bg-white dark:bg-ink-800"}`}>
-                  <Text className={isOwn ? "text-base text-white" : "text-base text-ink-900 dark:text-ink-50"}>{message.body}</Text>
+                {/* Yours in the primary turquoise, theirs in the coral-red accent. */}
+                <View className={`max-w-[80%] rounded-2xl px-4 py-3 ${isOwn ? "bg-primary-500" : "bg-accent-500"}`}>
+                  <Text className="text-base text-white">{message.body}</Text>
                 </View>
                 <View className="mt-1 flex-row items-center gap-1">
                   <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>

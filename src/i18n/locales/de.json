@@ -128,8 +128,10 @@
   "connections": {
     "matched": "Gematcht",
     "connected": "Verbunden",
+    "saved": "Gemerkt",
     "emptyMatched": "Noch keine neuen Matches — entdecke weiter in deinen Kreisen.",
-    "emptyConnected": "Noch keine Unterhaltungen — sag doch Hallo zu einem Match."
+    "emptyConnected": "Noch keine Unterhaltungen — sag doch Hallo zu einem Match.",
+    "emptySaved": "Noch niemand gemerkt. Tippe in Entdecken auf den Stern, um jemanden für später hier zu behalten."
   },
   "chat": {
     "empty": "Noch keine Unterhaltungen.",
@@ -176,11 +178,11 @@
     },
     "step5": {
       "heading": "Füge deine Fotos hinzu",
-      "subheading": "Menschen verbinden sich über Gesichter. Füge ein Profilbild und mindestens ein weiteres Foto hinzu, um fertig zu werden.",
+      "subheading": "Menschen verbinden sich über Gesichter. Füge ein Profilbild und ein Titelbild hinzu – den Hintergrund deiner Entdecken-Karte.",
       "profilePicture": "Tippe, um ein Profilbild hinzuzufügen",
       "morePhotos": "Weitere Fotos",
       "needProfilePicture": "Profilbild",
-      "needPhoto": "Mindestens ein weiteres Foto",
+      "needPhoto": "Titelbild (deine Entdecken-Karte)",
       "errorTitle": "Einrichtung konnte nicht abgeschlossen werden"
     }
   },
@@ -208,7 +210,22 @@
     "removeErrorTitle": "Foto konnte nicht entfernt werden",
     "reorderErrorTitle": "Fotos konnten nicht neu sortiert werden",
     "maxReachedTitle": "Maximum erreicht",
-    "maxReachedBody": "Du kannst bis zu {{max}} Fotos haben. Entferne eins, um ein weiteres hinzuzufügen."
+    "maxReachedBody": "Du kannst bis zu {{max}} Fotos haben. Entferne eins, um ein weiteres hinzuzufügen.",
+    "coverBadge": "Titelbild",
+    "coverNote": "Dein erstes Foto ist der Hintergrund deiner Entdecken-Karte. Zieh ein anderes Foto an die erste Stelle, um es zu ändern.",
+    "coverNoteEmpty": "Dein erstes Foto wird der Hintergrund deiner Entdecken-Karte – wähle eines, das dich gut zeigt.",
+    "makeCover": "Als Titelbild",
+    "coverNoteChoose": "Dein Titelbild fehlt. Tippe auf + im Titelbild-Feld, um eins hochzuladen, oder auf „Als Titelbild“ bei einem deiner Fotos.",
+    "addCover": "Titelbild hinzufügen",
+    "addPhotos": "Fotos hinzufügen",
+    "previewTitle": "Deine Entdecken-Karte",
+    "previewBody": "So sehen dich andere mit diesem Titelbild in Entdecken.",
+    "previewConfirm": "Dieses Foto verwenden",
+    "coverRequiredTitle": "Füge zuerst ein Titelbild hinzu",
+    "coverRequiredBody": "Dein Titelbild ist der Hintergrund deiner Entdecken-Karte. Lade eins hoch oder tippe bei einem deiner Fotos auf „Als Titelbild“, bevor du dein Profil verlässt.",
+    "previousPhoto": "Vorheriges Foto",
+    "nextPhoto": "Nächstes Foto",
+    "viewProfilePicture": "Profilbild ansehen"
   },
   "profile": {
     "addYourName": "Füge deinen Namen hinzu",

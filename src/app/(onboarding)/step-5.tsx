@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { useProfilePhotos } from "@/hooks/useGallery";
+import { COVER_POSITION } from "@/api/gallery";
 import { useSubmitOnboardingPhotosAndComplete } from "@/hooks/useOnboarding";
 import { useOnboardingStore } from "@/stores/onboarding";
 import { Button } from "@/components/Button";
@@ -28,8 +29,8 @@ function Requirement({ done, label }: { done: boolean; label: string }) {
   );
 }
 
-// Last onboarding step: a profile picture and at least one more photo, both
-// required (the database enforces the same rule -- migration 0026). Photos upload
+// Last onboarding step: a profile picture and a cover photo, both required (the
+// database enforces the same rule -- migrations 0026/0027). Photos upload
 // as soon as they're picked, so leaving and coming back keeps them.
 export default function OnboardingStep5() {
   const { t } = useTranslation();
@@ -41,7 +42,8 @@ export default function OnboardingStep5() {
   const complete = useSubmitOnboardingPhotosAndComplete(userId);
 
   const hasAvatar = !!profile?.avatar_url;
-  const hasPhoto = (photos?.length ?? 0) > 0;
+  // The cover specifically -- it's the Discover card's background.
+  const hasPhoto = photos?.some((p) => p.position === COVER_POSITION) ?? false;
 
   function onFinish() {
     complete.mutate(undefined, {

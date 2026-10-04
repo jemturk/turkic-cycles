@@ -128,8 +128,10 @@
   "connections": {
     "matched": "Eşleşmeler",
     "connected": "Sohbetler",
+    "saved": "Kaydedilenler",
     "emptyMatched": "Henüz yeni eşleşmen yok — çemberlerinde keşfetmeye devam et.",
-    "emptyConnected": "Henüz bir konuşman yok — bir eşleşmene merhaba de."
+    "emptyConnected": "Henüz bir konuşman yok — bir eşleşmene merhaba de.",
+    "emptySaved": "Henüz kimseyi kaydetmedin. Keşfet'te birini sonraya saklamak için yıldıza dokun."
   },
   "chat": {
     "empty": "Henüz bir konuşman yok.",
@@ -176,11 +178,11 @@
     },
     "step5": {
       "heading": "Fotoğraflarını ekle",
-      "subheading": "İnsanlar yüzlerle bağ kurar. Bitirmek için bir profil fotoğrafı ve en az bir fotoğraf daha ekle.",
+      "subheading": "İnsanlar yüzlerle bağ kurar. Bir profil fotoğrafı ve bir kapak fotoğrafı ekle — Keşfet kartının arka planı.",
       "profilePicture": "Profil fotoğrafı eklemek için dokun",
       "morePhotos": "Diğer fotoğraflar",
       "needProfilePicture": "Profil fotoğrafı",
-      "needPhoto": "En az bir fotoğraf daha",
+      "needPhoto": "Kapak fotoğrafı (Keşfet kartın)",
       "errorTitle": "Kurulum tamamlanamadı"
     }
   },
@@ -208,7 +210,22 @@
     "removeErrorTitle": "Fotoğraf kaldırılamadı",
     "reorderErrorTitle": "Fotoğraflar yeniden sıralanamadı",
     "maxReachedTitle": "Maksimuma ulaştın",
-    "maxReachedBody": "En fazla {{max}} fotoğrafın olabilir. Yeni eklemek için birini kaldır."
+    "maxReachedBody": "En fazla {{max}} fotoğrafın olabilir. Yeni eklemek için birini kaldır.",
+    "coverBadge": "Kapak",
+    "coverNote": "İlk fotoğrafın Keşfet kartının arka planı olur. Değiştirmek için başka bir fotoğrafı ilk sıraya sürükle.",
+    "coverNoteEmpty": "İlk fotoğrafın Keşfet kartının arka planı olacak — seni iyi gösteren bir fotoğraf seç.",
+    "makeCover": "Kapak yap",
+    "coverNoteChoose": "Kapak fotoğrafın boş. Yüklemek için kapak alanındaki +'ya ya da fotoğraflarından birindeki “Kapak yap”a dokun.",
+    "addCover": "Kapak fotoğrafı ekle",
+    "addPhotos": "Fotoğraf ekle",
+    "previewTitle": "Keşfet kartın",
+    "previewBody": "Bu kapakla insanlar seni Keşfet'te böyle görecek.",
+    "previewConfirm": "Bu fotoğrafı kullan",
+    "coverRequiredTitle": "Önce bir kapak fotoğrafı ekle",
+    "coverRequiredBody": "Kapak fotoğrafın Keşfet kartının arka planıdır. Profilinden çıkmadan önce bir tane yükle ya da fotoğraflarından birinde “Kapak yap”a dokun.",
+    "previousPhoto": "Önceki fotoğraf",
+    "nextPhoto": "Sonraki fotoğraf",
+    "viewProfilePicture": "Profil fotoğrafını görüntüle"
   },
   "profile": {
     "addYourName": "Adını ekle",

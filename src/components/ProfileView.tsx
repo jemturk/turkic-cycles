@@ -1,4 +1,5 @@
-import { View } from "react-native";
+import { useState } from "react";
+import { Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { useTranslation } from "react-i18next";
 
@@ -11,6 +12,7 @@ import { Avatar } from "@/components/Avatar";
 import { EditableAvatar } from "@/components/EditableAvatar";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { EditablePhotoGallery } from "@/components/EditablePhotoGallery";
+import { PhotoViewer } from "@/components/PhotoViewer";
 
 // `namespace` looks up each value's display label under constants.<namespace>.<value>;
 // values without a translation (freeform "Other" text a user typed in) just fall back
@@ -70,6 +72,8 @@ export function ProfileView({
   const nameLabel = profile?.display_name || fallbackName || t("profile.addYourName");
   const photosUserId = ownUserId ?? profile?.id;
   const { data: photos } = useProfilePhotos(photosUserId);
+  const [avatarOpen, setAvatarOpen] = useState(false);
+  const avatarUrl = profile?.avatar_url;
 
   return (
     <View className="gap-4">
@@ -77,9 +81,27 @@ export function ProfileView({
         <View className="items-center gap-3">
           {ownUserId ? (
             <EditableAvatar userId={ownUserId} uri={profile?.avatar_url} name={nameLabel} size={88} />
+          ) : avatarUrl ? (
+            // Someone else's profile picture opens full-screen, like their gallery
+            // photos. (Your own opens the change-photo options instead.)
+            <Pressable
+              accessibilityRole="imagebutton"
+              accessibilityLabel={t("gallery.viewProfilePicture")}
+              onPress={() => setAvatarOpen(true)}
+            >
+              <Avatar uri={avatarUrl} name={nameLabel} size={88} />
+            </Pressable>
           ) : (
-            <Avatar uri={profile?.avatar_url} name={nameLabel} size={88} />
+            <Avatar uri={avatarUrl} name={nameLabel} size={88} />
           )}
+          {!ownUserId && avatarUrl ? (
+            <PhotoViewer
+              uris={[avatarUrl]}
+              index={avatarOpen ? 0 : null}
+              onChangeIndex={() => {}}
+              onClose={() => setAvatarOpen(false)}
+            />
+          ) : null}
 
           <View className="items-center gap-1">
             <View className="flex-row items-center gap-2">

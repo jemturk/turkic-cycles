@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
-import { Ionicons } from "@expo/vector-icons";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
-import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useDiscoverCandidates, useRecordSwipe } from "@/hooks/useDiscover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
-import { calculateAge } from "@/lib/age";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
-import { VerifiedBadge } from "@/components/VerifiedBadge";
-import { Avatar } from "@/components/Avatar";
+import { DiscoverCardView } from "@/components/DiscoverCardView";
+import { SwipeButton } from "@/components/SwipeButton";
 
 // The one-at-a-time candidate card with pass / save / like, shared by a circle's
 // "Meet members" screen (circleId) and the global Discover tab (circleId null).
@@ -25,7 +22,6 @@ export function DiscoverDeck({
   emptyLabel: string;
   onOpenProfile: (userId: string) => void;
 }) {
-  const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
 
@@ -64,68 +60,19 @@ export function DiscoverDeck({
           <Text className="text-center text-base text-ink-700 dark:text-ink-200">{emptyLabel}</Text>
         </View>
       ) : (
-        <Animated.View style={animatedStyle} className="mt-4 flex-1">
-          <Pressable
-            className="flex-1 justify-end rounded-3xl bg-teal-500 p-6"
-            onPress={() => onOpenProfile(candidate.userId)}
-          >
-            <View className="mb-8 items-center">
-              <Avatar uri={candidate.avatarUrl} name={candidate.displayName} size={96} fallbackClassName="bg-white/30" />
-            </View>
-
-            <View className="gap-2">
-              <View className="flex-row items-center gap-2">
-                <Text className="font-display text-2xl text-white">
-                  {candidate.displayName}
-                  {candidate.birthdate ? `, ${calculateAge(candidate.birthdate)}` : ""}
-                </Text>
-                <VerifiedBadge status={candidateVerification} color="white" />
-              </View>
-              <Text className="text-sm text-white/90">{[candidate.city, candidate.state].filter(Boolean).join(", ")}</Text>
-              <View className="flex-row flex-wrap gap-2">
-                {candidate.occupation ? (
-                  <View className="rounded-full bg-white/20 px-3 py-1">
-                    <Text className="text-xs font-medium text-white">{candidate.occupation}</Text>
-                  </View>
-                ) : null}
-                {candidate.originCountries.map((country) => (
-                  <View key={country} className="rounded-full bg-white/20 px-3 py-1">
-                    <Text className="text-xs font-medium text-white">{country}</Text>
-                  </View>
-                ))}
-                {candidate.connectionTypes.map((type) => (
-                  <View key={type} className="rounded-full bg-white/20 px-3 py-1">
-                    <Text className="text-xs font-medium text-white">
-                      {t("discover.lookingFor", { type: t(`constants.connectionTypes.${type}`) })}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
+        // Inline style, not className: NativeWind classes on a Reanimated
+        // Animated.View don't reliably apply (on web they're dropped), which left
+        // this wrapper -- and so the card -- only as tall as the card's text
+        // instead of filling the space above the buttons.
+        <Animated.View style={[{ flex: 1, marginTop: 12 }, animatedStyle]}>
+          <Pressable style={{ flex: 1 }} onPress={() => onOpenProfile(candidate.userId)}>
+            <DiscoverCardView person={candidate} verificationStatus={candidateVerification} />
           </Pressable>
 
-          <View className="mt-6 flex-row items-center justify-center gap-6">
-            <Pressable
-              accessibilityLabel={t("discover.pass")}
-              className="h-14 w-14 items-center justify-center rounded-full bg-white dark:bg-ink-800"
-              onPress={() => onSwipe("pass")}
-            >
-              <Ionicons name="close" size={24} color="#8A7C76" />
-            </Pressable>
-            <Pressable
-              accessibilityLabel={t("discover.save")}
-              className="h-14 w-14 items-center justify-center rounded-full bg-teal-50"
-              onPress={() => onSwipe("save")}
-            >
-              <Ionicons name="star" size={22} color="#2C8B80" />
-            </Pressable>
-            <Pressable
-              accessibilityLabel={t("discover.like")}
-              className="h-16 w-16 items-center justify-center rounded-full bg-primary-500"
-              onPress={() => onSwipe("like")}
-            >
-              <Ionicons name="heart" size={26} color="white" />
-            </Pressable>
+          <View className="mt-4 flex-row items-center justify-center gap-6">
+            <SwipeButton action="pass" onPress={() => onSwipe("pass")} />
+            <SwipeButton action="save" onPress={() => onSwipe("save")} />
+            <SwipeButton action="like" onPress={() => onSwipe("like")} />
           </View>
         </Animated.View>
       )}

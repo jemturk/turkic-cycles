@@ -5,6 +5,7 @@ import {
   getOriginCountriesWithConsent,
   listDiscoverCandidates,
   listGlobalDiscoverCandidates,
+  listSavedPeople,
   recordSwipe,
 } from "@/api/discover";
 
@@ -30,6 +31,15 @@ export function useDiscoverCandidates(circleId: string | null | undefined, userI
   });
 }
 
+// Connections' Saved tab: people starred in any Discover deck.
+export function useSavedPeople(userId: string | undefined) {
+  return useQuery({
+    queryKey: ["savedPeople", userId],
+    queryFn: () => listSavedPeople(userId as string),
+    enabled: !!userId,
+  });
+}
+
 type SwipeInput = {
   targetId: string;
   action: "like" | "pass" | "save";
@@ -47,8 +57,12 @@ export function useRecordSwipe(circleId: string | null | undefined, userId: stri
       }
       return false;
     },
-    onSuccess: () => {
+    onSuccess: (isMatch) => {
       queryClient.invalidateQueries({ queryKey: ["discoverCandidates", circleId ?? null, userId] });
+      // A save adds to the Saved tab; a like or pass from a saved profile takes
+      // the person off it.
+      queryClient.invalidateQueries({ queryKey: ["savedPeople", userId] });
+      if (isMatch) queryClient.invalidateQueries({ queryKey: ["newConnections", userId] });
     },
   });
 }

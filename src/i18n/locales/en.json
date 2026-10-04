@@ -128,8 +128,10 @@
   "connections": {
     "matched": "Matched",
     "connected": "Connected",
+    "saved": "Saved",
     "emptyMatched": "No new matches yet — keep discovering in your circles.",
-    "emptyConnected": "No conversations yet — say hello to a match."
+    "emptyConnected": "No conversations yet — say hello to a match.",
+    "emptySaved": "No one saved yet. Tap the star on someone in Discover to keep them here for later."
   },
   "chat": {
     "empty": "No conversations yet.",
@@ -176,11 +178,11 @@
     },
     "step5": {
       "heading": "Add your photos",
-      "subheading": "People connect with faces. Add a profile picture and at least one more photo to finish.",
+      "subheading": "People connect with faces. Add a profile picture and a cover photo — the background of your Discover card.",
       "profilePicture": "Tap to add your profile picture",
       "morePhotos": "More photos",
       "needProfilePicture": "Profile picture",
-      "needPhoto": "At least one more photo",
+      "needPhoto": "Cover photo (your Discover card)",
       "errorTitle": "Couldn't finish setting up"
     }
   },
@@ -208,7 +210,22 @@
     "removeErrorTitle": "Couldn't remove photo",
     "reorderErrorTitle": "Couldn't reorder photos",
     "maxReachedTitle": "That's the max",
-    "maxReachedBody": "You can have up to {{max}} photos. Remove one to add another."
+    "maxReachedBody": "You can have up to {{max}} photos. Remove one to add another.",
+    "coverBadge": "Cover",
+    "coverNote": "Your first photo is the background of your Discover card. Drag another photo to the first spot to change it.",
+    "coverNoteEmpty": "Your first photo becomes the background of your Discover card — pick one that shows you well.",
+    "makeCover": "Make cover",
+    "coverNoteChoose": "Your cover is empty. Tap + in the cover spot to upload one, or tap “Make cover” on one of your photos.",
+    "addCover": "Add a cover photo",
+    "addPhotos": "Add photos",
+    "previewTitle": "Your Discover card",
+    "previewBody": "This is how people will see you in Discover with this cover.",
+    "previewConfirm": "Use this photo",
+    "coverRequiredTitle": "Add a cover photo first",
+    "coverRequiredBody": "Your cover is the background of your Discover card. Upload one, or tap “Make cover” on one of your photos, before leaving your profile.",
+    "previousPhoto": "Previous photo",
+    "nextPhoto": "Next photo",
+    "viewProfilePicture": "View profile picture"
   },
   "profile": {
     "addYourName": "Add your name",

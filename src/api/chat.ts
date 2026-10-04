@@ -1,5 +1,6 @@
 import { supabase } from "@/api/client";
 import type { Tables } from "@/types/database";
+import { COVER_POSITION, publicUrl } from "@/api/gallery";
 
 export type MatchWithParticipant = {
   matchId: string;
@@ -12,7 +13,27 @@ export type MatchWithParticipant = {
   otherCity: string | null;
   otherState: string | null;
   otherCountry: string | null;
+  // Their first gallery photo -- the Connections card's background.
+  otherCoverPhotoUrl: string | null;
 };
+
+// Each user's cover photo (the one in the cover slot, see COVER_POSITION) as a
+// public URL -- the background of their Discover and Connections cards. Users
+// with an empty cover slot are simply missing from the map.
+export async function getCoverPhotoUrls(userIds: string[]): Promise<Map<string, string>> {
+  if (userIds.length === 0) return new Map();
+  const { data, error } = await supabase
+    .from("profile_photos")
+    .select("user_id, storage_path, position")
+    .in("user_id", userIds)
+    .eq("position", COVER_POSITION);
+  if (error) throw error;
+  const covers = new Map<string, string>();
+  for (const row of data ?? []) {
+    if (row.position === COVER_POSITION) covers.set(row.user_id, publicUrl(row.storage_path));
+  }
+  return covers;
+}
 
 async function attachOtherParticipant(
   matches: Tables<"matches">[],
@@ -21,10 +42,10 @@ async function attachOtherParticipant(
   if (matches.length === 0) return [];
 
   const otherUserIds = matches.map((m) => (m.user_a === userId ? m.user_b : m.user_a));
-  const { data: profiles, error } = await supabase
-    .from("profiles")
-    .select("id, display_name, avatar_url, birthdate, city, state, country")
-    .in("id", otherUserIds);
+  const [{ data: profiles, error }, coverById] = await Promise.all([
+    supabase.from("profiles").select("id, display_name, avatar_url, birthdate, city, state, country").in("id", otherUserIds),
+    getCoverPhotoUrls(otherUserIds),
+  ]);
   if (error) throw error;
 
   const profileById = new Map((profiles ?? []).map((p) => [p.id, p]));
@@ -43,6 +64,7 @@ async function attachOtherParticipant(
       otherCity: otherProfile?.city ?? null,
       otherState: otherProfile?.state ?? null,
       otherCountry: otherProfile?.country ?? null,
+      otherCoverPhotoUrl: coverById.get(otherUserId) ?? null,
     };
   });
 }

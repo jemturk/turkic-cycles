@@ -6,6 +6,12 @@ const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
   "image/webp": "webp",
 };
 
+// The cover -- the Discover/Connections card background -- is the photo at exactly
+// this position, not merely the lowest one: removing it leaves the slot empty
+// until the user picks or uploads a new cover, rather than silently promoting the
+// next photo.
+export const COVER_POSITION = 0;
+
 export type ProfilePhoto = {
   id: string;
   storagePath: string;
@@ -15,7 +21,7 @@ export type ProfilePhoto = {
 
 // storage_path is normally a path in the avatars bucket, but the mock users (see
 // migration 0026) store full image URLs there instead -- pass those through as-is.
-function publicUrl(storagePath: string): string {
+export function publicUrl(storagePath: string): string {
   if (/^https?:\/\//.test(storagePath)) return storagePath;
   return supabase.storage.from("avatars").getPublicUrl(storagePath).data.publicUrl;
 }
@@ -79,9 +85,13 @@ export async function removeProfilePhoto(photo: Pick<ProfilePhoto, "id" | "stora
 // Rewrites every row's position to its index in the given order -- simplest way to
 // keep positions a dense 0..n-1 sequence without tracking gaps left by past
 // deletes/reorders, and cheap enough at the 6-photo cap this is used under.
-export async function reorderProfilePhotos(orderedPhotoIds: string[]) {
+// startPosition 1 renumbers the photos while leaving the cover slot (0) empty.
+export async function reorderProfilePhotos(orderedPhotoIds: string[], startPosition = COVER_POSITION) {
   for (const [index, id] of orderedPhotoIds.entries()) {
-    const { error } = await supabase.from("profile_photos").update({ position: index }).eq("id", id);
+    const { error } = await supabase
+      .from("profile_photos")
+      .update({ position: startPosition + index })
+      .eq("id", id);
     if (error) throw error;
   }
 }

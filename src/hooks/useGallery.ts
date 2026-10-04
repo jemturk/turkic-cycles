@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  COVER_POSITION,
   addProfilePhoto,
   listProfilePhotos,
   removeProfilePhoto,
@@ -27,13 +28,18 @@ export function useAddProfilePhotos(userId: string | undefined) {
     // Uploaded one at a time rather than in parallel: each one's `position` is
     // computed from how many already exist, so a parallel batch would race and
     // could hand out the same position to more than one photo.
-    mutationFn: async (photos: NewPhoto[]) => {
+    //
+    // asCover puts the (single) photo in the cover slot. Everything else goes after
+    // the highest existing position -- never into the cover slot, which stays
+    // reserved, and never onto a position a gap left by a deletion would reuse.
+    mutationFn: async ({ photos, asCover = false }: { photos: NewPhoto[]; asCover?: boolean }) => {
       const existing = queryClient.getQueryData<ProfilePhoto[]>(["profilePhotos", userId]) ?? [];
-      let nextPosition = existing.length;
+      const highest = existing.reduce((max, p) => Math.max(max, p.position), COVER_POSITION);
+      let nextPosition = asCover ? COVER_POSITION : highest + 1;
       const uploaded: ProfilePhoto[] = [];
       for (const photo of photos) {
         uploaded.push(await addProfilePhoto(userId as string, photo.uri, photo.mimeType, nextPosition));
-        nextPosition += 1;
+        nextPosition = asCover ? highest + 1 : nextPosition + 1;
       }
       return uploaded;
     },
@@ -52,7 +58,8 @@ export function useRemoveProfilePhoto(userId: string | undefined) {
 export function useReorderProfilePhotos(userId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (orderedPhotoIds: string[]) => reorderProfilePhotos(orderedPhotoIds),
+    mutationFn: ({ ids, startPosition }: { ids: string[]; startPosition?: number }) =>
+      reorderProfilePhotos(ids, startPosition),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["profilePhotos", userId] }),
   });
 }

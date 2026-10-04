@@ -23,6 +23,7 @@ describe("listNewConnections", () => {
       matches: [ok([matchA, matchB])],
       messages: [ok([{ match_id: "match-a" }])],
       profiles: [ok(profiles)],
+      profile_photos: [ok([])],
     });
 
     const result = await listNewConnections("me");
@@ -39,6 +40,7 @@ describe("listNewConnections", () => {
         otherCity: null,
         otherState: null,
         otherCountry: null,
+        otherCoverPhotoUrl: null,
       },
     ]);
   });
@@ -53,6 +55,7 @@ describe("listNewConnections", () => {
       matches: [ok([matchA])],
       messages: [ok([])],
       profiles: [ok([])],
+      profile_photos: [ok([])],
     });
     const result = await listNewConnections("me");
     expect(result[0].otherDisplayName).toBe("Member");
@@ -84,6 +87,7 @@ describe("listMessageThreads", () => {
         ]),
       ],
       profiles: [ok(profiles)],
+      profile_photos: [ok([])],
     });
 
     const result = await listMessageThreads("me");
@@ -102,6 +106,7 @@ describe("listMessageThreads", () => {
       matches: [ok([matchA, matchB])],
       messages: [ok([{ match_id: "match-a", sender_id: "alice", body: "hi", read_at: null, created_at: "t" }])],
       profiles: [ok(profiles)],
+      profile_photos: [ok([])],
     });
     const result = await listMessageThreads("me");
     expect(result.map((t) => t.matchId)).toEqual(["match-a"]);
@@ -122,6 +127,7 @@ describe("listMessageThreads", () => {
         ]),
       ],
       profiles: [ok(profiles)],
+      profile_photos: [ok([])],
     });
     const result = await listMessageThreads("me");
     expect(result[0].unreadCount).toBe(0);

@@ -10,6 +10,9 @@ import { HeaderAvatar } from "@/components/HeaderAvatar";
 import { useSearchOverlay } from "@/stores/searchOverlay";
 
 const ICON_HEIGHT = 34;
+// Compact bar: a 44 row (fits the 34 avatar and the search icon, whose tap area
+// hitSlop extends) with 6 below -- and 6 above when there is no status bar inset.
+const HEADER_PADDING_BOTTOM = 6;
 export const HEADER_ICON_HEIGHT = ICON_HEIGHT;
 
 // Custom rather than react-navigation's built-in header: native-stack doesn't
@@ -41,8 +44,12 @@ export function AppHeader({
     <View
       className={bgClassName}
       style={{
-        paddingTop: insets.top,
-        paddingBottom: 10,
+        // Clears the status bar when the header extends under it (native). With no
+        // top inset (a browser, where the address bar sits above the page) it gets
+        // the same padding as the bottom instead, so the title and icons sit centred in
+        // the white band rather than hugging its top edge.
+        paddingTop: insets.top > 0 ? insets.top : HEADER_PADDING_BOTTOM,
+        paddingBottom: HEADER_PADDING_BOTTOM,
         ...(bgClassName ? null : { backgroundColor: colorScheme === "dark" ? "#352C27" : "#FFFFFF" }),
         // Soft shadow along the bottom edge (same values as the chat input bar).
         // zIndex keeps it drawn over the screen content below instead of under it.
@@ -54,7 +61,7 @@ export function AppHeader({
         zIndex: 1,
       }}
     >
-      <View className="h-12 flex-row items-center justify-between gap-3 px-4">
+      <View className="h-11 flex-row items-center justify-between gap-3 px-4">
         {left ?? (
           <Text className="flex-1 font-display text-2xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
             {title}
