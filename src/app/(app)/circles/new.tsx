@@ -9,7 +9,8 @@ import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
 import { useSession } from "@/hooks/useSession";
-import { useCreateCircle, useIsAppAdmin } from "@/hooks/useCircles";
+import { useCreateCircle } from "@/hooks/useCircles";
+import { useCanHost } from "@/hooks/useCanHost";
 import { circleFormSchema, type CircleFormValues } from "@/schemas/circles";
 import { CIRCLE_TOPICS } from "@/constants/circles";
 import { geocodePlace } from "@/lib/geocode";
@@ -18,14 +19,16 @@ import { TextField } from "@/components/TextField";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { LocationFields } from "@/components/LocationFields";
 import { FormScrollView } from "@/components/FormScrollView";
+import { HostRequirements } from "@/components/HostRequirements";
 
-// App admins only (migration 0031): the database refuses anyone else, and the
-// button that leads here only shows for admins. The creator becomes the owner.
+// Plus with a verified ID, admins included (migration 0035 enforces it). The button
+// that leads here only shows for them; anyone reaching it by URL sees what they're
+// missing instead of the form. The creator becomes the owner.
 export default function NewCircle() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
-  const { data: isAdmin, isLoading } = useIsAppAdmin(userId);
+  const { canHost, hasPlus, verified, isLoading } = useCanHost(userId);
   const createCircle = useCreateCircle(userId);
   const [isLocating, setIsLocating] = useState(false);
 
@@ -72,8 +75,8 @@ export default function NewCircle() {
 
         {isLoading ? (
           <ActivityIndicator color="#127A87" />
-        ) : !isAdmin ? (
-          <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.adminsOnly")}</Text>
+        ) : !canHost ? (
+          <HostRequirements hasPlus={hasPlus} verified={verified} />
         ) : (
           <>
             <Controller

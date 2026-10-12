@@ -150,7 +150,8 @@ export type NewCircle = {
   longitude: number | null;
 };
 
-// Admins only -- the create_circle function checks, and makes the creator owner.
+// Plus with a verified ID, admins included -- create_circle checks (0035), and
+// makes the creator owner.
 export async function createCircle(circle: NewCircle): Promise<string> {
   const { data, error } = await supabase.rpc("create_circle", {
     p_name: circle.name,
@@ -174,7 +175,8 @@ export type NewCircleEvent = {
   startsAt: string; // ISO timestamp
 };
 
-// Allowed for the circle's owners and moderators, and app admins (RLS, 0031).
+// Allowed for the circle's owners and moderators with Plus and a verified ID
+// (RLS, 0035).
 export async function createCircleEvent(event: NewCircleEvent): Promise<string> {
   const { data, error } = await supabase
     .from("circle_events")

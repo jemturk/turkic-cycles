@@ -256,8 +256,10 @@ export default function Connections() {
   const showLikesTeaser = contentTab === "likes" && subscribed === false && (likesCount ?? 0) > 0;
   const isEmpty = !showLikesTeaser && (!people || people.length === 0);
 
+  // No "bottom" edge: the tab bar already pads for the home indicator, and adding
+  // it here too left a gap under the tab strip on phones.
   return (
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <RefreshableScrollView
         refreshing={
           isRefetchingMatched || isRefetchingConnected || isRefetchingSaved || isRefetchingLikesCount || isRefetchingLikes

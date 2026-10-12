@@ -8,16 +8,19 @@ import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
 import { useSession } from "@/hooks/useSession";
-import { useCircle, useCreateCircleEvent, useIsAppAdmin, useMyCircleRole } from "@/hooks/useCircles";
+import { useCircle, useCreateCircleEvent, useMyCircleRole } from "@/hooks/useCircles";
+import { useCanHost } from "@/hooks/useCanHost";
 import { combineDateTime, eventFormSchema, type EventFormValues } from "@/schemas/circles";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { DateOfBirthField } from "@/components/DateOfBirthField";
 import { TimeField } from "@/components/TimeField";
 import { FormScrollView } from "@/components/FormScrollView";
+import { HostRequirements } from "@/components/HostRequirements";
 
-// A circle's owners and moderators, and app admins, can add events (migration
-// 0031 enforces it; the "Add event" button only shows for them).
+// A circle's owners and moderators who have Plus and a verified ID can add events (migration 0035 enforces it; the "Add event" button only shows for
+// them). Owners and moderators reaching this by URL without Plus or a verified ID
+// see what they're missing.
 export default function NewCircleEvent() {
   const { t } = useTranslation();
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
@@ -25,9 +28,9 @@ export default function NewCircleEvent() {
   const userId = session?.user.id;
   const { data: circle } = useCircle(circleId);
   const { data: role, isLoading: roleLoading } = useMyCircleRole(circleId, userId);
-  const { data: isAdmin, isLoading: adminLoading } = useIsAppAdmin(userId);
+  const { canHost, hasPlus, verified, isLoading: hostLoading } = useCanHost(userId);
   const createEvent = useCreateCircleEvent(circleId);
-  const canCreate = isAdmin || role === "owner" || role === "moderator";
+  const isOrganizer = role === "owner" || role === "moderator";
 
   const {
     control,
@@ -65,10 +68,12 @@ export default function NewCircleEvent() {
           {circle ? <Text className="text-base text-ink-700 dark:text-ink-200">{circle.name}</Text> : null}
         </View>
 
-        {roleLoading || adminLoading ? (
+        {roleLoading || hostLoading ? (
           <ActivityIndicator color="#127A87" />
-        ) : !canCreate ? (
+        ) : !isOrganizer ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.organizersOnly")}</Text>
+        ) : !canHost ? (
+          <HostRequirements hasPlus={hasPlus} verified={verified} />
         ) : (
           <>
             <Controller

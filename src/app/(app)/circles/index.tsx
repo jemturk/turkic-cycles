@@ -8,11 +8,11 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/hooks/useSession";
 import {
   useCircles,
-  useIsAppAdmin,
   useJoinCircle,
   useMyCircleMemberships,
   useUpcomingEventCounts,
 } from "@/hooks/useCircles";
+import { useCanHost } from "@/hooks/useCanHost";
 import { useIsNearby, useLocalFilter } from "@/stores/localFilter";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { Chip } from "@/components/Chip";
@@ -26,7 +26,7 @@ export default function Circles() {
   const { data: memberships } = useMyCircleMemberships(userId);
   const { data: eventCounts, refetch: refetchEventCounts } = useUpcomingEventCounts();
   const joinCircle = useJoinCircle(userId);
-  const { data: isAdmin } = useIsAppAdmin(userId);
+  const { canHost } = useCanHost(userId);
   const localEnabled = useLocalFilter((s) => s.enabled);
   const localStatus = useLocalFilter((s) => s.status);
   const setLocalEnabled = useLocalFilter((s) => s.setEnabled);
@@ -37,7 +37,7 @@ export default function Circles() {
   const shownCircles = (circles ?? []).filter(isNearby);
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <RefreshableScrollView
         refreshing={isRefetching}
         onRefresh={() => {
@@ -49,8 +49,8 @@ export default function Circles() {
       >
         <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.subtitle")}</Text>
 
-        {/* App admins only (migration 0031); everyone else never sees it. */}
-        {isAdmin ? (
+        {/* Plus with a verified ID, admins included (migration 0035); nobody else sees it. */}
+        {canHost ? (
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push("/(app)/circles/new")}

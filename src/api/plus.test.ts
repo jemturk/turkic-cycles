@@ -15,9 +15,9 @@ describe("hasPlus", () => {
     expect(hasPlus(sub({ tier: "free", currentPeriodEnd: null }))).toBe(false);
   });
 
-  it("counts plus and business_circle within the paid period", () => {
+  it("counts plus and premium within the paid period", () => {
     expect(hasPlus(sub({}))).toBe(true);
-    expect(hasPlus(sub({ tier: "business_circle" }))).toBe(true);
+    expect(hasPlus(sub({ tier: "premium" }))).toBe(true);
     expect(hasPlus(sub({ currentPeriodEnd: null }))).toBe(true);
   });
 

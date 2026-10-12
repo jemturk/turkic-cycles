@@ -16,7 +16,7 @@ export default function Chat() {
   const { data: threads, refetch, isRefetching } = useMessageThreads(session?.user.id);
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <RefreshableScrollView
         refreshing={isRefetching}
         onRefresh={refetch}

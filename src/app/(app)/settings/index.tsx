@@ -10,7 +10,8 @@ import { supabase } from "@/api/client";
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { useMyVerificationStatus } from "@/hooks/useVerification";
-import { useDebugSetPlus, useHasPlus, usePlusWaitlist } from "@/hooks/usePlus";
+import { useDebugSetTier, useDebugSetVerified, useHasPlus, useMySubscription, usePlusWaitlist } from "@/hooks/usePlus";
+import type { Tier } from "@/api/plus";
 import { useIsAppAdmin } from "@/hooks/useCircles";
 import {
   useDeleteAccount,
@@ -64,6 +65,13 @@ function SettingsRow({
   );
 }
 
+// TEMPORARY test controls (migration 0036).
+const TEST_TIERS: { tier: Tier; label: string }[] = [
+  { tier: "free", label: "Free" },
+  { tier: "plus", label: "Plus" },
+  { tier: "premium", label: "Premium" },
+];
+
 export default function Settings() {
   const { t } = useTranslation();
   const { session } = useSession();
@@ -74,7 +82,9 @@ export default function Settings() {
   const { data: onPlusWaitlist } = usePlusWaitlist(userId);
   // TEMPORARY free/Plus switch for testing; remove with migration 0034's function.
   const { data: isAdmin } = useIsAppAdmin(userId);
-  const debugSetPlus = useDebugSetPlus(userId);
+  const { data: subscription } = useMySubscription(userId);
+  const debugSetTier = useDebugSetTier(userId);
+  const debugSetVerified = useDebugSetVerified(userId);
   const updateAppLocale = useUpdateAppLocale(userId);
   const updateThemePreference = useUpdateThemePreference(userId);
   const updateTextSize = useUpdateTextSize(userId);
@@ -96,8 +106,51 @@ export default function Settings() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <ScrollView className="flex-1 px-6 pt-4" contentContainerClassName="gap-3 pb-10">
+        {/* TEMPORARY test controls (migration 0036), at the top while testing. */}
+        {isAdmin ? (
+          <View className="gap-3 rounded-xl border border-dashed border-accent-500 bg-white dark:bg-ink-800 px-4 py-3">
+            <View>
+              <Text className="text-base text-ink-900 dark:text-ink-50">Test: subscription</Text>
+              <Text className="text-sm text-ink-400">temporary, admins only</Text>
+            </View>
+            <View accessibilityRole="radiogroup" className="flex-row gap-4">
+              {TEST_TIERS.map(({ tier, label }) => {
+                const selected = subscription?.tier === tier;
+                return (
+                  <Pressable
+                    key={tier}
+                    accessibilityRole="radio"
+                    accessibilityState={{ checked: selected }}
+                    disabled={!subscription || debugSetTier.isPending}
+                    onPress={() =>
+                      debugSetTier.mutate(tier, { onError: (e) => Alert.alert("Couldn't switch", e.message) })
+                    }
+                    className="flex-row items-center gap-1.5"
+                  >
+                    <Ionicons
+                      name={selected ? "radio-button-on" : "radio-button-off"}
+                      size={20}
+                      color={selected ? "#127A87" : "#9CA3AF"}
+                    />
+                    <Text className="text-base text-ink-900 dark:text-ink-50">{label}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            <View className="flex-row items-center justify-between">
+              <Text className="text-base text-ink-900 dark:text-ink-50">Verified</Text>
+              <Switch
+                value={verification?.status === "verified"}
+                disabled={!verification || debugSetVerified.isPending}
+                onValueChange={(verified) =>
+                  debugSetVerified.mutate(verified, { onError: (e) => Alert.alert("Couldn't switch", e.message) })
+                }
+              />
+            </View>
+          </View>
+        ) : null}
         <Pressable
           className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
           onPress={() => router.push("/(app)/me")}
@@ -191,21 +244,6 @@ export default function Settings() {
           value={subscribed ? t("plus.statusActive") : onPlusWaitlist ? t("plus.statusWaitlisted") : undefined}
           onPress={() => router.push("/(app)/plus")}
         />
-        {isAdmin ? (
-          <View className="flex-row items-center justify-between rounded-xl border border-dashed border-accent-500 bg-white dark:bg-ink-800 px-4 py-3">
-            <View className="flex-1 pr-3">
-              <Text className="text-base text-ink-900 dark:text-ink-50">Test: Free / Plus</Text>
-              <Text className="text-sm text-ink-400">{subscribed ? "Plus" : "Free"} · temporary, admins only</Text>
-            </View>
-            <Switch
-              value={subscribed ?? false}
-              disabled={subscribed === undefined || debugSetPlus.isPending}
-              onValueChange={(plus) =>
-                debugSetPlus.mutate(plus, { onError: (e) => Alert.alert("Couldn't switch", e.message) })
-              }
-            />
-          </View>
-        ) : null}
         <SettingsRow label={t("settings.account")} onPress={() => router.push("/(app)/settings/account")} />
 
         <SectionHeader label={t("settings.safety")} />

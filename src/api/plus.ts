@@ -1,7 +1,7 @@
 import { supabase } from "@/api/client";
 import { loadPeople, type SavedPerson } from "@/api/discover";
 
-export type Tier = "free" | "plus" | "business_circle";
+export type Tier = "free" | "plus" | "premium";
 
 export type MySubscription = {
   tier: Tier;
@@ -30,9 +30,15 @@ export function hasPlus(subscription: MySubscription | undefined): boolean {
   return !subscription.currentPeriodEnd || new Date(subscription.currentPeriodEnd).getTime() > Date.now();
 }
 
-// TEMPORARY (migration 0034): admin-only free/Plus switch for testing.
-export async function debugSetMyPlus(plus: boolean) {
-  const { error } = await supabase.rpc("debug_set_my_plus", { p_plus: plus });
+// TEMPORARY (migration 0036): admin-only test controls for the signed-in user's own
+// tier and verification status.
+export async function debugSetMyTier(tier: Tier) {
+  const { error } = await supabase.rpc("debug_set_my_tier", { p_tier: tier });
+  if (error) throw error;
+}
+
+export async function debugSetMyVerified(verified: boolean) {
+  const { error } = await supabase.rpc("debug_set_my_verified", { p_verified: verified });
   if (error) throw error;
 }
 

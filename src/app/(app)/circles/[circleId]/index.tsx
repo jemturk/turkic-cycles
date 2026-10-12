@@ -7,7 +7,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
-import { useCircle, useCircleEvents, useIsAppAdmin, useMyCircleRole } from "@/hooks/useCircles";
+import { useCircle, useCircleEvents, useMyCircleRole } from "@/hooks/useCircles";
+import { useCanHost } from "@/hooks/useCanHost";
 import { useSession } from "@/hooks/useSession";
 import { type CircleTopic } from "@/constants/circles";
 import { CircleHeader } from "@/components/CircleHeader";
@@ -24,9 +25,9 @@ export default function CircleEvents() {
   const [tab, setTab] = useState<Tab>("upcoming");
   const { session } = useSession();
   const { data: role } = useMyCircleRole(circleId, session?.user.id);
-  const { data: isAdmin } = useIsAppAdmin(session?.user.id);
-  // Same rule the database enforces for creating events (migration 0031).
-  const canAddEvent = isAdmin || role === "owner" || role === "moderator";
+  const { canHost } = useCanHost(session?.user.id);
+  // Same rule the database enforces for creating events (migration 0035).
+  const canAddEvent = canHost && (role === "owner" || role === "moderator");
 
   // Reachable via a direct URL/refresh on web, which has no in-app history to pop.
   function goBack() {

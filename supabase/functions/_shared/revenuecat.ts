@@ -11,8 +11,8 @@
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 
 // Entitlement identifiers configured in the RevenueCat dashboard, highest tier first.
-const TIER_BY_ENTITLEMENT: [entitlement: string, tier: "business_circle" | "plus"][] = [
-  ["business_circle", "business_circle"],
+const TIER_BY_ENTITLEMENT: [entitlement: string, tier: "premium" | "plus"][] = [
+  ["premium", "premium"],
   ["plus", "plus"],
 ];
 

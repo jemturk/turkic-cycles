@@ -2,7 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   countIncomingLikes,
-  debugSetMyPlus,
+  debugSetMyTier,
+  debugSetMyVerified,
   getMySubscription,
   hasPlus,
   isOnPlusWaitlist,
@@ -27,15 +28,23 @@ export function useHasPlus(userId: string | undefined): boolean | undefined {
   return data ? hasPlus(data) : undefined;
 }
 
-// TEMPORARY: see debugSetMyPlus.
-export function useDebugSetPlus(userId: string | undefined) {
+// TEMPORARY: see debugSetMyTier / debugSetMyVerified.
+export function useDebugSetTier(userId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: debugSetMyPlus,
+    mutationFn: debugSetMyTier,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subscription", userId] });
       queryClient.invalidateQueries({ queryKey: ["incomingLikes", userId] });
     },
+  });
+}
+
+export function useDebugSetVerified(userId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: debugSetMyVerified,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["verificationStatus", userId] }),
   });
 }
 
