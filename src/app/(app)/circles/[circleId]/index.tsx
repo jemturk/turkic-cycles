@@ -7,7 +7,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
-import { useCircle, useCircleEvents } from "@/hooks/useCircles";
+import { useCircle, useCircleEvents, useIsAppAdmin, useMyCircleRole } from "@/hooks/useCircles";
+import { useSession } from "@/hooks/useSession";
 import { type CircleTopic } from "@/constants/circles";
 import { CircleHeader } from "@/components/CircleHeader";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
@@ -21,6 +22,11 @@ export default function CircleEvents() {
   const { data: circle } = useCircle(circleId);
   const { data: events, refetch, isRefetching } = useCircleEvents(circleId);
   const [tab, setTab] = useState<Tab>("upcoming");
+  const { session } = useSession();
+  const { data: role } = useMyCircleRole(circleId, session?.user.id);
+  const { data: isAdmin } = useIsAppAdmin(session?.user.id);
+  // Same rule the database enforces for creating events (migration 0031).
+  const canAddEvent = isAdmin || role === "owner" || role === "moderator";
 
   // Reachable via a direct URL/refresh on web, which has no in-app history to pop.
   function goBack() {
@@ -42,6 +48,17 @@ export default function CircleEvents() {
         className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-4 pb-10"
       >
+        {canAddEvent ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push(`/(app)/circles/${circleId}/events/new`)}
+            className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-primary-500 px-4 py-3"
+          >
+            <Ionicons name="add" size={20} color="#127A87" />
+            <Text className="text-base font-medium text-primary-600">{t("circles.addEvent")}</Text>
+          </Pressable>
+        ) : null}
+
         {/* Same segmented control as the Connections tab. */}
         <View className="flex-row rounded-full border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-1">
           {(["upcoming", "past"] as const).map((value) => {

@@ -6,7 +6,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
-import { useCircles, useJoinCircle, useMyCircleMemberships, useUpcomingEventCounts } from "@/hooks/useCircles";
+import {
+  useCircles,
+  useIsAppAdmin,
+  useJoinCircle,
+  useMyCircleMemberships,
+  useUpcomingEventCounts,
+} from "@/hooks/useCircles";
 import { useIsNearby, useLocalFilter } from "@/stores/localFilter";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { Chip } from "@/components/Chip";
@@ -20,6 +26,7 @@ export default function Circles() {
   const { data: memberships } = useMyCircleMemberships(userId);
   const { data: eventCounts, refetch: refetchEventCounts } = useUpcomingEventCounts();
   const joinCircle = useJoinCircle(userId);
+  const { data: isAdmin } = useIsAppAdmin(userId);
   const localEnabled = useLocalFilter((s) => s.enabled);
   const localStatus = useLocalFilter((s) => s.status);
   const setLocalEnabled = useLocalFilter((s) => s.setEnabled);
@@ -41,6 +48,18 @@ export default function Circles() {
         contentContainerClassName="gap-4 pb-10"
       >
         <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.subtitle")}</Text>
+
+        {/* App admins only (migration 0031); everyone else never sees it. */}
+        {isAdmin ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push("/(app)/circles/new")}
+            className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-primary-500 px-4 py-3"
+          >
+            <Ionicons name="add" size={20} color="#127A87" />
+            <Text className="text-base font-medium text-primary-600">{t("circles.newCircle")}</Text>
+          </Pressable>
+        ) : null}
 
         <View className="flex-row items-center justify-between gap-3 rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
           <View className="flex-1">

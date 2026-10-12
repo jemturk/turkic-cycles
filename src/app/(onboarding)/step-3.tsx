@@ -1,4 +1,4 @@
-import { Pressable, View } from "react-native";
+import { Alert, Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -48,7 +48,10 @@ export default function OnboardingStep3Screen() {
     const corePayload = buildCorePayload({ step2: store.step2, step3: values });
     submitStep3.mutate(
       { values, corePayload },
-      { onSuccess: () => router.push("/(onboarding)/step-4") }
+      {
+        onSuccess: () => router.push("/(onboarding)/step-4"),
+        onError: (error) => Alert.alert(t("onboarding.saveErrorTitle"), error.message),
+      }
     );
   };
 

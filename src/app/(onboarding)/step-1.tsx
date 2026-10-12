@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -56,6 +56,7 @@ export default function OnboardingStep1Screen() {
     store.setStep1(values);
     submitStep1.mutate(values, {
       onSuccess: () => router.push("/(onboarding)/step-2"),
+      onError: (error) => Alert.alert(t("onboarding.saveErrorTitle"), error.message),
     });
   };
 

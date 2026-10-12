@@ -10,6 +10,8 @@ import Svg, { Circle, Polygon } from "react-native-svg";
 // used to produce them isn't tracked in the repo). The star is a white fill, not
 // a cutout, so it stays white on any background -- except in
 // android-icon-monochrome.png, where Android tints the whole icon one color.
+// assets/notification-icon.png (the status-bar icon) is rendered from this geometry
+// by scripts/render_notification_icon.py.
 const STAR_POINTS =
   "100,10 114.5,64.9 163.6,36.4 135.1,85.5 190,100 135.1,114.5 163.6,163.6 114.5,135.1 " +
   "100,190 85.5,135.1 36.4,163.6 64.9,114.5 10,100 64.9,85.5 36.4,36.4 85.5,64.9";

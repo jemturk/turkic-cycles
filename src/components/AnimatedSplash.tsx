@@ -19,6 +19,12 @@ const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
 // (expo-splash-screen) can only show one static image, so once it's hidden
 // this JS overlay plays the two circles sliding together -- the logo
 // "assembling" itself -- before handing off to the real app underneath.
+//
+// The native splash's image is a transparent PNG (app.json, assets/splash-blank.png)
+// on the same background color, so launch starts on a blank screen and the logo
+// first appears here, assembling. A real logo there showed the finished mark first,
+// then the animation built the same mark again. (Transparent rather than no image:
+// Android 12+ shows the app icon when the splash has none.)
 const STAR_POINTS =
   "100,10 114.5,64.9 163.6,36.4 135.1,85.5 190,100 135.1,114.5 163.6,163.6 114.5,135.1 " +
   "100,190 85.5,135.1 36.4,163.6 64.9,114.5 10,100 64.9,85.5 36.4,36.4 85.5,64.9";

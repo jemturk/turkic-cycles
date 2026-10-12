@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  createCircle,
+  createCircleEvent,
+  getIsAppAdmin,
+  getMyCircleRole,
   getCircle,
   getCircleEvent,
   getMyRsvp,
@@ -106,6 +110,44 @@ export function useUpsertRsvp(eventId: string | undefined, userId: string | unde
       // going_count / interested_count are recomputed by a trigger on event_rsvps.
       queryClient.invalidateQueries({ queryKey: ["circleEvents"] });
       queryClient.invalidateQueries({ queryKey: ["circleEvent", eventId] });
+    },
+  });
+}
+
+export function useIsAppAdmin(userId: string | undefined) {
+  return useQuery({
+    queryKey: ["isAppAdmin", userId],
+    queryFn: () => getIsAppAdmin(userId as string),
+    enabled: !!userId,
+  });
+}
+
+export function useMyCircleRole(circleId: string | undefined, userId: string | undefined) {
+  return useQuery({
+    queryKey: ["myCircleRole", circleId, userId],
+    queryFn: () => getMyCircleRole(circleId as string, userId as string),
+    enabled: !!circleId && !!userId,
+  });
+}
+
+export function useCreateCircle(userId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createCircle,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["circles"] });
+      queryClient.invalidateQueries({ queryKey: ["myCircleMemberships", userId] });
+    },
+  });
+}
+
+export function useCreateCircleEvent(circleId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createCircleEvent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["circleEvents", circleId] });
+      queryClient.invalidateQueries({ queryKey: ["upcomingEventCounts"] });
     },
   });
 }

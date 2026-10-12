@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Image, Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,13 +9,23 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/hooks/useSession";
 import { useMessageThreads, useNewConnections } from "@/hooks/useChat";
 import { useSavedPeople } from "@/hooks/useDiscover";
+import { useHasPlus, useIncomingLikes, useIncomingLikesCount } from "@/hooks/usePlus";
 import { calculateAge } from "@/lib/age";
 import { Avatar } from "@/components/Avatar";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
+import { Button } from "@/components/Button";
+import { EXPANDING_TABS_DURATION, ExpandingTabs } from "@/components/ExpandingTabs";
 import type { MatchWithParticipant, MessageThread } from "@/api/chat";
 import type { SavedPerson } from "@/api/discover";
 
-type Tab = "matched" | "connected" | "saved";
+type Tab = "matched" | "connected" | "saved" | "likes";
+
+const TABS: { value: Tab; icon: keyof typeof Ionicons.glyphMap }[] = [
+  { value: "matched", icon: "flash" },
+  { value: "connected", icon: "chatbubbles" },
+  { value: "saved", icon: "star" },
+  { value: "likes", icon: "heart" },
+];
 
 // What a card shows -- matches and saved people both carry these fields.
 type PersonCardData = Pick<
@@ -31,6 +41,10 @@ type PersonCardData = Pick<
 
 const GRID_GAP = 12;
 const GRID_COLUMNS = 2;
+// Placeholder cards behind the Likes teaser. Deliberately not their real photos,
+// blurred: the server never sends a free user who liked them, so there's nothing
+// to un-blur.
+const TEASER_CARDS = 4;
 
 function PersonCard({
   person,
@@ -134,6 +148,26 @@ function PersonCard({
   );
 }
 
+// The tab's own icon in a soft halo, with a couple of satellite dots so it reads as
+// an illustration rather than a stray glyph.
+function EmptyState({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; label: string }) {
+  return (
+    <View className="flex-1 items-center justify-center gap-6 px-4 pb-16">
+      <View className="h-40 w-40 items-center justify-center rounded-full bg-primary-100/60 dark:bg-ink-800/60">
+        <View className="h-28 w-28 items-center justify-center rounded-full bg-primary-100 dark:bg-ink-800">
+          <View className="h-16 w-16 items-center justify-center rounded-full bg-white dark:bg-ink-700">
+            <Ionicons name={icon} size={32} className="text-primary-500" />
+          </View>
+        </View>
+        <View className="absolute right-3 top-5 h-3 w-3 rounded-full bg-accent-500" />
+        <View className="absolute bottom-6 left-2 h-2 w-2 rounded-full bg-primary-500/50" />
+        <View className="absolute left-7 top-2 h-1.5 w-1.5 rounded-full bg-accent-500/60" />
+      </View>
+      <Text className="max-w-xs text-center text-base text-ink-700 dark:text-ink-200">{label}</Text>
+    </View>
+  );
+}
+
 export default function Connections() {
   const { t } = useTranslation();
   const { session } = useSession();
@@ -141,7 +175,28 @@ export default function Connections() {
   const { data: matched, refetch: refetchMatched, isRefetching: isRefetchingMatched } = useNewConnections(userId);
   const { data: connected, refetch: refetchConnected, isRefetching: isRefetchingConnected } = useMessageThreads(userId);
   const { data: saved, refetch: refetchSaved, isRefetching: isRefetchingSaved } = useSavedPeople(userId);
+  const subscribed = useHasPlus(userId);
+  const { data: likesCount, refetch: refetchLikesCount, isRefetching: isRefetchingLikesCount } =
+    useIncomingLikesCount(userId);
+  const { data: likes, refetch: refetchLikes, isRefetching: isRefetchingLikes } = useIncomingLikes(
+    userId,
+    subscribed === true
+  );
+  // tab drives the pill; contentTab, what's shown below it, catches up once the pill
+  // has finished moving. Building a long grid of photo cards (Saved) in the same
+  // frames as the animation made it stutter on Android.
   const [tab, setTab] = useState<Tab>("matched");
+  const [contentTab, setContentTab] = useState<Tab>("matched");
+  const contentTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (contentTimer.current) clearTimeout(contentTimer.current);
+  }, []);
+
+  function selectTab(next: Tab) {
+    setTab(next);
+    if (contentTimer.current) clearTimeout(contentTimer.current);
+    contentTimer.current = setTimeout(() => setContentTab(next), EXPANDING_TABS_DURATION);
+  }
   const [gridWidth, setGridWidth] = useState(0);
 
   // Math.floor matters here: a fractional width (e.g. 157.5) can get rounded UP by
@@ -155,6 +210,8 @@ export default function Connections() {
     refetchMatched();
     refetchConnected();
     refetchSaved();
+    refetchLikesCount();
+    if (subscribed) refetchLikes();
   }
 
   // replace, not push: "user" is its own hidden tab (see (app)/_layout.tsx), and
@@ -176,49 +233,69 @@ export default function Connections() {
     matched: matched?.length ?? 0,
     connected: connected?.length ?? 0,
     saved: saved?.length ?? 0,
+    likes: likesCount ?? 0,
   };
-  const people = tab === "matched" ? matched : tab === "connected" ? connected : saved;
+  const people =
+    contentTab === "matched"
+      ? matched
+      : contentTab === "connected"
+        ? connected
+        : contentTab === "saved"
+          ? saved
+          : likes;
   const emptyLabel = t(
-    tab === "matched" ? "connections.emptyMatched" : tab === "connected" ? "connections.emptyConnected" : "connections.emptySaved"
+    contentTab === "matched"
+      ? "connections.emptyMatched"
+      : contentTab === "connected"
+        ? "connections.emptyConnected"
+        : contentTab === "saved"
+          ? "connections.emptySaved"
+          : "connections.emptyLikes"
   );
+  // Free users with likes waiting get the teaser instead of a list.
+  const showLikesTeaser = contentTab === "likes" && subscribed === false && (likesCount ?? 0) > 0;
+  const isEmpty = !showLikesTeaser && (!people || people.length === 0);
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
       <RefreshableScrollView
-        refreshing={isRefetchingMatched || isRefetchingConnected || isRefetchingSaved}
+        refreshing={
+          isRefetchingMatched || isRefetchingConnected || isRefetchingSaved || isRefetchingLikesCount || isRefetchingLikes
+        }
         onRefresh={refetch}
         className="flex-1 px-6 pt-4"
-        contentContainerClassName="gap-6 pb-10"
+        // grow lets an empty tab's message fill the space above the tabs and sit
+        // centred in it, rather than hugging the top.
+        contentContainerClassName="grow gap-6 pb-6"
       >
-        <View className="flex-row rounded-full border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-1">
-          {(["matched", "connected", "saved"] as const).map((value) => {
-            const selected = tab === value;
-            const count = counts[value];
-            return (
-              <Pressable
-                key={value}
-                className={`flex-1 items-center rounded-full py-2 ${selected ? "bg-primary-500" : ""}`}
-                onPress={() => setTab(value)}
-              >
-                <Text
-                  className={`text-sm font-medium ${selected ? "text-white" : "text-ink-700 dark:text-ink-200"}`}
-                  numberOfLines={1}
-                >
-                  {t(`connections.${value}`)}
-                  {count > 0 ? ` (${count})` : ""}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
 
-        <View onLayout={(e) => setGridWidth(e.nativeEvent.layout.width)}>
-          {!people || people.length === 0 ? (
-            <Text className="text-base text-ink-700 dark:text-ink-200">{emptyLabel}</Text>
+        <View className={isEmpty ? "flex-1" : undefined} onLayout={(e) => setGridWidth(e.nativeEvent.layout.width)}>
+          {showLikesTeaser ? (
+            <View className="gap-4">
+              {cardWidth > 0 ? (
+                <View className="flex-row flex-wrap" style={{ gap: GRID_GAP }}>
+                  {Array.from({ length: Math.min(likesCount ?? 0, TEASER_CARDS) }, (_, i) => (
+                    <View
+                      key={i}
+                      className="items-center justify-center rounded-2xl border border-primary-100 dark:border-ink-700 bg-primary-100 dark:bg-ink-800"
+                      style={{ width: cardWidth, height: cardWidth }}
+                    >
+                      <Ionicons name="heart" size={32} color="#127A87" />
+                    </View>
+                  ))}
+                </View>
+              ) : null}
+              <Text className="text-center font-display text-lg text-ink-900 dark:text-ink-50">
+                {t("connections.likesTeaser", { count: likesCount ?? 0 })}
+              </Text>
+              <Button label={t("connections.seeWhoLikesYou")} onPress={() => router.push("/(app)/plus")} />
+            </View>
+          ) : isEmpty ? (
+            <EmptyState icon={TABS.find((x) => x.value === contentTab)!.icon} label={emptyLabel} />
           ) : cardWidth > 0 ? (
             <View className="flex-row flex-wrap" style={{ gap: GRID_GAP }}>
-              {tab === "saved"
-                ? (saved ?? []).map((person) => (
+              {contentTab === "saved" || contentTab === "likes"
+                ? ((contentTab === "saved" ? saved : likes) ?? []).map((person) => (
                     <PersonCard
                       key={person.otherUserId}
                       person={person}
@@ -231,15 +308,25 @@ export default function Connections() {
                       key={person.matchId}
                       person={person}
                       width={cardWidth}
-                      unreadCount={tab === "connected" ? (person as MessageThread).unreadCount : undefined}
+                      unreadCount={contentTab === "connected" ? (person as MessageThread).unreadCount : undefined}
                       onPress={() => goToProfile(person.otherUserId, person.matchId)}
-                      onQuickChat={tab === "connected" ? () => router.push(`/(app)/chat/${person.matchId}`) : undefined}
+                      onQuickChat={contentTab === "connected" ? () => router.push(`/(app)/chat/${person.matchId}`) : undefined}
                     />
                   ))}
             </View>
           ) : null}
         </View>
       </RefreshableScrollView>
+
+      {/* Pinned under the list, within thumb reach, rather than scrolling away
+          with it. */}
+      <View className="px-6 pb-6 pt-2">
+        <ExpandingTabs
+          value={tab}
+          onChange={selectTab}
+          tabs={TABS.map(({ value, icon }) => ({ value, icon, label: t(`connections.${value}`), count: counts[value] }))}
+        />
+      </View>
     </SafeAreaView>
   );
 }

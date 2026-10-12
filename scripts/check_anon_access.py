@@ -81,6 +81,10 @@ def parse_types() -> tuple[list[str], dict[str, dict[str, str]]]:
 
 
 def dummy_value(ts_type: str) -> str:
+    # "number | null" -> "number": a placeholder of the wrong type makes Postgres
+    # reject the call while parsing the arguments -- before it ever checks EXECUTE
+    # permission -- which would look like an exposed function when it isn't.
+    ts_type = next((part.strip() for part in ts_type.split("|") if part.strip() not in ("null", "undefined")), "string")
     if ts_type.endswith("[]"):
         inner = ts_type[:-2]
         return "{" + dummy_value(inner) + "}"

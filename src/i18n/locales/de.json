@@ -102,7 +102,27 @@
       "going": "Ich komme",
       "interested": "Interessiert",
       "not_going": "Ich komme nicht"
-    }
+    },
+    "newCircle": "Neuer Kreis",
+    "newCircleTitle": "Neuer Kreis",
+    "circleName": "Name des Kreises",
+    "circleDescription": "Beschreibung",
+    "circleTopic": "Thema",
+    "createCircle": "Kreis erstellen",
+    "creating": "Wird erstellt…",
+    "createCircleError": "Kreis konnte nicht erstellt werden",
+    "adminsOnly": "Nur App-Admins können Kreise erstellen.",
+    "addEvent": "Veranstaltung hinzufügen",
+    "newEventTitle": "Neue Veranstaltung",
+    "eventTitle": "Titel",
+    "eventDescription": "Beschreibung",
+    "eventLocation": "Ort",
+    "eventLocationPlaceholder": "Lokal, Stadt",
+    "eventDate": "Datum",
+    "eventTime": "Beginn (24 Std.)",
+    "createEvent": "Veranstaltung erstellen",
+    "createEventError": "Veranstaltung konnte nicht erstellt werden",
+    "organizersOnly": "Nur Inhaber und Moderatoren dieses Kreises können Veranstaltungen hinzufügen."
   },
   "search": {
     "placeholder": "Kreise und Personen suchen",
@@ -123,15 +143,23 @@
     "itsAMatch": "Es ist ein Match!",
     "bothLiked": "Du und {{name}} habt euch gegenseitig gemocht.",
     "keepExploring": "Weiter entdecken",
-    "globalEmpty": "Gerade niemand Neues zu entdecken. Schau bald wieder vorbei."
+    "globalEmpty": "Gerade niemand Neues zu entdecken. Schau bald wieder vorbei.",
+    "skip": "Überspringen",
+    "swipeUpHint": "Nach oben wischen zum Überspringen, nach unten zum Zurückgehen",
+    "previous": "Vorherige Person"
   },
   "connections": {
     "matched": "Gematcht",
     "connected": "Verbunden",
     "saved": "Gemerkt",
-    "emptyMatched": "Noch keine neuen Matches — entdecke weiter in deinen Kreisen.",
+    "emptyMatched": "Noch keine neuen Matches — entdecke weiter.",
     "emptyConnected": "Noch keine Unterhaltungen — sag doch Hallo zu einem Match.",
-    "emptySaved": "Noch niemand gemerkt. Tippe in Entdecken auf den Stern, um jemanden für später hier zu behalten."
+    "emptySaved": "Noch niemand gemerkt. Tippe in Entdecken auf den Stern, um jemanden für später hier zu behalten.",
+    "likes": "Likes",
+    "emptyLikes": "Noch keine neuen Likes. Wenn dich jemand liked, erscheint die Person hier.",
+    "likesTeaser_one": "{{count}} Person mag dich",
+    "likesTeaser_other": "{{count}} Personen mögen dich",
+    "seeWhoLikesYou": "Sieh, wer dich mag"
   },
   "chat": {
     "empty": "Noch keine Unterhaltungen.",
@@ -143,6 +171,7 @@
   "onboarding": {
     "next": "Weiter",
     "saving": "Wird gespeichert...",
+    "saveErrorTitle": "Speichern fehlgeschlagen",
     "step1": {
       "heading": "Erzähl uns von dir",
       "subheading": "Fangen wir mit dem Wichtigsten an.",
@@ -274,7 +303,9 @@
     "dateOfBirth": "Geburtsdatum",
     "dayPlaceholder": "TT",
     "monthPlaceholder": "MM",
-    "yearPlaceholder": "JJJJ"
+    "yearPlaceholder": "JJJJ",
+    "hourPlaceholder": "HH",
+    "minutePlaceholder": "MM"
   },
   "constants": {
     "connectionTypes": {
@@ -563,5 +594,37 @@
     "search": "Suchen",
     "regionOptional": "Bundesland / Region (optional)",
     "noResults": "Keine Treffer für „{{query}}“"
+  },
+  "plus": {
+    "title": "Turkic Circles Plus",
+    "subheading": "Hol mehr aus der Community heraus – und hilf, sie am Laufen zu halten.",
+    "seeLikes": "Sieh, wer dich mag",
+    "seeLikesBody": "Alle, die dich geliked haben – like zurück und ihr matcht sofort.",
+    "comingSoon": "Demnächst",
+    "worldwide": "Menschen in anderen Ländern entdecken",
+    "filters": "Erweiterte Filter",
+    "moreLikes": "Mehr tägliche Likes",
+    "active": "Du hast Plus",
+    "billingIssue": "Es gibt ein Problem mit deiner Zahlung. Aktualisiere sie in deinem Store-Konto, um Plus zu behalten.",
+    "renewsOn": "Verlängert sich oder endet am {{date}}",
+    "manage": "Abo verwalten",
+    "perMonth": "{{price}} / Monat",
+    "perYear": "{{price}} / Jahr",
+    "subscribe": "Abonnieren",
+    "restore": "Käufe wiederherstellen",
+    "restored": "Dein Plus-Abo wurde wiederhergestellt.",
+    "nothingToRestore": "Für dieses Store-Konto wurde kein aktives Plus-Abo gefunden.",
+    "autoRenewNote": "Verlängert sich automatisch, bis du kündigst. Jederzeit in den Einstellungen deines Store-Kontos kündbar.",
+    "purchaseErrorTitle": "Kauf konnte nicht abgeschlossen werden",
+    "welcomeTitle": "Willkommen bei Plus",
+    "welcomeBody": "Unter Verbindungen siehst du jetzt, wer dich mag.",
+    "waitlistBody": "Plus ist hier noch nicht verfügbar. Trag dich in die Warteliste ein und wir melden uns, sobald es so weit ist.",
+    "joinWaitlist": "Auf die Warteliste",
+    "joined": "Du stehst auf der Warteliste",
+    "joinedBody": "Wir melden uns, sobald Plus verfügbar ist.",
+    "leaveWaitlist": "Warteliste verlassen",
+    "waitlistErrorTitle": "Warteliste konnte nicht aktualisiert werden",
+    "statusActive": "Aktiv",
+    "statusWaitlisted": "Auf der Warteliste"
   }
 }

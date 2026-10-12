@@ -131,6 +131,9 @@ export default function AppTabsLayout() {
         {/* Your own profile, opened from the header avatar on any tab or from
             Settings -- hidden for the same reason as "user" above. */}
         <Tabs.Screen name="me" options={{ href: null }} />
+        {/* Plus (paywall / waitlist), opened from Settings and from Connections'
+            Likes you -- hidden for the same reason. */}
+        <Tabs.Screen name="plus" options={{ href: null }} />
       </Tabs>
       <SearchOverlay visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </>

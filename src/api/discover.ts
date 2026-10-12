@@ -181,7 +181,13 @@ export async function listSavedPeople(userId: string): Promise<SavedPerson[]> {
       latestByTarget.set(row.target_id, row.circle_id);
     }
   }
-  const targetIds = [...latestByTarget.keys()];
+  return loadPeople(latestByTarget);
+}
+
+// Person cards for a list of user ids, in the map's order; each value is the deck
+// (circle id, null = global) that liking or passing from the profile acts in.
+export async function loadPeople(circleByUserId: Map<string, string | null>): Promise<SavedPerson[]> {
+  const targetIds = [...circleByUserId.keys()];
   if (targetIds.length === 0) return [];
 
   const [{ data: profiles, error: profileError }, coverById] = await Promise.all([
@@ -206,7 +212,7 @@ export async function listSavedPeople(userId: string): Promise<SavedPerson[]> {
         otherState: profile.state,
         otherCountry: profile.country,
         otherCoverPhotoUrl: coverById.get(id) ?? null,
-        circleId: latestByTarget.get(id) ?? null,
+        circleId: circleByUserId.get(id) ?? null,
       },
     ];
   });

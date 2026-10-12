@@ -102,7 +102,27 @@
       "going": "Katılıyorum",
       "interested": "İlgileniyorum",
       "not_going": "Katılmıyorum"
-    }
+    },
+    "newCircle": "Yeni çember",
+    "newCircleTitle": "Yeni çember",
+    "circleName": "Çember adı",
+    "circleDescription": "Açıklama",
+    "circleTopic": "Konu",
+    "createCircle": "Çemberi oluştur",
+    "creating": "Oluşturuluyor…",
+    "createCircleError": "Çember oluşturulamadı",
+    "adminsOnly": "Çemberleri yalnızca uygulama yöneticileri oluşturabilir.",
+    "addEvent": "Etkinlik ekle",
+    "newEventTitle": "Yeni etkinlik",
+    "eventTitle": "Başlık",
+    "eventDescription": "Açıklama",
+    "eventLocation": "Yer",
+    "eventLocationPlaceholder": "Mekân, şehir",
+    "eventDate": "Tarih",
+    "eventTime": "Başlangıç saati (24 saat)",
+    "createEvent": "Etkinliği oluştur",
+    "createEventError": "Etkinlik oluşturulamadı",
+    "organizersOnly": "Etkinlikleri yalnızca bu çemberin sahipleri ve moderatörleri ekleyebilir."
   },
   "search": {
     "placeholder": "Çember ve kişi ara",
@@ -123,15 +143,23 @@
     "itsAMatch": "Bu bir eşleşme!",
     "bothLiked": "Sen ve {{name}} birbirinizi beğendiniz.",
     "keepExploring": "Keşfetmeye devam et",
-    "globalEmpty": "Şu an keşfedecek yeni biri yok. Yakında tekrar bak."
+    "globalEmpty": "Şu an keşfedecek yeni biri yok. Yakında tekrar bak.",
+    "skip": "Geç",
+    "swipeUpHint": "Geçmek için yukarı, geri dönmek için aşağı kaydır",
+    "previous": "Önceki kişi"
   },
   "connections": {
     "matched": "Eşleşmeler",
     "connected": "Sohbetler",
     "saved": "Kaydedilenler",
-    "emptyMatched": "Henüz yeni eşleşmen yok — çemberlerinde keşfetmeye devam et.",
+    "emptyMatched": "Henüz yeni eşleşmen yok — keşfetmeye devam et.",
     "emptyConnected": "Henüz bir konuşman yok — bir eşleşmene merhaba de.",
-    "emptySaved": "Henüz kimseyi kaydetmedin. Keşfet'te birini sonraya saklamak için yıldıza dokun."
+    "emptySaved": "Henüz kimseyi kaydetmedin. Keşfet'te birini sonraya saklamak için yıldıza dokun.",
+    "likes": "Beğeniler",
+    "emptyLikes": "Henüz yeni beğeni yok. Biri seni beğendiğinde burada görünecek.",
+    "likesTeaser_one": "{{count}} kişi seni beğendi",
+    "likesTeaser_other": "{{count}} kişi seni beğendi",
+    "seeWhoLikesYou": "Seni kimlerin beğendiğini gör"
   },
   "chat": {
     "empty": "Henüz bir konuşman yok.",
@@ -143,6 +171,7 @@
   "onboarding": {
     "next": "İleri",
     "saving": "Kaydediliyor...",
+    "saveErrorTitle": "Kaydedilemedi",
     "step1": {
       "heading": "Kendinden bahset",
       "subheading": "Temel bilgilerle başlayalım.",
@@ -274,7 +303,9 @@
     "dateOfBirth": "Doğum tarihi",
     "dayPlaceholder": "GG",
     "monthPlaceholder": "AA",
-    "yearPlaceholder": "YYYY"
+    "yearPlaceholder": "YYYY",
+    "hourPlaceholder": "SS",
+    "minutePlaceholder": "DD"
   },
   "constants": {
     "connectionTypes": {
@@ -563,5 +594,37 @@
     "search": "Ara",
     "regionOptional": "Eyalet / bölge (isteğe bağlı)",
     "noResults": "\"{{query}}\" için sonuç yok"
+  },
+  "plus": {
+    "title": "Turkic Circles Plus",
+    "subheading": "Topluluktan daha fazlasını al — ve ayakta kalmasına yardım et.",
+    "seeLikes": "Seni kimlerin beğendiğini gör",
+    "seeLikesBody": "Seni beğenen herkes; sen de beğen, hemen eşleşin.",
+    "comingSoon": "Yakında",
+    "worldwide": "Başka ülkelerdeki insanları keşfet",
+    "filters": "Gelişmiş filtreler",
+    "moreLikes": "Daha fazla günlük beğeni",
+    "active": "Plus üyesisin",
+    "billingIssue": "Ödemende bir sorun var. Plus'ı korumak için mağaza hesabından güncelle.",
+    "renewsOn": "{{date}} tarihinde yenilenir veya sona erer",
+    "manage": "Aboneliği yönet",
+    "perMonth": "{{price}} / ay",
+    "perYear": "{{price}} / yıl",
+    "subscribe": "Abone ol",
+    "restore": "Satın alımları geri yükle",
+    "restored": "Plus aboneliğin geri yüklendi.",
+    "nothingToRestore": "Bu mağaza hesabında aktif bir Plus aboneliği bulunamadı.",
+    "autoRenewNote": "İptal edene kadar otomatik olarak yenilenir. İstediğin zaman mağaza hesabı ayarlarından iptal edebilirsin.",
+    "purchaseErrorTitle": "Satın alma tamamlanamadı",
+    "welcomeTitle": "Plus'a hoş geldin",
+    "welcomeBody": "Artık Bağlantılar'da seni kimlerin beğendiğini görebilirsin.",
+    "waitlistBody": "Plus burada henüz mevcut değil. Bekleme listesine katıl, hazır olduğunda sana haber verelim.",
+    "joinWaitlist": "Bekleme listesine katıl",
+    "joined": "Bekleme listesindesin",
+    "joinedBody": "Plus hazır olduğunda sana haber vereceğiz.",
+    "leaveWaitlist": "Bekleme listesinden çık",
+    "waitlistErrorTitle": "Bekleme listesi güncellenemedi",
+    "statusActive": "Aktif",
+    "statusWaitlisted": "Bekleme listesinde"
   }
 }

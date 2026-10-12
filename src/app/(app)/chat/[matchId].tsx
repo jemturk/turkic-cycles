@@ -35,10 +35,6 @@ export default function ChatThread() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchId, userId]);
 
-  useEffect(() => {
-    scrollRef.current?.scrollToEnd({ animated: true });
-  }, [messages?.length, isOtherTyping]);
-
   function onDraftChange(text: string) {
     setDraft(text);
     if (text.trim()) notifyTyping();
@@ -99,7 +95,15 @@ export default function ChatThread() {
       {/* Lifts the message list and the input above the keyboard -- the input
           is pinned to the bottom, so without this the keyboard covers it. */}
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-        <ScrollView ref={scrollRef} className="flex-1 px-4 pt-4" contentContainerClassName="gap-3 pb-4">
+        <ScrollView
+          ref={scrollRef}
+          className="flex-1 px-4 pt-4"
+          contentContainerClassName="gap-3 pb-4"
+          // After the new content has laid out, not when the state changes: scrolling
+          // from an effect ran before a new message or the typing bubble had any
+          // height, stopping short and leaving it half behind the input bar.
+          onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
+        >
           {participant?.match ? (
             <Text className="text-center text-xs text-ink-400">
               {t("chat.youMatched", { date: format(new Date(participant.match.created_at), "MMM d") })}

@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import { TextField } from "@/components/TextField";
 
 type DateOfBirthFieldProps = {
+  // Defaults to "Date of birth"; event forms reuse this field with their own label.
+  label?: string;
   value?: string; // "YYYY-MM-DD"
   onChange: (iso: string) => void;
   error?: string;
@@ -19,7 +21,7 @@ function pad(n: string) {
 // @react-native-community/datetimepicker has no web platform support at all, and
 // this app targets web, so a cross-platform picker would need a second, separate
 // implementation just for web. Three fields work identically everywhere.
-export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldProps) {
+export function DateOfBirthField({ label, value, onChange, error }: DateOfBirthFieldProps) {
   const { t } = useTranslation();
   const [day, setDay] = useState(value?.slice(8, 10) ?? "");
   const [month, setMonth] = useState(value?.slice(5, 7) ?? "");
@@ -37,7 +39,7 @@ export function DateOfBirthField({ value, onChange, error }: DateOfBirthFieldPro
 
   return (
     <View className="gap-1.5">
-      <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("common.dateOfBirth")}</Text>
+      <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{label ?? t("common.dateOfBirth")}</Text>
       <View className="flex-row gap-2">
         <View className="flex-1">
           <TextField

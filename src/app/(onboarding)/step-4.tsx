@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -43,6 +43,7 @@ export default function OnboardingStep4() {
     store.setStep4Answers(values);
     submitStep4.mutate(values, {
       onSuccess: () => router.push("/(onboarding)/step-5"),
+      onError: (error) => Alert.alert(t("onboarding.saveErrorTitle"), error.message),
     });
   };
 

@@ -102,7 +102,27 @@
       "going": "Going",
       "interested": "Interested",
       "not_going": "Not going"
-    }
+    },
+    "newCircle": "New circle",
+    "newCircleTitle": "New circle",
+    "circleName": "Circle name",
+    "circleDescription": "Description",
+    "circleTopic": "Topic",
+    "createCircle": "Create circle",
+    "creating": "Creating…",
+    "createCircleError": "Couldn't create the circle",
+    "adminsOnly": "Only app admins can create circles.",
+    "addEvent": "Add event",
+    "newEventTitle": "New event",
+    "eventTitle": "Title",
+    "eventDescription": "Description",
+    "eventLocation": "Location",
+    "eventLocationPlaceholder": "Venue, city",
+    "eventDate": "Date",
+    "eventTime": "Start time (24-hour)",
+    "createEvent": "Create event",
+    "createEventError": "Couldn't create the event",
+    "organizersOnly": "Only this circle's owners and moderators can add events."
   },
   "search": {
     "placeholder": "Search circles and people",
@@ -123,15 +143,23 @@
     "itsAMatch": "It's a match!",
     "bothLiked": "You and {{name}} both liked each other.",
     "keepExploring": "Keep exploring",
-    "globalEmpty": "No one new to discover right now. Check back soon."
+    "globalEmpty": "No one new to discover right now. Check back soon.",
+    "skip": "Skip",
+    "swipeUpHint": "Swipe up to skip, down to go back",
+    "previous": "Previous person"
   },
   "connections": {
     "matched": "Matched",
     "connected": "Connected",
     "saved": "Saved",
-    "emptyMatched": "No new matches yet — keep discovering in your circles.",
+    "emptyMatched": "No new matches yet — keep discovering.",
     "emptyConnected": "No conversations yet — say hello to a match.",
-    "emptySaved": "No one saved yet. Tap the star on someone in Discover to keep them here for later."
+    "emptySaved": "No one saved yet. Tap the star on someone in Discover to keep them here for later.",
+    "likes": "Likes",
+    "emptyLikes": "No new likes yet. When someone likes you, they'll show up here.",
+    "likesTeaser_one": "{{count}} person likes you",
+    "likesTeaser_other": "{{count}} people like you",
+    "seeWhoLikesYou": "See who likes you"
   },
   "chat": {
     "empty": "No conversations yet.",
@@ -143,6 +171,7 @@
   "onboarding": {
     "next": "Next",
     "saving": "Saving...",
+    "saveErrorTitle": "Couldn't save",
     "step1": {
       "heading": "Tell us about you",
       "subheading": "Let's start with the basics.",
@@ -274,7 +303,9 @@
     "dateOfBirth": "Date of birth",
     "dayPlaceholder": "DD",
     "monthPlaceholder": "MM",
-    "yearPlaceholder": "YYYY"
+    "yearPlaceholder": "YYYY",
+    "hourPlaceholder": "HH",
+    "minutePlaceholder": "MM"
   },
   "constants": {
     "connectionTypes": {
@@ -563,5 +594,37 @@
     "search": "Search",
     "regionOptional": "State / region (optional)",
     "noResults": "No matches for \"{{query}}\""
+  },
+  "plus": {
+    "title": "Turkic Circles Plus",
+    "subheading": "Get more out of the community — and help keep it running.",
+    "seeLikes": "See who likes you",
+    "seeLikesBody": "Everyone who's liked you, so you can like them back and match right away.",
+    "comingSoon": "Coming soon",
+    "worldwide": "Discover people in other countries",
+    "filters": "Advanced filters",
+    "moreLikes": "More daily likes",
+    "active": "You have Plus",
+    "billingIssue": "There's a problem with your payment. Update it in your store account to keep Plus.",
+    "renewsOn": "Renews or ends on {{date}}",
+    "manage": "Manage subscription",
+    "perMonth": "{{price}} / month",
+    "perYear": "{{price}} / year",
+    "subscribe": "Subscribe",
+    "restore": "Restore purchases",
+    "restored": "Your Plus subscription has been restored.",
+    "nothingToRestore": "No active Plus subscription found for this store account.",
+    "autoRenewNote": "Renews automatically until you cancel. Cancel anytime in your store account settings.",
+    "purchaseErrorTitle": "Couldn't complete the purchase",
+    "welcomeTitle": "Welcome to Plus",
+    "welcomeBody": "You can now see who likes you in Connections.",
+    "waitlistBody": "Plus isn't available here yet. Join the waitlist and we'll let you know as soon as it is.",
+    "joinWaitlist": "Join the waitlist",
+    "joined": "You're on the waitlist",
+    "joinedBody": "We'll let you know when Plus is available.",
+    "leaveWaitlist": "Leave the waitlist",
+    "waitlistErrorTitle": "Couldn't update the waitlist",
+    "statusActive": "Active",
+    "statusWaitlisted": "On the waitlist"
   }
 }

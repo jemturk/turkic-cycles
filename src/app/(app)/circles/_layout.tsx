@@ -7,6 +7,7 @@ export default function CirclesLayout() {
   return (
     <Stack screenOptions={useStackScreenOptions()}>
       <Stack.Screen name="index" options={{ headerShown: true, title: t("tabs.circles") }} />
+      <Stack.Screen name="new" />
       <Stack.Screen name="[circleId]" />
     </Stack>
   );

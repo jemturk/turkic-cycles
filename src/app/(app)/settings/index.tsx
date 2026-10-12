@@ -10,6 +10,8 @@ import { supabase } from "@/api/client";
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { useMyVerificationStatus } from "@/hooks/useVerification";
+import { useDebugSetPlus, useHasPlus, usePlusWaitlist } from "@/hooks/usePlus";
+import { useIsAppAdmin } from "@/hooks/useCircles";
 import {
   useDeleteAccount,
   useUpdateAppLocale,
@@ -68,6 +70,11 @@ export default function Settings() {
   const userId = session?.user.id;
   const { data: profile } = useMyProfile(userId);
   const { data: verification } = useMyVerificationStatus(userId);
+  const subscribed = useHasPlus(userId);
+  const { data: onPlusWaitlist } = usePlusWaitlist(userId);
+  // TEMPORARY free/Plus switch for testing; remove with migration 0034's function.
+  const { data: isAdmin } = useIsAppAdmin(userId);
+  const debugSetPlus = useDebugSetPlus(userId);
   const updateAppLocale = useUpdateAppLocale(userId);
   const updateThemePreference = useUpdateThemePreference(userId);
   const updateTextSize = useUpdateTextSize(userId);
@@ -179,6 +186,26 @@ export default function Settings() {
         </View>
 
         <SectionHeader label={t("settings.account")} />
+        <SettingsRow
+          label={t("plus.title")}
+          value={subscribed ? t("plus.statusActive") : onPlusWaitlist ? t("plus.statusWaitlisted") : undefined}
+          onPress={() => router.push("/(app)/plus")}
+        />
+        {isAdmin ? (
+          <View className="flex-row items-center justify-between rounded-xl border border-dashed border-accent-500 bg-white dark:bg-ink-800 px-4 py-3">
+            <View className="flex-1 pr-3">
+              <Text className="text-base text-ink-900 dark:text-ink-50">Test: Free / Plus</Text>
+              <Text className="text-sm text-ink-400">{subscribed ? "Plus" : "Free"} · temporary, admins only</Text>
+            </View>
+            <Switch
+              value={subscribed ?? false}
+              disabled={subscribed === undefined || debugSetPlus.isPending}
+              onValueChange={(plus) =>
+                debugSetPlus.mutate(plus, { onError: (e) => Alert.alert("Couldn't switch", e.message) })
+              }
+            />
+          </View>
+        ) : null}
         <SettingsRow label={t("settings.account")} onPress={() => router.push("/(app)/settings/account")} />
 
         <SectionHeader label={t("settings.safety")} />

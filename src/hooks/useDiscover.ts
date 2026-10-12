@@ -62,6 +62,9 @@ export function useRecordSwipe(circleId: string | null | undefined, userId: stri
       // A save adds to the Saved tab; a like or pass from a saved profile takes
       // the person off it.
       queryClient.invalidateQueries({ queryKey: ["savedPeople", userId] });
+      // Answering someone who liked you takes them off Likes you.
+      queryClient.invalidateQueries({ queryKey: ["incomingLikes", userId] });
+      queryClient.invalidateQueries({ queryKey: ["incomingLikesCount", userId] });
       if (isMatch) queryClient.invalidateQueries({ queryKey: ["newConnections", userId] });
     },
   });

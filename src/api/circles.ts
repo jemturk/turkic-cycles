@@ -117,3 +117,76 @@ export async function upsertRsvp(eventId: string, userId: string, status: "going
     .upsert({ event_id: eventId, user_id: userId, status }, { onConflict: "event_id,user_id" });
   if (error) throw error;
 }
+
+// Whether the user is an app admin (migration 0031's app_admins). Each user can only
+// read their own row, so this answers for the signed-in user only.
+export async function getIsAppAdmin(userId: string): Promise<boolean> {
+  const { data, error } = await supabase.from("app_admins").select("user_id").eq("user_id", userId).maybeSingle();
+  if (error) throw error;
+  return !!data;
+}
+
+// The user's role in a circle -- "member", "moderator" or "owner" -- or null if they
+// haven't joined it.
+export async function getMyCircleRole(circleId: string, userId: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("circle_members")
+    .select("role")
+    .eq("circle_id", circleId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.role ?? null;
+}
+
+export type NewCircle = {
+  name: string;
+  description: string;
+  topic: string;
+  city: string;
+  state: string;
+  country: string;
+  latitude: number | null;
+  longitude: number | null;
+};
+
+// Admins only -- the create_circle function checks, and makes the creator owner.
+export async function createCircle(circle: NewCircle): Promise<string> {
+  const { data, error } = await supabase.rpc("create_circle", {
+    p_name: circle.name,
+    p_description: circle.description,
+    p_topic: circle.topic,
+    p_city: circle.city,
+    p_state: circle.state,
+    p_country: circle.country,
+    p_latitude: circle.latitude,
+    p_longitude: circle.longitude,
+  });
+  if (error) throw error;
+  return data;
+}
+
+export type NewCircleEvent = {
+  circleId: string;
+  title: string;
+  description: string;
+  location: string;
+  startsAt: string; // ISO timestamp
+};
+
+// Allowed for the circle's owners and moderators, and app admins (RLS, 0031).
+export async function createCircleEvent(event: NewCircleEvent): Promise<string> {
+  const { data, error } = await supabase
+    .from("circle_events")
+    .insert({
+      circle_id: event.circleId,
+      title: event.title.trim(),
+      description: event.description.trim() || null,
+      location: event.location.trim(),
+      starts_at: event.startsAt,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id;
+}

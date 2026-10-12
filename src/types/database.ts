@@ -39,6 +39,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       blocked_users: {
         Row: {
           blocked_id: string
@@ -340,6 +355,21 @@ export type Database = {
           },
         ]
       }
+      plus_waitlist: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profile_photos: {
         Row: {
           created_at: string
@@ -610,6 +640,7 @@ export type Database = {
       subscriptions: {
         Row: {
           current_period_end: string | null
+          product_id: string | null
           status: string
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
@@ -619,6 +650,7 @@ export type Database = {
         }
         Insert: {
           current_period_end?: string | null
+          product_id?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -628,6 +660,7 @@ export type Database = {
         }
         Update: {
           current_period_end?: string | null
+          product_id?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -724,6 +757,30 @@ export type Database = {
         }[]
       }
       can_view_profile: { Args: { target: string }; Returns: boolean }
+      count_incoming_likes: { Args: never; Returns: number }
+      list_incoming_likes: {
+        Args: never
+        Returns: {
+          circle_id: string | null
+          liked_at: string
+          user_id: string
+        }[]
+      }
+      create_circle: {
+        Args: {
+          p_name: string
+          p_description: string
+          p_topic: string
+          p_city: string
+          p_state: string
+          p_country: string
+          p_latitude: number | null
+          p_longitude: number | null
+        }
+        Returns: string
+      }
+      debug_set_my_plus: { Args: { p_plus: boolean }; Returns: undefined }
+      is_app_admin: { Args: never; Returns: boolean }
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
       list_global_discover_candidates: {
         Args: { max_count?: number }
