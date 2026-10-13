@@ -321,8 +321,9 @@ export default function Connections() {
       </RefreshableScrollView>
 
       {/* Pinned under the list, within thumb reach, rather than scrolling away
-          with it. */}
-      <View className="px-6 pb-6 pt-2">
+          with it. Equal space above and below so it sits centred between the list
+          and the tab bar. */}
+      <View className="px-6" style={{ paddingVertical: 16 }}>
         <ExpandingTabs
           value={tab}
           onChange={selectTab}
