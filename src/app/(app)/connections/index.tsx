@@ -17,6 +17,7 @@ import { Button } from "@/components/Button";
 import { EXPANDING_TABS_DURATION, ExpandingTabs } from "@/components/ExpandingTabs";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { useSearchOverlay } from "@/stores/searchOverlay";
+import { DesktopPersonCard } from "@/components/DesktopPersonCard";
 import type { MatchWithParticipant, MessageThread } from "@/api/chat";
 import type { SavedPerson } from "@/api/discover";
 
@@ -43,9 +44,14 @@ type PersonCardData = Pick<
 
 const GRID_GAP = 12;
 const GRID_COLUMNS = 2;
-// Desktop web: as many columns as cards of at least this width allow.
-const WIDE_GRID_GAP = 16;
-const WIDE_MIN_CARD_WIDTH = 220;
+// Desktop web: the Discover grid's sizes (DiscoverGrid) -- cards between these
+// widths, at most 4 to a row, so a wide window gets room beside the grid rather
+// than ever-bigger cards.
+const WIDE_GRID_GAP = 20;
+const WIDE_MIN_CARD_WIDTH = 260;
+const WIDE_MAX_CARD_WIDTH = 300;
+const WIDE_MAX_COLUMNS = 4;
+const WIDE_CARD_ASPECT = 5 / 4;
 // Placeholder cards behind the Likes teaser. Deliberately not their real photos,
 // blurred: the server never sends a free user who liked them, so there's nothing
 // to un-blur.
@@ -57,14 +63,61 @@ function PersonCard({
   unreadCount,
   onPress,
   onQuickChat,
+  wide = false,
 }: {
   person: PersonCardData;
   width: number;
   unreadCount?: number;
   onPress: () => void;
   onQuickChat?: () => void;
+  wide?: boolean;
 }) {
   const { t } = useTranslation();
+
+  // Desktop web: the same card as on Discover (DesktopPersonCard), with the quick
+  // chat button and unread dot as one of Discover's frosted corner buttons.
+  if (wide) {
+    return (
+      <Pressable
+        style={{ width, height: Math.round(width * WIDE_CARD_ASPECT) }}
+        onPress={onPress}
+        className="rounded-3xl web:hover:shadow-md"
+      >
+        <DesktopPersonCard
+          person={{
+            displayName: person.otherDisplayName,
+            avatarUrl: person.otherAvatarUrl,
+            birthdate: person.otherBirthdate,
+            city: person.otherCity,
+            state: person.otherState,
+            occupation: null,
+            connectionTypes: [],
+            coverPhotoUrl: person.otherCoverPhotoUrl,
+          }}
+          verificationStatus={null}
+        />
+        {onQuickChat ? (
+          <Pressable
+            accessibilityLabel={t("connections.connected")}
+            onPress={(e) => {
+              e.stopPropagation();
+              onQuickChat();
+            }}
+            className="absolute right-3 top-3 h-[38px] w-[38px] items-center justify-center rounded-full bg-white/70 web:hover:bg-white dark:bg-ink-800/70 dark:web:hover:bg-ink-800"
+            style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 6 }}
+          >
+            <Ionicons name="chatbubble-outline" size={18} color="#127A87" />
+            {unreadCount ? (
+              <View className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-white bg-accent-500" />
+            ) : null}
+          </Pressable>
+        ) : unreadCount ? (
+          <View className="absolute right-3 top-3 h-3 w-3 rounded-full border-2 border-white bg-accent-500" />
+        ) : null}
+      </Pressable>
+    );
+  }
+
   const age = person.otherBirthdate ? calculateAge(person.otherBirthdate) : undefined;
   const location = [person.otherCity, person.otherState, person.otherCountry].filter(Boolean).join(", ");
   const meta = [age ? `${age}` : null, location || null].filter(Boolean).join(" · ");
@@ -258,8 +311,13 @@ export default function Connections() {
   // keeping them side by side, which is exactly the "cards stack vertically on web"
   // bug this fixes.
   const gap = wide ? WIDE_GRID_GAP : GRID_GAP;
-  const columns = wide ? Math.max(3, Math.floor((gridWidth + gap) / (WIDE_MIN_CARD_WIDTH + gap))) : GRID_COLUMNS;
-  const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - gap * (columns - 1)) / columns) : 0;
+  const columns = wide
+    ? Math.min(WIDE_MAX_COLUMNS, Math.max(1, Math.floor((gridWidth + gap) / (WIDE_MIN_CARD_WIDTH + gap))))
+    : GRID_COLUMNS;
+  const fitWidth = gridWidth > 0 ? Math.floor((gridWidth - gap * (columns - 1)) / columns) : 0;
+  const cardWidth = wide ? Math.min(WIDE_MAX_CARD_WIDTH, fitWidth) : fitWidth;
+  // The cards' actual extent, so the title row (and its search box) ends where they do.
+  const gridContentWidth = cardWidth > 0 ? columns * cardWidth + (columns - 1) * gap : undefined;
 
   function refetch() {
     refetchMatched();
@@ -330,7 +388,7 @@ export default function Connections() {
         {/* Desktop web: a large title with search, and the tabs up here. */}
         {wide ? (
           <>
-            <View className="flex-row flex-wrap items-center gap-4">
+            <View className="flex-row flex-wrap items-center gap-4" style={{ maxWidth: gridContentWidth }}>
               <Text className="flex-1 font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.connections")}</Text>
               <Pressable
                 accessibilityRole="search"
@@ -376,6 +434,7 @@ export default function Connections() {
                       key={person.otherUserId}
                       person={person}
                       width={cardWidth}
+                      wide={wide}
                       onPress={() => goToSavedProfile(person)}
                     />
                   ))
@@ -384,6 +443,7 @@ export default function Connections() {
                       key={person.matchId}
                       person={person}
                       width={cardWidth}
+                      wide={wide}
                       unreadCount={contentTab === "connected" ? (person as MessageThread).unreadCount : undefined}
                       onPress={() => goToProfile(person.otherUserId, person.matchId)}
                       onQuickChat={contentTab === "connected" ? () => router.push(`/(app)/chat/${person.matchId}`) : undefined}

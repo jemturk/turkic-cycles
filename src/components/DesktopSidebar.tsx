@@ -93,7 +93,7 @@ export function DesktopSidebar({ state, descriptors, navigation }: BottomTabBarP
         onPress={toggle}
         onFocus={() => setHandleFocused(true)}
         onBlur={() => setHandleFocused(false)}
-        className="absolute -right-3.5 top-[36px] h-7 w-7 items-center justify-center rounded-full border border-primary-100 bg-white web:hover:bg-primary-50 dark:border-ink-700 dark:bg-ink-800 dark:web:hover:bg-ink-700"
+        className="absolute -right-3.5 top-[36px] h-7 w-7 items-center justify-center rounded-full border border-primary-100 bg-white web:hover:bg-primary-100/40 dark:border-ink-700 dark:bg-ink-800 dark:web:hover:bg-ink-700"
         style={{
           opacity: showHandle ? 1 : 0,
           shadowColor: "#000",
@@ -127,7 +127,7 @@ export function DesktopSidebar({ state, descriptors, navigation }: BottomTabBarP
               accessibilityLabel={collapsed ? options.title : undefined}
               onPress={onPress}
               className={`min-h-[44px] flex-row items-center gap-3 rounded-xl ${collapsed ? "justify-center px-0" : "px-3"} ${
-                focused ? "bg-primary-100 dark:bg-ink-700" : "web:hover:bg-primary-50 dark:web:hover:bg-ink-700"
+                focused ? "bg-primary-100 dark:bg-ink-700" : "web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
               }`}
             >
               <View className="w-7 items-center">{options.tabBarIcon?.({ focused, color, size: 24 })}</View>

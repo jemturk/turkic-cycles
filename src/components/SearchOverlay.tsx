@@ -97,6 +97,16 @@ export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:
                 <Ionicons name="close-circle" size={20} color="#8A7C76" />
               </Pressable>
             ) : null}
+            {/* Closes the overlay outright -- the backdrop does too, but isn't obvious. */}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("common.close")}
+              hitSlop={8}
+              onPress={close}
+              className="h-8 w-8 items-center justify-center rounded-full web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
+            >
+              <Ionicons name="close" size={22} color="#4A3F3A" />
+            </Pressable>
           </View>
 
           {needle ? (

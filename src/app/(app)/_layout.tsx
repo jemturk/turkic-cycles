@@ -16,6 +16,7 @@ import { useSession } from "@/hooks/useSession";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { SearchOverlay } from "@/components/SearchOverlay";
 import { AppMark } from "@/components/AppMark";
+import { CirclesIcon } from "@/components/CirclesIcon";
 import { useSearchOverlay } from "@/stores/searchOverlay";
 import { alertCoverRequired, useHasCover } from "@/hooks/useCoverGuard";
 import { useWideLayout } from "@/hooks/useWideLayout";
@@ -32,11 +33,10 @@ const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inacti
   settings: { active: "settings", inactive: "settings-outline" },
 };
 
-// Circles' icon is the app logo, in its own colors rather than the tint -- so
-// it's dimmed instead of recolored when another tab is active. AppMark's circles
+// Circles' icon on the bottom bar is the app logo, in its own colors rather than the
+// tint -- so it's dimmed instead of recolored when another tab is active. AppMark's circles
 // fill only ~65% of its viewBox height, hence the larger size than other icons.
 const LOGO_ICON_SIZE = 40;
-const SIDEBAR_LOGO_ICON_SIZE = 30;
 
 // Desktop web: screens are phone-first, so on a wide window they get a readable
 // column beside the sidebar rather than stretching edge to edge.
@@ -137,9 +137,12 @@ export default function AppTabsLayout() {
           },
           tabBarIcon: ({ focused, color, size }) => {
             if (route.name === "circles") {
+              // The sidebar already shows the logo at its top, so there Circles gets a
+              // plain icon like the other sections.
+              if (wide) return <CirclesIcon focused={focused} color={color} size={size} />;
               return (
                 <View style={{ opacity: focused ? 1 : 0.45 }}>
-                  <AppMark size={wide ? SIDEBAR_LOGO_ICON_SIZE : LOGO_ICON_SIZE} />
+                  <AppMark size={LOGO_ICON_SIZE} />
                 </View>
               );
             }

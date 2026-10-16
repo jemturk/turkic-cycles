@@ -89,7 +89,7 @@ export default function OtherProfile() {
         accessibilityLabel={t("common.more")}
         aria-expanded={moreOpen}
         onPress={() => setMoreOpen((open) => !open)}
-        className="h-12 w-12 items-center justify-center rounded-2xl bg-white web:hover:bg-primary-50 dark:bg-ink-800 dark:web:hover:bg-ink-700"
+        className="h-12 w-12 items-center justify-center rounded-2xl bg-white web:hover:bg-primary-100/40 dark:bg-ink-800 dark:web:hover:bg-ink-700"
       >
         <Ionicons name="ellipsis-horizontal" size={20} color="#4A3F3A" />
       </Pressable>
@@ -104,7 +104,7 @@ export default function OtherProfile() {
               setMoreOpen(false);
               router.push(`/(app)/settings/safety/report?userId=${userId}`);
             }}
-            className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-primary-50 dark:web:hover:bg-ink-700"
+            className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
           >
             <Ionicons name="flag-outline" size={18} color="#4A3F3A" />
             <Text className="text-sm text-ink-900 dark:text-ink-50">{t("discover.report")}</Text>

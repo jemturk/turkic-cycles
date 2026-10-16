@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Children, useState, type ReactNode } from "react";
 import { Alert, Pressable, ScrollView, Switch, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -28,44 +28,110 @@ import { Chip } from "@/components/Chip";
 import { Avatar } from "@/components/Avatar";
 import { useWideLayout } from "@/hooks/useWideLayout";
 
-function SectionHeader({ label }: { label: string }) {
-  return <Text className="mt-2 text-xs font-medium uppercase text-ink-400">{label}</Text>;
-}
+type IconName = keyof typeof Ionicons.glyphMap;
 
-// Icon-only stand-in for a row's text label. The label still goes to screen
-// readers via accessibilityLabel.
-function RowIcon({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; label: string }) {
+// The small tinted tile every row leads with: pale coral-orange with a coral icon,
+// the warm half of the logo's pair next to the teal of the selected chips and
+// switches. The destructive rows (Delete account) get a solid coral tile instead.
+function RowIcon({ icon, danger = false }: { icon: IconName; danger?: boolean }) {
   return (
     <View
-      accessible
-      accessibilityLabel={label}
-      className="h-10 w-10 items-center justify-center rounded-lg bg-primary-50 dark:bg-ink-700"
+      className={`h-9 w-9 items-center justify-center rounded-lg ${
+        danger ? "bg-accent-500" : "bg-accent-100/60 dark:bg-ink-700"
+      }`}
     >
-      <Ionicons name={icon} size={22} color="#127A87" />
+      <Ionicons name={icon} size={20} color={danger ? "#FFFFFF" : "#C1440E"} />
     </View>
   );
 }
 
-// Every row is its own bordered card, on a phone and on desktop web alike.
+// On a phone every row is its own bordered card; on desktop web the rows sit
+// inside their section's card (Section), which draws the dividers.
 const ROW_CLASS =
-  "flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3";
+  "flex-row items-center justify-between gap-3 rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3";
+const WIDE_ROW_CLASS = "flex-row items-center justify-between gap-3 px-5 py-3.5";
 
-function SettingsRow({ label, value, onPress }: { label: string; value?: string; onPress: () => void }) {
-  return (
-    <Pressable onPress={onPress} className={`${ROW_CLASS} web:hover:bg-primary-50 dark:web:hover:bg-ink-700`}>
-      <Text className="text-base text-ink-900 dark:text-ink-50">{label}</Text>
-      {value ? <Text className="text-sm text-ink-400">{value}</Text> : null}
+// One setting: icon, label (and an optional hint under it), then either a value
+// and a › for rows that open a page (onPress), or a control (`right`). `iconOnly`
+// keeps just the icon on a phone, for rows whose controls need the width (the
+// label still reaches screen readers).
+function Row({
+  icon,
+  label,
+  hint,
+  value,
+  onPress,
+  right,
+  danger = false,
+  iconOnly = false,
+}: {
+  icon: IconName;
+  label: string;
+  hint?: string;
+  value?: string;
+  onPress?: () => void;
+  right?: ReactNode;
+  danger?: boolean;
+  iconOnly?: boolean;
+}) {
+  const wide = useWideLayout();
+  const showLabel = wide || !iconOnly;
+  const className = `${wide ? WIDE_ROW_CLASS : ROW_CLASS} ${onPress ? "web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700" : ""}`;
+  const content = (
+    <>
+      <View
+        className={`flex-row items-center gap-3 ${showLabel ? "flex-1" : ""}`}
+        accessible={!showLabel}
+        accessibilityLabel={showLabel ? undefined : label}
+      >
+        <RowIcon icon={icon} danger={danger} />
+        {showLabel ? (
+          <View className="flex-1">
+            <Text className={`text-base ${danger ? "text-accent-600" : "text-ink-900 dark:text-ink-50"}`}>{label}</Text>
+            {hint ? <Text className="text-sm text-ink-400">{hint}</Text> : null}
+          </View>
+        ) : null}
+      </View>
+      {right}
+      {onPress ? (
+        <View className="flex-row items-center gap-1.5">
+          {value ? <Text className="text-sm text-ink-400">{value}</Text> : null}
+          <Ionicons name="chevron-forward" size={18} color="#A99C95" />
+        </View>
+      ) : null}
+    </>
+  );
+  return onPress ? (
+    <Pressable onPress={onPress} className={className}>
+      {content}
     </Pressable>
+  ) : (
+    <View className={className}>{content}</View>
   );
 }
 
-// The icon stands in for the label on a phone; desktop has room for both.
-function RowLabel({ icon, label, wide }: { icon: keyof typeof Ionicons.glyphMap; label: string; wide: boolean }) {
-  if (!wide) return <RowIcon icon={icon} label={label} />;
+// A group of rows. Phone: the title above, then the rows as separate cards.
+// Desktop web: one white card with the title inside and a hairline between rows.
+function Section({ title, children }: { title?: string; children: ReactNode }) {
+  const wide = useWideLayout();
+  if (!wide) {
+    return (
+      <>
+        {title ? <Text className="mt-2 text-xs font-medium uppercase text-ink-400">{title}</Text> : null}
+        {children}
+      </>
+    );
+  }
   return (
-    <View className="flex-row items-center gap-3">
-      <RowIcon icon={icon} label={label} />
-      <Text className="text-base text-ink-900 dark:text-ink-50">{label}</Text>
+    <View className="overflow-hidden rounded-[18px] bg-white dark:bg-ink-800">
+      {title ? (
+        <Text className="px-5 pb-1 pt-4 text-xs font-semibold uppercase tracking-wider text-ink-400">{title}</Text>
+      ) : null}
+      {Children.toArray(children).map((child, index) => (
+        <View key={index} className={index > 0 ? "border-t border-primary-50 dark:border-ink-700" : undefined}>
+          {child}
+        </View>
+      ))}
     </View>
   );
 }
@@ -100,8 +166,6 @@ export default function Settings() {
   const resetOnboardingStore = useOnboardingStore((s) => s.reset);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const wide = useWideLayout();
-  const row = ROW_CLASS;
-  const rowWithGap = `${row} gap-3`;
 
   const location = [profile?.city, profile?.state].filter(Boolean).join(", ");
 
@@ -161,199 +225,278 @@ export default function Settings() {
     </>
   );
 
-  const profileSection = (
-    <>
-      <Pressable className={row} onPress={() => router.push("/(app)/me")}>
-        <View className="flex-row items-center gap-3">
-          <Avatar uri={profile?.avatar_url} name={profile?.display_name} size={44} />
-          <View>
-            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
-              {profile?.display_name || t("profile.addYourName")}
-            </Text>
-            {location ? <Text className="text-sm text-ink-400">{location}</Text> : null}
+  const verified = verification?.status === "verified";
+
+  // Phone: a compact row. Desktop web: your account at a glance -- picture, name,
+  // place, Plus / Verified badges, and View profile / Edit.
+  const profileSection = wide ? (
+    <View className="flex-row items-center gap-4 rounded-[18px] bg-white p-5 dark:bg-ink-800">
+      <Avatar uri={profile?.avatar_url} name={profile?.display_name} size={64} />
+      <View className="flex-1 gap-1.5">
+        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
+          {profile?.display_name || t("profile.addYourName")}
+        </Text>
+        {location ? <Text className="text-sm text-ink-400">{location}</Text> : null}
+        {subscribed || verified ? (
+          <View className="flex-row gap-1.5">
+            {subscribed ? (
+              <View className="flex-row items-center gap-1 rounded-full bg-gold-100 px-2.5 py-1">
+                <Ionicons name="star" size={12} color="#9C7A28" />
+                <Text className="text-xs font-semibold text-gold-600">Plus</Text>
+              </View>
+            ) : null}
+            {verified ? (
+              <View className="flex-row items-center gap-1 rounded-full bg-teal-50 px-2.5 py-1">
+                <Ionicons name="checkmark-circle" size={12} color="#206E65" />
+                <Text className="text-xs font-semibold text-teal-600">{t("settings.verification.verified")}</Text>
+              </View>
+            ) : null}
           </View>
-        </View>
+        ) : null}
+      </View>
+      <View className="gap-2">
         <Pressable
-          hitSlop={8}
-          onPress={(e) => {
-            e.stopPropagation();
-            router.push("/(app)/me/edit");
-          }}
+          accessibilityRole="button"
+          onPress={() => router.push("/(app)/me/edit")}
+          className="h-10 flex-row items-center justify-center gap-1.5 rounded-full bg-primary-500 px-4 web:hover:bg-primary-600"
         >
-          <RowIcon icon="pencil" label={t("settings.edit")} />
+          <Ionicons name="pencil" size={14} color="#FFFFFF" />
+          <Text className="text-sm font-semibold text-white">{t("profile.editProfile")}</Text>
         </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push("/(app)/me")}
+          className="h-10 items-center justify-center rounded-full border border-primary-100 px-4 web:hover:bg-primary-100/40 dark:border-ink-700"
+        >
+          <Text className="text-sm font-semibold text-primary-600 dark:text-primary-400">{t("chat.viewProfile")}</Text>
+        </Pressable>
+      </View>
+    </View>
+  ) : (
+    <Pressable className={ROW_CLASS} onPress={() => router.push("/(app)/me")}>
+      <View className="flex-row items-center gap-3">
+        <Avatar uri={profile?.avatar_url} name={profile?.display_name} size={44} />
+        <View>
+          <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
+            {profile?.display_name || t("profile.addYourName")}
+          </Text>
+          {location ? <Text className="text-sm text-ink-400">{location}</Text> : null}
+        </View>
+      </View>
+      <Pressable
+        hitSlop={8}
+        accessibilityLabel={t("settings.edit")}
+        onPress={(e) => {
+          e.stopPropagation();
+          router.push("/(app)/me/edit");
+        }}
+      >
+        <RowIcon icon="pencil" />
       </Pressable>
-    </>
+    </Pressable>
   );
 
   const appearanceSection = (
-    <>
-      <View className={row}>
-        <RowLabel icon="language-outline" label={t("settings.appLanguage")} wide={wide} />
-        <View className="flex-row flex-wrap justify-end gap-2">
-          <Chip
-            label="EN"
-            selected={(profile?.app_locale ?? "en") === "en"}
-            onPress={() => updateAppLocale.mutate("en")}
-          />
-          <Chip label="TR" selected={profile?.app_locale === "tr"} onPress={() => updateAppLocale.mutate("tr")} />
-          <Chip label="RU" selected={profile?.app_locale === "ru"} onPress={() => updateAppLocale.mutate("ru")} />
-          <Chip label="DE" selected={profile?.app_locale === "de"} onPress={() => updateAppLocale.mutate("de")} />
-        </View>
-      </View>
-
-      <View className={row}>
-        <RowLabel icon="contrast-outline" label={t("settings.theme")} wide={wide} />
-        <View className="flex-row gap-2">
-          <Chip
-            label={t("settings.light")}
-            selected={(profile?.theme_preference ?? "light") === "light"}
-            onPress={() => updateThemePreference.mutate("light")}
-          />
-          <Chip
-            label={t("settings.dark")}
-            selected={profile?.theme_preference === "dark"}
-            onPress={() => updateThemePreference.mutate("dark")}
-          />
-        </View>
-      </View>
-
-      <View className={row}>
-        <RowLabel icon="text-outline" label={t("settings.textSize")} wide={wide} />
-        <View className="flex-row gap-2">
-          <Chip
-            label={t("settings.textSizeSmall")}
-            selected={profile?.text_size === "small"}
-            onPress={() => updateTextSize.mutate("small")}
-          />
-          <Chip
-            label={t("settings.textSizeDefault")}
-            selected={(profile?.text_size ?? "default") === "default"}
-            onPress={() => updateTextSize.mutate("default")}
-          />
-          <Chip
-            label={t("settings.textSizeLarge")}
-            selected={profile?.text_size === "large"}
-            onPress={() => updateTextSize.mutate("large")}
-          />
-        </View>
-      </View>
-    </>
+    <Section>
+      <Row
+        icon="language-outline"
+        label={t("settings.appLanguage")}
+        iconOnly
+        right={
+          <View className="flex-row flex-wrap justify-end gap-2">
+            <Chip
+              label="EN"
+              selected={(profile?.app_locale ?? "en") === "en"}
+              onPress={() => updateAppLocale.mutate("en")}
+            />
+            <Chip label="TR" selected={profile?.app_locale === "tr"} onPress={() => updateAppLocale.mutate("tr")} />
+            <Chip label="RU" selected={profile?.app_locale === "ru"} onPress={() => updateAppLocale.mutate("ru")} />
+            <Chip label="DE" selected={profile?.app_locale === "de"} onPress={() => updateAppLocale.mutate("de")} />
+          </View>
+        }
+      />
+      <Row
+        icon="contrast-outline"
+        label={t("settings.theme")}
+        iconOnly
+        right={
+          <View className="flex-row gap-2">
+            <Chip
+              label={t("settings.light")}
+              selected={(profile?.theme_preference ?? "light") === "light"}
+              onPress={() => updateThemePreference.mutate("light")}
+            />
+            <Chip
+              label={t("settings.dark")}
+              selected={profile?.theme_preference === "dark"}
+              onPress={() => updateThemePreference.mutate("dark")}
+            />
+          </View>
+        }
+      />
+      <Row
+        icon="text-outline"
+        label={t("settings.textSize")}
+        iconOnly
+        right={
+          <View className="flex-row gap-2">
+            <Chip
+              label={t("settings.textSizeSmall")}
+              selected={profile?.text_size === "small"}
+              onPress={() => updateTextSize.mutate("small")}
+            />
+            <Chip
+              label={t("settings.textSizeDefault")}
+              selected={(profile?.text_size ?? "default") === "default"}
+              onPress={() => updateTextSize.mutate("default")}
+            />
+            <Chip
+              label={t("settings.textSizeLarge")}
+              selected={profile?.text_size === "large"}
+              onPress={() => updateTextSize.mutate("large")}
+            />
+          </View>
+        }
+      />
+    </Section>
   );
 
   const accountSection = (
-    <>
-      <SectionHeader label={t("settings.account")} />
-      <SettingsRow
+    <Section title={t("settings.account")}>
+      <Row
+        icon="star-outline"
         label={t("plus.title")}
         value={subscribed ? t("plus.statusActive") : onPlusWaitlist ? t("plus.statusWaitlisted") : undefined}
         onPress={() => router.push("/(app)/plus")}
       />
-      <SettingsRow label={t("settings.account")} onPress={() => router.push("/(app)/settings/account")} />
-    </>
+      <Row icon="person-outline" label={t("settings.account")} onPress={() => router.push("/(app)/settings/account")} />
+    </Section>
   );
 
+  // Matching preferences lives here now, rather than in a section of its own.
   const safetySection = (
-    <>
-      <SectionHeader label={t("settings.safety")} />
-      <SettingsRow
+    <Section title={t("settings.safety")}>
+      <Row
+        icon="shield-checkmark-outline"
         label={t("settings.getVerified")}
         value={t(`settings.verification.${verification?.status ?? "unverified"}`)}
         onPress={() => router.push("/(app)/settings/verification")}
       />
-      <SettingsRow label={t("settings.safetyCenter")} onPress={() => router.push("/(app)/settings/safety")} />
-    </>
-  );
-
-  const matchingSection = (
-    <>
-      <SectionHeader label={t("settings.matchingPreferences")} />
-      <SettingsRow
+      <Row
+        icon="shield-half-outline"
+        label={t("settings.safetyCenter")}
+        onPress={() => router.push("/(app)/settings/safety")}
+      />
+      <Row
+        icon="options-outline"
         label={t("settings.matchingPreferences")}
         onPress={() => router.push("/(app)/settings/matching-preferences")}
       />
-    </>
+    </Section>
   );
 
   const privacySection = (
-    <>
-      <SectionHeader label={t("settings.privacy")} />
-      <View className={row}>
-        <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.profileVisibility")}</Text>
-        <View className="flex-row gap-2">
-          <Chip
-            label={t("settings.visible")}
-            selected={(profile?.profile_visibility ?? "visible") === "visible"}
-            onPress={() => updateVisibility.mutate("visible")}
+    <Section title={t("settings.privacy")}>
+      <Row
+        icon="eye-outline"
+        label={t("settings.profileVisibility")}
+        right={
+          <View className="flex-row gap-2">
+            <Chip
+              label={t("settings.visible")}
+              selected={(profile?.profile_visibility ?? "visible") === "visible"}
+              onPress={() => updateVisibility.mutate("visible")}
+            />
+            <Chip
+              label={t("settings.hidden")}
+              selected={profile?.profile_visibility === "hidden"}
+              onPress={() => updateVisibility.mutate("hidden")}
+            />
+          </View>
+        }
+      />
+      <Row
+        icon="sparkles-outline"
+        label={t("settings.globalDiscover")}
+        hint={t("settings.globalDiscoverHint")}
+        right={
+          <Switch
+            value={profile?.discoverable ?? true}
+            onValueChange={(discoverable) => updateDiscoverable.mutate(discoverable)}
           />
-          <Chip
-            label={t("settings.hidden")}
-            selected={profile?.profile_visibility === "hidden"}
-            onPress={() => updateVisibility.mutate("hidden")}
-          />
-        </View>
-      </View>
-      <View className={rowWithGap}>
-        <View className="flex-1">
-          <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.globalDiscover")}</Text>
-          <Text className="text-sm text-ink-400">{t("settings.globalDiscoverHint")}</Text>
-        </View>
-        <Switch
-          value={profile?.discoverable ?? true}
-          onValueChange={(discoverable) => updateDiscoverable.mutate(discoverable)}
-        />
-      </View>
-      <SettingsRow label={t("settings.blockedUsers")} onPress={() => router.push("/(app)/settings/blocked-users")} />
-      <SettingsRow
+        }
+      />
+      <Row
+        icon="ban-outline"
+        label={t("settings.blockedUsers")}
+        onPress={() => router.push("/(app)/settings/blocked-users")}
+      />
+      <Row
+        icon="lock-closed-outline"
         label={t("settings.dataAndPrivacy")}
         onPress={() => router.push("/(app)/settings/static-page?topic=privacy")}
       />
-    </>
+    </Section>
   );
 
   const notificationsSection = (
-    <>
-      <SectionHeader label={t("settings.notifications")} />
-      <View className={row}>
-        <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.pushNotifications")}</Text>
-        <Switch
-          value={profile?.push_notifications_enabled ?? true}
-          onValueChange={(pushEnabled) => updateNotifications.mutate({ pushEnabled })}
-        />
-      </View>
-      <View className={row}>
-        <Text className="text-base text-ink-900 dark:text-ink-50">{t("settings.emailNotifications")}</Text>
-        <Switch
-          value={profile?.email_notifications_enabled ?? false}
-          onValueChange={(emailEnabled) => updateNotifications.mutate({ emailEnabled })}
-        />
-      </View>
-    </>
+    <Section title={t("settings.notifications")}>
+      <Row
+        icon="notifications-outline"
+        label={t("settings.pushNotifications")}
+        right={
+          <Switch
+            value={profile?.push_notifications_enabled ?? true}
+            onValueChange={(pushEnabled) => updateNotifications.mutate({ pushEnabled })}
+          />
+        }
+      />
+      <Row
+        icon="mail-outline"
+        label={t("settings.emailNotifications")}
+        right={
+          <Switch
+            value={profile?.email_notifications_enabled ?? false}
+            onValueChange={(emailEnabled) => updateNotifications.mutate({ emailEnabled })}
+          />
+        }
+      />
+    </Section>
   );
 
   const communitySection = (
-    <>
-      <SectionHeader label={t("settings.community")} />
-      <SettingsRow
+    <Section title={t("settings.community")}>
+      <Row
+        icon="information-circle-outline"
         label={t("settings.aboutApp")}
         onPress={() => router.push("/(app)/settings/static-page?topic=about")}
       />
-      <SettingsRow
+      <Row
+        icon="book-outline"
         label={t("settings.communityGuidelines")}
         onPress={() => router.push("/(app)/settings/static-page?topic=guidelines")}
       />
-      <SettingsRow
+      <Row
+        icon="help-buoy-outline"
         label={t("settings.helpAndSupport")}
         onPress={() => router.push("/(app)/settings/static-page?topic=help")}
       />
-    </>
+    </Section>
   );
 
+  // Log out and Delete account as rows (Delete in coral); confirming the delete
+  // opens under them.
   const dangerSection = (
     <>
-      <View className="mt-4">
-        <Button label={t("settings.logOut")} variant="secondary" onPress={() => signOut()} />
-      </View>
+      <Section>
+        <Row icon="log-out-outline" label={t("settings.logOut")} onPress={() => signOut()} />
+        <Row
+          icon="trash-outline"
+          label={t("settings.deleteAccount")}
+          danger
+          onPress={() => setConfirmingDelete(true)}
+        />
+      </Section>
 
       {confirmingDelete ? (
         <View className="gap-2 rounded-xl border border-accent-500 bg-white dark:bg-ink-800 p-4">
@@ -376,16 +519,12 @@ export default function Settings() {
             </View>
           </View>
         </View>
-      ) : (
-        <Pressable onPress={() => setConfirmingDelete(true)}>
-          <Text className="text-center text-sm font-medium text-accent-600">{t("settings.deleteAccount")}</Text>
-        </Pressable>
-      )}
+      ) : null}
     </>
   );
 
-  // Desktop web: a large title and the same rows in two columns, in place of
-  // AppHeader and the phone's single list.
+  // Desktop web: a large title and the sections as cards in two columns, in place
+  // of AppHeader and the phone's single list.
   if (wide) {
     return (
       <ScrollView
@@ -395,15 +534,14 @@ export default function Settings() {
       >
         <Text className="font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.settings")}</Text>
         <View className="flex-row items-start gap-6">
-          <View className="flex-1 gap-3">
+          <View className="flex-1 gap-4">
             {adminSection}
             {profileSection}
             {appearanceSection}
             {accountSection}
             {safetySection}
-            {matchingSection}
           </View>
-          <View className="flex-1 gap-3">
+          <View className="flex-1 gap-4">
             {privacySection}
             {notificationsSection}
             {communitySection}
@@ -422,7 +560,6 @@ export default function Settings() {
         {appearanceSection}
         {accountSection}
         {safetySection}
-        {matchingSection}
         {privacySection}
         {notificationsSection}
         {communitySection}
