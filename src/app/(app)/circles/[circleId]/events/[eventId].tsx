@@ -12,7 +12,6 @@ import {
   useCircleEvent,
   useCircleMembers,
   useJoinCircle,
-  useLeaveCircle,
   useMyCircleMemberships,
   useMyRsvp,
   useUpsertRsvp,
@@ -52,7 +51,6 @@ export default function CircleEventDetail() {
   const { data: rsvp } = useMyRsvp(event?.id, userId);
   const { data: membersPreview } = useCircleMembers(circleId, MEMBERS_PREVIEW_COUNT);
   const joinCircle = useJoinCircle(userId);
-  const leaveCircle = useLeaveCircle(userId);
   const upsertRsvp = useUpsertRsvp(event?.id, userId);
   const wide = useWideLayout();
 
@@ -162,10 +160,10 @@ export default function CircleEventDetail() {
               ) : null}
               <Pressable
                 accessibilityRole="button"
-                disabled={joinCircle.isPending || leaveCircle.isPending}
+                disabled={isJoined || joinCircle.isPending}
                 onPress={() => {
-                  if (isJoined) leaveCircle.mutate(circle.id);
-                  else joinCircle.mutate(circle.id);
+                  // Joined is a status, not a button: leaving is in the circle page's ⋯ menu.
+                  if (!isJoined) joinCircle.mutate(circle.id);
                 }}
                 className={`h-11 flex-row items-center justify-center gap-1.5 rounded-2xl ${
                   isJoined
@@ -280,10 +278,10 @@ export default function CircleEventDetail() {
             </View>
             <Pressable
               accessibilityRole="button"
-              disabled={joinCircle.isPending || leaveCircle.isPending}
+              disabled={isJoined || joinCircle.isPending}
               onPress={() => {
-                if (isJoined) leaveCircle.mutate(circle.id);
-                else joinCircle.mutate(circle.id);
+                // Joined is a status, not a button: leaving is in the circle page's ⋯ menu.
+                if (!isJoined) joinCircle.mutate(circle.id);
               }}
               className={`h-9 flex-row items-center justify-center gap-1 rounded-full px-4 ${
                 isJoined ? "border border-primary-100 dark:border-ink-700" : "bg-primary-500"

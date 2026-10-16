@@ -7,7 +7,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
-import { useCircle, useCircleEvents, useMyCircleRole } from "@/hooks/useCircles";
+import {
+  useCircle,
+  useCircleEvents,
+  useLeaveCircle,
+  useMyCircleMemberships,
+  useMyCircleRole,
+} from "@/hooks/useCircles";
+import { CircleMenu } from "@/components/CircleMenu";
 import { useCanHost } from "@/hooks/useCanHost";
 import { useSession } from "@/hooks/useSession";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
@@ -32,6 +39,18 @@ export default function CircleEvents() {
   const { session } = useSession();
   const { data: role } = useMyCircleRole(circleId, session?.user.id);
   const { canHost } = useCanHost(session?.user.id);
+  const { data: memberships } = useMyCircleMemberships(session?.user.id);
+  const leaveCircle = useLeaveCircle(session?.user.id);
+  const isJoined = (memberships ?? []).includes(circleId);
+  // Leave circle, behind a confirmation -- only for circles you're in.
+  const menu =
+    isJoined && circle ? (
+      <CircleMenu
+        circleName={circle.name}
+        leaving={leaveCircle.isPending}
+        onLeave={() => leaveCircle.mutate(circleId)}
+      />
+    ) : null;
   // Same rule the database enforces for creating events (migration 0035).
   const canAddEvent = canHost && (role === "owner" || role === "moderator");
   const wide = useWideLayout();
@@ -103,6 +122,7 @@ export default function CircleEvents() {
               <Text className="text-[15px] font-semibold text-white">{t("circles.addEvent")}</Text>
             </Pressable>
           ) : null}
+          {menu}
         </View>
 
         {circle.description ? (
@@ -199,6 +219,18 @@ export default function CircleEvents() {
         className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-4 pb-10"
       >
+        <View className="z-10 flex-row items-center gap-3">
+          <Text className="flex-1 text-sm text-ink-400" numberOfLines={1}>
+            {[
+              t("circles.membersCount", { count: circle.member_count }),
+              [circle.city, circle.state].filter(Boolean).join(", "),
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </Text>
+          {menu}
+        </View>
+
         {circle.description ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text>
         ) : null}

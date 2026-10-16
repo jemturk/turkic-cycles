@@ -78,6 +78,9 @@
   "circles": {
     "subtitle": "Finde deine Leute — tritt Kreisen bei, die sich um das drehen, was dir wichtig ist.",
     "joined": "Beigetreten",
+    "leaveCircle": "Kreis verlassen",
+    "leaveConfirm": "{{name}} verlassen? Du kannst jederzeit wieder beitreten.",
+    "leave": "Verlassen",
     "join": "Beitreten",
     "membersCount_one": "{{count}} Mitglied",
     "membersCount_other": "{{count}} Mitglieder",
