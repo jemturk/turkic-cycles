@@ -74,18 +74,22 @@ export function Note({ icon, tone = "info", children }: { icon: IconName; tone?:
   );
 }
 
-// The pale-coral tile a row leads with, as on the Settings screen.
-export function IconTile({ icon }: { icon: IconName }) {
+// The pale-coral tile a row leads with, as on the Settings screen; `solid` is the
+// filled teal one (Log out, Meet members).
+export function IconTile({ icon, solid = false }: { icon: IconName; solid?: boolean }) {
   return (
-    <View className="h-9 w-9 items-center justify-center rounded-lg bg-accent-100/60 dark:bg-ink-700">
-      <Ionicons name={icon} size={20} color="#C1440E" />
+    <View
+      className={`h-9 w-9 items-center justify-center rounded-lg ${solid ? "bg-primary-500" : "bg-accent-100/60 dark:bg-ink-700"}`}
+    >
+      <Ionicons name={icon} size={20} color={solid ? "#FFFFFF" : "#C1440E"} />
     </View>
   );
 }
 
-// One white card of rows with hairlines between them.
-export function Group({ children }: { children: ReactNode }) {
-  return (
+// One white card of rows with hairlines between them, with an optional small title
+// just above it, as on the Settings screen.
+export function Group({ title, children }: { title?: string; children: ReactNode }) {
+  const card = (
     <View className="overflow-hidden rounded-2xl bg-white dark:bg-ink-800">
       {Children.toArray(children).map((child, index) => (
         <View key={index} className={index > 0 ? "border-t border-primary-50 dark:border-ink-700" : undefined}>
@@ -94,18 +98,33 @@ export function Group({ children }: { children: ReactNode }) {
       ))}
     </View>
   );
+  if (!title) return card;
+  return (
+    <View className="gap-1.5">
+      <Text className="ml-1 mt-1 text-xs font-medium uppercase text-ink-400">{title}</Text>
+      {card}
+    </View>
+  );
 }
 
 // A row in a Group: icon tile, title and an optional line under it, then `right`
 // (a value, a button) or, for a row that opens something, a ›.
+// `leading` replaces the icon tile (an avatar, a circle's topic tile); `solid` gives
+// the icon the filled teal tile; `bold` sets the title in semibold (a chosen option).
 export function Item({
   icon,
+  leading,
+  solid = false,
+  bold = false,
   title,
   subtitle,
   right,
   onPress,
 }: {
   icon?: IconName;
+  leading?: ReactNode;
+  solid?: boolean;
+  bold?: boolean;
   title: string;
   subtitle?: string;
   right?: ReactNode;
@@ -113,9 +132,9 @@ export function Item({
 }) {
   const content = (
     <>
-      {icon ? <IconTile icon={icon} /> : null}
+      {leading ?? (icon ? <IconTile icon={icon} solid={solid} /> : null)}
       <View className="flex-1">
-        <Text className="text-base text-ink-900 dark:text-ink-50">{title}</Text>
+        <Text className={`text-base text-ink-900 dark:text-ink-50 ${bold ? "font-semibold" : ""}`}>{title}</Text>
         {subtitle ? <Text className="text-sm text-ink-400">{subtitle}</Text> : null}
       </View>
       {right}
