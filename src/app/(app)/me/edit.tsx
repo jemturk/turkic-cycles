@@ -31,6 +31,8 @@ import { BranchingQuestionsFields } from "@/components/BranchingQuestionsFields"
 import { FormScrollView } from "@/components/FormScrollView";
 import { LocationFields } from "@/components/LocationFields";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { useProfilePhotos } from "@/hooks/useGallery";
+import { EditablePhotoGallery } from "@/components/EditablePhotoGallery";
 
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
@@ -49,6 +51,7 @@ export default function ProfileEdit() {
   const { data: questionnaire, isLoading: questionnaireLoading } = useMyQuestionnaireResponses(userId);
   const { data: sensitive, isLoading: sensitiveLoading } = useMyProfileSensitive(userId);
   const saveProfileEdit = useSaveProfileEdit(userId);
+  const { data: photos } = useProfilePhotos(userId);
 
   const isLoading = profileLoading || connectionTypesLoading || questionnaireLoading || sensitiveLoading;
 
@@ -170,6 +173,10 @@ export default function ProfileEdit() {
       />
     </>
   );
+
+  // The same gallery as on your profile. It saves each change as it's made, not with
+  // the form's Save changes.
+  const photosField = userId ? <EditablePhotoGallery userId={userId} photos={photos} /> : null;
 
   const occupationField = (
     <>
@@ -420,6 +427,7 @@ export default function ProfileEdit() {
               </View>
             </View>
             <View className="flex-1 gap-4">
+              <View className={card}>{photosField}</View>
               <View className={card}>
                 {languagesField}
                 {interestsField}
@@ -459,6 +467,7 @@ export default function ProfileEdit() {
 
         {nameField}
         {bioField}
+        {photosField}
         {lookingForField}
         {locationField}
         {occupationField}
