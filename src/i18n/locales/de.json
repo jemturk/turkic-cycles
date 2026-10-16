@@ -4,6 +4,8 @@
     "discover": "Entdecken",
     "connections": "Verbindungen",
     "search": "Suche",
+    "collapseSidebar": "Seitenleiste einklappen",
+    "expandSidebar": "Seitenleiste ausklappen",
     "chat": "Chat",
     "settings": "Einstellungen"
   },
@@ -267,6 +269,7 @@
   },
   "profile": {
     "addYourName": "Füge deinen Namen hinzu",
+    "aboutMe": "Über mich",
     "languages": "Sprachen",
     "interests": "Interessen",
     "hobbies": "Hobbys",
@@ -301,6 +304,7 @@
   "common": {
     "member": "Mitglied",
     "back": "Zurück",
+    "more": "Mehr",
     "cancel": "Abbrechen",
     "clear": "Löschen",
     "close": "Schließen",

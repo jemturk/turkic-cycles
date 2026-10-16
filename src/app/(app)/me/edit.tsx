@@ -30,12 +30,14 @@ import { SegmentedToggle } from "@/components/SegmentedToggle";
 import { BranchingQuestionsFields } from "@/components/BranchingQuestionsFields";
 import { FormScrollView } from "@/components/FormScrollView";
 import { LocationFields } from "@/components/LocationFields";
+import { useWideLayout } from "@/hooks/useWideLayout";
 
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
 
 export default function ProfileEdit() {
   const { t } = useTranslation();
+  const wide = useWideLayout();
   const CONNECTION_TYPE_OPTIONS = CONNECTION_TYPES.map((value) => ({
     value,
     label: t(`constants.connectionTypes.${value}`),
@@ -103,7 +105,12 @@ export default function ProfileEdit() {
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
-      <FormScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
+      {/* Desktop web: the "me" tab is full width (for the profile), so the form
+          keeps itself to a readable centred column. */}
+      <FormScrollView
+        className="flex-1 px-6 pt-10"
+        contentContainerClassName={wide ? "w-full max-w-[720px] gap-4 self-center pb-10" : "gap-4 pb-10"}
+      >
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
         <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">{t("fields.editProfileHeading")}</Text>
 

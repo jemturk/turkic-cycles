@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
@@ -8,9 +8,7 @@ import { useSession } from "@/hooks/useSession";
 import { useDiscoverCandidates, useRecordSwipe } from "@/hooks/useDiscover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
-import { Avatar } from "@/components/Avatar";
-import { VerifiedBadge } from "@/components/VerifiedBadge";
-import { calculateAge } from "@/lib/age";
+import { DesktopPersonCard } from "@/components/DesktopPersonCard";
 import { CONNECTION_TYPES, type ConnectionType } from "@/constants/connectionTypes";
 import type { DiscoverCandidate } from "@/api/discover";
 
@@ -43,14 +41,14 @@ function FilterChip({ label, selected, onPress }: { label: string; selected: boo
         selected ? "bg-primary-500" : "border border-primary-100 bg-white dark:border-ink-700 dark:bg-ink-800"
       }`}
     >
-      <Text className={`text-sm ${selected ? "font-semibold text-white" : "text-ink-900 dark:text-ink-50"}`}>{label}</Text>
+      <Text className={`text-sm ${selected ? "font-semibold text-white" : "text-ink-900 dark:text-ink-50"}`}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
 
-// One person, pared down for a grid: the cover photo, and on the phone card's dark
-// band their name, "city · occupation" and short chips for what they're looking
-// for -- origins and the rest are on their profile. Pass / Save
+// One person (DesktopPersonCard, the same card a desktop profile shows). Pass / Save
 // / Like show in the corner only while the card is hovered or focused, so a screen
 // of cards isn't also a screen of buttons.
 function GridCard({
@@ -71,9 +69,6 @@ function GridCard({
   // counts (a blur fires before the next focus, so tabbing between them stays true).
   const [focused, setFocused] = useState(false);
   const showActions = hovered || focused;
-  const age = person.birthdate ? calculateAge(person.birthdate) : null;
-  const meta = [[person.city, person.state].filter(Boolean).join(", "), person.occupation].filter(Boolean).join(" · ");
-  const cover = person.coverPhotoUrl;
 
   return (
     <Pressable
@@ -83,48 +78,9 @@ function GridCard({
       onHoverOut={() => setHovered(false)}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
-      className="overflow-hidden rounded-3xl bg-teal-500"
+      className="rounded-3xl web:hover:shadow-md"
     >
-      {cover ? (
-        <Image
-          source={{ uri: cover }}
-          resizeMode="cover"
-          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-          accessibilityIgnoresInvertColors
-        />
-      ) : (
-        <View className="absolute inset-0 items-center justify-center pb-24">
-          <Avatar uri={person.avatarUrl} name={person.displayName} size={96} fallbackClassName="bg-white/30" />
-        </View>
-      )}
-
-      {/* A dark band behind the text keeps it readable on any photo, as on a phone. */}
-      <View className={`absolute inset-x-0 bottom-0 gap-2 p-5 ${cover ? "bg-ink-950/55" : ""}`}>
-        <View className="flex-row items-center gap-2">
-          {cover ? (
-            <Avatar uri={person.avatarUrl} name={person.displayName} size={36} fallbackClassName="bg-white/30" />
-          ) : null}
-          <Text className="shrink font-display text-2xl text-white" numberOfLines={1}>
-            {person.displayName}
-            {age ? `, ${age}` : ""}
-          </Text>
-          <VerifiedBadge status={verification} color="white" />
-        </View>
-        {meta ? (
-          <Text className="text-sm text-white/90" numberOfLines={1}>
-            {meta}
-          </Text>
-        ) : null}
-        {person.connectionTypes.length > 0 ? (
-          <View className="flex-row flex-wrap gap-1.5">
-            {person.connectionTypes.map((type) => (
-              <View key={type} className="rounded-full bg-white/20 px-2.5 py-1">
-                <Text className="text-xs font-medium text-white">{t(`constants.connectionTypes.${type}`)}</Text>
-              </View>
-            ))}
-          </View>
-        ) : null}
-      </View>
+      <DesktopPersonCard person={person} verificationStatus={verification} />
 
       <View
         className="absolute right-3 top-3 flex-row gap-2"
@@ -203,16 +159,26 @@ export function DiscoverGrid({
             next.delete(person.userId);
             return next;
           }),
-      }
+      },
     );
   }
 
   return (
     <>
-      <ScrollView className="flex-1" contentContainerClassName="gap-5 pb-10 pt-1" showsVerticalScrollIndicator={false}>
+      {/* -mx-3 / px-3: room for the cards' hover shadow, which the ScrollView would
+          otherwise clip at its edges, without moving the cards. */}
+      <ScrollView
+        className="-mx-3 flex-1"
+        contentContainerClassName="gap-5 px-3 pb-10 pt-2"
+        showsVerticalScrollIndicator={false}
+      >
         {offeredTypes.length > 1 ? (
           <View className="flex-row flex-wrap gap-2">
-            <FilterChip label={t("circles.filterAll")} selected={lookingFor === null} onPress={() => setLookingFor(null)} />
+            <FilterChip
+              label={t("circles.filterAll")}
+              selected={lookingFor === null}
+              onPress={() => setLookingFor(null)}
+            />
             {offeredTypes.map((type) => (
               <FilterChip
                 key={type}

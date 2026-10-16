@@ -20,6 +20,11 @@ import { UpcomingEventsRail } from "@/components/UpcomingEventsRail";
 
 type Circle = NonNullable<ReturnType<typeof useCircles>["data"]>[number];
 
+const GAP = 16;
+// Cards at least this wide, at most MAX_COLUMNS of them.
+const MIN_CARD_WIDTH = 320;
+const MAX_COLUMNS = 3;
+
 function FilterChip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
   return (
     <Pressable
@@ -36,8 +41,8 @@ function FilterChip({ label, selected, onPress }: { label: string; selected: boo
 }
 
 // The Circles tab on desktop web (circles/index.tsx picks it on a wide window):
-// a large title with search and New circle beside it, filter chips, the circles in
-// two columns, and the next events in your circles down the right.
+// a large title with search and New circle beside it, filter chips, a grid of
+// same-sized circle cards, and the next events in your circles down the right.
 export function CirclesDesktop() {
   const { t } = useTranslation();
   const { session } = useSession();
@@ -53,68 +58,87 @@ export function CirclesDesktop() {
   const isNearby = useIsNearby();
   const openSearch = useSearchOverlay((s) => s.setOpen);
   const [joinedOnly, setJoinedOnly] = useState(false);
+  const [gridWidth, setGridWidth] = useState(0);
 
   const joinedIds = new Set(memberships ?? []);
   const shownCircles = (circles ?? []).filter(isNearby).filter((c) => !joinedOnly || joinedIds.has(c.id));
   const nearMeOn = localEnabled || localStatus === "locating";
 
+  const columns = Math.min(MAX_COLUMNS, Math.max(1, Math.floor((gridWidth + GAP) / (MIN_CARD_WIDTH + GAP))));
+  const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - GAP * (columns - 1)) / columns) : 0;
+
+  // Every card has the same shape -- icon, a one-line title, room for exactly two
+  // lines of description, the details -- so the grid lines up row after row.
   function renderCircle(circle: Circle) {
     const topic = circle.topic as CircleTopic;
     const isJoined = joinedIds.has(circle.id);
     const place = [circle.city, circle.state].filter(Boolean).join(", ");
     return (
       <Pressable
+        key={circle.id}
         onPress={() => router.push(`/(app)/circles/${circle.id}`)}
-        className="flex-1 flex-row gap-3.5 rounded-[18px] bg-white p-5 web:hover:shadow-md dark:bg-ink-800"
+        style={{ width: cardWidth }}
+        className="gap-3 rounded-[18px] bg-white p-5 web:hover:shadow-md dark:bg-ink-800"
       >
-        <View className={`h-12 w-12 items-center justify-center rounded-[14px] ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
-          <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_COLORS[topic].fg} />
-        </View>
-
-        <View className="flex-1 gap-1.5">
-          <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{circle.name}</Text>
-          {circle.description ? (
-            <Text className="text-base leading-snug text-ink-700 dark:text-ink-200" numberOfLines={2}>
-              {circle.description}
-            </Text>
-          ) : null}
-          <Text className="text-[13px] text-ink-400" numberOfLines={1}>
-            {[
-              t("circles.membersCount", { count: circle.member_count }),
-              t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 }),
-              place,
-            ]
-              .filter(Boolean)
-              .join(" · ")}
-          </Text>
-        </View>
-
-        {/* Joined circles just carry a quiet check; the button is only for joining. */}
-        {isJoined ? (
-          <View accessibilityLabel={t("circles.joined")} className="pt-1">
-            <Ionicons name="checkmark-circle" size={22} color="#127A87" />
+        <View className="flex-row items-start justify-between">
+          <View className={`h-11 w-11 items-center justify-center rounded-[14px] ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
+            <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={20} color={CIRCLE_TOPIC_COLORS[topic].fg} />
           </View>
-        ) : (
-          <View className="justify-center">
+          {/* Only circles you're not in get a button; "Joined" filters to yours. */}
+          {isJoined ? null : (
             <Pressable
               accessibilityRole="button"
               disabled={joinCircle.isPending}
-              onPress={() => joinCircle.mutate(circle.id)}
-              className="h-9 justify-center rounded-full bg-primary-500 px-4"
+              onPress={(e) => {
+                // Don't also open the circle underneath.
+                e.stopPropagation();
+                joinCircle.mutate(circle.id);
+              }}
+              className="h-9 justify-center rounded-full bg-primary-500 px-4 web:hover:bg-primary-600"
             >
               <Text className="text-sm font-semibold text-white">{t("circles.join")}</Text>
             </Pressable>
+          )}
+        </View>
+
+        <View className="gap-1.5">
+          <Text className="font-display text-xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
+            {circle.name}
+          </Text>
+          {/* An invisible two-line placeholder sets the height, so a one-line (or
+              missing) description leaves the card as tall as the others at any text
+              size; the real text sits over it. */}
+          <View>
+            <Text aria-hidden className="text-base leading-snug opacity-0">
+              {"\u00A0\n\u00A0"}
+            </Text>
+            <Text
+              className="absolute inset-x-0 top-0 text-base leading-snug text-ink-700 dark:text-ink-200"
+              numberOfLines={2}
+            >
+              {circle.description}
+            </Text>
           </View>
-        )}
+        </View>
+
+        <Text className="text-[13px] text-ink-400" numberOfLines={1}>
+          {[
+            t("circles.membersCount", { count: circle.member_count }),
+            t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 }),
+            place,
+          ]
+            .filter(Boolean)
+            .join(" · ")}
+        </Text>
       </Pressable>
     );
   }
 
   return (
-    <View className="flex-1 flex-row gap-5 bg-primary-50 dark:bg-ink-950">
+    <View className="flex-1 flex-row gap-14 bg-primary-50 dark:bg-ink-950">
       <ScrollView
         className="flex-1"
-        contentContainerClassName="gap-5 pb-10 pl-10 pr-3 pt-9"
+        contentContainerClassName="gap-5 pb-10 pl-20 pr-3 pt-9"
         showsVerticalScrollIndicator={false}
       >
         <View className="flex-row flex-wrap items-center gap-4">
@@ -156,30 +180,18 @@ export function CirclesDesktop() {
           </Text>
         ) : null}
 
-        {/* Rows of pairs, so both cards in a row share its height (an odd last card
-            keeps half the width, beside a spacer). */}
-        {pairs(shownCircles).map((pair) => (
-          <View key={pair[0].id} className="flex-row gap-4">
-            {pair.map((circle) => (
-              <View key={circle.id} className="flex-1">
-                {renderCircle(circle)}
-              </View>
-            ))}
-            {pair.length === 1 ? <View className="flex-1" /> : null}
-          </View>
-        ))}
+        <View
+          onLayout={(e) => setGridWidth(e.nativeEvent.layout.width)}
+          style={{ flexDirection: "row", flexWrap: "wrap", gap: GAP }}
+        >
+          {cardWidth > 0 ? shownCircles.map(renderCircle) : null}
+        </View>
       </ScrollView>
 
       <UpcomingEventsRail
         joinedCircleIds={memberships}
-        circleNames={new Map((circles ?? []).map((c) => [c.id, c.name]))}
+        circleInfo={new Map((circles ?? []).map((c) => [c.id, { name: c.name, topic: c.topic }]))}
       />
     </View>
   );
-}
-
-function pairs<T>(items: T[]): T[][] {
-  const rows: T[][] = [];
-  for (let i = 0; i < items.length; i += 2) rows.push(items.slice(i, i + 2));
-  return rows;
 }

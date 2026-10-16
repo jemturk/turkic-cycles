@@ -4,6 +4,8 @@
     "discover": "Знакомства",
     "connections": "Связи",
     "search": "Поиск",
+    "collapseSidebar": "Свернуть боковую панель",
+    "expandSidebar": "Развернуть боковую панель",
     "chat": "Чат",
     "settings": "Настройки"
   },
@@ -277,6 +279,7 @@
   },
   "profile": {
     "addYourName": "Добавьте своё имя",
+    "aboutMe": "Обо мне",
     "languages": "Языки",
     "interests": "Интересы",
     "hobbies": "Хобби",
@@ -311,6 +314,7 @@
   "common": {
     "member": "Участник",
     "back": "Назад",
+    "more": "Ещё",
     "cancel": "Отмена",
     "clear": "Очистить",
     "close": "Закрыть",

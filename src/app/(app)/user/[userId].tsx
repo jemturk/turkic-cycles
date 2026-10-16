@@ -17,6 +17,7 @@ import { ProfileView } from "@/components/ProfileView";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { Button } from "@/components/Button";
 import { SwipeButton } from "@/components/SwipeButton";
+import { useWideLayout } from "@/hooks/useWideLayout";
 
 export default function OtherProfile() {
   const { t } = useTranslation();
@@ -43,8 +44,10 @@ export default function OtherProfile() {
   const recordSwipe = useRecordSwipe(circleId ?? null, session?.user.id);
   const blockUser = useBlockUser(session?.user.id);
   const [matchedName, setMatchedName] = useState<string | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const showSwipeActions = fromDiscover === "true";
+  const wide = useWideLayout();
 
   function onSwipe(action: "like" | "pass") {
     recordSwipe.mutate(
@@ -61,9 +64,125 @@ export default function OtherProfile() {
     );
   }
 
+  const reportAndBlock = (
+    <View className="flex-row gap-4">
+      <Pressable onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}>
+        <Text className="text-sm font-medium text-ink-400">{t("discover.report")}</Text>
+      </Pressable>
+      <Pressable
+        onPress={() => {
+          blockUser.mutate(userId, { onSuccess: () => router.back() });
+        }}
+      >
+        <Text className="text-sm font-medium text-ink-400">{t("discover.block")}</Text>
+      </Pressable>
+    </View>
+  );
+
+  // Desktop web: under the profile card, one row of actions in the cards' shape --
+  // Pass / Like (the phone's colors) when opened from Discover, Message once you're
+  // connected -- with Report and Block tucked into a ⋯ menu at the end of the row.
+  const moreButton = (
+    <View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("common.more")}
+        aria-expanded={moreOpen}
+        onPress={() => setMoreOpen((open) => !open)}
+        className="h-12 w-12 items-center justify-center rounded-2xl bg-white web:hover:bg-primary-50 dark:bg-ink-800 dark:web:hover:bg-ink-700"
+      >
+        <Ionicons name="ellipsis-horizontal" size={20} color="#4A3F3A" />
+      </Pressable>
+      {moreOpen ? (
+        <View
+          className="absolute right-0 top-14 z-10 w-44 overflow-hidden rounded-2xl bg-white py-1 dark:bg-ink-800"
+          style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.12, shadowRadius: 16 }}
+        >
+          <Pressable
+            accessibilityRole="menuitem"
+            onPress={() => {
+              setMoreOpen(false);
+              router.push(`/(app)/settings/safety/report?userId=${userId}`);
+            }}
+            className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-primary-50 dark:web:hover:bg-ink-700"
+          >
+            <Ionicons name="flag-outline" size={18} color="#4A3F3A" />
+            <Text className="text-sm text-ink-900 dark:text-ink-50">{t("discover.report")}</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="menuitem"
+            onPress={() => {
+              setMoreOpen(false);
+              blockUser.mutate(userId, { onSuccess: () => router.back() });
+            }}
+            className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-accent-50 dark:web:hover:bg-ink-700"
+          >
+            <Ionicons name="ban-outline" size={18} color="#C1440E" />
+            <Text className="text-sm text-accent-600">{t("discover.block")}</Text>
+          </Pressable>
+        </View>
+      ) : null}
+    </View>
+  );
+
+  const swipeRow = showSwipeActions ? (
+    <>
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => onSwipe("pass")}
+        className="h-12 flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-accent-50 web:hover:bg-accent-100"
+      >
+        <Ionicons name="close" size={20} color="#C1440E" />
+        <Text className="font-semibold text-accent-600">{t("discover.pass")}</Text>
+      </Pressable>
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => onSwipe("like")}
+        className="h-12 flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-accent-500 web:hover:bg-accent-600"
+      >
+        <Ionicons name="heart" size={18} color="#FFFFFF" />
+        <Text className="font-semibold text-white">{t("discover.like")}</Text>
+      </Pressable>
+    </>
+  ) : null;
+
+  const messageRow = matchId ? (
+    <Pressable
+      accessibilityRole="button"
+      onPress={() => router.push(`/(app)/chat/${matchId}`)}
+      className="h-12 flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 web:hover:bg-primary-600"
+    >
+      <Ionicons name="chatbubble-outline" size={18} color="#FFFFFF" />
+      <Text className="font-semibold text-white">{t("profile.message")}</Text>
+    </Pressable>
+  ) : null;
+
+  // ⋯ ends the last row; with neither row it stands on its own, at the right.
+  const wideActions = (
+    <View className="z-10 gap-3">
+      {swipeRow ? (
+        <View className="flex-row gap-3">
+          {swipeRow}
+          {messageRow ? null : moreButton}
+        </View>
+      ) : null}
+      {messageRow ? (
+        <View className="flex-row gap-3">
+          {messageRow}
+          {moreButton}
+        </View>
+      ) : null}
+      {swipeRow || messageRow ? null : <View className="flex-row justify-end">{moreButton}</View>}
+    </View>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
+      <ScrollView
+        className={wide ? "flex-1 px-20 pt-9" : "flex-1 px-6 pt-6"}
+        contentContainerClassName="gap-4 pb-10"
+        showsVerticalScrollIndicator={!wide}
+      >
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
@@ -84,24 +203,17 @@ export default function OtherProfile() {
               connectionTypes={connectionTypes}
               originCountries={originCountries}
               verificationStatus={verificationStatus}
+              sideActions={wide ? wideActions : undefined}
             />
-
+          </>
+        )}
+        {!wide && !loading && profile ? (
+          <>
             {matchId ? (
               <Button label={t("profile.message")} onPress={() => router.push(`/(app)/chat/${matchId}`)} />
             ) : null}
 
-            <View className="flex-row gap-4">
-              <Pressable onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}>
-                <Text className="text-sm font-medium text-ink-400">{t("discover.report")}</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  blockUser.mutate(userId, { onSuccess: () => router.back() });
-                }}
-              >
-                <Text className="text-sm font-medium text-ink-400">{t("discover.block")}</Text>
-              </Pressable>
-            </View>
+            {reportAndBlock}
 
             {showSwipeActions ? (
               <View className="mt-4 flex-row items-center justify-center gap-6">
@@ -110,7 +222,7 @@ export default function OtherProfile() {
               </View>
             ) : null}
           </>
-        )}
+        ) : null}
       </ScrollView>
 
       <MatchCelebrationModal

@@ -20,7 +20,7 @@ export default function ChatLayout() {
     // every conversation that was clicked.
     return (
       <View className="flex-1 bg-primary-50 dark:bg-ink-950">
-        <View className="flex-1 flex-row gap-5 p-5">
+        <View className="flex-1 flex-row gap-5 px-20 py-5">
           <View className="w-[340px] gap-2 overflow-hidden rounded-[22px] bg-white px-3 pt-5 dark:bg-ink-800">
             <Text className="mx-2 mb-1 font-display text-[28px] text-ink-900 dark:text-ink-50">{t("tabs.chat")}</Text>
             <ChatThreadList

@@ -4,6 +4,8 @@
     "discover": "Keşfet",
     "connections": "Bağlantılar",
     "search": "Ara",
+    "collapseSidebar": "Kenar çubuğunu daralt",
+    "expandSidebar": "Kenar çubuğunu genişlet",
     "chat": "Sohbet",
     "settings": "Ayarlar"
   },
@@ -267,6 +269,7 @@
   },
   "profile": {
     "addYourName": "Adını ekle",
+    "aboutMe": "Hakkımda",
     "languages": "Diller",
     "interests": "İlgi alanları",
     "hobbies": "Hobiler",
@@ -301,6 +304,7 @@
   "common": {
     "member": "Üye",
     "back": "Geri",
+    "more": "Daha fazla",
     "cancel": "Vazgeç",
     "clear": "Temizle",
     "close": "Kapat",

@@ -390,7 +390,7 @@ export default function Settings() {
     return (
       <ScrollView
         className="flex-1 bg-primary-50 dark:bg-ink-950"
-        contentContainerClassName="gap-6 px-10 pb-12 pt-9"
+        contentContainerClassName="gap-6 px-20 pb-12 pt-9"
         showsVerticalScrollIndicator={false}
       >
         <Text className="font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.settings")}</Text>

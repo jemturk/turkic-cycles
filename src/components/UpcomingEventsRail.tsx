@@ -5,19 +5,17 @@ import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
 import { useUpcomingEventsInCircles } from "@/hooks/useCircles";
-
-// Alternates the date tile between the app's two logo colors.
-const TILE_COLORS = ["bg-primary-500", "bg-accent-500"];
+import { CIRCLE_TOPIC_COLORS, type CircleTopic } from "@/constants/circles";
 
 // Desktop web's Circles screen (CirclesDesktop): the next few events across the
-// circles you've joined, down the right. circleNames maps circle id -> name (from
+// circles you've joined, down the right. circleInfo maps circle id -> its name and topic (from
 // the circles list already loaded there) for the line under each title.
 export function UpcomingEventsRail({
   joinedCircleIds,
-  circleNames,
+  circleInfo,
 }: {
   joinedCircleIds: string[] | undefined;
-  circleNames: Map<string, string>;
+  circleInfo: Map<string, { name: string; topic: string }>;
 }) {
   const { t } = useTranslation();
   const { data: events } = useUpcomingEventsInCircles(joinedCircleIds);
@@ -30,26 +28,31 @@ export function UpcomingEventsRail({
         {events && events.length === 0 ? (
           <Text className="text-sm text-ink-700 dark:text-ink-200">{t("circles.noUpcomingEvents")}</Text>
         ) : null}
-        {(events ?? []).map((event, index) => {
+        {(events ?? []).map((event) => {
           const startsAt = new Date(event.starts_at);
+          const circle = circleInfo.get(event.circle_id);
+          // The date tile wears its circle's topic colors, like that circle's icon.
+          const colors = CIRCLE_TOPIC_COLORS[circle?.topic as CircleTopic] ?? { bg: "bg-primary-100", fg: "#0E6470" };
           return (
             <Pressable
               key={event.id}
               onPress={() => router.push(`/(app)/circles/${event.circle_id}/events/${event.id}`)}
               className="flex-row items-center gap-3.5 rounded-[18px] bg-white p-[18px] web:hover:shadow-md dark:bg-ink-800"
             >
-              <View
-                className={`h-14 w-[52px] items-center justify-center rounded-xl ${TILE_COLORS[index % TILE_COLORS.length]}`}
-              >
-                <Text className="text-[11px] font-bold uppercase tracking-wider text-white">{format(startsAt, "MMM")}</Text>
-                <Text className="text-xl font-bold text-white">{format(startsAt, "d")}</Text>
+              <View className={`h-14 w-[52px] items-center justify-center rounded-xl ${colors.bg}`}>
+                <Text className="text-[11px] font-bold uppercase tracking-wider" style={{ color: colors.fg }}>
+                  {format(startsAt, "MMM")}
+                </Text>
+                <Text className="text-xl font-bold" style={{ color: colors.fg }}>
+                  {format(startsAt, "d")}
+                </Text>
               </View>
               <View className="flex-1 gap-0.5">
                 <Text className="font-semibold text-ink-900 dark:text-ink-50" numberOfLines={2}>
                   {event.title}
                 </Text>
                 <Text className="text-[13px] text-ink-700 dark:text-ink-200" numberOfLines={1}>
-                  {circleNames.get(event.circle_id)}
+                  {circle?.name}
                 </Text>
                 <Text className="text-xs text-ink-400">{format(startsAt, "EEE h:mm a")}</Text>
               </View>

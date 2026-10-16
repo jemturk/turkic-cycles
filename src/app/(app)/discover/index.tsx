@@ -18,7 +18,7 @@ export default function GlobalDiscover() {
   // Desktop web: a large title over the card grid (DiscoverDeck -> DiscoverGrid).
   if (wide) {
     return (
-      <View className="flex-1 gap-5 bg-primary-50 pl-10 pr-6 pt-9 dark:bg-ink-950">
+      <View className="flex-1 gap-5 bg-primary-50 px-20 pt-9 dark:bg-ink-950">
         <Text className="font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.discover")}</Text>
         <DiscoverDeck circleId={null} emptyLabel={t("discover.globalEmpty")} onOpenProfile={openProfile} />
       </View>

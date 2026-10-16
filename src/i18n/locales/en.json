@@ -4,6 +4,8 @@
     "discover": "Discover",
     "connections": "Connections",
     "search": "Search",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
     "chat": "Chat",
     "settings": "Settings"
   },
@@ -267,6 +269,7 @@
   },
   "profile": {
     "addYourName": "Add your name",
+    "aboutMe": "About me",
     "languages": "Languages",
     "interests": "Interests",
     "hobbies": "Hobbies",
@@ -301,6 +304,7 @@
   "common": {
     "member": "Member",
     "back": "Back",
+    "more": "More",
     "cancel": "Cancel",
     "clear": "Clear",
     "close": "Close",

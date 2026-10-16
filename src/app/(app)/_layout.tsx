@@ -19,7 +19,7 @@ import { AppMark } from "@/components/AppMark";
 import { useSearchOverlay } from "@/stores/searchOverlay";
 import { alertCoverRequired, useHasCover } from "@/hooks/useCoverGuard";
 import { useWideLayout } from "@/hooks/useWideLayout";
-import { DesktopSidebar, SIDEBAR_WIDTH } from "@/components/DesktopSidebar";
+import { DesktopSidebar, useSidebarWidth } from "@/components/DesktopSidebar";
 
 // The only screen reachable while the cover slot is empty: their own profile,
 // where the gallery lives.
@@ -44,8 +44,8 @@ const WIDE_SCENE_MAX_WIDTH = 880;
 // Circles (two columns), Connections and Discover (card grids) and Chat (two panes)
 // are laid out for desktop, so they fill the space beside the sidebar instead.
 const WIDE_GRID_SCENE_MAX_WIDTH = 1600;
-// Settings is two columns of section cards.
-const WIDE_SETTINGS_SCENE_MAX_WIDTH = 1100;
+// Settings is two columns of rows, against the sidebar like the other screens.
+const WIDE_SETTINGS_SCENE_MAX_WIDTH = 1200;
 
 
 export default function AppTabsLayout() {
@@ -53,13 +53,14 @@ export default function AppTabsLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
   const { width: windowWidth } = useWindowDimensions();
+  const sidebarWidth = useSidebarWidth();
 
   // Every tab's scene fills the whole area beside the sidebar with the page color --
   // the tabs are stacked, and a narrower, transparent-edged scene let the tab behind
   // it show through. The content's width limit is padding instead: centred, or
   // (align "start") kept against the sidebar with the slack on the right.
   function wideScene(maxWidth: number, align: "center" | "start" = "center") {
-    const slack = Math.max(0, windowWidth - SIDEBAR_WIDTH - maxWidth);
+    const slack = Math.max(0, windowWidth - sidebarWidth - maxWidth);
     return {
       sceneStyle: {
         backgroundColor: isDark ? "#171310" : "#FCEAD6",
@@ -173,7 +174,7 @@ export default function AppTabsLayout() {
         />
         <Tabs.Screen
           name="settings"
-          options={{ title: t("tabs.settings"), ...(wide ? wideScene(WIDE_SETTINGS_SCENE_MAX_WIDTH) : null) }}
+          options={{ title: t("tabs.settings"), ...(wide ? wideScene(WIDE_SETTINGS_SCENE_MAX_WIDTH, "start") : null) }}
         />
         {/* Viewing someone else's profile from Circles/Connections/Chat -- kept in its
             own directory (see user/_layout.tsx) rather than alongside your own profile
@@ -181,10 +182,16 @@ export default function AppTabsLayout() {
             another tab's folder stays on that tab's history even after you switch away,
             leaving THEIR profile showing the next time you opened that tab. href: null
             keeps it reachable via router.push without a tab bar button of its own. */}
-        <Tabs.Screen name="user" options={{ href: null }} />
+        <Tabs.Screen
+          name="user"
+          options={{ href: null, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
+        />
         {/* Your own profile, opened from the header avatar on any tab or from
             Settings -- hidden for the same reason as "user" above. */}
-        <Tabs.Screen name="me" options={{ href: null }} />
+        <Tabs.Screen
+          name="me"
+          options={{ href: null, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
+        />
         {/* Plus (paywall / waitlist), opened from Settings and from Connections'
             Likes you -- hidden for the same reason. */}
         <Tabs.Screen name="plus" options={{ href: null }} />

@@ -73,7 +73,7 @@ function PersonCard({
 
   return (
     <Pressable
-      className="items-center justify-center gap-2 overflow-hidden rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-2"
+      className="items-center justify-center gap-2 overflow-hidden rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-2 web:hover:shadow-md"
       // An explicit height, not aspectRatio: in the wrapping row, the row's default
       // stretch alignment overrode aspectRatio, so cards were only as tall as their
       // text band and came out wide rather than square.
@@ -321,7 +321,7 @@ export default function Connections() {
           isRefetchingMatched || isRefetchingConnected || isRefetchingSaved || isRefetchingLikesCount || isRefetchingLikes
         }
         onRefresh={refetch}
-        className={wide ? "flex-1 pl-10 pr-6 pt-9" : "flex-1 px-6 pt-4"}
+        className={wide ? "flex-1 px-20 pt-9" : "flex-1 px-6 pt-4"}
         // grow lets an empty tab's message fill the space above the tabs and sit
         // centred in it, rather than hugging the top.
         contentContainerClassName={wide ? "grow gap-5 pb-10" : "grow gap-6 pb-6"}
