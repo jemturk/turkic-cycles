@@ -175,6 +175,11 @@
     "member": "Üye",
     "typeMessage": "Bir mesaj yaz...",
     "send": "Gönder",
+    "reply": "Yanıtla",
+    "react": "Tepki ekle",
+    "replyingTo": "{{name}} kişisine yanıt",
+    "cancelReply": "Yanıtı iptal et",
+    "you": "Sen",
     "viewProfile": "Profili gör",
     "selectConversation": "Sohbete başlamak için bir konuşma seçin.",
     "youMatched": "Eşleştiniz · {{date}}"

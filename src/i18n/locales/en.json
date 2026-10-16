@@ -175,6 +175,11 @@
     "member": "Member",
     "typeMessage": "Type a message...",
     "send": "Send",
+    "reply": "Reply",
+    "react": "Add reaction",
+    "replyingTo": "Replying to {{name}}",
+    "cancelReply": "Cancel reply",
+    "you": "You",
     "viewProfile": "View profile",
     "selectConversation": "Select a conversation to start chatting.",
     "youMatched": "You matched · {{date}}"

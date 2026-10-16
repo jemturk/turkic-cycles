@@ -166,8 +166,46 @@ export async function listMessages(matchId: string) {
   return data ?? [];
 }
 
-export async function sendMessage(matchId: string, senderId: string, body: string) {
-  const { error } = await supabase.from("messages").insert({ match_id: matchId, sender_id: senderId, body });
+// replyToId: the message this one answers (shown quoted above it); it has to be in
+// the same conversation, which the insert policy enforces (migration 0038).
+export async function sendMessage(matchId: string, senderId: string, body: string, replyToId?: string | null) {
+  const { error } = await supabase
+    .from("messages")
+    .insert({ match_id: matchId, sender_id: senderId, body, reply_to_id: replyToId ?? null });
+  if (error) throw error;
+}
+
+export type MessageReaction = { messageId: string; userId: string; emoji: string };
+
+// Every reaction in a conversation (migration 0038: one per person per message).
+export async function listReactions(matchId: string): Promise<MessageReaction[]> {
+  const { data, error } = await supabase
+    .from("message_reactions")
+    .select("message_id, user_id, emoji, messages!inner(match_id)")
+    .eq("messages.match_id", matchId);
+  if (error) throw error;
+  return (data ?? []).map((row) => ({ messageId: row.message_id, userId: row.user_id, emoji: row.emoji }));
+}
+
+// Picking the emoji you already chose takes it off; any other replaces it.
+export async function toggleReaction(
+  messageId: string,
+  userId: string,
+  emoji: string,
+  current: string | undefined
+) {
+  if (current === emoji) {
+    const { error } = await supabase
+      .from("message_reactions")
+      .delete()
+      .eq("message_id", messageId)
+      .eq("user_id", userId);
+    if (error) throw error;
+    return;
+  }
+  const { error } = await supabase
+    .from("message_reactions")
+    .upsert({ message_id: messageId, user_id: userId, emoji }, { onConflict: "message_id,user_id" });
   if (error) throw error;
 }
 

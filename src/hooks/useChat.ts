@@ -8,8 +8,11 @@ import {
   listMessageThreads,
   listMessages,
   listNewConnections,
+  listReactions,
   markThreadRead,
   sendMessage,
+  toggleReaction,
+  type MessageReaction,
 } from "@/api/chat";
 import type { Tables } from "@/types/database";
 
@@ -139,7 +142,8 @@ export function useMessages(matchId: string | undefined) {
 export function useSendMessage(matchId: string | undefined, userId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: string) => sendMessage(matchId as string, userId as string, body),
+    mutationFn: ({ body, replyToId }: { body: string; replyToId?: string | null }) =>
+      sendMessage(matchId as string, userId as string, body, replyToId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages", matchId] });
       queryClient.invalidateQueries({ queryKey: ["messageThreads", userId] });
@@ -155,5 +159,54 @@ export function useMarkThreadRead(matchId: string | undefined, userId: string | 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messageThreads", userId] });
     },
+  });
+}
+
+// The conversation's reactions, kept live: any reaction added, changed or removed
+// (realtime only delivers rows RLS lets this user read) refreshes the list.
+export function useReactions(matchId: string | undefined) {
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: ["messageReactions", matchId],
+    queryFn: () => listReactions(matchId as string),
+    enabled: !!matchId,
+  });
+
+  useEffect(() => {
+    if (!matchId) return;
+    const channel = supabase
+      .channel(`reactions:${matchId}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "message_reactions" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["messageReactions", matchId] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [matchId, queryClient]);
+
+  return query;
+}
+
+// Shows the change straight away and puts it back if saving fails.
+export function useToggleReaction(matchId: string | undefined, userId: string | undefined) {
+  const queryClient = useQueryClient();
+  const queryKey = ["messageReactions", matchId];
+  return useMutation({
+    mutationFn: ({ messageId, emoji, current }: { messageId: string; emoji: string; current?: string }) =>
+      toggleReaction(messageId, userId as string, emoji, current),
+    onMutate: async ({ messageId, emoji, current }) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<MessageReaction[]>(queryKey);
+      queryClient.setQueryData<MessageReaction[]>(queryKey, (list = []) => {
+        const others = list.filter((r) => !(r.messageId === messageId && r.userId === userId));
+        return current === emoji ? others : [...others, { messageId, userId: userId as string, emoji }];
+      });
+      return { previous };
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous) queryClient.setQueryData(queryKey, context.previous);
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey }),
   });
 }

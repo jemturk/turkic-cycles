@@ -175,6 +175,11 @@
     "member": "Mitglied",
     "typeMessage": "Nachricht schreiben...",
     "send": "Senden",
+    "reply": "Antworten",
+    "react": "Reaktion hinzufügen",
+    "replyingTo": "Antwort an {{name}}",
+    "cancelReply": "Antwort abbrechen",
+    "you": "Du",
     "viewProfile": "Profil ansehen",
     "selectConversation": "Wähle eine Unterhaltung aus, um zu chatten.",
     "youMatched": "Ihr habt gematcht · {{date}}"
