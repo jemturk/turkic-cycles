@@ -33,14 +33,15 @@ type IconName = keyof typeof Ionicons.glyphMap;
 // The small tinted tile every row leads with: pale coral-orange with a coral icon,
 // the warm half of the logo's pair next to the teal of the selected chips and
 // switches. The destructive rows (Delete account) get a solid coral tile instead.
-function RowIcon({ icon, danger = false }: { icon: IconName; danger?: boolean }) {
+// `solid` (Log out) is a filled teal tile, set apart like Delete's filled coral.
+function RowIcon({ icon, danger = false, solid = false }: { icon: IconName; danger?: boolean; solid?: boolean }) {
   return (
     <View
       className={`h-9 w-9 items-center justify-center rounded-lg ${
-        danger ? "bg-accent-500" : "bg-accent-100/60 dark:bg-ink-700"
+        danger ? "bg-accent-500" : solid ? "bg-primary-500" : "bg-accent-100/60 dark:bg-ink-700"
       }`}
     >
-      <Ionicons name={icon} size={20} color={danger ? "#FFFFFF" : "#C1440E"} />
+      <Ionicons name={icon} size={20} color={danger || solid ? "#FFFFFF" : "#C1440E"} />
     </View>
   );
 }
@@ -63,6 +64,7 @@ function Row({
   onPress,
   right,
   danger = false,
+  solid = false,
   iconOnly = false,
 }: {
   icon: IconName;
@@ -72,6 +74,7 @@ function Row({
   onPress?: () => void;
   right?: ReactNode;
   danger?: boolean;
+  solid?: boolean;
   iconOnly?: boolean;
 }) {
   const wide = useWideLayout();
@@ -84,7 +87,7 @@ function Row({
         accessible={!showLabel}
         accessibilityLabel={showLabel ? undefined : label}
       >
-        <RowIcon icon={icon} danger={danger} />
+        <RowIcon icon={icon} danger={danger} solid={solid} />
         {showLabel ? (
           <View className="flex-1">
             <Text className={`text-base ${danger ? "text-accent-600" : "text-ink-900 dark:text-ink-50"}`}>{label}</Text>
@@ -489,7 +492,7 @@ export default function Settings() {
   const dangerSection = (
     <>
       <Section>
-        <Row icon="log-out-outline" label={t("settings.logOut")} onPress={() => signOut()} />
+        <Row icon="log-out-outline" label={t("settings.logOut")} solid onPress={() => signOut()} />
         <Row
           icon="trash-outline"
           label={t("settings.deleteAccount")}
