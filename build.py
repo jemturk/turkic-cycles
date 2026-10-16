@@ -6,9 +6,16 @@ r"""Build, publish, and install Turkic Circles.
   -i  install the release APK on the connected device
   -g  copy the release APK to C:\DEV\Cloud\Apk (keeps the newest 3 there)
 
-Flags combine (-wa, -ai, -ag, -aig, ...). Each step runs at most once, in the
-order web -> APK -> install -> copy. -i or -g on their own use the APK from the
-last build.
+  -d  debug: stream every command and its full output (otherwise each step
+      shows one progress line, and the output goes to .expo/build.log)
+
+Flags combine (-wa, -ai, -ag, -aig, -waid, ...). Each step runs at most once, in
+the order web -> APK -> install -> copy. -i or -g on their own use the APK from
+the last build.
+
+Without -d, a step's percentage and time left are estimated from how long it took
+the last few times (.expo/build-durations.json); the first run guesses. If a step
+fails, the end of its output is printed along with the log's path.
 
 Before -w or -a, scripts/check_anon_access.py checks the live database for data or
 functions reachable with the public anon key, and stops the build if it finds any
@@ -21,6 +28,7 @@ import os
 import shutil
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -38,20 +46,156 @@ IS_WINDOWS = os.name == "nt"
 DEFAULT_ANDROID_HOME = Path("C:/Android/Sdk") if IS_WINDOWS else Path.home() / "Android" / "Sdk"
 DEFAULT_JAVA_HOME = next(iter(sorted((Path.home() / ".jdks").glob("jdk-17*"))), None)
 
+# Quiet-mode state (no -d): command output goes to the log, and each step's
+# duration is remembered so the next run's progress estimate is closer. .expo/ is
+# gitignored.
+STATE_DIR = ROOT / ".expo"
+LOG_PATH = STATE_DIR / "build.log"
+DURATIONS_PATH = STATE_DIR / "build-durations.json"
+DURATIONS_KEPT = 3
+# First-run guesses, in seconds.
+DEFAULT_DURATIONS = {"anon-check": 15, "web": 120, "apk": 360, "install": 20, "copy": 5}
+BAR_WIDTH = 24
+FAILURE_TAIL_LINES = 30
+
+DEBUG = False
+
 
 class BuildError(Exception):
     pass
 
 
 def step(message: str) -> None:
-    print(f"\n==> {message}", flush=True)
+    # The step's header -- only in -d mode; otherwise its Stage line says it.
+    if DEBUG:
+        print(f"\n==> {message}", flush=True)
+
+
+def note(message: str) -> None:
+    """A result worth showing (the APK's path, a copy made): printed straight away
+    with -d, otherwise under the step's line once it finishes."""
+    if DEBUG:
+        print(message, flush=True)
+    else:
+        Stage.pending_notes.append(message)
+        log(message)
+
+
+def log(message: str) -> None:
+    if DEBUG:
+        return
+    with LOG_PATH.open("a", encoding="utf-8", errors="replace") as f:
+        f.write(message + "\n")
 
 
 def run(cmd: list[str], cwd: Path = ROOT, env: dict[str, str] | None = None) -> None:
-    print("$ " + " ".join(cmd), flush=True)
-    result = subprocess.run(cmd, cwd=cwd, env=env)
+    if DEBUG:
+        print("$ " + " ".join(cmd), flush=True)
+        result = subprocess.run(cmd, cwd=cwd, env=env)
+    else:
+        log("$ " + " ".join(cmd))
+        with LOG_PATH.open("a", encoding="utf-8", errors="replace") as f:
+            result = subprocess.run(cmd, cwd=cwd, env=env, stdout=f, stderr=subprocess.STDOUT)
     if result.returncode != 0:
         raise BuildError(f"command failed with exit code {result.returncode}: {' '.join(cmd)}")
+
+
+def load_durations() -> dict[str, list[float]]:
+    try:
+        return json.loads(DURATIONS_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def save_duration(key: str, seconds: float) -> None:
+    durations = load_durations()
+    durations[key] = (durations.get(key, []) + [round(seconds, 1)])[-DURATIONS_KEPT:]
+    try:
+        STATE_DIR.mkdir(exist_ok=True)
+        DURATIONS_PATH.write_text(json.dumps(durations, indent=2), encoding="utf-8")
+    except OSError:
+        pass  # Only the next run's estimate suffers.
+
+
+def fmt_time(seconds: float) -> str:
+    seconds = int(max(0, seconds))
+    return f"{seconds // 60}:{seconds % 60:02d}"
+
+
+class Stage:
+    """One flag's step: in quiet mode a live progress line (percentage, time spent,
+    estimated time left), redrawn in place on a terminal; with -d just the header."""
+
+    pending_notes: list[str] = []
+
+    def __init__(self, key: str, label: str):
+        self.key = key
+        self.label = label
+        history = load_durations().get(key)
+        self.estimate = sum(history) / len(history) if history else DEFAULT_DURATIONS.get(key, 60)
+        self.live = not DEBUG and sys.stdout.isatty()
+        self._stop = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    def _line(self, elapsed: float) -> str:
+        fraction = min(elapsed / self.estimate, 0.99) if self.estimate > 0 else 0.99
+        filled = int(fraction * BAR_WIDTH)
+        bar = "\u2588" * filled + "\u2591" * (BAR_WIDTH - filled)
+        left = self.estimate - elapsed
+        eta = f"~{fmt_time(left)} left" if left > 0 else "almost done"
+        return f"{self.label:<26} [{bar}] {int(fraction * 100):3d}%  {fmt_time(elapsed)} elapsed  {eta}"
+
+    def _render(self) -> None:
+        while not self._stop.wait(0.5):
+            sys.stdout.write("\r" + self._line(time.monotonic() - self.start).ljust(100))
+            sys.stdout.flush()
+
+    def __enter__(self) -> "Stage":
+        self.start = time.monotonic()
+        Stage.pending_notes = []
+        if DEBUG:
+            return self
+        log(f"\n==> {self.label}")
+        if self.live:
+            sys.stdout.write(self._line(0))
+            sys.stdout.flush()
+            self._thread = threading.Thread(target=self._render, daemon=True)
+            self._thread.start()
+        else:
+            print(f"... {self.label}", flush=True)
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> bool:
+        elapsed = time.monotonic() - self.start
+        if self._thread:
+            self._stop.set()
+            self._thread.join()
+        if exc_type is None:
+            save_duration(self.key, elapsed)
+        if DEBUG:
+            return False
+        mark = "\u2713" if exc_type is None else "\u2717"
+        status = fmt_time(elapsed) if exc_type is None else f"failed after {fmt_time(elapsed)}"
+        line = f"{mark} {self.label:<24} {status}"
+        if self.live:
+            sys.stdout.write("\r" + line.ljust(100) + "\n")
+        else:
+            print(line)
+        for message in Stage.pending_notes:
+            print(f"    {message}")
+        sys.stdout.flush()
+        return False
+
+
+def print_log_tail() -> None:
+    try:
+        lines = LOG_PATH.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return
+    print(f"\n--- last {FAILURE_TAIL_LINES} lines of {LOG_PATH} ---", file=sys.stderr)
+    for line in lines[-FAILURE_TAIL_LINES:]:
+        print(line, file=sys.stderr)
+    print(f"--- full log: {LOG_PATH} (or rerun with -d) ---", file=sys.stderr)
 
 
 def find_executable(name: str) -> str:
@@ -125,14 +269,17 @@ def build_apk() -> None:
                     "whose current directory is inside android/, or an editor/explorer window on it. "
                     "Close or cd out of it and retry."
                 ) from error
-            print(f"prebuild failed (attempt {attempt}/{attempts}); retrying in 5s...", flush=True)
+            if DEBUG:
+                print(f"prebuild failed (attempt {attempt}/{attempts}); retrying in 5s...", flush=True)
+            else:
+                log(f"prebuild failed (attempt {attempt}/{attempts}); retrying in 5s...")
             time.sleep(5)
 
     run([str(gradlew), "assembleRelease", "--console=plain"], cwd=ANDROID_DIR, env=env)
 
     if not APK_PATH.is_file():
         raise BuildError(f"Gradle reported success but no APK at {APK_PATH}")
-    print(f"APK: {APK_PATH} ({APK_PATH.stat().st_size / 1_000_000:.1f} MB)")
+    note(f"APK: {APK_PATH} ({APK_PATH.stat().st_size / 1_000_000:.1f} MB)")
 
 
 def install_apk() -> None:
@@ -167,7 +314,7 @@ def copy_apk() -> None:
     target = APK_COPY_DIR / f"turkic-circles-{version}-{built_at}.apk"
     APK_COPY_DIR.mkdir(parents=True, exist_ok=True)
     shutil.copy2(APK_PATH, target)
-    print(f"Copied to {target}")
+    note(f"Copied to {target}")
 
     # Each APK is ~110 MB and the folder syncs to the cloud, so keep only the newest
     # few. Sorted by modification time (copy2 keeps the APK's build time), not by
@@ -176,7 +323,7 @@ def copy_apk() -> None:
     copies = sorted(APK_COPY_DIR.glob("turkic-circles-*.apk"), key=lambda p: p.stat().st_mtime, reverse=True)
     for old in copies[APK_COPIES_TO_KEEP:]:
         old.unlink()
-        print(f"Removed old copy {old.name}")
+        note(f"Removed old copy {old.name}")
 
 
 def check_anon_access() -> None:
@@ -203,33 +350,54 @@ def main() -> int:
     parser.add_argument("-a", "--apk", action="store_true", help="build a release APK")
     parser.add_argument("-i", "--install", action="store_true", help="install the APK on the connected device")
     parser.add_argument("-g", "--copy", action="store_true", help=f"copy the APK to {APK_COPY_DIR}")
+    parser.add_argument("-d", "--debug", action="store_true", help="stream every command's full output")
     parser.add_argument(
         "--skip-anon-check", action="store_true", help="don't check the database for anonymous access first"
     )
     args = parser.parse_args()
 
+    global DEBUG
+    DEBUG = args.debug
+    if not DEBUG:
+        STATE_DIR.mkdir(exist_ok=True)
+        LOG_PATH.write_text("", encoding="utf-8")
+    # Box-drawing characters and checkmarks on a Windows console that isn't UTF-8.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
     if not (args.web or args.apk or args.install or args.copy):
         parser.print_help()
         return 2
 
+    total_start = time.monotonic()
     try:
         if (args.web or args.apk) and not args.skip_anon_check:
-            check_anon_access()
+            with Stage("anon-check", "Checking database access"):
+                check_anon_access()
         if args.web:
-            publish_web()
+            with Stage("web", "Deploying web build"):
+                publish_web()
         if args.apk:
-            build_apk()
+            with Stage("apk", "Building release APK"):
+                build_apk()
         if args.install:
-            install_apk()
+            with Stage("install", "Installing on device"):
+                install_apk()
         if args.copy:
-            copy_apk()
+            with Stage("copy", "Copying APK"):
+                copy_apk()
     except BuildError as error:
         print(f"\nerror: {error}", file=sys.stderr)
+        if not DEBUG:
+            print_log_tail()
         return 1
     except KeyboardInterrupt:
         return 130
 
-    step("Done")
+    if DEBUG:
+        step("Done")
+    else:
+        print(f"Done in {fmt_time(time.monotonic() - total_start)}")
     return 0
 
 
