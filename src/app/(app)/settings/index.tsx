@@ -46,10 +46,11 @@ function RowIcon({ icon, danger = false, solid = false }: { icon: IconName; dang
   );
 }
 
-// On a phone every row is its own bordered card; on desktop web the rows sit
-// inside their section's card (Section), which draws the dividers.
+// A standalone card row (the phone's profile row). Settings rows instead sit inside
+// their section's card (Section), which draws the dividers, on phones and desktop.
 const ROW_CLASS =
-  "flex-row items-center justify-between gap-3 rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3";
+  "flex-row items-center justify-between gap-3 rounded-2xl bg-white dark:bg-ink-800 px-4 py-3";
+const SECTION_ROW_CLASS = "flex-row items-center justify-between gap-3 px-4 py-3";
 const WIDE_ROW_CLASS = "flex-row items-center justify-between gap-3 px-5 py-3.5";
 
 // One setting: icon, label (and an optional hint under it), then either a value
@@ -79,7 +80,7 @@ function Row({
 }) {
   const wide = useWideLayout();
   const showLabel = wide || !iconOnly;
-  const className = `${wide ? WIDE_ROW_CLASS : ROW_CLASS} ${onPress ? "web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700" : ""}`;
+  const className = `${wide ? WIDE_ROW_CLASS : SECTION_ROW_CLASS} ${onPress ? "web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700" : ""}`;
   const content = (
     <>
       <View
@@ -113,16 +114,21 @@ function Row({
   );
 }
 
-// A group of rows. Phone: the title above, then the rows as separate cards.
-// Desktop web: one white card with the title inside and a hairline between rows.
+// A group of rows: one white card with a hairline between rows (grouped settings,
+// as on iOS and Android). Phone: the title just above the card; desktop web: inside.
 function Section({ title, children }: { title?: string; children: ReactNode }) {
   const wide = useWideLayout();
+  const rows = Children.toArray(children).map((child, index) => (
+    <View key={index} className={index > 0 ? "border-t border-primary-50 dark:border-ink-700" : undefined}>
+      {child}
+    </View>
+  ));
   if (!wide) {
     return (
-      <>
-        {title ? <Text className="mt-2 text-xs font-medium uppercase text-ink-400">{title}</Text> : null}
-        {children}
-      </>
+      <View className="gap-1.5">
+        {title ? <Text className="ml-1 mt-2 text-xs font-medium uppercase text-ink-400">{title}</Text> : null}
+        <View className="overflow-hidden rounded-2xl bg-white dark:bg-ink-800">{rows}</View>
+      </View>
     );
   }
   return (
@@ -130,11 +136,7 @@ function Section({ title, children }: { title?: string; children: ReactNode }) {
       {title ? (
         <Text className="px-5 pb-1 pt-4 text-xs font-semibold uppercase tracking-wider text-ink-400">{title}</Text>
       ) : null}
-      {Children.toArray(children).map((child, index) => (
-        <View key={index} className={index > 0 ? "border-t border-primary-50 dark:border-ink-700" : undefined}>
-          {child}
-        </View>
-      ))}
+      {rows}
     </View>
   );
 }
