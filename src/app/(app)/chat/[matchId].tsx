@@ -15,11 +15,11 @@ import { Avatar } from "@/components/Avatar";
 import { TypingDots } from "@/components/TypingDots";
 import { useWideLayout } from "@/hooks/useWideLayout";
 
-// Message bubbles: pale turquoise for yours, pale coral for theirs (the palette's
-// lightest shades, primary-100 / accent-50), both with dark text.
+// Message bubbles: pale turquoise for yours, pale coral for theirs (a step past the
+// palette's lightest shades, primary-100 / accent-50), both with dark text.
 const BUBBLE_COLORS = {
-  own: { background: "#D5EBEC", text: "#0E3F45" },
-  their: { background: "#FBE9E1", text: "#2B2320" },
+  own: { background: "#BEDFE2", text: "#0E3F45" },
+  their: { background: "#F8DBCF", text: "#2B2320" },
 };
 
 export default function ChatThread() {
