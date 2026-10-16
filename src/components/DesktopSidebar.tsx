@@ -154,7 +154,7 @@ export function DesktopSidebar({ state, descriptors, navigation }: BottomTabBarP
       <Pressable
         onPress={() => router.push("/(app)/me")}
         accessibilityLabel={t("profile.myProfile")}
-        className={`mt-auto flex-row items-center gap-2.5 rounded-2xl bg-primary-50 dark:bg-ink-900 ${
+        className={`mt-auto flex-row items-center gap-2.5 rounded-2xl bg-accent-100/60 web:hover:bg-accent-100 dark:bg-ink-900 ${
           collapsed ? "justify-center p-2" : "p-3"
         }`}
       >

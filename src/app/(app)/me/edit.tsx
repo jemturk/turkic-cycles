@@ -103,202 +103,378 @@ export default function ProfileEdit() {
     );
   }
 
+  const nameField = (
+    <>
+      <Controller
+        control={control}
+        name="displayName"
+        render={({ field }) => (
+          <TextField
+            label={t("fields.yourName")}
+            value={field.value}
+            onChangeText={field.onChange}
+            error={errors.displayName?.message}
+          />
+        )}
+      />
+    </>
+  );
+
+  const bioField = (
+    <>
+      <Controller
+        control={control}
+        name="bio"
+        render={({ field }) => (
+          <TextField
+            label={t("fields.bio")}
+            multiline
+            numberOfLines={4}
+            value={field.value}
+            onChangeText={field.onChange}
+            error={errors.bio?.message}
+          />
+        )}
+      />
+    </>
+  );
+
+  const lookingForField = (
+    <>
+      <Controller
+        control={control}
+        name="connectionTypes"
+        render={({ field }) => (
+          <ChipGroup
+            label={t("fields.lookingFor")}
+            options={CONNECTION_TYPE_OPTIONS}
+            value={field.value ?? []}
+            onChange={field.onChange}
+            error={errors.connectionTypes?.message}
+          />
+        )}
+      />
+    </>
+  );
+
+  const locationField = (
+    <>
+      <LocationFields
+        country={country.field.value}
+        city={city.field.value}
+        state={state.field.value}
+        onCountryChange={country.field.onChange}
+        onCityChange={city.field.onChange}
+        onStateChange={state.field.onChange}
+        errors={{ country: errors.country?.message, city: errors.city?.message, state: errors.state?.message }}
+      />
+    </>
+  );
+
+  const occupationField = (
+    <>
+      <Controller
+        control={control}
+        name="occupation"
+        render={({ field }) => (
+          <TextField
+            label={t("fields.occupation")}
+            value={field.value}
+            onChangeText={field.onChange}
+            error={errors.occupation?.message}
+          />
+        )}
+      />
+    </>
+  );
+
+  const languagesField = (
+    <>
+      <Controller
+        control={control}
+        name="languages"
+        render={({ field }) => (
+          <ChipGroup
+            label={t("fields.languagesYouSpeak")}
+            options={LANGUAGES}
+            value={field.value ?? []}
+            onChange={field.onChange}
+            otherOption={{ value: LANGUAGE_OTHER, placeholder: t("fields.typeLanguage") }}
+            error={errors.languages?.message}
+            namespace="languages"
+          />
+        )}
+      />
+    </>
+  );
+
+  const interestsField = (
+    <>
+      <Controller
+        control={control}
+        name="interests"
+        render={({ field }) => (
+          <ChipGroup
+            label={t("fields.interests")}
+            options={INTERESTS}
+            value={field.value ?? []}
+            onChange={field.onChange}
+            namespace="interests"
+          />
+        )}
+      />
+    </>
+  );
+
+  const hobbiesField = (
+    <>
+      <Controller
+        control={control}
+        name="hobbies"
+        render={({ field }) => (
+          <ChipGroup
+            label={t("fields.hobbies")}
+            options={HOBBIES}
+            value={field.value ?? []}
+            onChange={field.onChange}
+            namespace="hobbies"
+          />
+        )}
+      />
+    </>
+  );
+
+  const usResidencyField = (
+    <>
+      <Controller
+        control={control}
+        name="usResidency"
+        render={({ field }) => (
+          <SegmentedToggle label={t("fields.usResident")} value={!!field.value} onChange={field.onChange} />
+        )}
+      />
+    </>
+  );
+
+  const usCitizenshipField = (
+    <>
+      <Controller
+        control={control}
+        name="usCitizenship"
+        render={({ field }) => (
+          <SegmentedToggle label={t("fields.usCitizen")} value={!!field.value} onChange={field.onChange} />
+        )}
+      />
+    </>
+  );
+
+  const europeanCitizenshipField = (
+    <>
+      <Controller
+        control={control}
+        name="europeanCitizenship"
+        render={({ field }) => (
+          <SegmentedToggle label={t("fields.europeanCitizen")} value={!!field.value} onChange={field.onChange} />
+        )}
+      />
+    </>
+  );
+
+  const originCountriesField = (
+    <>
+      <Controller
+        control={control}
+        name="originCountries"
+        render={({ field }) => (
+          <ChipGroup
+            label={t("fields.originCountries")}
+            options={ORIGIN_COUNTRIES}
+            value={field.value ?? []}
+            onChange={field.onChange}
+            max={ORIGIN_MAX_SELECTIONS}
+            otherOption={{ value: ORIGIN_OTHER, placeholder: t("fields.typeCountry") }}
+            error={errors.originCountries?.message}
+            namespace="originCountries"
+          />
+        )}
+      />
+    </>
+  );
+
+  const consentField = (
+    <>
+      <Controller
+        control={control}
+        name="consentOriginCountries"
+        render={({ field }) => (
+          <Pressable
+            className="flex-row items-start gap-2"
+            onPress={() => field.onChange(field.value === true ? undefined : true)}
+          >
+            <Ionicons name={field.value === true ? "checkbox" : "square-outline"} size={22} color="#127A87" />
+            <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">{t("fields.consentOriginCountries")}</Text>
+          </Pressable>
+        )}
+      />
+    </>
+  );
+
+  const consentErrorField = (
+    <>
+      {errors.consentOriginCountries?.message ? (
+        <Text className="-mt-2 text-xs text-accent-600">{errors.consentOriginCountries.message}</Text>
+      ) : null}
+    </>
+  );
+
+  const travelFrequencyField = (
+    <>
+      <Controller
+        control={control}
+        name="travelFrequency"
+        render={({ field }) => (
+          <SingleSelectChips
+            label={t("fields.travelFrequency")}
+            options={TRAVEL_FREQUENCIES.map((f) => ({
+              value: f.value,
+              label: t(`constants.travelFrequencies.${f.value}`),
+            }))}
+            value={field.value}
+            onChange={field.onChange}
+            error={errors.travelFrequency?.message}
+          />
+        )}
+      />
+    </>
+  );
+
+  const travelStyleField = (
+    <>
+      <Controller
+        control={control}
+        name="travelStyle"
+        render={({ field }) => (
+          <ChipGroup
+            label={t("fields.travelStyle")}
+            options={TRAVEL_STYLES}
+            value={field.value ?? []}
+            onChange={field.onChange}
+            namespace="travelStyles"
+          />
+        )}
+      />
+    </>
+  );
+
+  const branchingField = (
+    <>
+      <BranchingQuestionsFields control={control} errors={errors} connectionTypes={watchedConnectionTypes} />
+    </>
+  );
+
+  const saveButton = (
+    <Button
+      label={saveProfileEdit.isPending ? t("common.saving") : t("common.saveChanges")}
+      disabled={saveProfileEdit.isPending}
+      onPress={handleSubmit(onSubmit)}
+    />
+  );
+
+  // Desktop web: a title row with Save, and the fields grouped into white cards in
+  // two columns, against the sidebar like the other screens.
+  if (wide) {
+    const card = "gap-4 rounded-[22px] bg-white p-6 dark:bg-ink-800";
+    return (
+      <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+        <FormScrollView
+          className="flex-1"
+          contentContainerClassName="gap-6 px-20 pb-12 pt-9"
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="flex-row items-center gap-4">
+            <Pressable
+              accessibilityLabel={t("common.back")}
+              hitSlop={8}
+              onPress={() => router.back()}
+              className="h-10 w-10 items-center justify-center rounded-full web:hover:bg-white dark:web:hover:bg-ink-800"
+            >
+              <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
+            </Pressable>
+            <Text className="flex-1 font-display text-4xl text-ink-900 dark:text-ink-50">
+              {t("fields.editProfileHeading")}
+            </Text>
+            <View className="w-48">{saveButton}</View>
+          </View>
+
+          <View className="flex-row items-start gap-6">
+            <View className="flex-1 gap-4">
+              <View className={card}>
+                {nameField}
+                {bioField}
+                {occupationField}
+              </View>
+              <View className={card}>{locationField}</View>
+              <View className={card}>
+                {lookingForField}
+                {branchingField}
+              </View>
+            </View>
+            <View className="flex-1 gap-4">
+              <View className={card}>
+                {languagesField}
+                {interestsField}
+                {hobbiesField}
+              </View>
+              <View className={card}>
+                {travelFrequencyField}
+                {travelStyleField}
+              </View>
+              <View className={card}>
+                {usResidencyField}
+                {usCitizenshipField}
+                {europeanCitizenshipField}
+                {originCountriesField}
+                {consentField}
+                {consentErrorField}
+              </View>
+            </View>
+          </View>
+        </FormScrollView>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
-      {/* Desktop web: the "me" tab is full width (for the profile), so the form
-          keeps itself to a readable centred column. */}
-      <FormScrollView
-        className="flex-1 px-6 pt-10"
-        contentContainerClassName={wide ? "w-full max-w-[720px] gap-4 self-center pb-10" : "gap-4 pb-10"}
-      >
-        <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
-        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">{t("fields.editProfileHeading")}</Text>
+      <FormScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
+        <Ionicons
+          name="chevron-back"
+          size={24}
+          className="text-ink-900 dark:text-ink-50"
+          onPress={() => router.back()}
+        />
+        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">
+          {t("fields.editProfileHeading")}
+        </Text>
 
-        <Controller
-          control={control}
-          name="displayName"
-          render={({ field }) => (
-            <TextField label={t("fields.yourName")} value={field.value} onChangeText={field.onChange} error={errors.displayName?.message} />
-          )}
-        />
-        <Controller
-          control={control}
-          name="bio"
-          render={({ field }) => (
-            <TextField
-              label={t("fields.bio")}
-              multiline
-              numberOfLines={4}
-              value={field.value}
-              onChangeText={field.onChange}
-              error={errors.bio?.message}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="connectionTypes"
-          render={({ field }) => (
-            <ChipGroup
-              label={t("fields.lookingFor")}
-              options={CONNECTION_TYPE_OPTIONS}
-              value={field.value ?? []}
-              onChange={field.onChange}
-              error={errors.connectionTypes?.message}
-            />
-          )}
-        />
-        <LocationFields
-          country={country.field.value}
-          city={city.field.value}
-          state={state.field.value}
-          onCountryChange={country.field.onChange}
-          onCityChange={city.field.onChange}
-          onStateChange={state.field.onChange}
-          errors={{ country: errors.country?.message, city: errors.city?.message, state: errors.state?.message }}
-        />
-        <Controller
-          control={control}
-          name="occupation"
-          render={({ field }) => (
-            <TextField label={t("fields.occupation")} value={field.value} onChangeText={field.onChange} error={errors.occupation?.message} />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="languages"
-          render={({ field }) => (
-            <ChipGroup
-              label={t("fields.languagesYouSpeak")}
-              options={LANGUAGES}
-              value={field.value ?? []}
-              onChange={field.onChange}
-              otherOption={{ value: LANGUAGE_OTHER, placeholder: t("fields.typeLanguage") }}
-              error={errors.languages?.message}
-              namespace="languages"
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="interests"
-          render={({ field }) => (
-            <ChipGroup
-              label={t("fields.interests")}
-              options={INTERESTS}
-              value={field.value ?? []}
-              onChange={field.onChange}
-              namespace="interests"
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="hobbies"
-          render={({ field }) => (
-            <ChipGroup
-              label={t("fields.hobbies")}
-              options={HOBBIES}
-              value={field.value ?? []}
-              onChange={field.onChange}
-              namespace="hobbies"
-            />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="usResidency"
-          render={({ field }) => <SegmentedToggle label={t("fields.usResident")} value={!!field.value} onChange={field.onChange} />}
-        />
-        <Controller
-          control={control}
-          name="usCitizenship"
-          render={({ field }) => <SegmentedToggle label={t("fields.usCitizen")} value={!!field.value} onChange={field.onChange} />}
-        />
-        <Controller
-          control={control}
-          name="europeanCitizenship"
-          render={({ field }) => (
-            <SegmentedToggle label={t("fields.europeanCitizen")} value={!!field.value} onChange={field.onChange} />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="originCountries"
-          render={({ field }) => (
-            <ChipGroup
-              label={t("fields.originCountries")}
-              options={ORIGIN_COUNTRIES}
-              value={field.value ?? []}
-              onChange={field.onChange}
-              max={ORIGIN_MAX_SELECTIONS}
-              otherOption={{ value: ORIGIN_OTHER, placeholder: t("fields.typeCountry") }}
-              error={errors.originCountries?.message}
-              namespace="originCountries"
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="consentOriginCountries"
-          render={({ field }) => (
-            <Pressable
-              className="flex-row items-start gap-2"
-              onPress={() => field.onChange(field.value === true ? undefined : true)}
-            >
-              <Ionicons name={field.value === true ? "checkbox" : "square-outline"} size={22} color="#127A87" />
-              <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">
-                {t("fields.consentOriginCountries")}
-              </Text>
-            </Pressable>
-          )}
-        />
-        {errors.consentOriginCountries?.message ? (
-          <Text className="-mt-2 text-xs text-accent-600">{errors.consentOriginCountries.message}</Text>
-        ) : null}
-
-        <Controller
-          control={control}
-          name="travelFrequency"
-          render={({ field }) => (
-            <SingleSelectChips
-              label={t("fields.travelFrequency")}
-              options={TRAVEL_FREQUENCIES.map((f) => ({
-                value: f.value,
-                label: t(`constants.travelFrequencies.${f.value}`),
-              }))}
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.travelFrequency?.message}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="travelStyle"
-          render={({ field }) => (
-            <ChipGroup
-              label={t("fields.travelStyle")}
-              options={TRAVEL_STYLES}
-              value={field.value ?? []}
-              onChange={field.onChange}
-              namespace="travelStyles"
-            />
-          )}
-        />
-
-        <BranchingQuestionsFields control={control} errors={errors} connectionTypes={watchedConnectionTypes} />
-
-        <View className="mt-4">
-          <Button
-            label={saveProfileEdit.isPending ? t("common.saving") : t("common.saveChanges")}
-            disabled={saveProfileEdit.isPending}
-            onPress={handleSubmit(onSubmit)}
-          />
-        </View>
+        {nameField}
+        {bioField}
+        {lookingForField}
+        {locationField}
+        {occupationField}
+        {languagesField}
+        {interestsField}
+        {hobbiesField}
+        {usResidencyField}
+        {usCitizenshipField}
+        {europeanCitizenshipField}
+        {originCountriesField}
+        {consentField}
+        {consentErrorField}
+        {travelFrequencyField}
+        {travelStyleField}
+        {branchingField}
+        <View className="mt-4">{saveButton}</View>
       </FormScrollView>
     </SafeAreaView>
   );
