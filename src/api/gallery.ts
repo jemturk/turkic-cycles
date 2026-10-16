@@ -1,4 +1,5 @@
 import { supabase } from "@/api/client";
+import { toUploadableImage } from "@/lib/uploadableImage";
 
 const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -47,10 +48,11 @@ export async function listProfilePhotos(userId: string): Promise<ProfilePhoto[]>
 // cache-busting query param to add: a given storage_path's contents never change.
 export async function addProfilePhoto(
   userId: string,
-  uri: string,
-  mimeType: string,
+  pickedUri: string,
+  pickedMimeType: string,
   position: number
 ): Promise<ProfilePhoto> {
+  const { uri, mimeType } = await toUploadableImage(pickedUri, pickedMimeType);
   const extension = EXTENSION_BY_MIME_TYPE[mimeType] ?? "jpg";
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
   const path = `${userId}/gallery/${filename}`;

@@ -61,14 +61,26 @@ type TileProps = {
   isCover: boolean;
   onMakeCover?: (photo: ProfilePhoto) => void;
   onDragStart: () => void;
+  onDragCancel: () => void;
   onDrop: (fromSlot: number, dx: number, dy: number, tileSize: number, slotCount: number) => void;
   onRemove: (photo: ProfilePhoto) => void;
 };
 
-function GalleryTile({ photo, slot, slotCount, tileSize, isCover, onMakeCover, onDragStart, onDrop, onRemove }: TileProps) {
+function GalleryTile({
+  photo,
+  slot,
+  slotCount,
+  tileSize,
+  isCover,
+  onMakeCover,
+  onDragStart,
+  onDragCancel,
+  onDrop,
+  onRemove,
+}: TileProps) {
   const { t } = useTranslation();
   const [offset, setOffset] = useState<{ dx: number; dy: number } | null>(null);
-  const latest = useLatest({ slot, tileSize, slotCount, onDragStart, onDrop });
+  const latest = useLatest({ slot, tileSize, slotCount, onDragStart, onDragCancel, onDrop });
 
   // Deliberately never claims the responder on start (only once real dragging
   // motion crosses the threshold in onMoveShouldSetPanResponder) -- a plain tap on
@@ -91,7 +103,13 @@ function GalleryTile({ photo, slot, slotCount, tileSize, isCover, onMakeCover, o
         onDrop(slot, gesture.dx, gesture.dy, tileSize, slotCount);
         setOffset(null);
       },
-      onPanResponderTerminate: () => setOffset(null),
+      // The surrounding ScrollView (or the OS) can take the gesture over mid-drag --
+      // common on iOS when the page scrolls. The parent has to hear about that too,
+      // or it stays "dragging" and stops picking up the server list (new uploads).
+      onPanResponderTerminate: () => {
+        setOffset(null);
+        latest.current.onDragCancel();
+      },
     })
   ).current;
 
@@ -360,6 +378,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
                 isCover={hasCover && index === 0}
                 onMakeCover={hasCover ? undefined : onMakeCover}
                 onDragStart={() => setIsDragging(true)}
+                onDragCancel={() => setIsDragging(false)}
                 onDrop={handleDrop}
                 onRemove={onRemove}
               />

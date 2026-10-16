@@ -1,4 +1,5 @@
 import { supabase } from "@/api/client";
+import { toUploadableImage } from "@/lib/uploadableImage";
 
 const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -6,7 +7,8 @@ const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
   "image/webp": "webp",
 };
 
-export async function uploadAvatar(userId: string, uri: string, mimeType: string) {
+export async function uploadAvatar(userId: string, pickedUri: string, pickedMimeType: string) {
+  const { uri, mimeType } = await toUploadableImage(pickedUri, pickedMimeType);
   const extension = EXTENSION_BY_MIME_TYPE[mimeType] ?? "jpg";
   const path = `${userId}/avatar.${extension}`;
 
