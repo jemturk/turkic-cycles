@@ -790,6 +790,7 @@ export type Database = {
         }[]
       }
       process_overdue_safety_checkins: { Args: never; Returns: undefined }
+      register_push_token: { Args: { p_platform: string; p_token: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

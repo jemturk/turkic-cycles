@@ -48,7 +48,7 @@ export function usePushNotifications(userId: string | undefined) {
 
       const projectId = Constants.expoConfig?.extra?.eas?.projectId as string | undefined;
       const { data: token } = await Notifications.getExpoPushTokenAsync({ projectId });
-      await registerPushToken(userId, token, Platform.OS === "ios" ? "ios" : "android");
+      await registerPushToken(token, Platform.OS === "ios" ? "ios" : "android");
     })().catch((error) => {
       console.error("Push registration failed", error);
     });
