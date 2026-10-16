@@ -15,22 +15,13 @@ import { EditablePhotoGallery } from "@/components/EditablePhotoGallery";
 import { PhotoViewer } from "@/components/PhotoViewer";
 import { COVER_POSITION } from "@/api/gallery";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { TAG_TONES, type TagToneName } from "@/constants/tagTones";
+import { OwnPhotos } from "@/components/OwnPhotos";
 import { DesktopPersonCard } from "@/components/DesktopPersonCard";
 
 // `namespace` looks up each value's display label under constants.<namespace>.<value>;
 // values without a translation (freeform "Other" text a user typed in) just fall back
 // to showing themselves as-is via i18next's defaultValue.
-// One soft tint per section, from the palette's lightest shades (the same family as
-// the circle icons), so the sections are easy to tell apart at a glance. Dark mode
-// keeps them all neutral.
-const TAG_TONES = {
-  languages: { bg: "bg-primary-100", text: "text-primary-600" },
-  interests: { bg: "bg-gold-100", text: "text-gold-600" },
-  hobbies: { bg: "bg-accent-50", text: "text-accent-600" },
-  travelStyles: { bg: "bg-teal-50", text: "text-teal-600" },
-  originCountries: { bg: "bg-ink-100", text: "text-ink-700" },
-} as const;
-
 function TagRow({
   label,
   values,
@@ -38,7 +29,7 @@ function TagRow({
 }: {
   label: string;
   values: string[] | null | undefined;
-  namespace: keyof typeof TAG_TONES;
+  namespace: TagToneName;
 }) {
   const { t } = useTranslation();
   if (!values || values.length === 0) return null;
@@ -159,9 +150,16 @@ export function ProfileView({
     </>
   );
 
+  // Your own, on desktop web: the profile picture picker sits before the gallery
+  // (OwnPhotos), since the card on the left no longer has one. A phone keeps it at
+  // the top of the profile card.
   const gallery = ownUserId ? (
     <Card>
-      <EditablePhotoGallery userId={ownUserId} photos={photos} />
+      {wide ? (
+        <OwnPhotos userId={ownUserId} avatarUrl={avatarUrl} name={nameLabel} photos={photos} />
+      ) : (
+        <EditablePhotoGallery userId={ownUserId} photos={photos} />
+      )}
     </Card>
   ) : photos && photos.length > 0 ? (
     <Card>
@@ -209,7 +207,7 @@ export function ProfileView({
               verificationStatus={verificationStatus}
               avatar={
                 ownUserId ? (
-                  <EditableAvatar userId={ownUserId} uri={avatarUrl} name={nameLabel} size={44} />
+                  <Avatar uri={avatarUrl} name={nameLabel} size={44} fallbackClassName="bg-white/30" />
                 ) : avatarUrl ? (
                   <Pressable
                     accessibilityRole="imagebutton"

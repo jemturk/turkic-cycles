@@ -32,7 +32,8 @@ import { FormScrollView } from "@/components/FormScrollView";
 import { LocationFields } from "@/components/LocationFields";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { useProfilePhotos } from "@/hooks/useGallery";
-import { EditablePhotoGallery } from "@/components/EditablePhotoGallery";
+import { OwnPhotos } from "@/components/OwnPhotos";
+import { TAG_TONES } from "@/constants/tagTones";
 
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
@@ -174,9 +175,11 @@ export default function ProfileEdit() {
     </>
   );
 
-  // The same gallery as on your profile. It saves each change as it's made, not with
-  // the form's Save changes.
-  const photosField = userId ? <EditablePhotoGallery userId={userId} photos={photos} /> : null;
+  // Your profile picture and the same gallery as on your profile. Both save each
+  // change as it's made, not with the form's Save changes.
+  const photosField = userId ? (
+    <OwnPhotos userId={userId} avatarUrl={profile?.avatar_url} name={profile?.display_name} photos={photos} />
+  ) : null;
 
   const occupationField = (
     <>
@@ -209,6 +212,7 @@ export default function ProfileEdit() {
             otherOption={{ value: LANGUAGE_OTHER, placeholder: t("fields.typeLanguage") }}
             error={errors.languages?.message}
             namespace="languages"
+            tone={TAG_TONES.languages}
           />
         )}
       />
@@ -227,6 +231,7 @@ export default function ProfileEdit() {
             value={field.value ?? []}
             onChange={field.onChange}
             namespace="interests"
+            tone={TAG_TONES.interests}
           />
         )}
       />
@@ -245,6 +250,7 @@ export default function ProfileEdit() {
             value={field.value ?? []}
             onChange={field.onChange}
             namespace="hobbies"
+            tone={TAG_TONES.hobbies}
           />
         )}
       />
@@ -302,6 +308,7 @@ export default function ProfileEdit() {
             otherOption={{ value: ORIGIN_OTHER, placeholder: t("fields.typeCountry") }}
             error={errors.originCountries?.message}
             namespace="originCountries"
+            tone={TAG_TONES.originCountries}
           />
         )}
       />
@@ -367,6 +374,7 @@ export default function ProfileEdit() {
             value={field.value ?? []}
             onChange={field.onChange}
             namespace="travelStyles"
+            tone={TAG_TONES.travelStyles}
           />
         )}
       />
