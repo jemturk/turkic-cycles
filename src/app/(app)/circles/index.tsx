@@ -15,7 +15,6 @@ import {
 import { useCanHost } from "@/hooks/useCanHost";
 import { useIsNearby, useLocalFilter } from "@/stores/localFilter";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
-import { Chip } from "@/components/Chip";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { CirclesDesktop } from "@/components/CirclesDesktop";
@@ -70,7 +69,7 @@ function CirclesPhone() {
           </Pressable>
         ) : null}
 
-        <View className="flex-row items-center justify-between gap-3 rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        <View className="flex-row items-center justify-between gap-3 rounded-2xl bg-white dark:bg-ink-800 px-4 py-3">
           <View className="flex-1">
             <Text className="text-base text-ink-900 dark:text-ink-50">{t("circles.local")}</Text>
             <Text className="text-xs text-ink-400">{t("circles.localHint")}</Text>
@@ -98,37 +97,49 @@ function CirclesPhone() {
             <Pressable
               key={circle.id}
               onPress={() => router.push(`/(app)/circles/${circle.id}`)}
-              className="flex-row gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
+              className="flex-row gap-3 rounded-[18px] bg-white p-4 dark:bg-ink-800"
             >
-              <View className={`h-12 w-12 items-center justify-center rounded-xl ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
+              <View className={`h-12 w-12 items-center justify-center rounded-[14px] ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
                 <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_COLORS[topic].fg} />
               </View>
 
               <View className="flex-1 gap-1">
-                <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{circle.name}</Text>
-                <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={2}>
-                  {circle.description}
+                <Text className="font-display text-lg text-ink-900 dark:text-ink-50" numberOfLines={1}>
+                  {circle.name}
                 </Text>
-                <Text className="text-xs text-ink-400">
-                  {t("circles.membersCount", { count: circle.member_count })}
-                  {" · "}
-                  {t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 })}
-                </Text>
-                {circle.city ? (
-                  <Text className="text-xs text-ink-400">{[circle.city, circle.state].filter(Boolean).join(", ")}</Text>
+                {circle.description ? (
+                  <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={2}>
+                    {circle.description}
+                  </Text>
                 ) : null}
+                <Text className="text-xs text-ink-400" numberOfLines={1}>
+                  {[
+                    t("circles.membersCount", { count: circle.member_count }),
+                    t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 }),
+                    [circle.city, circle.state].filter(Boolean).join(", "),
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </Text>
               </View>
 
-              <View className="justify-center">
-                <Chip
-                  label={isJoined ? t("circles.joined") : t("circles.join")}
-                  selected={isJoined}
-                  disabled={joinCircle.isPending}
-                  onPress={() => {
-                    if (!isJoined) joinCircle.mutate(circle.id);
-                  }}
-                />
-              </View>
+              {/* Only circles you're not in get a button, as on desktop. */}
+              {isJoined ? null : (
+                <View className="justify-center">
+                  <Pressable
+                    accessibilityRole="button"
+                    disabled={joinCircle.isPending}
+                    onPress={(e) => {
+                      // Don't also open the circle underneath.
+                      e.stopPropagation();
+                      joinCircle.mutate(circle.id);
+                    }}
+                    className="h-9 justify-center rounded-full bg-primary-500 px-4"
+                  >
+                    <Text className="text-sm font-semibold text-white">{t("circles.join")}</Text>
+                  </Pressable>
+                </View>
+              )}
             </Pressable>
           );
         })}

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Image, Pressable, View } from "react-native";
+import { useState } from "react";
+import { Pressable, ScrollView, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -10,11 +10,8 @@ import { useSession } from "@/hooks/useSession";
 import { useMessageThreads, useNewConnections } from "@/hooks/useChat";
 import { useSavedPeople } from "@/hooks/useDiscover";
 import { useHasPlus, useIncomingLikes, useIncomingLikesCount } from "@/hooks/usePlus";
-import { calculateAge } from "@/lib/age";
-import { Avatar } from "@/components/Avatar";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { Button } from "@/components/Button";
-import { EXPANDING_TABS_DURATION, ExpandingTabs } from "@/components/ExpandingTabs";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { useSearchOverlay } from "@/stores/searchOverlay";
 import { DesktopPersonCard } from "@/components/DesktopPersonCard";
@@ -63,144 +60,54 @@ function PersonCard({
   unreadCount,
   onPress,
   onQuickChat,
-  wide = false,
 }: {
   person: PersonCardData;
   width: number;
   unreadCount?: number;
   onPress: () => void;
   onQuickChat?: () => void;
-  wide?: boolean;
 }) {
   const { t } = useTranslation();
 
-  // Desktop web: the same card as on Discover (DesktopPersonCard), with the quick
-  // chat button and unread dot as one of Discover's frosted corner buttons.
-  if (wide) {
-    return (
-      <Pressable
-        style={{ width, height: Math.round(width * WIDE_CARD_ASPECT) }}
-        onPress={onPress}
-        className="rounded-3xl web:hover:shadow-md"
-      >
-        <DesktopPersonCard
-          person={{
-            displayName: person.otherDisplayName,
-            avatarUrl: person.otherAvatarUrl,
-            birthdate: person.otherBirthdate,
-            city: person.otherCity,
-            state: person.otherState,
-            occupation: null,
-            connectionTypes: [],
-            coverPhotoUrl: person.otherCoverPhotoUrl,
-          }}
-          verificationStatus={null}
-        />
-        {onQuickChat ? (
-          <Pressable
-            accessibilityLabel={t("connections.connected")}
-            onPress={(e) => {
-              e.stopPropagation();
-              onQuickChat();
-            }}
-            className="absolute right-3 top-3 h-[38px] w-[38px] items-center justify-center rounded-full bg-white/70 web:hover:bg-white dark:bg-ink-800/70 dark:web:hover:bg-ink-800"
-            style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 6 }}
-          >
-            <Ionicons name="chatbubble-outline" size={18} color="#127A87" />
-            {unreadCount ? (
-              <View className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-white bg-accent-500" />
-            ) : null}
-          </Pressable>
-        ) : unreadCount ? (
-          <View className="absolute right-3 top-3 h-3 w-3 rounded-full border-2 border-white bg-accent-500" />
-        ) : null}
-      </Pressable>
-    );
-  }
-
-  const age = person.otherBirthdate ? calculateAge(person.otherBirthdate) : undefined;
-  const location = [person.otherCity, person.otherState, person.otherCountry].filter(Boolean).join(", ");
-  const meta = [age ? `${age}` : null, location || null].filter(Boolean).join(" · ");
-
-  const cover = person.otherCoverPhotoUrl;
-
+  // The same card as on Discover (DesktopPersonCard): cover photo, name and city on a
+  // dark band, with the quick chat button and unread dot as one of Discover's frosted
+  // corner buttons.
   return (
     <Pressable
-      className="items-center justify-center gap-2 overflow-hidden rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-2 web:hover:shadow-md"
-      // An explicit height, not aspectRatio: in the wrapping row, the row's default
-      // stretch alignment overrode aspectRatio, so cards were only as tall as their
-      // text band and came out wide rather than square.
-      style={{ width, height: width }}
+      style={{ width, height: Math.round(width * WIDE_CARD_ASPECT) }}
       onPress={onPress}
+      className="rounded-3xl web:hover:shadow-md"
     >
-      {cover ? (
-        <>
-          {/* Same idea as the Discover card: their first gallery photo fills the
-              card, a dark band keeps the text readable, and the profile picture
-              moves to a corner. */}
-          <Image
-            source={{ uri: cover }}
-            resizeMode="cover"
-            style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-            accessibilityIgnoresInvertColors
-          />
-          <View className="absolute left-2 top-2 rounded-full border-2 border-white">
-            <Avatar uri={person.otherAvatarUrl} name={person.otherDisplayName} size={32} />
-          </View>
-          <View className="absolute bottom-0 left-0 right-0 gap-0.5 bg-ink-950/55 px-2.5 py-2">
-            <Text className="font-display text-sm text-white" numberOfLines={1}>
-              {person.otherDisplayName}
-            </Text>
-            {meta ? (
-              <Text className="text-xs text-white/85" numberOfLines={1}>
-                {meta}
-              </Text>
-            ) : null}
-          </View>
-        </>
-      ) : (
-        <>
-          <Avatar uri={person.otherAvatarUrl} name={person.otherDisplayName} size={56} />
-
-          {/* w-full is load-bearing: with the Pressable's own items-center, a shrink-
-              wrapped child never gets a bounded width to truncate against, so long
-              content (e.g. "Apex, NC, United States") renders past the card's edge
-              instead of ellipsizing. */}
-          <View className="w-full items-center gap-0.5 px-1">
-            <Text className="font-display text-sm text-ink-900 dark:text-ink-50" numberOfLines={1}>
-              {person.otherDisplayName}
-            </Text>
-            {meta ? (
-              <Text className="text-xs text-ink-400" numberOfLines={1}>
-                {meta}
-              </Text>
-            ) : null}
-          </View>
-        </>
-      )}
-
-      {unreadCount && !onQuickChat ? (
-        <View className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full border border-white bg-accent-500" />
-      ) : null}
-
-      {/* Top corner, not bottom: the square card has spare room above the avatar,
-          while the bottom corner sits on the meta line and covers the location.
-          The unread dot rides on this button so the two don't fight for the corner. */}
+      <DesktopPersonCard
+        person={{
+          displayName: person.otherDisplayName,
+          avatarUrl: person.otherAvatarUrl,
+          birthdate: person.otherBirthdate,
+          city: person.otherCity,
+          state: person.otherState,
+          occupation: null,
+          connectionTypes: [],
+          coverPhotoUrl: person.otherCoverPhotoUrl,
+        }}
+        verificationStatus={null}
+      />
       {onQuickChat ? (
         <Pressable
           accessibilityLabel={t("connections.connected")}
-          hitSlop={8}
-          className="absolute right-2 top-2 h-8 w-8 items-center justify-center rounded-full bg-primary-50 dark:bg-ink-700"
           onPress={(e) => {
             e.stopPropagation();
             onQuickChat();
           }}
+          className="absolute right-3 top-3 h-[38px] w-[38px] items-center justify-center rounded-full bg-white/70 web:hover:bg-white dark:bg-ink-800/70 dark:web:hover:bg-ink-800"
+          style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 6 }}
         >
-          <Ionicons name="chatbubble-outline" size={16} className="text-primary-500" />
+          <Ionicons name="chatbubble-outline" size={18} color="#127A87" />
           {unreadCount ? (
-            <View className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border border-white bg-accent-500 dark:border-ink-800" />
+            <View className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-white bg-accent-500" />
           ) : null}
         </Pressable>
+      ) : unreadCount ? (
+        <View className="absolute right-3 top-3 h-3 w-3 rounded-full border-2 border-white bg-accent-500" />
       ) : null}
     </Pressable>
   );
@@ -288,20 +195,10 @@ export default function Connections() {
   // frames as the animation made it stutter on Android.
   const [tab, setTab] = useState<Tab>("matched");
   const [contentTab, setContentTab] = useState<Tab>("matched");
-  const contentTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => () => {
-    if (contentTimer.current) clearTimeout(contentTimer.current);
-  }, []);
 
   function selectTab(next: Tab) {
     setTab(next);
-    // The delay is for the phone's sliding pill; desktop's tabs don't animate.
-    if (wide) {
-      setContentTab(next);
-      return;
-    }
-    if (contentTimer.current) clearTimeout(contentTimer.current);
-    contentTimer.current = setTimeout(() => setContentTab(next), EXPANDING_TABS_DURATION);
+    setContentTab(next);
   }
   const [gridWidth, setGridWidth] = useState(0);
 
@@ -382,9 +279,16 @@ export default function Connections() {
         className={wide ? "flex-1 px-20 pt-9" : "flex-1 px-6 pt-4"}
         // grow lets an empty tab's message fill the space above the tabs and sit
         // centred in it, rather than hugging the top.
-        contentContainerClassName={wide ? "grow gap-5 pb-10" : "grow gap-6 pb-6"}
+        contentContainerClassName={wide ? "grow gap-5 pb-10" : "grow gap-4 pb-6"}
         showsVerticalScrollIndicator={!wide}
       >
+        {/* Phone: the tabs up top as a sideways-scrolling row of chips. */}
+        {wide ? null : (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-6" contentContainerClassName="px-6">
+            <DesktopTabs tabs={tabItems} value={tab} onChange={selectTab} />
+          </ScrollView>
+        )}
+
         {/* Desktop web: a large title with search, and the tabs up here. */}
         {wide ? (
           <>
@@ -434,7 +338,6 @@ export default function Connections() {
                       key={person.otherUserId}
                       person={person}
                       width={cardWidth}
-                      wide={wide}
                       onPress={() => goToSavedProfile(person)}
                     />
                   ))
@@ -443,7 +346,6 @@ export default function Connections() {
                       key={person.matchId}
                       person={person}
                       width={cardWidth}
-                      wide={wide}
                       unreadCount={contentTab === "connected" ? (person as MessageThread).unreadCount : undefined}
                       onPress={() => goToProfile(person.otherUserId, person.matchId)}
                       onQuickChat={contentTab === "connected" ? () => router.push(`/(app)/chat/${person.matchId}`) : undefined}
@@ -454,14 +356,6 @@ export default function Connections() {
         </View>
       </RefreshableScrollView>
 
-      {/* Pinned under the list, within thumb reach, rather than scrolling away
-          with it. Equal space above and below so it sits centred between the list
-          and the tab bar. */}
-      {wide ? null : (
-        <View className="px-6" style={{ paddingVertical: 16 }}>
-          <ExpandingTabs value={tab} onChange={selectTab} tabs={tabItems} />
-        </View>
-      )}
     </SafeAreaView>
   );
 }
