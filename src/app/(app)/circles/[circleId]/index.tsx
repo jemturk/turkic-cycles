@@ -199,32 +199,42 @@ export default function CircleEvents() {
         className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-4 pb-10"
       >
+        {circle.description ? (
+          <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text>
+        ) : null}
+
         {canAddEvent ? (
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push(`/(app)/circles/${circleId}/events/new`)}
-            className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-primary-500 px-4 py-3"
+            className="h-11 flex-row items-center justify-center gap-1.5 rounded-2xl bg-primary-500"
           >
-            <Ionicons name="add" size={20} color="#127A87" />
-            <Text className="text-base font-medium text-primary-600">{t("circles.addEvent")}</Text>
+            <Ionicons name="add" size={18} color="#FFFFFF" />
+            <Text className="text-[15px] font-semibold text-white">{t("circles.addEvent")}</Text>
           </Pressable>
         ) : null}
 
-        {/* Same segmented control as the Connections tab. */}
-        <View className="flex-row rounded-full border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-1">
+        {/* Upcoming / Past as chips, as on desktop. */}
+        <View className="flex-row gap-2">
           {(["upcoming", "past"] as const).map((value) => {
             const selected = tab === value;
             const count = events?.[value].length ?? 0;
             return (
               <Pressable
                 key={value}
-                className={`flex-1 items-center rounded-full py-2 ${selected ? "bg-primary-500" : ""}`}
+                accessibilityRole="button"
+                aria-pressed={selected}
                 onPress={() => setTab(value)}
+                className={`h-9 flex-row items-center gap-2 rounded-full px-4 ${
+                  selected ? "bg-primary-500" : "border border-primary-100 bg-white dark:border-ink-700 dark:bg-ink-800"
+                }`}
               >
-                <Text className={`text-sm font-medium ${selected ? "text-white" : "text-ink-700 dark:text-ink-200"}`}>
+                <Text className={`text-sm ${selected ? "font-semibold text-white" : "text-ink-900 dark:text-ink-50"}`}>
                   {t(`circles.${value}`)}
-                  {count > 0 ? ` (${count})` : ""}
                 </Text>
+                {count > 0 ? (
+                  <Text className={`text-xs ${selected ? "text-white/85" : "text-ink-400"}`}>{count}</Text>
+                ) : null}
               </Pressable>
             );
           })}
@@ -236,29 +246,41 @@ export default function CircleEvents() {
           </Text>
         ) : null}
 
-        {shown.map((event) => (
-          <Pressable
-            key={event.id}
-            onPress={() => router.push(`/(app)/circles/${circleId}/events/${event.id}`)}
-            className="flex-row items-center gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
-          >
-            <View className="flex-1 gap-1">
-              <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{event.title}</Text>
-              <Text className="text-sm text-ink-700 dark:text-ink-200">
-                {format(new Date(event.starts_at), "EEE, MMM d · h:mm a")}
-              </Text>
-              {event.location ? (
-                <Text className="text-sm text-ink-400" numberOfLines={1}>
-                  {event.location}
+        {/* Event cards with a date tile in the circle's topic colors, as on desktop. */}
+        {shown.map((event) => {
+          const startsAt = new Date(event.starts_at);
+          const going = goingLine(event);
+          const colors = CIRCLE_TOPIC_COLORS[topic];
+          return (
+            <Pressable
+              key={event.id}
+              onPress={() => router.push(`/(app)/circles/${circleId}/events/${event.id}`)}
+              className="flex-row items-center gap-4 rounded-[18px] bg-white p-4 dark:bg-ink-800"
+            >
+              <View className={`h-[60px] w-14 items-center justify-center rounded-xl ${colors.bg}`}>
+                <Text className="text-[11px] font-bold uppercase tracking-wider" style={{ color: colors.fg }}>
+                  {format(startsAt, "MMM")}
                 </Text>
-              ) : null}
-              {event.going_count > 0 || event.interested_count > 0 ? (
-                <Text className="text-xs font-medium text-primary-600">{goingLine(event)}</Text>
-              ) : null}
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#8A7C76" />
-          </Pressable>
-        ))}
+                <Text className="text-2xl font-bold" style={{ color: colors.fg }}>
+                  {format(startsAt, "d")}
+                </Text>
+              </View>
+              <View className="flex-1 gap-0.5">
+                <Text className="font-display text-lg text-ink-900 dark:text-ink-50" numberOfLines={1}>
+                  {event.title}
+                </Text>
+                <Text className="text-sm text-ink-700 dark:text-ink-200">{format(startsAt, "EEE · h:mm a")}</Text>
+                {event.location ? (
+                  <Text className="text-sm text-ink-400" numberOfLines={1}>
+                    {event.location}
+                  </Text>
+                ) : null}
+                {going ? <Text className="text-xs font-medium text-primary-600">{going}</Text> : null}
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#A99C95" />
+            </Pressable>
+          );
+        })}
       </RefreshableScrollView>
     </SafeAreaView>
   );

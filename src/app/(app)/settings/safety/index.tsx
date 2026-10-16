@@ -1,6 +1,4 @@
-import { Pressable, ScrollView, View } from "react-native";
-import { Text } from "@/components/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SubPage, Group, Item, Note } from "@/components/SettingsUI";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -54,41 +52,15 @@ export default function SafetyCenter() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-3 pb-10">
-        <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
-        </Pressable>
-
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
-          {t("settings.safetyCenterScreen.heading")}
-        </Text>
-        <Text className="-mt-2 text-sm text-ink-700 dark:text-ink-200">
-          {t("settings.safetyCenterScreen.subheading")}
-        </Text>
-
+    <SubPage title={t("settings.safetyCenterScreen.heading")} subtitle={t("settings.safetyCenterScreen.subheading")}>
+      <Group>
         {items.map((item) => (
-          <Pressable
-            key={item.title}
-            onPress={item.onPress}
-            className="flex-row items-center gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
-          >
-            <Ionicons name={item.icon} size={22} color="#127A87" />
-            <View className="flex-1">
-              <Text className="font-display text-base text-ink-900 dark:text-ink-50">{item.title}</Text>
-              {item.subtitle ? <Text className="text-xs text-ink-400">{item.subtitle}</Text> : null}
-            </View>
-            <Ionicons name="chevron-forward" size={18} color="#8A7C76" />
-          </Pressable>
+          <Item key={item.title} icon={item.icon} title={item.title} subtitle={item.subtitle} onPress={item.onPress} />
         ))}
-
-        <View className="mt-2 flex-row gap-2 rounded-xl bg-accent-50 p-3">
-          <Ionicons name="warning-outline" size={18} color="#9E370B" />
-          <Text className="flex-1 text-xs text-ink-700 dark:text-ink-200">
-            {t("settings.safetyCenterScreen.emergencyDisclaimer")}
-          </Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </Group>
+      <Note icon="warning-outline" tone="warning">
+        {t("settings.safetyCenterScreen.emergencyDisclaimer")}
+      </Note>
+    </SubPage>
   );
 }

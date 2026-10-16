@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { Alert, Platform, Pressable, View } from "react-native";
+import { Alert, Platform } from "react-native";
 import { Text } from "@/components/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
@@ -11,7 +8,7 @@ import { useSession } from "@/hooks/useSession";
 import { passwordComplexitySchema } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
-import { FormScrollView } from "@/components/FormScrollView";
+import { SubPage, Card, Group, Item } from "@/components/SettingsUI";
 
 export default function Account() {
   const { t } = useTranslation();
@@ -40,47 +37,35 @@ export default function Account() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
-      <FormScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
-        <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
-        </Pressable>
-
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">{t("settings.accountScreen.heading")}</Text>
-
-        <View className="gap-1">
-          <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("settings.accountScreen.email")}</Text>
-          <Text className="text-base text-ink-900 dark:text-ink-50">{session?.user.email}</Text>
-        </View>
-
-        <View className="gap-1">
-          <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("settings.accountScreen.phone")}</Text>
-          <Text className="text-base text-ink-400">{t("settings.accountScreen.notAvailableYet")}</Text>
-        </View>
-
-        <View className="gap-1">
-          <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">
-            {t("settings.accountScreen.linkedAccounts")}
-          </Text>
-          <Text className="text-base text-ink-400">{t("settings.accountScreen.notAvailableYet")}</Text>
-        </View>
-
-        <View className="mt-4 gap-2">
-          <TextField
-            label={t("settings.accountScreen.newPassword")}
-            secureTextEntry
-            value={newPassword}
-            onChangeText={setNewPassword}
-          />
-          <Text className="-mt-2 text-xs text-ink-400">{t("auth.signUp.passwordHint")}</Text>
-          {status ? <Text className="text-sm text-ink-700 dark:text-ink-200">{status}</Text> : null}
-          <Button
-            label={isSaving ? t("common.saving") : t("settings.accountScreen.changePassword")}
-            disabled={isSaving}
-            onPress={onChangePassword}
-          />
-        </View>
-      </FormScrollView>
-    </SafeAreaView>
+    <SubPage title={t("settings.accountScreen.heading")} form>
+      <Group>
+        <Item icon="mail-outline" title={t("settings.accountScreen.email")} subtitle={session?.user.email} />
+        <Item
+          icon="call-outline"
+          title={t("settings.accountScreen.phone")}
+          subtitle={t("settings.accountScreen.notAvailableYet")}
+        />
+        <Item
+          icon="link-outline"
+          title={t("settings.accountScreen.linkedAccounts")}
+          subtitle={t("settings.accountScreen.notAvailableYet")}
+        />
+      </Group>
+      <Card>
+        <TextField
+          label={t("settings.accountScreen.newPassword")}
+          secureTextEntry
+          value={newPassword}
+          onChangeText={setNewPassword}
+        />
+        <Text className="-mt-2 text-xs text-ink-400">{t("auth.signUp.passwordHint")}</Text>
+        {status ? <Text className="text-sm text-ink-700 dark:text-ink-200">{status}</Text> : null}
+        <Button
+          label={isSaving ? t("common.saving") : t("settings.accountScreen.changePassword")}
+          disabled={isSaving}
+          onPress={onChangePassword}
+        />
+      </Card>
+    </SubPage>
   );
 }

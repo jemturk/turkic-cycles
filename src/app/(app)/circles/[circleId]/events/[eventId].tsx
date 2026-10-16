@@ -24,8 +24,6 @@ import {
   type CircleTopic,
   type RsvpStatus,
 } from "@/constants/circles";
-import { Button } from "@/components/Button";
-import { Chip } from "@/components/Chip";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { Avatar } from "@/components/Avatar";
 import { CircleHeader } from "@/components/CircleHeader";
@@ -228,69 +226,118 @@ export default function CircleEventDetail() {
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <CircleHeader name={circle.name} topic={topic} onBack={goBack} />
 
-      <ScrollView className="flex-1" contentContainerClassName="gap-4 pb-10 pt-4">
-        <View className="gap-4 px-6">
-          <View className="flex-row items-center justify-between gap-3">
-            <Text className="flex-1 text-sm text-ink-400">
-              {t("circles.membersCount", { count: circle.member_count })}
-              {location ? ` · ${location}` : ""}
-            </Text>
-            <Chip
-              label={isJoined ? t("circles.joined") : t("circles.join")}
-              selected={isJoined}
+      {/* The desktop page's cards in one column: the event (date tile, when and where,
+          description, RSVP), the circle (Join), its members, then Meet members. */}
+      <ScrollView className="flex-1" contentContainerClassName="gap-4 px-4 pb-10 pt-4">
+        {event ? (
+          <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+            <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">{event.title}</Text>
+            <View className="flex-row items-center gap-4">
+              <View
+                className={`h-16 w-[60px] items-center justify-center rounded-2xl ${CIRCLE_TOPIC_COLORS[topic].bg}`}
+              >
+                <Text
+                  className="text-[11px] font-bold uppercase tracking-wider"
+                  style={{ color: CIRCLE_TOPIC_COLORS[topic].fg }}
+                >
+                  {format(new Date(event.starts_at), "MMM")}
+                </Text>
+                <Text className="text-2xl font-bold" style={{ color: CIRCLE_TOPIC_COLORS[topic].fg }}>
+                  {format(new Date(event.starts_at), "d")}
+                </Text>
+              </View>
+              <View className="flex-1 gap-1.5">
+                <View className="flex-row items-center gap-2">
+                  <Ionicons name="time-outline" size={16} color="#4A3F3A" />
+                  <Text className="flex-1 text-sm text-ink-900 dark:text-ink-50">
+                    {format(new Date(event.starts_at), "EEEE, MMM d · h:mm a")}
+                  </Text>
+                </View>
+                {event.location ? (
+                  <View className="flex-row items-center gap-2">
+                    <Ionicons name="location-outline" size={16} color="#4A3F3A" />
+                    <Text className="flex-1 text-sm text-ink-900 dark:text-ink-50">{event.location}</Text>
+                  </View>
+                ) : null}
+              </View>
+            </View>
+            {event.description ? (
+              <Text className="text-base text-ink-700 dark:text-ink-200">{event.description}</Text>
+            ) : null}
+            <View className="border-t border-primary-50 pt-4 dark:border-ink-700">{rsvpChips}</View>
+          </View>
+        ) : null}
+
+        <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+          <View className="flex-row items-center gap-3">
+            <View className="flex-1">
+              <Text className="font-display text-lg text-ink-900 dark:text-ink-50" numberOfLines={1}>
+                {circle.name}
+              </Text>
+              <Text className="text-[13px] text-ink-400" numberOfLines={1}>
+                {[t("circles.membersCount", { count: circle.member_count }), location].filter(Boolean).join(" · ")}
+              </Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
               disabled={joinCircle.isPending || leaveCircle.isPending}
               onPress={() => {
                 if (isJoined) leaveCircle.mutate(circle.id);
                 else joinCircle.mutate(circle.id);
               }}
-            />
-          </View>
-
-          {circle.description ? <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text> : null}
-
-          {event ? (
-            <View className="gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
-              <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{event.title}</Text>
-              <Text className="text-sm text-ink-700 dark:text-ink-200">
-                {format(new Date(event.starts_at), "EEE, MMM d · h:mm a")}
-                {event.location ? ` · ${event.location}` : ""}
+              className={`h-9 flex-row items-center justify-center gap-1 rounded-full px-4 ${
+                isJoined ? "border border-primary-100 dark:border-ink-700" : "bg-primary-500"
+              }`}
+            >
+              {isJoined ? <Ionicons name="checkmark" size={16} color="#127A87" /> : null}
+              <Text
+                className={`text-sm font-semibold ${isJoined ? "text-primary-600 dark:text-primary-400" : "text-white"}`}
+              >
+                {isJoined ? t("circles.joined") : t("circles.join")}
               </Text>
-              {rsvpChips}
-            </View>
+            </Pressable>
+          </View>
+          {circle.description ? (
+            <Text className="text-sm text-ink-700 dark:text-ink-200">{circle.description}</Text>
           ) : null}
+        </View>
 
-          {membersPreview && membersPreview.length > 0 ? (
-            <View className="gap-2">
-              <View className="flex-row items-center justify-between">
-                <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("circles.members")}</Text>
-                <Pressable onPress={() => router.push(`/(app)/circles/${circle.id}/members`)}>
-                  <Text className="text-sm font-medium text-primary-600">
-                    {t("circles.seeAll", { count: circle.member_count })}
+        {membersPreview && membersPreview.length > 0 ? (
+          <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+            <View className="flex-row items-center justify-between">
+              <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("circles.members")}</Text>
+              <Pressable onPress={() => router.push(`/(app)/circles/${circle.id}/members`)}>
+                <Text className="text-sm font-medium text-primary-600">
+                  {t("circles.seeAll", { count: circle.member_count })}
+                </Text>
+              </Pressable>
+            </View>
+            <View className="flex-row flex-wrap gap-4">
+              {membersPreview.map((member) => (
+                <Pressable
+                  key={member.userId}
+                  className="items-center gap-1"
+                  style={{ width: 56 }}
+                  onPress={() => router.replace(`/(app)/user/${member.userId}`)}
+                >
+                  <Avatar uri={member.avatarUrl} name={member.displayName} size={48} />
+                  <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
+                    {member.displayName || t("common.member")}
                   </Text>
                 </Pressable>
-              </View>
-              <View className="flex-row flex-wrap gap-4">
-                {membersPreview.map((member) => (
-                  <Pressable
-                    key={member.userId}
-                    className="items-center gap-1"
-                    style={{ width: 56 }}
-                    onPress={() => router.replace(`/(app)/user/${member.userId}`)}
-                  >
-                    <Avatar uri={member.avatarUrl} name={member.displayName} size={48} />
-                    <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
-                      {member.displayName || t("common.member")}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
+              ))}
             </View>
-          ) : null}
-
-          <View className="mt-2">
-            <Button label={t("circles.meetMembers")} onPress={() => router.push(`/(app)/circles/${circle.id}/discover`)} />
           </View>
-        </View>
+        ) : null}
+
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push(`/(app)/circles/${circle.id}/discover`)}
+          className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500"
+        >
+          <Ionicons name="sparkles-outline" size={18} color="#FFFFFF" />
+          <Text className="font-semibold text-white">{t("circles.meetMembers")}</Text>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );

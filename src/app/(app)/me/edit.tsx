@@ -395,6 +395,8 @@ export default function ProfileEdit() {
     />
   );
 
+  const phoneCard = "gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800";
+
   // Desktop web: a title row with Save, and the fields grouped into white cards in
   // two columns, against the sidebar like the other screens.
   if (wide) {
@@ -462,36 +464,49 @@ export default function ProfileEdit() {
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
-      <FormScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
-        <Ionicons
-          name="chevron-back"
-          size={24}
-          className="text-ink-900 dark:text-ink-50"
-          onPress={() => router.back()}
-        />
-        <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">
-          {t("fields.editProfileHeading")}
-        </Text>
+      {/* The desktop layout's cards, stacked in one column. */}
+      <FormScrollView className="flex-1 px-4 pt-4" contentContainerClassName="gap-4 pb-10">
+        <View className="gap-2">
+          <Pressable
+            accessibilityLabel={t("common.back")}
+            hitSlop={8}
+            onPress={() => router.back()}
+            className="-ml-2 h-10 w-10 items-center justify-center rounded-full"
+          >
+            <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
+          </Pressable>
+          <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("fields.editProfileHeading")}</Text>
+        </View>
 
-        {nameField}
-        {bioField}
-        {photosField}
-        {lookingForField}
-        {locationField}
-        {occupationField}
-        {languagesField}
-        {interestsField}
-        {hobbiesField}
-        {usResidencyField}
-        {usCitizenshipField}
-        {europeanCitizenshipField}
-        {originCountriesField}
-        {consentField}
-        {consentErrorField}
-        {travelFrequencyField}
-        {travelStyleField}
-        {branchingField}
-        <View className="mt-4">{saveButton}</View>
+        <View className={phoneCard}>
+          {nameField}
+          {bioField}
+          {occupationField}
+        </View>
+        <View className={phoneCard}>{photosField}</View>
+        <View className={phoneCard}>
+          {lookingForField}
+          {branchingField}
+        </View>
+        <View className={phoneCard}>{locationField}</View>
+        <View className={phoneCard}>
+          {languagesField}
+          {interestsField}
+          {hobbiesField}
+        </View>
+        <View className={phoneCard}>
+          {travelFrequencyField}
+          {travelStyleField}
+        </View>
+        <View className={phoneCard}>
+          {usResidencyField}
+          {usCitizenshipField}
+          {europeanCitizenshipField}
+          {originCountriesField}
+          {consentField}
+          {consentErrorField}
+        </View>
+        <View className="mt-2">{saveButton}</View>
       </FormScrollView>
     </SafeAreaView>
   );

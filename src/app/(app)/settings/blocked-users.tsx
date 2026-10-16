@@ -1,12 +1,10 @@
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable } from "react-native";
 import { Text } from "@/components/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useBlockedUsers, useUnblockUser } from "@/hooks/useSettings";
+import { SubPage, Card, Group, Item } from "@/components/SettingsUI";
 
 export default function BlockedUsers() {
   const { t } = useTranslation();
@@ -16,34 +14,33 @@ export default function BlockedUsers() {
   const unblockUser = useUnblockUser(userId);
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
-        <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
-        </Pressable>
-
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
-          {t("settings.blockedUsersScreen.heading")}
-        </Text>
-
-        {!blocked || blocked.length === 0 ? (
+    <SubPage title={t("settings.blockedUsersScreen.heading")}>
+      {!blocked || blocked.length === 0 ? (
+        <Card>
           <Text className="text-base text-ink-700 dark:text-ink-200">{t("settings.blockedUsersScreen.empty")}</Text>
-        ) : (
-          blocked.map((user) => (
-            <View
+        </Card>
+      ) : (
+        <Group>
+          {blocked.map((user) => (
+            <Item
               key={user.userId}
-              className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
-            >
-              <Text className="text-base text-ink-900 dark:text-ink-50">{user.displayName}</Text>
-              <Pressable onPress={() => unblockUser.mutate(user.userId)}>
-                <Text className="text-sm font-medium text-primary-600">
-                  {t("settings.blockedUsersScreen.unblock")}
-                </Text>
-              </Pressable>
-            </View>
-          ))
-        )}
-      </ScrollView>
-    </SafeAreaView>
+              icon="ban-outline"
+              title={user.displayName}
+              right={
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() => unblockUser.mutate(user.userId)}
+                  className="h-9 justify-center rounded-full border border-primary-100 px-4 web:hover:bg-primary-100/40 dark:border-ink-700"
+                >
+                  <Text className="text-sm font-semibold text-primary-600 dark:text-primary-400">
+                    {t("settings.blockedUsersScreen.unblock")}
+                  </Text>
+                </Pressable>
+              }
+            />
+          ))}
+        </Group>
+      )}
+    </SubPage>
   );
 }
