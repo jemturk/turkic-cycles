@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Tabs, router, usePathname } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,8 @@ import { SearchOverlay } from "@/components/SearchOverlay";
 import { AppMark } from "@/components/AppMark";
 import { useSearchOverlay } from "@/stores/searchOverlay";
 import { alertCoverRequired, useHasCover } from "@/hooks/useCoverGuard";
+import { useWideLayout } from "@/hooks/useWideLayout";
+import { DesktopSidebar, SIDEBAR_WIDTH } from "@/components/DesktopSidebar";
 
 // The only screen reachable while the cover slot is empty: their own profile,
 // where the gallery lives.
@@ -34,16 +36,44 @@ const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inacti
 // it's dimmed instead of recolored when another tab is active. AppMark's circles
 // fill only ~65% of its viewBox height, hence the larger size than other icons.
 const LOGO_ICON_SIZE = 40;
+const SIDEBAR_LOGO_ICON_SIZE = 30;
+
+// Desktop web: screens are phone-first, so on a wide window they get a readable
+// column beside the sidebar rather than stretching edge to edge.
+const WIDE_SCENE_MAX_WIDTH = 880;
+// Circles (two columns), Connections and Discover (card grids) and Chat (two panes)
+// are laid out for desktop, so they fill the space beside the sidebar instead.
+const WIDE_GRID_SCENE_MAX_WIDTH = 1600;
+// Settings is two columns of section cards.
+const WIDE_SETTINGS_SCENE_MAX_WIDTH = 1100;
+
 
 export default function AppTabsLayout() {
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { width: windowWidth } = useWindowDimensions();
+
+  // Every tab's scene fills the whole area beside the sidebar with the page color --
+  // the tabs are stacked, and a narrower, transparent-edged scene let the tab behind
+  // it show through. The content's width limit is padding instead: centred, or
+  // (align "start") kept against the sidebar with the slack on the right.
+  function wideScene(maxWidth: number, align: "center" | "start" = "center") {
+    const slack = Math.max(0, windowWidth - SIDEBAR_WIDTH - maxWidth);
+    return {
+      sceneStyle: {
+        backgroundColor: isDark ? "#171310" : "#FCEAD6",
+        paddingLeft: align === "center" ? slack / 2 : 0,
+        paddingRight: align === "center" ? slack / 2 : slack,
+      },
+    };
+  }
   const { t } = useTranslation();
   const { session } = useSession();
   usePushNotifications(session?.user.id);
   const searchOpen = useSearchOverlay((s) => s.open);
   const setSearchOpen = useSearchOverlay((s) => s.setOpen);
+  const wide = useWideLayout();
 
   // No cover photo = no Discover card, so the profile is the only place to be
   // until one is set. Catches every way out at once -- tab bar, deep links, the
@@ -61,6 +91,9 @@ export default function AppTabsLayout() {
     <>
       <Tabs
         backBehavior="history"
+        // Wide web windows get a sidebar in place of the bottom tab bar (tabBarPosition
+        // "left" below); everything else uses the default bar styled by tabBarStyle.
+        tabBar={wide ? (props) => <DesktopSidebar {...props} /> : undefined}
         screenListeners={{
           tabPress: (e) => {
             if (coverMissing) {
@@ -71,6 +104,12 @@ export default function AppTabsLayout() {
         }}
         screenOptions={({ route }) => ({
           headerShown: false,
+          ...(wide
+            ? {
+                tabBarPosition: "left" as const,
+                ...wideScene(WIDE_SCENE_MAX_WIDTH),
+              }
+            : null),
           tabBarActiveTintColor: "#127A87",
           tabBarInactiveTintColor: isDark ? "#8A7C76" : "#A99C95",
           // Icons only; each tab's title still reaches screen readers as its label.
@@ -79,9 +118,9 @@ export default function AppTabsLayout() {
           // typing (in Chat, Edit profile, ...), eating into the visible form.
           tabBarHideOnKeyboard: true,
           tabBarStyle: {
-            height: 60 + insets.bottom,
-            paddingBottom: insets.bottom + 8,
-            paddingTop: 8,
+            height: 54 + insets.bottom,
+            paddingBottom: insets.bottom + 6,
+            paddingTop: 6,
             // Inline styles, not classNames -- React Navigation's tabBarStyle isn't
             // resolved through NativeWind, so dark mode has to be handled here in JS.
             backgroundColor: isDark ? "#352C27" : "#FFFFFF",
@@ -99,7 +138,7 @@ export default function AppTabsLayout() {
             if (route.name === "circles") {
               return (
                 <View style={{ opacity: focused ? 1 : 0.45 }}>
-                  <AppMark size={LOGO_ICON_SIZE} />
+                  <AppMark size={wide ? SIDEBAR_LOGO_ICON_SIZE : LOGO_ICON_SIZE} />
                 </View>
               );
             }
@@ -116,11 +155,26 @@ export default function AppTabsLayout() {
           tabBarButton: (props) => <PlatformPressable {...props} pressColor="transparent" />,
         })}
       >
-        <Tabs.Screen name="circles" options={{ title: t("tabs.circles") }} />
-        <Tabs.Screen name="connections" options={{ title: t("tabs.connections") }} />
-        <Tabs.Screen name="discover" options={{ title: t("tabs.discover") }} />
-        <Tabs.Screen name="chat" options={{ title: t("tabs.chat") }} />
-        <Tabs.Screen name="settings" options={{ title: t("tabs.settings") }} />
+        <Tabs.Screen
+          name="circles"
+          options={{ title: t("tabs.circles"), ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
+        />
+        <Tabs.Screen
+          name="connections"
+          options={{ title: t("tabs.connections"), ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
+        />
+        <Tabs.Screen
+          name="discover"
+          options={{ title: t("tabs.discover"), ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
+        />
+        <Tabs.Screen
+          name="chat"
+          options={{ title: t("tabs.chat"), ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
+        />
+        <Tabs.Screen
+          name="settings"
+          options={{ title: t("tabs.settings"), ...(wide ? wideScene(WIDE_SETTINGS_SCENE_MAX_WIDTH) : null) }}
+        />
         {/* Viewing someone else's profile from Circles/Connections/Chat -- kept in its
             own directory (see user/_layout.tsx) rather than alongside your own profile
             in settings/, so it doesn't push onto that tab's Stack: a route living inside

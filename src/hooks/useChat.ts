@@ -54,6 +54,30 @@ export function useMessageThreads(userId: string | undefined) {
   return query;
 }
 
+// Total unread messages across every conversation -- the desktop sidebar's Chat
+// badge. Besides the thread list's own refetches, any new message that reaches
+// this user (realtime only delivers rows RLS lets them read, so just their own
+// conversations) refreshes it, so the badge moves while they're on another tab.
+export function useUnreadMessageCount(userId: string | undefined) {
+  const queryClient = useQueryClient();
+  const { data: threads } = useMessageThreads(userId);
+
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`unread:${userId}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["messageThreads", userId] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId, queryClient]);
+
+  return (threads ?? []).reduce((sum, thread) => sum + thread.unreadCount, 0);
+}
+
 export function useMatchParticipant(matchId: string | undefined, userId: string | undefined) {
   return useQuery({
     queryKey: ["matchParticipant", matchId, userId],

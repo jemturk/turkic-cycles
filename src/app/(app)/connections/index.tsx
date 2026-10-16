@@ -15,6 +15,8 @@ import { Avatar } from "@/components/Avatar";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { Button } from "@/components/Button";
 import { EXPANDING_TABS_DURATION, ExpandingTabs } from "@/components/ExpandingTabs";
+import { useWideLayout } from "@/hooks/useWideLayout";
+import { useSearchOverlay } from "@/stores/searchOverlay";
 import type { MatchWithParticipant, MessageThread } from "@/api/chat";
 import type { SavedPerson } from "@/api/discover";
 
@@ -41,6 +43,9 @@ type PersonCardData = Pick<
 
 const GRID_GAP = 12;
 const GRID_COLUMNS = 2;
+// Desktop web: as many columns as cards of at least this width allow.
+const WIDE_GRID_GAP = 16;
+const WIDE_MIN_CARD_WIDTH = 220;
 // Placeholder cards behind the Likes teaser. Deliberately not their real photos,
 // blurred: the server never sends a free user who liked them, so there's nothing
 // to un-blur.
@@ -148,6 +153,47 @@ function PersonCard({
   );
 }
 
+// Desktop web's tab row, at the top: every tab has room for its label and count, so
+// there's no need for ExpandingTabs' collapsing pill.
+function DesktopTabs({
+  tabs,
+  value,
+  onChange,
+}: {
+  tabs: { value: Tab; icon: keyof typeof Ionicons.glyphMap; label: string; count: number }[];
+  value: Tab;
+  onChange: (value: Tab) => void;
+}) {
+  return (
+    <View accessibilityRole="tablist" className="flex-row flex-wrap gap-2">
+      {tabs.map((tab) => {
+        const selected = tab.value === value;
+        return (
+          <Pressable
+            key={tab.value}
+            role="tab"
+            aria-selected={selected}
+            onPress={() => onChange(tab.value)}
+            className={`h-10 flex-row items-center gap-2 rounded-full px-4 ${
+              selected ? "bg-primary-500" : "border border-primary-100 bg-white dark:border-ink-700 dark:bg-ink-800"
+            }`}
+          >
+            <Ionicons name={tab.icon} size={16} color={selected ? "#FFFFFF" : "#127A87"} />
+            <Text className={`text-sm ${selected ? "font-semibold text-white" : "text-ink-900 dark:text-ink-50"}`}>
+              {tab.label}
+            </Text>
+            {tab.count > 0 ? (
+              <Text className={`text-xs ${selected ? "text-white/85" : "text-ink-400"}`}>
+                {tab.count > 99 ? "99+" : tab.count}
+              </Text>
+            ) : null}
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
 // The tab's own icon in a soft halo, with a couple of satellite dots so it reads as
 // an illustration rather than a stray glyph.
 function EmptyState({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; label: string }) {
@@ -172,6 +218,8 @@ export default function Connections() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
+  const wide = useWideLayout();
+  const openSearch = useSearchOverlay((s) => s.setOpen);
   const { data: matched, refetch: refetchMatched, isRefetching: isRefetchingMatched } = useNewConnections(userId);
   const { data: connected, refetch: refetchConnected, isRefetching: isRefetchingConnected } = useMessageThreads(userId);
   const { data: saved, refetch: refetchSaved, isRefetching: isRefetchingSaved } = useSavedPeople(userId);
@@ -194,6 +242,11 @@ export default function Connections() {
 
   function selectTab(next: Tab) {
     setTab(next);
+    // The delay is for the phone's sliding pill; desktop's tabs don't animate.
+    if (wide) {
+      setContentTab(next);
+      return;
+    }
     if (contentTimer.current) clearTimeout(contentTimer.current);
     contentTimer.current = setTimeout(() => setContentTab(next), EXPANDING_TABS_DURATION);
   }
@@ -204,7 +257,9 @@ export default function Connections() {
   // container -- flex-wrap then bumps the last card onto its own line instead of
   // keeping them side by side, which is exactly the "cards stack vertically on web"
   // bug this fixes.
-  const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS) : 0;
+  const gap = wide ? WIDE_GRID_GAP : GRID_GAP;
+  const columns = wide ? Math.max(3, Math.floor((gridWidth + gap) / (WIDE_MIN_CARD_WIDTH + gap))) : GRID_COLUMNS;
+  const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - gap * (columns - 1)) / columns) : 0;
 
   function refetch() {
     refetchMatched();
@@ -255,6 +310,7 @@ export default function Connections() {
   // Free users with likes waiting get the teaser instead of a list.
   const showLikesTeaser = contentTab === "likes" && subscribed === false && (likesCount ?? 0) > 0;
   const isEmpty = !showLikesTeaser && (!people || people.length === 0);
+  const tabItems = TABS.map(({ value, icon }) => ({ value, icon, label: t(`connections.${value}`), count: counts[value] }));
 
   // No "bottom" edge: the tab bar already pads for the home indicator, and adding
   // it here too left a gap under the tab strip on phones.
@@ -265,17 +321,35 @@ export default function Connections() {
           isRefetchingMatched || isRefetchingConnected || isRefetchingSaved || isRefetchingLikesCount || isRefetchingLikes
         }
         onRefresh={refetch}
-        className="flex-1 px-6 pt-4"
+        className={wide ? "flex-1 pl-10 pr-6 pt-9" : "flex-1 px-6 pt-4"}
         // grow lets an empty tab's message fill the space above the tabs and sit
         // centred in it, rather than hugging the top.
-        contentContainerClassName="grow gap-6 pb-6"
+        contentContainerClassName={wide ? "grow gap-5 pb-10" : "grow gap-6 pb-6"}
+        showsVerticalScrollIndicator={!wide}
       >
+        {/* Desktop web: a large title with search, and the tabs up here. */}
+        {wide ? (
+          <>
+            <View className="flex-row flex-wrap items-center gap-4">
+              <Text className="flex-1 font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.connections")}</Text>
+              <Pressable
+                accessibilityRole="search"
+                onPress={() => openSearch(true)}
+                className="h-11 w-[320px] flex-row items-center gap-2 rounded-full bg-white px-4 dark:bg-ink-800"
+              >
+                <Ionicons name="search-outline" size={18} color="#8A7C76" />
+                <Text className="text-[15px] text-ink-400">{t("tabs.search")}</Text>
+              </Pressable>
+            </View>
+            <DesktopTabs tabs={tabItems} value={tab} onChange={selectTab} />
+          </>
+        ) : null}
 
         <View className={isEmpty ? "flex-1" : undefined} onLayout={(e) => setGridWidth(e.nativeEvent.layout.width)}>
           {showLikesTeaser ? (
             <View className="gap-4">
               {cardWidth > 0 ? (
-                <View className="flex-row flex-wrap" style={{ gap: GRID_GAP }}>
+                <View className="flex-row flex-wrap" style={{ gap }}>
                   {Array.from({ length: Math.min(likesCount ?? 0, TEASER_CARDS) }, (_, i) => (
                     <View
                       key={i}
@@ -295,7 +369,7 @@ export default function Connections() {
           ) : isEmpty ? (
             <EmptyState icon={TABS.find((x) => x.value === contentTab)!.icon} label={emptyLabel} />
           ) : cardWidth > 0 ? (
-            <View className="flex-row flex-wrap" style={{ gap: GRID_GAP }}>
+            <View className="flex-row flex-wrap" style={{ gap }}>
               {contentTab === "saved" || contentTab === "likes"
                 ? ((contentTab === "saved" ? saved : likes) ?? []).map((person) => (
                     <PersonCard
@@ -323,13 +397,11 @@ export default function Connections() {
       {/* Pinned under the list, within thumb reach, rather than scrolling away
           with it. Equal space above and below so it sits centred between the list
           and the tab bar. */}
-      <View className="px-6" style={{ paddingVertical: 16 }}>
-        <ExpandingTabs
-          value={tab}
-          onChange={selectTab}
-          tabs={TABS.map(({ value, icon }) => ({ value, icon, label: t(`connections.${value}`), count: counts[value] }))}
-        />
-      </View>
+      {wide ? null : (
+        <View className="px-6" style={{ paddingVertical: 16 }}>
+          <ExpandingTabs value={tab} onChange={selectTab} tabs={tabItems} />
+        </View>
+      )}
     </SafeAreaView>
   );
 }

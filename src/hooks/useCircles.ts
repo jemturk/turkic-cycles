@@ -15,6 +15,7 @@ import {
   listCircles,
   listMyCircleMemberships,
   listUpcomingEventCounts,
+  listUpcomingEventsInCircles,
   upsertRsvp,
 } from "@/api/circles";
 
@@ -48,6 +49,14 @@ export function useCircleMembers(circleId: string | undefined, limit?: number) {
 
 export function useUpcomingEventCounts() {
   return useQuery({ queryKey: ["upcomingEventCounts"], queryFn: listUpcomingEventCounts });
+}
+
+export function useUpcomingEventsInCircles(circleIds: string[] | undefined, limit = 5) {
+  return useQuery({
+    queryKey: ["upcomingEventsInCircles", circleIds, limit],
+    queryFn: () => listUpcomingEventsInCircles(circleIds as string[], limit),
+    enabled: !!circleIds,
+  });
 }
 
 export function useCircleEvents(circleId: string | undefined) {
@@ -148,6 +157,7 @@ export function useCreateCircleEvent(circleId: string | undefined) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["circleEvents", circleId] });
       queryClient.invalidateQueries({ queryKey: ["upcomingEventCounts"] });
+      queryClient.invalidateQueries({ queryKey: ["upcomingEventsInCircles"] });
     },
   });
 }

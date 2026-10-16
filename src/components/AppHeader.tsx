@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
 import { HeaderAvatar } from "@/components/HeaderAvatar";
+import { useWideLayout } from "@/hooks/useWideLayout";
 import { useSearchOverlay } from "@/stores/searchOverlay";
 
 const ICON_HEIGHT = 34;
@@ -39,6 +40,7 @@ export function AppHeader({
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const openSearch = useSearchOverlay((s) => s.setOpen);
+  const wide = useWideLayout();
 
   return (
     <View
@@ -76,7 +78,8 @@ export function AppHeader({
           >
             <Ionicons name="search-outline" size={24} color={iconColor ?? (colorScheme === "dark" ? "#F5F1EE" : "#2B2320")} />
           </Pressable>
-          <HeaderAvatar size={ICON_HEIGHT} />
+          {/* Desktop web: your profile is at the foot of the sidebar instead. */}
+          {wide ? null : <HeaderAvatar size={ICON_HEIGHT} />}
         </View>
       </View>
     </View>

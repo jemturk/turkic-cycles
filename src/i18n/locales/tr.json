@@ -94,6 +94,11 @@
     "locationDenied": "Yakınındaki etkinlikleri görmek için konum erişimine izin ver.",
     "locationUnavailable": "Konumun alınamadı. Tekrar dene.",
     "noLocalCircles": "50 mil içinde henüz çember yok.",
+    "filterAll": "Tümü",
+    "filterJoined": "Katıldıklarım",
+    "nearMe": "Yakınımda",
+    "upcomingEvents": "Yaklaşan etkinlikler",
+    "noJoinedCircles": "Henüz hiçbir çembere katılmadın.",
     "meetMembers": "Üyelerle tanış",
     "members": "Üyeler",
     "seeAll": "Tümünü gör · {{count}}",
@@ -168,6 +173,8 @@
     "member": "Üye",
     "typeMessage": "Bir mesaj yaz...",
     "send": "Gönder",
+    "viewProfile": "Profili gör",
+    "selectConversation": "Sohbete başlamak için bir konuşma seçin.",
     "youMatched": "Eşleştiniz · {{date}}"
   },
   "onboarding": {

@@ -94,6 +94,11 @@
     "locationDenied": "Allow location access to see events near you.",
     "locationUnavailable": "Couldn't get your location. Try again.",
     "noLocalCircles": "No circles within 50 miles of you yet.",
+    "filterAll": "All",
+    "filterJoined": "Joined",
+    "nearMe": "Near me",
+    "upcomingEvents": "Upcoming events",
+    "noJoinedCircles": "You haven't joined any circles yet.",
     "meetMembers": "Meet members",
     "members": "Members",
     "seeAll": "See all {{count}}",
@@ -168,6 +173,8 @@
     "member": "Member",
     "typeMessage": "Type a message...",
     "send": "Send",
+    "viewProfile": "View profile",
+    "selectConversation": "Select a conversation to start chatting.",
     "youMatched": "You matched · {{date}}"
   },
   "onboarding": {

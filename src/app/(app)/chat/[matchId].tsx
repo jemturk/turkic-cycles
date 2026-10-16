@@ -13,10 +13,12 @@ import { useMarkThreadRead, useMatchParticipant, useMessages, useSendMessage } f
 import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 import { Avatar } from "@/components/Avatar";
 import { TypingDots } from "@/components/TypingDots";
+import { useWideLayout } from "@/hooks/useWideLayout";
 
 export default function ChatThread() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const wide = useWideLayout();
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
   const { session } = useSession();
   const userId = session?.user.id;
@@ -51,30 +53,47 @@ export default function ChatThread() {
     // No top edge on the SafeAreaView: the header pads itself for the status bar
     // instead, so the white header runs up behind it like every other screen's
     // (the SafeAreaView's padding would show the cream page background there).
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
+    // Desktop web (wide) is the right-hand pane of chat/_layout.tsx: one white card
+    // with a hairline under the header and over the composer, a lighter message
+    // area, and the other person's bubbles in a neutral grey instead of coral.
+    <SafeAreaView
+      className={wide ? "flex-1 bg-white dark:bg-ink-800" : "flex-1 bg-primary-50 dark:bg-ink-950"}
+      edges={["left", "right"]}
+    >
       <View
-        className="flex-row items-center gap-3 bg-white dark:bg-ink-800 px-4 pb-3"
-        style={{
-          paddingTop: insets.top + 12,
-          // Same soft shadow as AppHeader's bottom edge, in place of a tinted border
-          // line; zIndex keeps it drawn over the messages below.
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.08,
-          shadowRadius: 12,
-          elevation: 3,
-          zIndex: 1,
-        }}
+        className={
+          wide
+            ? "flex-row items-center gap-3 border-b border-[#F3E3D2] px-6 py-4 dark:border-ink-700"
+            : "flex-row items-center gap-3 bg-white dark:bg-ink-800 px-4 pb-3"
+        }
+        style={
+          wide
+            ? undefined
+            : {
+                paddingTop: insets.top + 12,
+                // Same soft shadow as AppHeader's bottom edge, in place of a tinted border
+                // line; zIndex keeps it drawn over the messages below.
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.08,
+                shadowRadius: 12,
+                elevation: 3,
+                zIndex: 1,
+              }
+        }
       >
         {/* Deliberately not router.back(): a thread can be reached from outside its
             own stack (a push notification tap, a deep link), in which case there's
             nothing local to pop back to and it falls through to whatever the
             surrounding navigation history happens to be (e.g. the Circles tab) --
             replace with the thread list explicitly so this button's destination
-            never depends on how the thread was opened. */}
-        <Pressable onPress={() => router.replace("/(app)/chat")}>
-          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
-        </Pressable>
+            never depends on how the thread was opened. On desktop the list is
+            always beside the thread (chat/_layout.tsx), so there's no button. */}
+        {wide ? null : (
+          <Pressable onPress={() => router.replace("/(app)/chat")}>
+            <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
+          </Pressable>
+        )}
         <Pressable
           className="flex-1 flex-row items-center gap-3"
           onPress={() => {
@@ -90,6 +109,15 @@ export default function ChatThread() {
             {participant?.profile.display_name || t("common.member")}
           </Text>
         </Pressable>
+        {wide && participant?.profile.id ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.replace(`/(app)/user/${participant.profile.id}?matchId=${matchId}`)}
+            className="h-10 justify-center rounded-full border border-primary-100 px-4 web:hover:bg-primary-50 dark:border-ink-700 dark:web:hover:bg-ink-700"
+          >
+            <Text className="text-sm font-semibold text-primary-600 dark:text-primary-400">{t("chat.viewProfile")}</Text>
+          </Pressable>
+        ) : null}
       </View>
 
       {/* Lifts the message list and the input above the keyboard -- the input
@@ -97,7 +125,7 @@ export default function ChatThread() {
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <ScrollView
           ref={scrollRef}
-          className="flex-1 px-4 pt-4"
+          className={wide ? "flex-1 bg-[#FFFAF4] px-6 pt-5 dark:bg-ink-900" : "flex-1 px-4 pt-4"}
           contentContainerClassName="gap-3 pb-4"
           // After the new content has laid out, not when the state changes: scrolling
           // from an effect ran before a new message or the typing bubble had any
@@ -114,9 +142,22 @@ export default function ChatThread() {
             const isOwn = message.sender_id === userId;
             return (
               <View key={message.id} className={isOwn ? "items-end" : "items-start"}>
-                {/* Yours in the primary turquoise, theirs in the coral-red accent. */}
-                <View className={`max-w-[80%] rounded-2xl px-4 py-3 ${isOwn ? "bg-primary-500" : "bg-accent-500"}`}>
-                  <Text className="text-base text-white">{message.body}</Text>
+                {/* Yours in the primary turquoise, theirs in the coral-red accent (on
+                    desktop, a neutral grey with a tail corner on each side). */}
+                <View
+                  className={
+                    wide
+                      ? `max-w-[60%] rounded-[18px] px-4 py-3 ${
+                          isOwn ? "rounded-br-md bg-primary-500" : "rounded-bl-md bg-ink-50 dark:bg-ink-700"
+                        }`
+                      : `max-w-[80%] rounded-2xl px-4 py-3 ${isOwn ? "bg-primary-500" : "bg-accent-500"}`
+                  }
+                >
+                  <Text
+                    className={`text-base ${wide && !isOwn ? "text-ink-900 dark:text-ink-50" : "text-white"}`}
+                  >
+                    {message.body}
+                  </Text>
                 </View>
                 <View className="mt-1 flex-row items-center gap-1">
                   <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
@@ -135,23 +176,10 @@ export default function ChatThread() {
           {isOtherTyping ? <TypingDots /> : null}
         </ScrollView>
 
-        <View className="px-4 pb-4 pt-2">
-          <View
-            className="flex-row items-center gap-2 rounded-full bg-white dark:bg-ink-800 py-2 pl-4 pr-2"
-            style={{
-              shadowColor: "#000000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.08,
-              shadowRadius: 12,
-              elevation: 3,
-            }}
-          >
+        {wide ? (
+          <View className="flex-row items-center gap-2.5 border-t border-[#F3E3D2] px-6 py-4 dark:border-ink-700">
             <TextInput
-              className="flex-1 text-base text-ink-900 dark:text-ink-50"
-              // This is the first bare, borderless TextInput in the app (every other
-              // one sits inside TextField's own bordered box, which already masks the
-              // browser's default focus ring) -- react-native-web's outlineStyle prop
-              // suppresses that ring, keeping the pill's edge clean when focused.
+              className="h-[46px] flex-1 rounded-full border border-ink-100 bg-white px-[18px] text-base text-ink-900 dark:border-ink-700 dark:bg-ink-900 dark:text-ink-50"
               style={{ outlineStyle: "none" } as never}
               placeholder={t("chat.typeMessage")}
               placeholderTextColor="#8A7C76"
@@ -162,13 +190,48 @@ export default function ChatThread() {
             <Pressable
               accessibilityLabel={t("chat.send")}
               disabled={!draft.trim()}
-              className={`h-10 w-10 items-center justify-center rounded-full ${draft.trim() ? "bg-primary-500" : "bg-primary-100 dark:bg-ink-700"}`}
+              className={`h-[46px] w-[46px] items-center justify-center rounded-full ${draft.trim() ? "bg-primary-500" : "bg-primary-100 dark:bg-ink-700"}`}
               onPress={onSend}
             >
-              <Ionicons name="arrow-up" size={20} color="white" />
+              <Ionicons name="paper-plane-outline" size={20} color="white" />
             </Pressable>
           </View>
-        </View>
+        ) : (
+          <View className="px-4 pb-4 pt-2">
+            <View
+              className="flex-row items-center gap-2 rounded-full bg-white dark:bg-ink-800 py-2 pl-4 pr-2"
+              style={{
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.08,
+                shadowRadius: 12,
+                elevation: 3,
+              }}
+            >
+              <TextInput
+                className="flex-1 text-base text-ink-900 dark:text-ink-50"
+                // This is the first bare, borderless TextInput in the app (every other
+                // one sits inside TextField's own bordered box, which already masks the
+                // browser's default focus ring) -- react-native-web's outlineStyle prop
+                // suppresses that ring, keeping the pill's edge clean when focused.
+                style={{ outlineStyle: "none" } as never}
+                placeholder={t("chat.typeMessage")}
+                placeholderTextColor="#8A7C76"
+                value={draft}
+                onChangeText={onDraftChange}
+                onSubmitEditing={onSend}
+              />
+              <Pressable
+                accessibilityLabel={t("chat.send")}
+                disabled={!draft.trim()}
+                className={`h-10 w-10 items-center justify-center rounded-full ${draft.trim() ? "bg-primary-500" : "bg-primary-100 dark:bg-ink-700"}`}
+                onPress={onSend}
+              >
+                <Ionicons name="arrow-up" size={20} color="white" />
+              </Pressable>
+            </View>
+          </View>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

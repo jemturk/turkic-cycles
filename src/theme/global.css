@@ -4,11 +4,37 @@
 
 /* Web only: the app is mobile-first and looks stretched full-bleed on a wide desktop
    viewport. This gives the page itself a neutral backdrop so the phone-width column
-   (constrained in src/app/_layout.tsx) reads as a deliberate frame rather than a
-   wrong-looking full-width layout. */
+   (constrained in src/components/AppFrame.tsx) reads as a deliberate frame rather
+   than a wrong-looking full-width layout. */
 html,
 body {
   background-color: #ece3db;
+}
+
+/* ThemeSync (src/app/_layout.tsx) puts .dark on <html> for the dark preference. */
+html.dark,
+html.dark body {
+  background-color: #0f0c0a;
+}
+
+/* Desktop (AppFrame's WIDE_VIEWPORT): the app sits as a framed device beside a brand
+   panel, so the backdrop gets the logo's two colors as soft glows -- turquoise behind
+   the panel, coral-red behind the app. */
+@media (min-width: 1024px) {
+  body {
+    background-color: #f6e7d6;
+    background-image:
+      radial-gradient(circle at 18% 22%, rgba(18, 122, 135, 0.16), transparent 42%),
+      radial-gradient(circle at 82% 78%, rgba(193, 68, 14, 0.12), transparent 45%);
+    background-attachment: fixed;
+  }
+
+  html.dark body {
+    background-color: #0f0c0a;
+    background-image:
+      radial-gradient(circle at 18% 22%, rgba(18, 122, 135, 0.22), transparent 42%),
+      radial-gradient(circle at 82% 78%, rgba(193, 68, 14, 0.14), transparent 45%);
+  }
 }
 
 /* At phone-width viewports (matching the app's own max-w-[480px] breakpoint) the
@@ -21,5 +47,10 @@ body {
   html,
   body {
     background-color: #ffffff;
+  }
+
+  html.dark,
+  html.dark body {
+    background-color: #352c27;
   }
 }

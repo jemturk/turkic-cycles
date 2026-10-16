@@ -1,7 +1,7 @@
 import "@/theme/global.css";
 import "@/theme/icons";
 import { useEffect, useState } from "react";
-import { Platform, View } from "react-native";
+import { Platform } from "react-native";
 import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -22,6 +22,7 @@ import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { TextScaleProvider } from "@/hooks/useTextScale";
 import { AnimatedSplash } from "@/components/AnimatedSplash";
+import { AppFrame } from "@/components/AppFrame";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -138,11 +139,9 @@ export default function RootLayout() {
             <ThemeSync />
             <LocaleSync />
             <TextSizeSync>
-              {/* Constrains the app to a phone-width column on wide (web/desktop)
-                  viewports, framed against the neutral backdrop set in global.css.
-                  A no-op on native/mobile-web, where the viewport is already
-                  narrower than max-w-[480px]. */}
-              <View className="mx-auto w-full max-w-[480px] flex-1 bg-primary-50 dark:bg-ink-950 web:shadow-2xl">
+              {/* Phone-width column on web, framed beside a brand panel on desktop;
+                  the full screen on native. */}
+              <AppFrame>
                 <Slot />
                 {/* Plays once the native (static-image) splash hands off to JS --
                     gives the logo mark its own animated "assembly" moment instead
@@ -150,7 +149,7 @@ export default function RootLayout() {
                 {showAnimatedSplash && (
                   <AnimatedSplash onFinish={() => setShowAnimatedSplash(false)} />
                 )}
-              </View>
+              </AppFrame>
             </TextSizeSync>
           </QueryClientProvider>
         </KeyboardProvider>

@@ -18,6 +18,8 @@ import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { DiscoverCardView } from "@/components/DiscoverCardView";
 import { SwipeButton } from "@/components/SwipeButton";
+import { DiscoverGrid } from "@/components/DiscoverGrid";
+import { useWideLayout } from "@/hooks/useWideLayout";
 
 // How far (points) or how fast (points/second) a vertical swipe has to go to count
 // -- up to skip, down to go back; anything less springs the card back.
@@ -32,15 +34,20 @@ const SKIP_VELOCITY = 900;
 // the skipped person isn't passed, liked or saved, just moved to the back of the
 // queue, so they come round again (and can reappear on a later visit). Swiping down
 // brings back the most recently skipped person, one step at a time.
-export function DiscoverDeck({
-  circleId,
-  emptyLabel,
-  onOpenProfile,
-}: {
+//
+// On a wide (desktop web) window it's a grid of cards instead (DiscoverGrid).
+export function DiscoverDeck(props: DiscoverDeckProps) {
+  const wide = useWideLayout();
+  return wide ? <DiscoverGrid {...props} /> : <SwipeDeck {...props} />;
+}
+
+type DiscoverDeckProps = {
   circleId: string | null | undefined;
   emptyLabel: string;
   onOpenProfile: (userId: string) => void;
-}) {
+};
+
+function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;

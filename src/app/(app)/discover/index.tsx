@@ -1,14 +1,29 @@
 import { View } from "react-native";
+import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 import { DiscoverDeck } from "@/components/DiscoverDeck";
+import { useWideLayout } from "@/hooks/useWideLayout";
 
 // Global Discover: anyone who's discoverable, not just your circles' members. Who
 // shows up, and in what order, is decided server-side (list_global_discover_candidates).
 export default function GlobalDiscover() {
   const { t } = useTranslation();
+  const wide = useWideLayout();
+  // replace, not push -- see goToProfile in connections/index.tsx.
+  const openProfile = (userId: string) => router.replace(`/(app)/user/${userId}?fromDiscover=true`);
+
+  // Desktop web: a large title over the card grid (DiscoverDeck -> DiscoverGrid).
+  if (wide) {
+    return (
+      <View className="flex-1 gap-5 bg-primary-50 pl-10 pr-6 pt-9 dark:bg-ink-950">
+        <Text className="font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.discover")}</Text>
+        <DiscoverDeck circleId={null} emptyLabel={t("discover.globalEmpty")} onOpenProfile={openProfile} />
+      </View>
+    );
+  }
 
   return (
     // No bottom edge: the tab bar below already covers the phone's bottom inset,
@@ -20,8 +35,7 @@ export default function GlobalDiscover() {
         <DiscoverDeck
           circleId={null}
           emptyLabel={t("discover.globalEmpty")}
-          // replace, not push -- see goToProfile in connections/index.tsx.
-          onOpenProfile={(userId) => router.replace(`/(app)/user/${userId}?fromDiscover=true`)}
+          onOpenProfile={openProfile}
         />
       </View>
     </SafeAreaView>

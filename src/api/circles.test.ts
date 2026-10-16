@@ -3,6 +3,7 @@ import {
   listMyCircleMemberships,
   listCircleMembers,
   listUpcomingEventCounts,
+  listUpcomingEventsInCircles,
   listCircleEvents,
   getCircleEvent,
 } from "./circles";
@@ -59,6 +60,26 @@ describe("listUpcomingEventCounts", () => {
   it("returns an empty map when nothing is upcoming", async () => {
     queueResponses({ circle_events: [ok([])] });
     expect(await listUpcomingEventCounts()).toEqual({});
+  });
+});
+
+describe("listUpcomingEventsInCircles", () => {
+  it("skips the query entirely when you're in no circles", async () => {
+    mockFrom.mockClear();
+    expect(await listUpcomingEventsInCircles([], 5)).toEqual([]);
+    expect(mockFrom).not.toHaveBeenCalled();
+  });
+
+  it("asks for upcoming events in just those circles, soonest first, capped at the limit", async () => {
+    const rows = [{ id: "e1", circle_id: "c1", title: "Picnic", starts_at: "2099-01-01T12:00:00Z" }];
+    queueResponses({ circle_events: [ok(rows)] });
+
+    expect(await listUpcomingEventsInCircles(["c1", "c2"], 5)).toEqual(rows);
+
+    const chain = mockFrom.mock.results[mockFrom.mock.results.length - 1].value;
+    expect(chain.in).toHaveBeenCalledWith("circle_id", ["c1", "c2"]);
+    expect(chain.order).toHaveBeenCalledWith("starts_at");
+    expect(chain.limit).toHaveBeenCalledWith(5);
   });
 });
 

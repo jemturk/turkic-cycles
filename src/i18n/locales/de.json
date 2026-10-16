@@ -94,6 +94,11 @@
     "locationDenied": "Erlaube den Standortzugriff, um Veranstaltungen in deiner Nähe zu sehen.",
     "locationUnavailable": "Standort konnte nicht ermittelt werden. Versuch es noch einmal.",
     "noLocalCircles": "Noch keine Kreise im Umkreis von 50 Meilen.",
+    "filterAll": "Alle",
+    "filterJoined": "Beigetreten",
+    "nearMe": "In der Nähe",
+    "upcomingEvents": "Anstehende Veranstaltungen",
+    "noJoinedCircles": "Du bist noch keinem Kreis beigetreten.",
     "meetMembers": "Mitglieder kennenlernen",
     "members": "Mitglieder",
     "seeAll": "Alle {{count}} ansehen",
@@ -168,6 +173,8 @@
     "member": "Mitglied",
     "typeMessage": "Nachricht schreiben...",
     "send": "Senden",
+    "viewProfile": "Profil ansehen",
+    "selectConversation": "Wähle eine Unterhaltung aus, um zu chatten.",
     "youMatched": "Ihr habt gematcht · {{date}}"
   },
   "onboarding": {

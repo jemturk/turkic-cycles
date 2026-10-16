@@ -17,8 +17,17 @@ import { useIsNearby, useLocalFilter } from "@/stores/localFilter";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { Chip } from "@/components/Chip";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
+import { useWideLayout } from "@/hooks/useWideLayout";
+import { CirclesDesktop } from "@/components/CirclesDesktop";
 
+// Desktop web gets its own layout (CirclesDesktop): a two-column grid with filter
+// chips and an upcoming-events column. This is the phone screen.
 export default function Circles() {
+  const wide = useWideLayout();
+  return wide ? <CirclesDesktop /> : <CirclesPhone />;
+}
+
+function CirclesPhone() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;

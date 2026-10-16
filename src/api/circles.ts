@@ -78,6 +78,21 @@ export async function listUpcomingEventCounts(): Promise<Record<string, number>>
   return counts;
 }
 
+// The next few events across the given circles (the ones you've joined), soonest
+// first -- the desktop Circles screen's "Upcoming events" column.
+export async function listUpcomingEventsInCircles(circleIds: string[], limit: number) {
+  if (circleIds.length === 0) return [];
+  const { data, error } = await supabase
+    .from("circle_events")
+    .select("id, circle_id, title, starts_at")
+    .in("circle_id", circleIds)
+    .gte("starts_at", new Date().toISOString())
+    .order("starts_at")
+    .limit(limit);
+  if (error) throw error;
+  return data ?? [];
+}
+
 // Upcoming events soonest first; past events most recent first.
 export async function listCircleEvents(circleId: string) {
   const { data, error } = await supabase
