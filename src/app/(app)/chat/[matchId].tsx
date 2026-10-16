@@ -117,7 +117,7 @@ export default function ChatThread() {
               mine === emoji ? "bg-primary-100 dark:bg-ink-700" : "web:hover:bg-primary-100/40"
             }`}
           >
-            <Text style={{ fontSize: 22 }}>{emoji}</Text>
+            <Text style={{ fontSize: 22, lineHeight: 28, width: 32, textAlign: "center" }}>{emoji}</Text>
           </Pressable>
         ))}
         <View className="mx-1 h-6 w-px bg-ink-100 dark:bg-ink-700" />
@@ -279,10 +279,14 @@ export default function ChatThread() {
                     }}
                   >
                     {messageReactions.map((r) => (
-                      <Text key={r.userId} style={{ fontSize: 14 }}>
-                        {r.emoji}
-                      </Text>
-                    ))}
+                        // A fixed box with the emoji centred in it: Android measures emoji
+                        // narrower than it draws them, which clipped their left edge.
+                        <View key={r.userId} className="h-5 w-5 items-center justify-center">
+                          <Text style={{ fontSize: 14, lineHeight: 18, width: 20, textAlign: "center" }}>
+                            {r.emoji}
+                          </Text>
+                        </View>
+                      ))}
                   </View>
                 ) : null}
               </View>
