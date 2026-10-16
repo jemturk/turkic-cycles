@@ -83,6 +83,10 @@ export default function AppTabsLayout() {
   // flash of another screen.
   const hasCover = useHasCover(session?.user.id);
   const pathname = usePathname();
+  // What shows past the tab bar's rounded corners: an open conversation's lighter
+  // cream (chat/[matchId].tsx), else the page color.
+  const inConversation = /^\/chat\/[^/]+/.test(pathname);
+  const cornerColor = inConversation ? (isDark ? "#2B2320" : "#FFFAF4") : isDark ? "#171310" : "#FCEAD6";
   const coverMissing = hasCover === false;
   useEffect(() => {
     if (coverMissing && pathname !== COVER_SETUP_PATH) router.replace("/(app)/me");
@@ -118,23 +122,36 @@ export default function AppTabsLayout() {
           // Otherwise Android pushes the tab bar up on top of the keyboard while
           // typing (in Chat, Edit profile, ...), eating into the visible form.
           tabBarHideOnKeyboard: true,
+          // The bar itself is square and painted in the color of the screen above it;
+          // the white, rounded-top surface is tabBarBackground. Otherwise the space
+          // outside the rounded corners showed whatever was behind the bar -- the
+          // page cream -- which notched the lighter cream of a conversation.
           tabBarStyle: {
             height: 54 + insets.bottom,
             paddingBottom: insets.bottom + 6,
             paddingTop: 6,
             // Inline styles, not classNames -- React Navigation's tabBarStyle isn't
             // resolved through NativeWind, so dark mode has to be handled here in JS.
-            backgroundColor: isDark ? "#352C27" : "#FFFFFF",
+            backgroundColor: cornerColor,
             borderTopWidth: 0,
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            // Same soft shadow as AppHeader's bottom edge, cast upward instead.
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: -2 },
-            shadowOpacity: 0.08,
-            shadowRadius: 12,
-            elevation: 3,
+            elevation: 0,
           },
+          tabBarBackground: () => (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: isDark ? "#352C27" : "#FFFFFF",
+                borderTopLeftRadius: 24,
+                borderTopRightRadius: 24,
+                // Same soft shadow as AppHeader's bottom edge, cast upward instead.
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: -2 },
+                shadowOpacity: 0.08,
+                shadowRadius: 12,
+                elevation: 3,
+              }}
+            />
+          ),
           tabBarIcon: ({ focused, color, size }) => {
             if (route.name === "circles") {
               // The sidebar already shows the logo at its top, so there Circles gets a
