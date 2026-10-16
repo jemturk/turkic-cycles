@@ -78,6 +78,7 @@
   "circles": {
     "subtitle": "Kendi insanlarını bul — senin için önemli olan konular etrafında kurulmuş çemberlere katıl.",
     "joined": "Katıldın",
+    "joinCircle": "Çembere katıl",
     "leaveCircle": "Çemberden ayrıl",
     "leaveConfirm": "{{name}} çemberinden ayrılmak istiyor musun? İstediğin zaman yeniden katılabilirsin.",
     "leave": "Ayrıl",

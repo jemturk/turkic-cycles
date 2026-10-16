@@ -78,6 +78,7 @@
   "circles": {
     "subtitle": "Find your people — join circles built around what matters to you.",
     "joined": "Joined",
+    "joinCircle": "Join circle",
     "leaveCircle": "Leave circle",
     "leaveConfirm": "Leave {{name}}? You can join again any time.",
     "leave": "Leave",

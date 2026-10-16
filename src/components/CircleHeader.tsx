@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -9,12 +10,24 @@ import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/con
 // AppHeader in the circle's topic color, with a back button, topic badge and the
 // circle's name in place of the logo. The topic colors are light in both themes,
 // so the text and icons stay dark rather than following dark mode.
-export function CircleHeader({ name, topic, onBack }: { name: string; topic: CircleTopic; onBack: () => void }) {
+export function CircleHeader({
+  name,
+  topic,
+  onBack,
+  right,
+}: {
+  name: string;
+  topic: CircleTopic;
+  onBack: () => void;
+  /** In place of search and your avatar -- the circle page's ⋯ menu. */
+  right?: ReactNode;
+}) {
   const { t } = useTranslation();
   return (
     <AppHeader
       bgClassName={CIRCLE_TOPIC_COLORS[topic].bg}
       iconColor="#2B2320"
+      right={right}
       left={
         <View className="flex-1 flex-row items-center gap-2">
           <Pressable accessibilityLabel={t("common.back")} hitSlop={8} onPress={onBack}>

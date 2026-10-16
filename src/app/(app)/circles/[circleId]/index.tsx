@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import {
   useCircle,
   useCircleEvents,
+  useJoinCircle,
   useLeaveCircle,
   useMyCircleMemberships,
   useMyCircleRole,
@@ -40,17 +41,20 @@ export default function CircleEvents() {
   const { data: role } = useMyCircleRole(circleId, session?.user.id);
   const { canHost } = useCanHost(session?.user.id);
   const { data: memberships } = useMyCircleMemberships(session?.user.id);
+  const joinCircle = useJoinCircle(session?.user.id);
   const leaveCircle = useLeaveCircle(session?.user.id);
   const isJoined = (memberships ?? []).includes(circleId);
-  // Leave circle, behind a confirmation -- only for circles you're in.
-  const menu =
-    isJoined && circle ? (
-      <CircleMenu
-        circleName={circle.name}
-        leaving={leaveCircle.isPending}
-        onLeave={() => leaveCircle.mutate(circleId)}
-      />
-    ) : null;
+  // Join circle, or Leave circle behind a confirmation. In the header on a phone (in
+  // place of search and your avatar), in the title row on desktop.
+  const menu = circle ? (
+    <CircleMenu
+      circleName={circle.name}
+      isJoined={isJoined}
+      busy={joinCircle.isPending || leaveCircle.isPending}
+      onJoin={() => joinCircle.mutate(circleId)}
+      onLeave={() => leaveCircle.mutate(circleId)}
+    />
+  ) : null;
   // Same rule the database enforces for creating events (migration 0035).
   const canAddEvent = canHost && (role === "owner" || role === "moderator");
   const wide = useWideLayout();
@@ -211,7 +215,7 @@ export default function CircleEvents() {
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
-      <CircleHeader name={circle.name} topic={topic} onBack={goBack} />
+      <CircleHeader name={circle.name} topic={topic} onBack={goBack} right={menu} />
 
       <RefreshableScrollView
         refreshing={isRefetching}
@@ -219,17 +223,14 @@ export default function CircleEvents() {
         className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-4 pb-10"
       >
-        <View className="z-10 flex-row items-center gap-3">
-          <Text className="flex-1 text-sm text-ink-400" numberOfLines={1}>
-            {[
-              t("circles.membersCount", { count: circle.member_count }),
-              [circle.city, circle.state].filter(Boolean).join(", "),
-            ]
-              .filter(Boolean)
-              .join(" · ")}
-          </Text>
-          {menu}
-        </View>
+        <Text className="text-sm text-ink-400" numberOfLines={1}>
+          {[
+            t("circles.membersCount", { count: circle.member_count }),
+            [circle.city, circle.state].filter(Boolean).join(", "),
+          ]
+            .filter(Boolean)
+            .join(" · ")}
+        </Text>
 
         {circle.description ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text>

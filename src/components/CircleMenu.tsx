@@ -5,17 +5,21 @@ import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
 
-// A circle page's ⋯ menu: Leave circle, behind a confirmation shown in the menu
-// itself (Alert.alert does nothing on web). Only for circles you're in; joining is
-// the Join button. Like the profile's ⋯, it opens under the button.
+// A circle page's ⋯ menu: Join circle if you're not in it, otherwise Leave circle,
+// behind a confirmation shown in the menu itself (Alert.alert does nothing on web).
+// Like the profile's ⋯, it opens under the button.
 export function CircleMenu({
   circleName,
+  isJoined,
+  onJoin,
   onLeave,
-  leaving,
+  busy,
 }: {
   circleName: string;
+  isJoined: boolean;
+  onJoin: () => void;
   onLeave: () => void;
-  leaving: boolean;
+  busy: boolean;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -33,14 +37,21 @@ export function CircleMenu({
         accessibilityLabel={t("common.more")}
         aria-expanded={open}
         onPress={() => (open ? close() : setOpen(true))}
-        className="h-10 w-10 items-center justify-center rounded-full bg-white web:hover:bg-primary-100/40 dark:bg-ink-800"
+        hitSlop={8}
+        className="h-9 w-9 items-center justify-center rounded-full bg-white/70 web:hover:bg-white"
       >
-        <Ionicons name="ellipsis-horizontal" size={20} color="#4A3F3A" />
+        <Ionicons name="ellipsis-horizontal" size={20} color="#2B2320" />
       </Pressable>
       {open ? (
         <View
           className="absolute right-0 top-12 w-64 overflow-hidden rounded-2xl bg-white dark:bg-ink-800"
-          style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.12, shadowRadius: 16, elevation: 6 }}
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.12,
+            shadowRadius: 16,
+            elevation: 6,
+          }}
         >
           {confirming ? (
             <View className="gap-3 p-4">
@@ -57,7 +68,7 @@ export function CircleMenu({
                 </Pressable>
                 <Pressable
                   accessibilityRole="button"
-                  disabled={leaving}
+                  disabled={busy}
                   onPress={() => {
                     onLeave();
                     close();
@@ -68,6 +79,21 @@ export function CircleMenu({
                 </Pressable>
               </View>
             </View>
+          ) : !isJoined ? (
+            <Pressable
+              accessibilityRole="menuitem"
+              disabled={busy}
+              onPress={() => {
+                onJoin();
+                close();
+              }}
+              className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
+            >
+              <Ionicons name="add-circle-outline" size={18} color="#127A87" />
+              <Text className="text-sm font-semibold text-primary-600 dark:text-primary-400">
+                {t("circles.joinCircle")}
+              </Text>
+            </Pressable>
           ) : (
             <Pressable
               accessibilityRole="menuitem"

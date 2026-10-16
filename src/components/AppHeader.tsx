@@ -28,11 +28,14 @@ export const HEADER_ICON_HEIGHT = ICON_HEIGHT;
 export function AppHeader({
   title,
   left,
+  right,
   bgClassName,
   iconColor,
 }: {
   title?: string;
   left?: ReactNode;
+  /** Replaces the search icon and your avatar (e.g. a circle's ⋯ menu). */
+  right?: ReactNode;
   bgClassName?: string;
   iconColor?: string;
 }) {
@@ -69,18 +72,24 @@ export function AppHeader({
             {title}
           </Text>
         )}
-        <View className="flex-row items-center gap-4">
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("tabs.search")}
-            hitSlop={8}
-            onPress={() => openSearch(true)}
-          >
-            <Ionicons name="search-outline" size={24} color={iconColor ?? (colorScheme === "dark" ? "#F5F1EE" : "#2B2320")} />
-          </Pressable>
-          {/* Desktop web: your profile is at the foot of the sidebar instead. */}
-          {wide ? null : <HeaderAvatar size={ICON_HEIGHT} />}
-        </View>
+        {right ?? (
+          <View className="flex-row items-center gap-4">
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("tabs.search")}
+              hitSlop={8}
+              onPress={() => openSearch(true)}
+            >
+              <Ionicons
+                name="search-outline"
+                size={24}
+                color={iconColor ?? (colorScheme === "dark" ? "#F5F1EE" : "#2B2320")}
+              />
+            </Pressable>
+            {/* Desktop web: your profile is at the foot of the sidebar instead. */}
+            {wide ? null : <HeaderAvatar size={ICON_HEIGHT} />}
+          </View>
+        )}
       </View>
     </View>
   );
