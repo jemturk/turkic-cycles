@@ -2,10 +2,10 @@ import { View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { ChatThreadList } from "@/components/ChatThreadList";
+import { ChatBubblesIcon } from "@/components/ChatBubblesIcon";
 import { useWideLayout } from "@/hooks/useWideLayout";
 
 export default function Chat() {
@@ -17,7 +17,7 @@ export default function Chat() {
   if (wide) {
     return (
       <View className="flex-1 items-center justify-center gap-3 bg-white px-8 dark:bg-ink-800">
-        <Ionicons name="chatbubbles-outline" size={48} color="#3E9BA7" />
+        <ChatBubblesIcon size={48} />
         <Text className="text-center text-base text-ink-700 dark:text-ink-200">{t("chat.selectConversation")}</Text>
       </View>
     );

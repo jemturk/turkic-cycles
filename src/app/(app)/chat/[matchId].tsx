@@ -15,6 +15,13 @@ import { Avatar } from "@/components/Avatar";
 import { TypingDots } from "@/components/TypingDots";
 import { useWideLayout } from "@/hooks/useWideLayout";
 
+// Message bubbles: pale turquoise for yours, pale coral for theirs (the palette's
+// lightest shades, primary-100 / accent-50), both with dark text.
+const BUBBLE_COLORS = {
+  own: { background: "#D5EBEC", text: "#0E3F45" },
+  their: { background: "#FBE9E1", text: "#2B2320" },
+};
+
 export default function ChatThread() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
@@ -57,7 +64,7 @@ export default function ChatThread() {
     // with a hairline under the header and over the composer, a lighter message
     // area, and the other person's bubbles in a neutral grey instead of coral.
     <SafeAreaView
-      className={wide ? "flex-1 bg-white dark:bg-ink-800" : "flex-1 bg-primary-50 dark:bg-ink-950"}
+      className={wide ? "flex-1 bg-white dark:bg-ink-800" : "flex-1 bg-[#FFFAF4] dark:bg-ink-900"}
       edges={["left", "right"]}
     >
       <View
@@ -113,7 +120,7 @@ export default function ChatThread() {
           <Pressable
             accessibilityRole="button"
             onPress={() => router.replace(`/(app)/user/${participant.profile.id}?matchId=${matchId}`)}
-            className="h-10 justify-center rounded-full border border-primary-100 px-4 web:hover:bg-primary-50 dark:border-ink-700 dark:web:hover:bg-ink-700"
+            className="h-10 justify-center rounded-full border border-primary-100 px-4 web:hover:bg-primary-100/40 dark:border-ink-700 dark:web:hover:bg-ink-700"
           >
             <Text className="text-sm font-semibold text-primary-600 dark:text-primary-400">{t("chat.viewProfile")}</Text>
           </Pressable>
@@ -125,7 +132,11 @@ export default function ChatThread() {
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <ScrollView
           ref={scrollRef}
-          className={wide ? "flex-1 bg-[#FFFAF4] px-6 pt-5 dark:bg-ink-900" : "flex-1 px-4 pt-4"}
+          // The lighter cream behind the messages (rather than the page's) keeps the
+          // pale bubbles visible -- the coral one all but vanished on the page color.
+          className={
+            wide ? "flex-1 bg-[#FFFAF4] px-6 pt-5 dark:bg-ink-900" : "flex-1 bg-[#FFFAF4] px-4 pt-4 dark:bg-ink-900"
+          }
           contentContainerClassName="gap-3 pb-4"
           // After the new content has laid out, not when the state changes: scrolling
           // from an effect ran before a new message or the typing bubble had any
@@ -142,20 +153,18 @@ export default function ChatThread() {
             const isOwn = message.sender_id === userId;
             return (
               <View key={message.id} className={isOwn ? "items-end" : "items-start"}>
-                {/* Yours in the primary turquoise, theirs in the coral-red accent (on
-                    desktop, a neutral grey with a tail corner on each side). */}
+                {/* Yours in pale turquoise, theirs in pale coral -- light tints rather
+                    than solid brand colors, so a long thread is calm to read. Desktop
+                    adds a tail corner on each side. */}
                 <View
                   className={
                     wide
-                      ? `max-w-[60%] rounded-[18px] px-4 py-3 ${
-                          isOwn ? "rounded-br-md bg-primary-500" : "rounded-bl-md bg-ink-50 dark:bg-ink-700"
-                        }`
-                      : `max-w-[80%] rounded-2xl px-4 py-3 ${isOwn ? "bg-primary-500" : "bg-accent-500"}`
+                      ? `max-w-[60%] rounded-[18px] px-4 py-3 ${isOwn ? "rounded-br-md" : "rounded-bl-md"}`
+                      : "max-w-[80%] rounded-2xl px-4 py-3"
                   }
+                  style={{ backgroundColor: BUBBLE_COLORS[isOwn ? "own" : "their"].background }}
                 >
-                  <Text
-                    className={`text-base ${wide && !isOwn ? "text-ink-900 dark:text-ink-50" : "text-white"}`}
-                  >
+                  <Text className="text-base" style={{ color: BUBBLE_COLORS[isOwn ? "own" : "their"].text }}>
                     {message.body}
                   </Text>
                 </View>

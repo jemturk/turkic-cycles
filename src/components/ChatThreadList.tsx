@@ -45,7 +45,7 @@ export function ChatThreadList({
                 key={thread.matchId}
                 aria-current={active ? "page" : undefined}
                 className={`flex-row items-center gap-3 rounded-[14px] p-3 ${
-                  active ? "bg-primary-100 dark:bg-ink-700" : "web:hover:bg-primary-50 dark:web:hover:bg-ink-700"
+                  active ? "bg-primary-100 dark:bg-ink-700" : "web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
                 }`}
                 onPress={() => onOpen(thread.matchId)}
               >
