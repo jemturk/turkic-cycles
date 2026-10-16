@@ -15,12 +15,15 @@ export function CircleHeader({
   topic,
   onBack,
   right,
+  subtitle,
 }: {
   name: string;
   topic: CircleTopic;
   onBack: () => void;
   /** In place of search and your avatar -- the circle page's ⋯ menu. */
   right?: ReactNode;
+  /** A line under the name -- the circle page's "16 members · Tampa, FL". */
+  subtitle?: string;
 }) {
   const { t } = useTranslation();
   return (
@@ -39,9 +42,16 @@ export function CircleHeader({
           >
             <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={20} color={CIRCLE_TOPIC_COLORS[topic].fg} />
           </View>
-          <Text className="flex-1 font-display text-lg text-ink-900" numberOfLines={1}>
-            {name}
-          </Text>
+          <View className="flex-1">
+            <Text className="font-display text-lg text-ink-900" numberOfLines={1}>
+              {name}
+            </Text>
+            {subtitle ? (
+              <Text className="text-xs text-ink-700" numberOfLines={1}>
+                {subtitle}
+              </Text>
+            ) : null}
+          </View>
         </View>
       }
     />

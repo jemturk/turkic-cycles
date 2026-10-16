@@ -215,7 +215,19 @@ export default function CircleEvents() {
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
-      <CircleHeader name={circle.name} topic={topic} onBack={goBack} right={menu} />
+      <CircleHeader
+        name={circle.name}
+        topic={topic}
+        onBack={goBack}
+        right={menu}
+        // The details live in the header now; the description stays on the page.
+        subtitle={[
+          t("circles.membersCount", { count: circle.member_count }),
+          [circle.city, circle.state].filter(Boolean).join(", "),
+        ]
+          .filter(Boolean)
+          .join(" · ")}
+      />
 
       <RefreshableScrollView
         refreshing={isRefetching}
@@ -223,15 +235,6 @@ export default function CircleEvents() {
         className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-4 pb-10"
       >
-        <Text className="text-sm text-ink-400" numberOfLines={1}>
-          {[
-            t("circles.membersCount", { count: circle.member_count }),
-            [circle.city, circle.state].filter(Boolean).join(", "),
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-        </Text>
-
         {circle.description ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text>
         ) : null}

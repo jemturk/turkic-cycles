@@ -66,7 +66,7 @@ export function AppHeader({
         zIndex: 1,
       }}
     >
-      <View className="h-11 flex-row items-center justify-between gap-3 px-4">
+      <View className="min-h-[44px] flex-row items-center justify-between gap-3 px-4">
         {left ?? (
           <Text className="flex-1 font-display text-2xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
             {title}
