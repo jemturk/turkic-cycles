@@ -60,6 +60,24 @@ FAILURE_TAIL_LINES = 30
 
 DEBUG = False
 
+# ANSI colors for the live progress lines -- only on a terminal, never in the log or
+# when NO_COLOR is set. GREEN/RED for a finished/failed step's mark, BAR for the
+# filled part of the bar (bright cyan, a light blue).
+GREEN, RED, BAR, RESET = "\x1b[32m", "\x1b[31m", "\x1b[96m", "\x1b[0m"
+
+
+def use_color() -> bool:
+    return sys.stdout.isatty() and "NO_COLOR" not in os.environ
+
+
+def paint(text: str, color: str) -> str:
+    return f"{color}{text}{RESET}" if use_color() else text
+
+
+def clear_to(line: str, visible_length: int, width: int = 100) -> str:
+    # Pads by what's visible, not by len() -- color codes take no columns.
+    return line + " " * max(0, width - visible_length)
+
 
 class BuildError(Exception):
     pass
@@ -140,14 +158,16 @@ class Stage:
     def _line(self, elapsed: float) -> str:
         fraction = min(elapsed / self.estimate, 0.99) if self.estimate > 0 else 0.99
         filled = int(fraction * BAR_WIDTH)
-        bar = "\u2588" * filled + "\u2591" * (BAR_WIDTH - filled)
+        bar = paint("\u2588" * filled, BAR) + "\u2591" * (BAR_WIDTH - filled)
         left = self.estimate - elapsed
         eta = f"~{fmt_time(left)} left" if left > 0 else "almost done"
-        return f"{self.label:<26} [{bar}] {int(fraction * 100):3d}%  {fmt_time(elapsed)} elapsed  {eta}"
+        stats = f"{int(fraction * 100):3d}%  {fmt_time(elapsed)} elapsed  {eta}"
+        line = f"{self.label:<26} [{bar}] {stats}"
+        return clear_to(line, 26 + 2 + BAR_WIDTH + 2 + len(stats))
 
     def _render(self) -> None:
         while not self._stop.wait(0.5):
-            sys.stdout.write("\r" + self._line(time.monotonic() - self.start).ljust(100))
+            sys.stdout.write("\r" + self._line(time.monotonic() - self.start))
             sys.stdout.flush()
 
     def __enter__(self) -> "Stage":
@@ -174,11 +194,11 @@ class Stage:
             save_duration(self.key, elapsed)
         if DEBUG:
             return False
-        mark = "\u2713" if exc_type is None else "\u2717"
+        mark = paint("\u2713", GREEN) if exc_type is None else paint("\u2717", RED)
         status = fmt_time(elapsed) if exc_type is None else f"failed after {fmt_time(elapsed)}"
         line = f"{mark} {self.label:<24} {status}"
         if self.live:
-            sys.stdout.write("\r" + line.ljust(100) + "\n")
+            sys.stdout.write("\r" + clear_to(line, 2 + 24 + 1 + len(status)) + "\n")
         else:
             print(line)
         for message in Stage.pending_notes:
@@ -364,6 +384,10 @@ def main() -> int:
     # Box-drawing characters and checkmarks on a Windows console that isn't UTF-8.
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    # Windows' classic console only honours the color codes once virtual-terminal
+    # processing is on; an empty os.system call switches it on for this process.
+    if IS_WINDOWS and use_color():
+        os.system("")
 
     if not (args.web or args.apk or args.install or args.copy):
         parser.print_help()
