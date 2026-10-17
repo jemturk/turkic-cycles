@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
+import { Sentry, sentryEnabled } from "@/lib/sentry";
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { useMyVerificationStatus } from "@/hooks/useVerification";
@@ -231,6 +232,24 @@ export default function Settings() {
                 debugSetVerified.mutate(verified, { onError: (e) => Alert.alert("Couldn't switch", e.message) })
               }
             />
+          </View>
+          {/* Checks crash reporting end to end: the error should appear in Sentry
+              (release builds and the website only; development never reports). */}
+          <View className="flex-row items-center justify-between">
+            <Text className="text-base text-ink-900 dark:text-ink-50">Crash reporting</Text>
+            <Pressable
+              onPress={() => {
+                if (!sentryEnabled) {
+                  Alert.alert("Sentry is off", "Reports are only sent from release builds and the website.");
+                  return;
+                }
+                Sentry.captureException(new Error("Test error from Settings (test controls)"));
+                Alert.alert("Sent", "A test error was sent to Sentry.");
+              }}
+              className="rounded-full border border-primary-500 px-3 py-1.5"
+            >
+              <Text className="text-sm font-semibold text-primary-500">Send test error</Text>
+            </Pressable>
           </View>
         </View>
       ) : null}
