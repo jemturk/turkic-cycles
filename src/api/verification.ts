@@ -23,12 +23,16 @@ export async function getOtherUserVerificationStatus(targetUserId: string): Prom
   return data?.status ?? null;
 }
 
-// Submitting the stub flow only ever moves status to 'pending' -- RLS itself also
-// enforces this (the client can never write 'verified'/'failed'), this is just the
-// one write path the UI uses.
-export async function submitVerificationStub(userId: string) {
-  const { error } = await supabase
-    .from("verification_status")
-    .upsert({ user_id: userId, status: "pending" }, { onConflict: "user_id" });
+// Starts a Stripe Identity check (ID document + live selfie) and returns the one-time
+// URL of Stripe's verification page. The server function records the attempt as
+// 'pending'; Stripe's result arrives through stripe-identity-webhook. The app never
+// writes the status itself (migration 0043).
+export async function startVerification(platform: "web" | "app"): Promise<string> {
+  const { data, error } = await supabase.functions.invoke<{ url: string }>("create-verification-session", {
+    method: "POST",
+    body: { platform },
+  });
   if (error) throw error;
+  if (!data?.url) throw new Error("Couldn't start verification.");
+  return data.url;
 }

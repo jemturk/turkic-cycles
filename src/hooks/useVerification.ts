@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getMyVerificationStatus, getOtherUserVerificationStatus, submitVerificationStub } from "@/api/verification";
+import { getMyVerificationStatus, getOtherUserVerificationStatus, startVerification } from "@/api/verification";
 
 export function useMyVerificationStatus(userId: string | undefined) {
   return useQuery({
@@ -18,10 +18,12 @@ export function useOtherUserVerificationStatus(targetUserId: string | undefined)
   });
 }
 
-export function useSubmitVerificationStub(userId: string | undefined) {
+// Starts verification and returns Stripe's page URL to open; the status is now
+// 'pending', so the screen refreshes it.
+export function useStartVerification(userId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => submitVerificationStub(userId as string),
+    mutationFn: (platform: "web" | "app") => startVerification(platform),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["verificationStatus", userId] }),
   });
 }

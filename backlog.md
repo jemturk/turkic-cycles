@@ -23,12 +23,21 @@ The stores would reject the app, or it would break for real users, without these
   - Then paste the six branded templates from `supabase/templates/` into
     Authentication → Emails → Templates (subjects are in `supabase/config.toml`).
     Deploy the website first so `email/logo.png` is live.
-- [ ] **Identity verification is a placeholder** [both] — "Get verified" only marks you
-  *pending*; nobody can actually become verified except through the test switch. The
-  welcome slides ("Verified member"), Safety Center and Privacy Policy talk about
-  verified members. Either build real verification (the schema is ready for Stripe
-  Identity: `verification_status.stripe_identity_session_id`) or remove/soften those
-  claims before launch.
+- [ ] **Identity verification: finish Stripe setup** [you] — the code is done (Stripe
+  Identity: ID photo + live selfie; functions `create-verification-session` and
+  `stripe-identity-webhook`; migration 0043). Left:
+  - Stripe account, business verified, and the Identity application approved
+    (dashboard.stripe.com/identity/application); branding under Settings → Branding.
+  - `supabase db push` (0043), then
+    `supabase secrets set STRIPE_SECRET_KEY=sk_... STRIPE_IDENTITY_WEBHOOK_SECRET=whsec_...`
+  - Deploy: `supabase functions deploy create-verification-session` and
+    `supabase functions deploy stripe-identity-webhook --no-verify-jwt`.
+  - Stripe → Workbench → Webhooks: endpoint
+    `https://<project-ref>.supabase.co/functions/v1/stripe-identity-webhook`, events
+    `identity.verification_session.verified`, `.requires_input`, `.processing`, `.canceled`;
+    its signing secret is `STRIPE_IDENTITY_WEBHOOK_SECRET`.
+  - Test in Stripe test mode first (test keys), then switch to live keys.
+  - Costs about $1.50 per verification; consider limiting retries.
 - [ ] **iPhone has never been built for real** [you, then code] — only Expo Go so far.
   - Apple Developer Program ($99/year).
   - `eas build -p ios` (registers `com.turek.app`, Sign in with Apple capability).

@@ -55,7 +55,11 @@ export const PRIVACY_POLICY: LegalDocument = {
           "and phone numbers of the trusted contacts you enter. The app writes a text to those contacts and " +
           "opens your phone's Messages app; it's only sent if you send it, from your own phone. Check-in " +
           "reminders are scheduled on your device.",
-        "- Verification: if you request profile verification, its status.",
+        "- Identity verification: if you choose to get verified, Stripe Identity collects a photo of your " +
+          "government ID and a live selfie, and checks that they match. Those images and the details on your " +
+          "ID are processed by Stripe under its own privacy policy, not stored by us; we keep only whether you " +
+          "are verified and a reference to the check. Verification uses biometric technology to compare your " +
+          "selfie with your ID photo, and only with your consent when you start it.",
         "- Support: anything you send us when you contact us.",
       ],
     },
@@ -105,6 +109,7 @@ export const PRIVACY_POLICY: LegalDocument = {
         "- Expo (650 Industries): app updates, the website, and push notification delivery.",
         "- Google Firebase Cloud Messaging and Apple Push Notification service: delivering notifications.",
         "- Cloudflare: bot protection (Turnstile).",
+        "- Stripe: identity verification (Stripe Identity), if you choose to get verified.",
         "- Sentry (Functional Software): crash and error reports, identified only by your account ID, to " +
           "help us fix problems.",
         "- Apple and Google: Sign in with Apple and Google sign-in, if you use them, and app-store purchases.",
