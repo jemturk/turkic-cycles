@@ -102,13 +102,16 @@ function LocaleSync() {
 // the untouched baseline read too small, not just "small" and "large" relative to
 // it, so the whole range shifted up rather than just widening the gaps.
 const TEXT_SIZE_MULTIPLIER: Record<string, number> = { small: 0.95, default: 1.1, large: 1.3 };
+// Text's sizes start from a 16px base on web but 14px in the app, so on web the same
+// setting read ~14% larger. Scaling web by 14/16 makes each setting match the app.
+const WEB_TEXT_SCALE = Platform.OS === "web" ? 14 / 16 : 1;
 
 function TextSizeSync({ children }: { children: React.ReactNode }) {
   const { session } = useSession();
   const { data: profile } = useMyProfile(session?.user.id);
   const textSize = profile?.text_size ?? "default";
 
-  return <TextScaleProvider scale={TEXT_SIZE_MULTIPLIER[textSize] ?? 1}>{children}</TextScaleProvider>;
+  return <TextScaleProvider scale={(TEXT_SIZE_MULTIPLIER[textSize] ?? 1) * WEB_TEXT_SCALE}>{children}</TextScaleProvider>;
 }
 
 export default function RootLayout() {
