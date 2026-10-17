@@ -243,6 +243,11 @@ def android_env() -> dict[str, str]:
         raise BuildError("JAVA_HOME is not set and no JDK 17 was found in ~/.jdks")
     if " " in env["ANDROID_HOME"]:
         raise BuildError(f"ANDROID_HOME contains a space ({env['ANDROID_HOME']}); the NDK linker fails on such paths")
+    # Sentry uploads source maps during release builds, which needs SENTRY_AUTH_TOKEN
+    # (kept out of git, e.g. in the shell environment). Without one, skip the upload
+    # rather than fail the build; crash reports then show minified stack traces.
+    if not env.get("SENTRY_AUTH_TOKEN"):
+        env["SENTRY_DISABLE_AUTO_UPLOAD"] = "true"
     return env
 
 

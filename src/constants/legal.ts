@@ -105,6 +105,8 @@ export const PRIVACY_POLICY: LegalDocument = {
         "- Expo (650 Industries): app updates, the website, and push notification delivery.",
         "- Google Firebase Cloud Messaging and Apple Push Notification service: delivering notifications.",
         "- Cloudflare: bot protection (Turnstile).",
+        "- Sentry (Functional Software): crash and error reports, identified only by your account ID, to " +
+          "help us fix problems.",
         "- Apple and Google: Sign in with Apple and Google sign-in, if you use them, and app-store purchases.",
         "- RevenueCat: managing Plus subscriptions.",
         "- Our email delivery provider: sending account emails.",

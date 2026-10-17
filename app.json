@@ -65,7 +65,8 @@
           "locationWhenInUsePermission": "Turkic Circles uses your location to show circle events near you."
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "@sentry/react-native"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,3 +1,5 @@
+// First, so errors anywhere after this are reported.
+import { Sentry, identifySentryUser } from "@/lib/sentry";
 import "@/theme/global.css";
 import "@/theme/icons";
 import { useEffect, useState } from "react";
@@ -114,7 +116,15 @@ function TextSizeSync({ children }: { children: React.ReactNode }) {
   return <TextScaleProvider scale={(TEXT_SIZE_MULTIPLIER[textSize] ?? 1) * WEB_TEXT_SCALE}>{children}</TextScaleProvider>;
 }
 
-export default function RootLayout() {
+// Tells Sentry which account an error came from (its id only).
+function SentryUserSync() {
+  const { session } = useSession();
+  const userId = session?.user.id;
+  useEffect(() => identifySentryUser(userId), [userId]);
+  return null;
+}
+
+function RootLayout() {
   const [fontsLoaded] = useFonts({
     Fraunces_400Regular,
     Fraunces_600SemiBold,
@@ -140,6 +150,7 @@ export default function RootLayout() {
         <KeyboardProvider>
           <QueryClientProvider client={queryClient}>
             <ThemeSync />
+            <SentryUserSync />
             <LocaleSync />
             <TextSizeSync>
               {/* Phone-width column on web, framed beside a brand panel on desktop;
@@ -160,3 +171,6 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+// Sentry.wrap catches errors React rendering throws, and reports them.
+export default Sentry.wrap(RootLayout);
