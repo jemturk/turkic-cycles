@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>You&rsquo;re invited!</title>
+</head>
+<body style="margin:0;padding:0;background:#FEF6EC;">
+  <!-- Preview text shown next to the subject in the inbox. -->
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Join circles, meet people and find where you belong.</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FEF6EC" style="background:#FEF6EC;">
+    <tr>
+      <td align="center" style="padding:40px 16px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;">
+          <tr>
+            <td align="center" style="padding:0 0 24px;">
+              <img src="https://turek.expo.app/email/logo.png" width="48" height="48" alt="" style="display:block;border:0;">
+              <div style="margin-top:10px;font-family:Georgia, 'Times New Roman', serif;font-size:22px;font-weight:bold;color:#2B2320;">
+                Turkic <span style="color:#127A87;">Circles</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#FFFFFF" style="background:#FFFFFF;border-radius:22px;padding:36px 36px 32px;">
+              <h1 style="margin:0 0 16px;font-family:Georgia, 'Times New Roman', serif;font-size:26px;line-height:32px;font-weight:bold;color:#2B2320;">You&rsquo;re invited!</h1>
+          <p style="margin:0 0 14px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;font-size:16px;line-height:25px;color:#4A3F3A;">You&rsquo;ve been invited to join Turkic Circles: circles for your city, culture and interests, with real meetups on the calendar.</p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0 8px;">
+            <tr>
+              <td bgcolor="#127A87" style="border-radius:14px;">
+                <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;padding:14px 28px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;font-size:16px;font-weight:600;color:#FFFFFF;text-decoration:none;border-radius:14px;">Accept invitation</a>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:20px 0 0;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;font-size:13px;line-height:20px;color:#8A7C76;">
+            Button not working? Copy this link into your browser:<br>
+            <a href="{{ .ConfirmationURL }}" style="color:#127A87;word-break:break-all;">{{ .ConfirmationURL }}</a>
+          </p>
+              <div style="height:1px;background:#F3E3D2;margin:28px 0 18px;line-height:1px;font-size:1px;">&nbsp;</div>
+              <p style="margin:0;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;font-size:13px;line-height:20px;color:#8A7C76;">Not expecting this? You can safely ignore this email.</p>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:24px 16px 0;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;font-size:12px;line-height:18px;color:#8A7C76;">
+              Turkic Circles &middot; Find your people, near you<br>
+              <a href="{{ .SiteURL }}" style="color:#8A7C76;">turek.expo.app</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
