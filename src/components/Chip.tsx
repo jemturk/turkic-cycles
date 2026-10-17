@@ -21,7 +21,7 @@ export function Chip({ label, selected, onPress, disabled, tone }: ChipProps) {
         selected
           ? tone
             ? `border-transparent ${tone.bg} dark:bg-ink-700`
-            : "border-[#F3E3D2]0 bg-primary-500"
+            : "border-primary-500 bg-primary-500"
           : "border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800",
         disabled ? "opacity-50" : "",
       ].join(" ")}

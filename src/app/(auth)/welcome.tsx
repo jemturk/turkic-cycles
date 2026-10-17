@@ -77,7 +77,7 @@ function CirclesMockup() {
           <Text className="font-display text-sm text-ink-900 dark:text-ink-50">NYC Business Network</Text>
           <Text className="text-xs text-ink-400">34 members · New York</Text>
         </View>
-        <View className="justify-center rounded-full border border-[#F3E3D2]0 px-3 py-1">
+        <View className="justify-center rounded-full border border-primary-500 px-3 py-1">
           <Text className="text-xs font-medium text-primary-500">Join</Text>
         </View>
       </View>

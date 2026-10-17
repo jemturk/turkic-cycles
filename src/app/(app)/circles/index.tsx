@@ -62,7 +62,7 @@ function CirclesPhone() {
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push("/(app)/circles/new")}
-            className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-[#F3E3D2]0 px-4 py-3"
+            className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-primary-500 px-4 py-3"
           >
             <Ionicons name="add" size={20} color="#127A87" />
             <Text className="text-base font-medium text-primary-600">{t("circles.newCircle")}</Text>

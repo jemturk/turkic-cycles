@@ -359,7 +359,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
             accessibilityLabel={t("gallery.addCover")}
             onPress={onAddCoverPress}
             disabled={addPhotos.isPending}
-            className="absolute items-center justify-center rounded-xl border-2 border-dashed border-[#F3E3D2]0/50 dark:border-ink-600"
+            className="absolute items-center justify-center rounded-xl border-2 border-dashed border-primary-500/50 dark:border-ink-600"
             style={{ ...slotPosition(0, tileSize), width: tileSize, height: tileSize }}
           >
             <Ionicons name="add" size={28} color="#127A87" />
