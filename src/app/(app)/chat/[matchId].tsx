@@ -78,6 +78,22 @@ export default function ChatThread() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const scrollRef = useRef<ScrollView>(null);
+  // The thread opens already at its latest message: until the messages have loaded
+  // and the list has jumped to the end (instantly), it stays hidden, so the jump is
+  // never seen. After that, new messages scroll smoothly.
+  const [positioned, setPositioned] = useState(false);
+  // Whether the list is at (or near) its end -- so when the keyboard shrinks the
+  // list, it stays pinned to the newest message, but not if you're reading older ones.
+  const atBottomRef = useRef(true);
+
+  // Each thread opens at its end again (on desktop the screen stays mounted while
+  // switching threads), and never stays hidden if no size change comes after loading.
+  useEffect(() => {
+    setPositioned(false);
+    atBottomRef.current = true;
+    const fallback = setTimeout(() => setPositioned(true), 1000);
+    return () => clearTimeout(fallback);
+  }, [matchId]);
 
   useEffect(() => {
     if (matchId && userId) markThreadRead.mutate();
@@ -273,7 +289,25 @@ export default function ChatThread() {
           // After the new content has laid out, not when the state changes: scrolling
           // from an effect ran before a new message or the typing bubble had any
           // height, stopping short and leaving it half behind the input bar.
-          onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
+          onContentSizeChange={() => {
+            if (positioned) {
+              scrollRef.current?.scrollToEnd({ animated: true });
+            } else if (messages) {
+              scrollRef.current?.scrollToEnd({ animated: false });
+              requestAnimationFrame(() => setPositioned(true));
+            }
+          }}
+          // The keyboard opening (or the reply preview appearing) makes the list
+          // shorter; keep the newest message in view rather than hidden behind it.
+          onLayout={() => {
+            if (atBottomRef.current) scrollRef.current?.scrollToEnd({ animated: false });
+          }}
+          onScroll={(e) => {
+            const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
+            atBottomRef.current = contentSize.height - contentOffset.y - layoutMeasurement.height < 80;
+          }}
+          scrollEventThrottle={32}
+          style={{ opacity: positioned ? 1 : 0 }}
           onScrollBeginDrag={() => setActionsFor(null)}
         >
           {/* With the reaction bar open, a tap anywhere outside it -- empty space,
