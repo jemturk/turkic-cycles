@@ -63,9 +63,10 @@ The stores would reject the app, or it would break for real users, without these
   Providers → Google. OAuth consent screen (name, logo, support email).
 - [ ] **Sign in with Apple** — Supabase → Providers → Apple, Client IDs
   `com.turek.app,host.exp.Exponent` (no secret needed for native iPhone sign-in).
-- [ ] **Sentry** — create a React Native project; `EXPO_PUBLIC_SENTRY_DSN` in `.env`
-  and EAS environment; `SENTRY_AUTH_TOKEN` (shell + EAS secret) for readable stack
-  traces; send the organization/project slugs to add to `app.json`.
+- [ ] **Sentry** — project `turek` in org `turek` exists, DSN is in `.env` and EAS,
+  plugin configured in `app.json`. Left: set `SENTRY_AUTH_TOKEN` (shell environment +
+  EAS secret) so release builds upload source maps for readable stack traces, and
+  confirm a first report arrives from a release build.
 - [ ] **Final app name** — pick it before the first store release while renaming is
   free (store listing, `app.json` `name`, welcome slides, emails, legal pages).
 - [ ] **Legal review** — the Privacy Policy and Terms are written to match the app but
