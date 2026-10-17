@@ -125,6 +125,10 @@ Built and committed but only checked in a browser preview or not at all.
 
 ## 5. Tech debt
 
+- [ ] Note, not a task: `app.json` `"slug"` must stay `turanci`. It's the Expo project's
+  permanent slug (project ID `45279546-…`, can't be renamed); expo.dev shows the display
+  name `turek`. Changing it breaks every EAS build and deploy with a slug mismatch.
+
 - [ ] Gradle "incompatible with Gradle 10" warnings come from Expo's generated
   `android/app/build.gradle` template — wait for Expo to update it.
 - [ ] One C++ deprecation warning (`RawPropsParser`) in Expo's core module.
