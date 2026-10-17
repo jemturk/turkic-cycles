@@ -29,6 +29,7 @@
       "output": "single"
     },
     "plugins": [
+      "./plugins/withQuietLibraryWarnings",
       "expo-router",
       "expo-status-bar",
       "expo-font",
