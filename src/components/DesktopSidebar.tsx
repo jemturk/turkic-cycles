@@ -13,6 +13,8 @@ import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { useUnreadMessageCount } from "@/hooks/useChat";
 import { useSidebar } from "@/stores/sidebar";
+import { useOnboardingStore } from "@/stores/onboarding";
+import { supabase } from "@/api/client";
 
 // The tabs that get a sidebar entry, in order -- the others in (app)/_layout.tsx
 // (user, me, plus) are hidden routes with href: null.
@@ -41,6 +43,7 @@ function formatCount(count: number) {
 // per browser (stores/sidebar.ts); labels then still reach screen readers.
 export function DesktopSidebar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { t } = useTranslation();
+  const resetOnboardingStore = useOnboardingStore((s) => s.reset);
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
   const { session } = useSession();
@@ -151,23 +154,43 @@ export function DesktopSidebar({ state, descriptors, navigation }: BottomTabBarP
           );
         })}
 
-      <Pressable
-        onPress={() => router.push("/(app)/me")}
-        accessibilityLabel={t("profile.myProfile")}
-        className={`mt-auto flex-row items-center gap-2.5 rounded-2xl bg-accent-100/60 web:hover:bg-accent-100 dark:bg-ink-900 ${
-          collapsed ? "justify-center p-2" : "p-3"
-        }`}
+      {/* Your card: opens your profile. Expanded, it also has a log-out button. */}
+      <View
+        className={`mt-auto flex-row items-center rounded-2xl bg-accent-100/60 dark:bg-ink-900 ${collapsed ? "" : "pr-1.5"}`}
       >
-        <Avatar uri={profile?.avatar_url} name={profile?.display_name} size={collapsed ? 32 : 40} />
+        <Pressable
+          onPress={() => router.push("/(app)/me")}
+          accessibilityLabel={t("profile.myProfile")}
+          className={`flex-1 flex-row items-center gap-2.5 rounded-2xl web:hover:bg-accent-100 ${
+            collapsed ? "justify-center p-2" : "p-3"
+          }`}
+        >
+          <Avatar uri={profile?.avatar_url} name={profile?.display_name} size={collapsed ? 32 : 40} />
+          {collapsed ? null : (
+            <View className="flex-1">
+              <Text className="font-semibold text-ink-900 dark:text-ink-50" numberOfLines={1}>
+                {profile?.display_name}
+              </Text>
+              <Text className="text-[13px] text-ink-700 dark:text-ink-200">{t("profile.myProfile")}</Text>
+            </View>
+          )}
+        </Pressable>
         {collapsed ? null : (
-          <View className="flex-1">
-            <Text className="font-semibold text-ink-900 dark:text-ink-50" numberOfLines={1}>
-              {profile?.display_name}
-            </Text>
-            <Text className="text-[13px] text-ink-700 dark:text-ink-200">{t("profile.myProfile")}</Text>
-          </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("settings.logOut")}
+            // The same global sign-out as Settings > Log out.
+            onPress={async () => {
+              resetOnboardingStore();
+              await supabase.auth.signOut({ scope: "global" });
+              router.replace("/");
+            }}
+            className="h-10 w-10 items-center justify-center rounded-xl web:hover:bg-accent-100 dark:web:hover:bg-ink-700"
+          >
+            <Ionicons name="log-out-outline" size={22} color="#9E370B" />
+          </Pressable>
         )}
-      </Pressable>
+      </View>
     </View>
   );
 }
