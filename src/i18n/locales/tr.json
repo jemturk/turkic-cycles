@@ -47,7 +47,11 @@
       "submit": "Hesap oluştur",
       "errorTitle": "Kayıt olunamadı",
       "checkEmailTitle": "E-postanı kontrol et",
-      "checkEmailBody": "{{email}} adresine bir onay bağlantısı gönderdik. Hesabını oluşturmayı tamamlamak için bağlantıyı aç."
+      "checkEmailBody": "{{email}} adresine bir onay bağlantısı gönderdik. Hesabını oluşturmayı tamamlamak için bağlantıyı aç.",
+      "agreePrefix": "Kaydolarak",
+      "terms": "Kullanım Koşullarını",
+      "agreeAnd": "ve",
+      "privacy": "Gizlilik Politikasını kabul etmiş olursun"
     },
     "forgotPassword": {
       "heading": "Şifreni sıfırla",
@@ -536,7 +540,7 @@
       },
       "help": {
         "title": "Yardım ve destek",
-        "body": "Soruların veya sorunların mı var? Bu geçici bir destek sayfası — gerçek iletişim bilgileri gerçek bir destek kanalıyla birlikte gelecek."
+        "body": "Sorun, soru ya da önerin mi var? unturkk@gmail.com adresine yaz, en kısa sürede dönüş yapalım. Birini bildirmek için profilini ya da Güvenlik Merkezi'ni aç."
       },
       "privacy": {
         "title": "Veri ve gizlilik",
@@ -592,7 +596,9 @@
       "followUpNote": " Yanıt vermezsen takip edeceğiz. (SMS gönderimi şimdilik yer tutucu — henüz gerçek bir mesaj gönderilmiyor.)",
       "sharing": "Paylaşılıyor...",
       "sharePlans": "Planları paylaş"
-    }
+    },
+    "privacyPolicy": "Gizlilik politikası",
+    "termsOfService": "Kullanım koşulları"
   },
   "branching": {
     "allSet": "Seçtiğin bağlantı türleri için başka cevaplanacak bir şey yok — hazırsın.",

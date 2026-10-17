@@ -47,7 +47,11 @@
       "submit": "Konto erstellen",
       "errorTitle": "Registrierung fehlgeschlagen",
       "checkEmailTitle": "Prüfe deine E-Mails",
-      "checkEmailBody": "Wir haben einen Bestätigungslink an {{email}} gesendet. Öffne ihn, um dein Konto fertig einzurichten."
+      "checkEmailBody": "Wir haben einen Bestätigungslink an {{email}} gesendet. Öffne ihn, um dein Konto fertig einzurichten.",
+      "agreePrefix": "Mit der Registrierung stimmst du unseren",
+      "terms": "Nutzungsbedingungen",
+      "agreeAnd": "und der",
+      "privacy": "Datenschutzerklärung zu"
     },
     "forgotPassword": {
       "heading": "Passwort zurücksetzen",
@@ -536,7 +540,7 @@
       },
       "help": {
         "title": "Hilfe & Support",
-        "body": "Fragen oder Probleme? Dies ist eine Platzhalter-Support-Seite — echte Kontaktdaten folgen zusammen mit einem echten Support-Kanal."
+        "body": "Fragen, Probleme oder Feedback? Schreib uns an unturkk@gmail.com, wir melden uns so schnell wie möglich. Um jemanden zu melden, öffne das Profil oder das Sicherheitscenter."
       },
       "privacy": {
         "title": "Daten & Datenschutz",
@@ -592,7 +596,9 @@
       "followUpNote": " Falls du nicht antwortest, melden wir uns nach. (Der SMS-Versand ist aktuell nur simuliert — es wird noch keine Nachricht tatsächlich gesendet.)",
       "sharing": "Wird geteilt...",
       "sharePlans": "Pläne teilen"
-    }
+    },
+    "privacyPolicy": "Datenschutzerklärung",
+    "termsOfService": "Nutzungsbedingungen"
   },
   "branching": {
     "allSet": "Für die gewählten Verbindungsarten gibt es nichts weiter zu beantworten — du bist startklar.",

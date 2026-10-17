@@ -486,6 +486,16 @@ export default function Settings() {
         label={t("settings.helpAndSupport")}
         onPress={() => router.push("/(app)/settings/static-page?topic=help")}
       />
+      <Row
+        icon="document-text-outline"
+        label={t("settings.privacyPolicy")}
+        onPress={() => router.push("/(app)/settings/legal?doc=privacy")}
+      />
+      <Row
+        icon="reader-outline"
+        label={t("settings.termsOfService")}
+        onPress={() => router.push("/(app)/settings/legal?doc=terms")}
+      />
     </Section>
   );
 

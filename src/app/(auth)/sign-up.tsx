@@ -116,6 +116,18 @@ export default function SignUp() {
                 onPress={handleSubmit(onSubmit)}
                 disabled={isSubmitting || !captcha.ready}
               />
+              {/* Agreeing to the Terms and Privacy Policy, as both stores expect at sign-up. */}
+              <Text className="text-center text-xs leading-5 text-ink-400">
+                {t("auth.signUp.agreePrefix")}{" "}
+                <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/terms")}>
+                  {t("auth.signUp.terms")}
+                </Text>{" "}
+                {t("auth.signUp.agreeAnd")}{" "}
+                <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/privacy")}>
+                  {t("auth.signUp.privacy")}
+                </Text>
+                .
+              </Text>
               <SocialSignIn
                 captchaToken={captcha.captchaToken}
                 captchaReady={captcha.ready}

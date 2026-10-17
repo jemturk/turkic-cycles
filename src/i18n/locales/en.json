@@ -47,7 +47,11 @@
       "submit": "Create account",
       "errorTitle": "Couldn't sign up",
       "checkEmailTitle": "Check your email",
-      "checkEmailBody": "We sent a confirmation link to {{email}}. Open it to finish creating your account."
+      "checkEmailBody": "We sent a confirmation link to {{email}}. Open it to finish creating your account.",
+      "agreePrefix": "By signing up, you agree to our",
+      "terms": "Terms of Service",
+      "agreeAnd": "and",
+      "privacy": "Privacy Policy"
     },
     "forgotPassword": {
       "heading": "Reset your password",
@@ -536,7 +540,7 @@
       },
       "help": {
         "title": "Help & support",
-        "body": "Questions or issues? This is a placeholder support page — real contact details land alongside a real support channel."
+        "body": "Questions, problems or feedback? Email us at unturkk@gmail.com and we'll get back to you as soon as we can. To report someone, open their profile or the Safety Center."
       },
       "privacy": {
         "title": "Data & privacy",
@@ -592,7 +596,9 @@
       "followUpNote": " If you don't respond, we'll follow up. (SMS delivery is stubbed for now — no message is actually sent yet.)",
       "sharing": "Sharing...",
       "sharePlans": "Share plans"
-    }
+    },
+    "privacyPolicy": "Privacy policy",
+    "termsOfService": "Terms of service"
   },
   "branching": {
     "allSet": "Nothing else to answer for the connection types you picked — you're all set.",
