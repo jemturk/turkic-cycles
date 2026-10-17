@@ -238,6 +238,9 @@ export default function Welcome() {
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [pageWidth, setPageWidth] = useState(0);
+  // Each slide fills the area's full height too, so its content centers vertically
+  // (a horizontal ScrollView's pages otherwise only grow as tall as their content).
+  const [pageHeight, setPageHeight] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
   const isLast = index === SLIDES.length - 1;
 
@@ -276,7 +279,13 @@ export default function Welcome() {
             the window/screen width: on web the content is constrained to a max-w-480
             centered column (see root _layout.tsx), which is narrower than the browser
             window on desktop, so a page width based on the window would be wrong there. */}
-        <View className="flex-1" onLayout={(e) => setPageWidth(e.nativeEvent.layout.width)}>
+        <View
+          className="flex-1"
+          onLayout={(e) => {
+            setPageWidth(e.nativeEvent.layout.width);
+            setPageHeight(e.nativeEvent.layout.height);
+          }}
+        >
           {pageWidth > 0 ? (
             <ScrollView
               ref={scrollRef}
@@ -289,7 +298,7 @@ export default function Welcome() {
               {SLIDES.map((s, i) => {
                 const Mockup = s.mockup ? MOCKUPS[s.mockup] : null;
                 return (
-                  <View key={s.titleKey} style={{ width: pageWidth }} className="items-center justify-center px-6">
+                  <View key={s.titleKey} style={{ width: pageWidth, height: pageHeight }} className="items-center justify-center px-6">
                     <View className="w-full items-center gap-6">
                       {i === 0 ? (
                         <View className="h-24 w-24 items-center justify-center rounded-3xl bg-white dark:bg-ink-800">
