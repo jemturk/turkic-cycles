@@ -47,3 +47,6 @@ yarn-error.*
 
 # Firebase service-account private keys (uploaded to EAS for push; never commit)
 *firebase-adminsdk*.json
+
+# Personal editor settings (e.g. written by VS Code extensions).
+.vscode/settings.json
