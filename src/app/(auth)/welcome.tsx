@@ -1,5 +1,5 @@
 import { useRef, useState, type ComponentType } from "react";
-import { NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, View } from "react-native";
+import { NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -8,6 +8,8 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/Button";
 import { AppMark } from "@/components/AppMark";
+import { LinearGradient } from "expo-linear-gradient";
+import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS } from "@/constants/circles";
 
 type Slide = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -16,24 +18,31 @@ type Slide = {
   bodyKey: string;
   // Which illustrative screen preview to show instead of the plain icon --
   // undefined for the brand-intro slide, which has no specific screen to preview.
-  mockup?: "circles" | "discover" | "safety";
+  mockup?: "circles" | "discover" | "chat" | "safety";
 };
 
 const SLIDES: Slide[] = [
   { icon: "infinite-outline", tint: "coral", titleKey: "welcome.slide1Title", bodyKey: "welcome.slide1Body" },
   {
-    icon: "sparkles-outline",
+    icon: "people-outline",
     tint: "teal",
     titleKey: "welcome.slide2Title",
     bodyKey: "welcome.slide2Body",
     mockup: "circles",
   },
   {
-    icon: "heart-outline",
+    icon: "sparkles-outline",
     tint: "coral",
     titleKey: "welcome.slide3Title",
     bodyKey: "welcome.slide3Body",
     mockup: "discover",
+  },
+  {
+    icon: "chatbubbles-outline",
+    tint: "teal",
+    titleKey: "welcome.slideChatTitle",
+    bodyKey: "welcome.slideChatBody",
+    mockup: "chat",
   },
   {
     icon: "shield-checkmark-outline",
@@ -49,36 +58,85 @@ const TINT_BG: Record<Slide["tint"], string> = {
   teal: "bg-teal-500",
 };
 
+// Soft card shadow shared by the previews, so they lift off the cream page.
+const CARD_SHADOW = {
+  shadowColor: "#2B2320",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.08,
+  shadowRadius: 12,
+  elevation: 3,
+};
+
+// A small round "photo": warm initials, since the previews use sample people.
+function Face({ letter, color, size = 28 }: { letter: string; color: string; size?: number }) {
+  return (
+    <View
+      className="items-center justify-center rounded-full border-2 border-white"
+      style={{ width: size, height: size, backgroundColor: color }}
+    >
+      <Text className="text-xs font-bold text-white">{letter}</Text>
+    </View>
+  );
+}
+
 // Small, static illustrations of what the real screens look like -- sample data,
 // not live content, shown before sign-up so new users see the app before they've
-// filled anything in themselves. Styled to match the real screens' own classes
-// (circles list rows, the Discover match card, a verified-member row) rather than
-// being screenshots, so they never go stale relative to the actual UI.
+// filled anything in themselves. Built from the real screens' own styles (circle
+// cards with topic tiles, the Discover card, chat bubbles, the event page) rather
+// than screenshots, so they're translated and follow dark mode.
 function CirclesMockup() {
   return (
     <View className="w-full gap-3">
-      <View className="flex-row items-center gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-3">
-        <View className="h-10 w-10 items-center justify-center rounded-xl bg-teal-50">
-          <Ionicons name="people-outline" size={20} color="#2C8B80" />
+      <View className="flex-row items-center gap-3 rounded-[22px] bg-white p-4 dark:bg-ink-800" style={CARD_SHADOW}>
+        <View className={`h-11 w-11 items-center justify-center rounded-2xl ${CIRCLE_TOPIC_COLORS.culture.bg}`}>
+          <Ionicons name={CIRCLE_TOPIC_ICONS.culture} size={22} color={CIRCLE_TOPIC_COLORS.culture.fg} />
         </View>
         <View className="flex-1 gap-0.5">
-          <Text className="font-display text-sm text-ink-900 dark:text-ink-50">Tampa Türkiye Circle</Text>
-          <Text className="text-xs text-ink-400">12 members · Tampa</Text>
+          <Text className="font-display text-base text-ink-900 dark:text-ink-50" numberOfLines={1}>
+            Tampa Türkiye Circle
+          </Text>
+          <Text className="text-xs text-ink-400" numberOfLines={1}>
+            12 members · Tampa
+          </Text>
         </View>
-        <View className="justify-center rounded-full bg-primary-500 px-3 py-1">
-          <Text className="text-xs font-medium text-white">Join</Text>
+        <View className="rounded-full bg-primary-500 px-3.5 py-1.5">
+          <Text className="text-xs font-semibold text-white">Join</Text>
         </View>
       </View>
-      <View className="flex-row items-center gap-3 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-3">
-        <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary-50">
-          <Ionicons name="briefcase-outline" size={20} color="#127A87" />
+
+      <View className="gap-3 rounded-[22px] bg-white p-4 dark:bg-ink-800" style={CARD_SHADOW}>
+        <View className="flex-row items-center gap-3">
+          <View className={`h-12 w-11 items-center justify-center rounded-xl ${CIRCLE_TOPIC_COLORS.family.bg}`}>
+            <Text className="text-[10px] font-bold" style={{ color: CIRCLE_TOPIC_COLORS.family.fg }}>
+              NOV
+            </Text>
+            <Text className="text-lg font-bold leading-5" style={{ color: CIRCLE_TOPIC_COLORS.family.fg }}>
+              9
+            </Text>
+          </View>
+          <View className="flex-1 gap-0.5">
+            <Text className="font-display text-base text-ink-900 dark:text-ink-50" numberOfLines={1}>
+              Holiday Lights Walk
+            </Text>
+            <Text className="text-xs text-ink-400" numberOfLines={1}>
+              Mon · 6:30 PM · Downtown Tampa
+            </Text>
+          </View>
         </View>
-        <View className="flex-1 gap-0.5">
-          <Text className="font-display text-sm text-ink-900 dark:text-ink-50">NYC Business Network</Text>
-          <Text className="text-xs text-ink-400">34 members · New York</Text>
-        </View>
-        <View className="justify-center rounded-full border border-primary-500 px-3 py-1">
-          <Text className="text-xs font-medium text-primary-500">Join</Text>
+        <View className="flex-row items-center gap-2">
+          <View className="flex-row">
+            {[
+              ["A", "#B5651D"],
+              ["K", "#5A6B7B"],
+              ["Z", "#8A6A4F"],
+              ["T", "#4F6B5A"],
+            ].map(([letter, color], i) => (
+              <View key={letter} style={{ marginLeft: i ? -8 : 0 }}>
+                <Face letter={letter} color={color} />
+              </View>
+            ))}
+          </View>
+          <Text className="text-xs font-medium text-ink-700 dark:text-ink-200">5 going · 3 interested</Text>
         </View>
       </View>
     </View>
@@ -87,19 +145,57 @@ function CirclesMockup() {
 
 function DiscoverMockup() {
   return (
-    <View className="w-full items-center gap-3 rounded-3xl bg-teal-500 p-5">
-      <View className="h-16 w-16 items-center justify-center rounded-full bg-white/30">
-        <Text className="text-2xl font-semibold text-white">A</Text>
+    <View className="w-full overflow-hidden rounded-3xl" style={[CARD_SHADOW, { height: 260 }]}>
+      <LinearGradient colors={["#D9A57E", "#9C6B4E", "#5C3D2E"]} style={StyleSheet.absoluteFill} />
+      <View className="flex-1 items-center justify-center">
+        <Ionicons name="person" size={110} color="rgba(255,255,255,0.28)" />
       </View>
-      <View className="items-center gap-1">
+      <View className="gap-2 bg-ink-950/55 p-4">
         <View className="flex-row items-center gap-1.5">
-          <Text className="font-display text-lg text-white">Aylin, 27</Text>
-          <Ionicons name="checkmark-circle" size={16} color="white" />
+          <Text className="font-display text-xl text-white">Aylin, 27</Text>
+          <Ionicons name="checkmark-circle" size={18} color="white" />
         </View>
         <Text className="text-xs text-white/90">Tampa, FL</Text>
+        <View className="flex-row flex-wrap gap-1.5">
+          {["Architect", "Türkiye", "Friendship"].map((tag) => (
+            <View key={tag} className="rounded-full bg-white/20 px-2.5 py-1">
+              <Text className="text-[11px] font-medium text-white">{tag}</Text>
+            </View>
+          ))}
+        </View>
       </View>
-      <View className="rounded-full bg-white/20 px-3 py-1">
-        <Text className="text-xs font-medium text-white">Looking for: Friend</Text>
+    </View>
+  );
+}
+
+// The chat screen's bubbles: grouped runs, the speech corner toward the sender, an
+// emoji reaction and the typing dots.
+function ChatMockup() {
+  const their = { backgroundColor: "#F8DBCF", borderRadius: 18 };
+  const own = { backgroundColor: "#BEDFE2", borderRadius: 18 };
+  return (
+    <View className="w-full gap-1 rounded-[22px] p-4" style={{ backgroundColor: "#FFFAF4", ...CARD_SHADOW }}>
+      <View className="self-start px-3.5 py-2" style={[their, { borderBottomLeftRadius: 6 }]}>
+        <Text className="text-sm text-ink-900">Coffee after the walk? ☕</Text>
+      </View>
+      <View className="self-start px-3.5 py-2" style={[their, { borderTopLeftRadius: 6, borderBottomLeftRadius: 0 }]}>
+        <Text className="text-sm text-ink-900">{"There's a great place on Salem St"}</Text>
+        <View
+          className="absolute -bottom-3 right-2 rounded-full bg-white px-1.5 py-0.5"
+          style={{ shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 3, elevation: 2 }}
+        >
+          <Text className="text-xs">❤️</Text>
+        </View>
+      </View>
+      <View className="mt-5 self-end px-3.5 py-2" style={[own, { borderBottomRightRadius: 0 }]}>
+        <Text className="text-sm" style={{ color: "#0E3F45" }}>
+          Yes! See you at 7 🙌
+        </Text>
+      </View>
+      <View className="mt-2 flex-row gap-1 self-start rounded-2xl px-3 py-2.5" style={{ backgroundColor: "#FBEAE2" }}>
+        {[0.75, 0.5, 0.3].map((opacity) => (
+          <View key={opacity} className="h-1.5 w-1.5 rounded-full bg-ink-900" style={{ opacity }} />
+        ))}
       </View>
     </View>
   );
@@ -107,23 +203,26 @@ function DiscoverMockup() {
 
 function SafetyMockup() {
   return (
-    <View className="w-full gap-3 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
+    <View className="w-full gap-3 rounded-[22px] bg-white p-4 dark:bg-ink-800" style={CARD_SHADOW}>
       <View className="flex-row items-center gap-3">
-        <View className="h-10 w-10 items-center justify-center rounded-full bg-primary-500">
-          <Text className="text-base font-semibold text-white">A</Text>
-        </View>
+        <Face letter="A" color="#B5651D" size={40} />
         <View className="flex-1">
           <View className="flex-row items-center gap-1.5">
-            <Text className="font-display text-sm text-ink-900 dark:text-ink-50">Aylin</Text>
+            <Text className="font-display text-base text-ink-900 dark:text-ink-50">Aylin</Text>
             <Ionicons name="checkmark-circle" size={16} color="#2C8B80" />
           </View>
           <Text className="text-xs text-ink-400">Verified member</Text>
         </View>
       </View>
-      <View className="flex-row items-center gap-2 rounded-xl bg-teal-50 p-2.5">
-        <Ionicons name="location-outline" size={16} color="#2C8B80" />
-        <Text className="flex-1 text-xs text-ink-700">Plans shared with a trusted contact</Text>
-      </View>
+      {[
+        ["location-outline", "Plans shared with a trusted contact"],
+        ["flag-outline", "Block or report in two taps"],
+      ].map(([icon, label]) => (
+        <View key={label} className="flex-row items-center gap-2.5 rounded-xl bg-teal-50 p-2.5">
+          <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={16} color="#206E65" />
+          <Text className="flex-1 text-xs text-ink-700">{label}</Text>
+        </View>
+      ))}
     </View>
   );
 }
@@ -131,6 +230,7 @@ function SafetyMockup() {
 const MOCKUPS: Record<NonNullable<Slide["mockup"]>, ComponentType> = {
   circles: CirclesMockup,
   discover: DiscoverMockup,
+  chat: ChatMockup,
   safety: SafetyMockup,
 };
 
@@ -189,42 +289,38 @@ export default function Welcome() {
               {SLIDES.map((s, i) => {
                 const Mockup = s.mockup ? MOCKUPS[s.mockup] : null;
                 return (
-                <View
-                  key={s.titleKey}
-                  style={{ width: pageWidth }}
-                  className="items-center justify-center px-6"
-                >
-                  <View className="w-full items-center gap-6">
-                    {i === 0 ? (
-                      <View className="h-24 w-24 items-center justify-center rounded-3xl bg-white dark:bg-ink-800">
-                        <AppMark size={72} />
-                      </View>
-                    ) : Mockup ? (
-                      <View className="w-full max-w-[300px]">
-                        <Mockup />
-                      </View>
-                    ) : (
-                      <View className={`h-20 w-20 items-center justify-center rounded-3xl ${TINT_BG[s.tint]}`}>
-                        <Ionicons name={s.icon} size={36} color="white" />
-                      </View>
-                    )}
+                  <View key={s.titleKey} style={{ width: pageWidth }} className="items-center justify-center px-6">
+                    <View className="w-full items-center gap-6">
+                      {i === 0 ? (
+                        <View className="h-24 w-24 items-center justify-center rounded-3xl bg-white dark:bg-ink-800">
+                          <AppMark size={72} />
+                        </View>
+                      ) : Mockup ? (
+                        <View className="w-full max-w-[300px]">
+                          <Mockup />
+                        </View>
+                      ) : (
+                        <View className={`h-20 w-20 items-center justify-center rounded-3xl ${TINT_BG[s.tint]}`}>
+                          <Ionicons name={s.icon} size={36} color="white" />
+                        </View>
+                      )}
 
-                    <View className="w-full items-center gap-3">
-                      <Text className="w-full text-center font-display text-3xl text-ink-900 dark:text-ink-50">
-                        {i === 0 ? (
-                          <>
-                            Turkic <Text className="text-primary-500">Circles</Text>
-                          </>
-                        ) : (
-                          t(s.titleKey)
-                        )}
-                      </Text>
-                      <Text className="w-full max-w-[320px] text-center text-base leading-6 text-ink-700 dark:text-ink-200">
-                        {t(s.bodyKey)}
-                      </Text>
+                      <View className="w-full items-center gap-3">
+                        <Text className="w-full text-center font-display text-3xl text-ink-900 dark:text-ink-50">
+                          {i === 0 ? (
+                            <>
+                              Turkic <Text className="text-primary-500">Circles</Text>
+                            </>
+                          ) : (
+                            t(s.titleKey)
+                          )}
+                        </Text>
+                        <Text className="w-full max-w-[320px] text-center text-base leading-6 text-ink-700 dark:text-ink-200">
+                          {t(s.bodyKey)}
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
                 );
               })}
             </ScrollView>

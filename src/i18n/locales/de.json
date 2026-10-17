@@ -16,13 +16,15 @@
     "alreadyHaveAccount": "Du hast bereits ein Konto?",
     "logIn": "Anmelden",
     "slide1Title": "Turkic Circles",
-    "slide1Body": "Bedeutungsvolle Verbindungen innerhalb der turksprachigen und turknahen Gemeinschaft — tritt Kreisen bei, lerne Menschen kennen, finde deinen Platz.",
+    "slide1Body": "Lerne Menschen aus der turksprachigen Welt in deiner Nähe kennen und finde deinen Platz.",
     "slide2Title": "Kreisen beitreten",
-    "slide2Body": "Entdecke und tritt Gemeinschaftsgruppen bei, die auf deiner Stadt, Kultur und deinen Interessen basieren — von zwanglosen Treffen bis zu Business-Netzwerken.",
+    "slide2Body": "Gruppen für deine Stadt, Kultur und Interessen, mit echten Treffen im Kalender.",
     "slide3Title": "Entdecken & Verbinden",
-    "slide3Body": "Lerne Menschen in deinen Kreisen kennen — für Freundschaft, Romantik, Business oder Mentoring — das Matching passt sich dem an, wonach du suchst.",
+    "slide3Body": "Lerne Menschen in deinen Kreisen kennen: für Freundschaft, Romantik, Business oder Mentoring.",
+    "slideChatTitle": "Chatten & Planen",
+    "slideChatBody": "Antworte, reagiere und plane dein nächstes Treffen, alles an einem Ort.",
     "slide4Title": "Sicher von Anfang an",
-    "slide4Body": "Lass dich verifizieren, teile deine Pläne vor einem Treffen und blockiere oder melde jeden — deine Sicherheit steht immer an erster Stelle."
+    "slide4Body": "Verifizierte Mitglieder, Pläne mit einer Vertrauensperson geteilt, und jederzeit blockieren oder melden."
   },
   "auth": {
     "login": {

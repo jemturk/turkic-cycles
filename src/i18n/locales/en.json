@@ -16,13 +16,15 @@
     "alreadyHaveAccount": "Already have an account?",
     "logIn": "Log in",
     "slide1Title": "Turkic Circles",
-    "slide1Body": "Meaningful connections within the Turkic and Turkic-adjacent community — join circles, meet people, belong somewhere.",
+    "slide1Body": "Meet people from the Turkic world near you, and find where you belong.",
     "slide2Title": "Join Circles",
-    "slide2Body": "Browse and join community groups built around your city, culture, and interests — from everyday hangouts to business networks.",
+    "slide2Body": "Groups for your city, culture and interests, with real meetups on the calendar.",
     "slide3Title": "Discover & Connect",
-    "slide3Body": "Meet people within your circles for friendship, romance, business, or mentorship — matching adapts to what you're looking for.",
+    "slide3Body": "Meet people in your circles for friendship, romance, business or mentorship.",
+    "slideChatTitle": "Chat & Make Plans",
+    "slideChatBody": "Reply, react and plan your next meetup, all in one place.",
     "slide4Title": "Safe by Design",
-    "slide4Body": "Get verified, share your plans before meeting up, and block or report anyone — your safety comes first, always."
+    "slide4Body": "Verified members, plans shared with someone you trust, and block or report anytime."
   },
   "auth": {
     "login": {

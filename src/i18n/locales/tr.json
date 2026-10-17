@@ -16,13 +16,15 @@
     "alreadyHaveAccount": "Zaten hesabın var mı?",
     "logIn": "Giriş yap",
     "slide1Title": "Turkic Circles",
-    "slide1Body": "Türk ve Türk soylu toplulukları arasında anlamlı bağlantılar kurun — çemberlere katılın, insanlarla tanışın, bir yere ait olun.",
+    "slide1Body": "Yakınındaki Türk dünyasından insanlarla tanış, ait olduğun yeri bul.",
     "slide2Title": "Çemberlere Katıl",
-    "slide2Body": "Şehrine, kültürüne ve ilgi alanlarına göre oluşturulmuş topluluk gruplarına göz at ve katıl — günlük buluşmalardan iş ağlarına kadar.",
+    "slide2Body": "Şehrin, kültürün ve ilgi alanların için gruplar; takvimde gerçek buluşmalar.",
     "slide3Title": "Keşfet ve Bağlan",
-    "slide3Body": "Çemberlerindeki insanlarla arkadaşlık, romantik ilişki, iş ya da mentorluk için tanış — eşleştirme aradığın şeye göre uyarlanır.",
+    "slide3Body": "Çemberlerindeki insanlarla arkadaşlık, romantik ilişki, iş ya da mentorluk için tanış.",
+    "slideChatTitle": "Sohbet Et, Plan Yap",
+    "slideChatBody": "Yanıtla, tepki ver ve bir sonraki buluşmanı tek yerden planla.",
     "slide4Title": "Tasarım Gereği Güvenli",
-    "slide4Body": "Kimliğini doğrula, buluşmadan önce planlarını paylaş, istediğin kişiyi engelle ya da bildir — güvenliğin her zaman önce gelir."
+    "slide4Body": "Doğrulanmış üyeler, güvendiğin biriyle paylaşılan planlar; istediğin an engelle ya da bildir."
   },
   "auth": {
     "login": {
