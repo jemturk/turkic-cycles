@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Platform } from "react-native";
+import { Platform } from "react-native";
 import { Text } from "@/components/Text";
 import { useTranslation } from "react-i18next";
 
@@ -9,6 +9,7 @@ import { passwordComplexitySchema } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { SubPage, Card, Group, Item } from "@/components/SettingsUI";
+import { showAlert } from "@/lib/alert";
 
 export default function Account() {
   const { t } = useTranslation();
@@ -33,7 +34,7 @@ export default function Account() {
     setNewPassword("");
     setStatus(t("settings.accountScreen.passwordUpdated"));
     // Alert.alert is a no-op on web; this confirmation also shows inline above.
-    if (Platform.OS !== "web") Alert.alert(t("settings.accountScreen.passwordUpdated"));
+    if (Platform.OS !== "web") showAlert(t("settings.accountScreen.passwordUpdated"));
   }
 
   return (

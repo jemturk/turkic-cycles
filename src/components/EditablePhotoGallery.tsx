@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState, useCallback } from "react";
-import { Alert, Image, LayoutAnimation, PanResponder, Platform, Pressable, UIManager, View } from "react-native";
+import { Image, LayoutAnimation, PanResponder, Platform, Pressable, UIManager, View } from "react-native";
 import { Text } from "@/components/Text";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,6 +9,7 @@ import { COVER_POSITION, type ProfilePhoto } from "@/api/gallery";
 import { MAX_PROFILE_PHOTOS, useAddProfilePhotos, useRemoveProfilePhoto, useReorderProfilePhotos } from "@/hooks/useGallery";
 import { useDiscoverCardAspect } from "@/lib/discoverCard";
 import { CoverPreviewModal } from "@/components/CoverPreviewModal";
+import { showAlert } from "@/lib/alert";
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -244,7 +245,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
         { ids: next.map((p) => p.id), startPosition: hasCover ? COVER_POSITION : COVER_POSITION + 1 },
         {
           onError: (error) => {
-            Alert.alert(t("gallery.reorderErrorTitle"), error.message);
+            showAlert(t("gallery.reorderErrorTitle"), error.message);
             revert();
           },
         }
@@ -257,7 +258,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
   async function requestLibrary(): Promise<boolean> {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert(t("gallery.photoAccessNeededTitle"), t("gallery.photoAccessNeededBody"));
+      showAlert(t("gallery.photoAccessNeededTitle"), t("gallery.photoAccessNeededBody"));
       return false;
     }
     return true;
@@ -269,7 +270,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
   // preview.
   async function onAddCoverPress() {
     if (order.length >= MAX_PROFILE_PHOTOS) {
-      Alert.alert(t("gallery.maxReachedTitle"), t("gallery.maxReachedBody", { max: MAX_PROFILE_PHOTOS }));
+      showAlert(t("gallery.maxReachedTitle"), t("gallery.maxReachedBody", { max: MAX_PROFILE_PHOTOS }));
       return;
     }
     if (!(await requestLibrary())) return;
@@ -289,7 +290,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
   async function onAddPress() {
     const remaining = MAX_PROFILE_PHOTOS - order.length;
     if (remaining <= 0) {
-      Alert.alert(t("gallery.maxReachedTitle"), t("gallery.maxReachedBody", { max: MAX_PROFILE_PHOTOS }));
+      showAlert(t("gallery.maxReachedTitle"), t("gallery.maxReachedBody", { max: MAX_PROFILE_PHOTOS }));
       return;
     }
     if (!(await requestLibrary())) return;
@@ -302,7 +303,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
     if (result.canceled || result.assets.length === 0) return;
     addPhotos.mutate(
       { photos: result.assets.map((asset) => ({ uri: asset.uri, mimeType: asset.mimeType ?? "image/jpeg" })) },
-      { onError: (error) => Alert.alert(t("gallery.uploadErrorTitle"), error.message) }
+      { onError: (error) => showAlert(t("gallery.uploadErrorTitle"), error.message) }
     );
   }
 
@@ -324,7 +325,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
       setHasCover(true);
       setPendingCover(null);
     } catch (error) {
-      Alert.alert(t("gallery.uploadErrorTitle"), (error as Error).message);
+      showAlert(t("gallery.uploadErrorTitle"), (error as Error).message);
     } finally {
       setIsSavingCover(false);
     }
@@ -338,7 +339,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
     if (wasCover) setHasCover(false);
     removePhoto.mutate(photo, {
       onError: (error) => {
-        Alert.alert(t("gallery.removeErrorTitle"), error.message);
+        showAlert(t("gallery.removeErrorTitle"), error.message);
         revert();
       },
     });

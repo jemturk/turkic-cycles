@@ -1,5 +1,5 @@
 import { Children, useState, type ReactNode } from "react";
-import { Alert, Pressable, ScrollView, Switch, View } from "react-native";
+import { Pressable, ScrollView, Switch, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -34,6 +34,7 @@ import { Button } from "@/components/Button";
 import { Chip } from "@/components/Chip";
 import { Avatar } from "@/components/Avatar";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { showAlert } from "@/lib/alert";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -209,7 +210,7 @@ export default function Settings() {
                   accessibilityState={{ checked: selected }}
                   disabled={!subscription || debugSetTier.isPending}
                   onPress={() =>
-                    debugSetTier.mutate(tier, { onError: (e) => Alert.alert("Couldn't switch", e.message) })
+                    debugSetTier.mutate(tier, { onError: (e) => showAlert("Couldn't switch", e.message) })
                   }
                   className="flex-row items-center gap-1.5"
                 >
@@ -229,7 +230,7 @@ export default function Settings() {
               value={verification?.status === "verified"}
               disabled={!verification || debugSetVerified.isPending}
               onValueChange={(verified) =>
-                debugSetVerified.mutate(verified, { onError: (e) => Alert.alert("Couldn't switch", e.message) })
+                debugSetVerified.mutate(verified, { onError: (e) => showAlert("Couldn't switch", e.message) })
               }
             />
           </View>
@@ -240,11 +241,11 @@ export default function Settings() {
             <Pressable
               onPress={() => {
                 if (!sentryEnabled) {
-                  Alert.alert("Sentry is off", "Reports are only sent from release builds and the website.");
+                  showAlert("Sentry is off", "Reports are only sent from release builds and the website.");
                   return;
                 }
                 Sentry.captureException(new Error("Test error from Settings (test controls)"));
-                Alert.alert("Sent", "A test error was sent to Sentry.");
+                showAlert("Sent", "A test error was sent to Sentry.");
               }}
               className="rounded-full border border-primary-500 px-3 py-1.5"
             >
@@ -553,7 +554,7 @@ export default function Settings() {
                 onPress={() =>
                   deleteAccount.mutate(undefined, {
                     onSuccess: () => signOut("local"),
-                    onError: () => Alert.alert(t("settings.deleteAccountFailed")),
+                    onError: () => showAlert(t("settings.deleteAccountFailed")),
                   })
                 }
               />

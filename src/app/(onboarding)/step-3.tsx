@@ -1,4 +1,4 @@
-import { Alert, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -19,6 +19,7 @@ import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { SegmentedToggle } from "@/components/SegmentedToggle";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
 import { FormScrollView } from "@/components/FormScrollView";
+import { showAlert } from "@/lib/alert";
 
 export default function OnboardingStep3Screen() {
   const { t } = useTranslation();
@@ -50,7 +51,7 @@ export default function OnboardingStep3Screen() {
       { values, corePayload },
       {
         onSuccess: () => router.push("/(onboarding)/step-4"),
-        onError: (error) => Alert.alert(t("onboarding.saveErrorTitle"), error.message),
+        onError: (error) => showAlert(t("onboarding.saveErrorTitle"), error.message),
       }
     );
   };

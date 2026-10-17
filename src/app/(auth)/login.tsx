@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, View } from "react-native";
+import { View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -15,6 +15,7 @@ import { TextField } from "@/components/TextField";
 import { FormScrollView } from "@/components/FormScrollView";
 import { useCaptcha } from "@/hooks/useCaptcha";
 import { SocialSignIn } from "@/components/SocialSignIn";
+import { showAlert } from "@/lib/alert";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ export default function Login() {
     captcha.reset();
 
     if (error) {
-      Alert.alert(t("auth.login.errorTitle"), error.message);
+      showAlert(t("auth.login.errorTitle"), error.message);
       return;
     }
 

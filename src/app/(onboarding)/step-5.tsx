@@ -1,4 +1,4 @@
-import { Alert, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -15,6 +15,7 @@ import { Button } from "@/components/Button";
 import { EditableAvatar } from "@/components/EditableAvatar";
 import { EditablePhotoGallery } from "@/components/EditablePhotoGallery";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
+import { showAlert } from "@/lib/alert";
 
 function Requirement({ done, label }: { done: boolean; label: string }) {
   return (
@@ -54,7 +55,7 @@ export default function OnboardingStep5() {
         // its refetch lands, and would bounce back here on that stale render.
         router.replace("/(app)/circles");
       },
-      onError: (error) => Alert.alert(t("onboarding.step5.errorTitle"), error.message),
+      onError: (error) => showAlert(t("onboarding.step5.errorTitle"), error.message),
     });
   }
 

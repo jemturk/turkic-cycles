@@ -1,4 +1,4 @@
-import { ActivityIndicator, Alert, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,6 +17,7 @@ import { DateOfBirthField } from "@/components/DateOfBirthField";
 import { TimeField } from "@/components/TimeField";
 import { FormScrollView } from "@/components/FormScrollView";
 import { HostRequirements } from "@/components/HostRequirements";
+import { showAlert } from "@/lib/alert";
 
 // A circle's owners and moderators who have Plus and a verified ID can add events (migration 0035 enforces it; the "Add event" button only shows for
 // them). Owners and moderators reaching this by URL without Plus or a verified ID
@@ -48,7 +49,7 @@ export default function NewCircleEvent() {
       { circleId, title: values.title, description: values.description, location: values.location, startsAt: startsAt.toISOString() },
       {
         onSuccess: () => router.back(),
-        onError: (error) => Alert.alert(t("circles.createEventError"), error.message),
+        onError: (error) => showAlert(t("circles.createEventError"), error.message),
       }
     );
   }

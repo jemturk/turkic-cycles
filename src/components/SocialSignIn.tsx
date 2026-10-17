@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Platform, Pressable, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
@@ -8,6 +8,7 @@ import * as AppleAuthentication from "expo-apple-authentication";
 
 import { Text } from "@/components/Text";
 import { signInWithApple, signInWithGoogle, type SocialSignInResult } from "@/api/socialAuth";
+import { showAlert } from "@/lib/alert";
 
 // "or", then Continue with Apple (iPhone only, Apple's own button as its guidelines
 // require) and Continue with Google, under the email form on Log in and Sign up.
@@ -41,7 +42,7 @@ export function SocialSignIn({
     try {
       if ((await signIn()) === "signedIn" && Platform.OS !== "web") router.replace("/");
     } catch (error) {
-      Alert.alert(t("auth.social.errorTitle"), (error as Error).message);
+      showAlert(t("auth.social.errorTitle"), (error as Error).message);
     } finally {
       setBusy(false);
       if (usesCaptcha) onCaptchaUsed();

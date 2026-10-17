@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Linking, Platform, Pressable, ScrollView, View } from "react-native";
+import { Linking, Platform, Pressable, ScrollView, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -18,6 +18,7 @@ import {
 } from "@/hooks/usePlus";
 import { purchasesAvailable, type PlusPackage } from "@/lib/purchases";
 import { Button } from "@/components/Button";
+import { showAlert } from "@/lib/alert";
 
 const MANAGE_SUBSCRIPTIONS_URL = Platform.select({
   ios: "https://apps.apple.com/account/subscriptions",
@@ -66,22 +67,22 @@ export default function Plus() {
     if (!selected) return;
     purchase.mutate(selected.id, {
       onSuccess: (outcome) => {
-        if (outcome === "purchased") Alert.alert(t("plus.welcomeTitle"), t("plus.welcomeBody"));
+        if (outcome === "purchased") showAlert(t("plus.welcomeTitle"), t("plus.welcomeBody"));
       },
-      onError: (error) => Alert.alert(t("plus.purchaseErrorTitle"), error.message),
+      onError: (error) => showAlert(t("plus.purchaseErrorTitle"), error.message),
     });
   }
 
   function restoreAll() {
     restore.mutate(undefined, {
-      onSuccess: (restored) => Alert.alert(restored ? t("plus.restored") : t("plus.nothingToRestore")),
-      onError: (error) => Alert.alert(t("plus.purchaseErrorTitle"), error.message),
+      onSuccess: (restored) => showAlert(restored ? t("plus.restored") : t("plus.nothingToRestore")),
+      onError: (error) => showAlert(t("plus.purchaseErrorTitle"), error.message),
     });
   }
 
   function toggleWaitlist(join: boolean) {
     setWaitlist.mutate(join, {
-      onError: (error) => Alert.alert(t("plus.waitlistErrorTitle"), error.message),
+      onError: (error) => showAlert(t("plus.waitlistErrorTitle"), error.message),
     });
   }
 

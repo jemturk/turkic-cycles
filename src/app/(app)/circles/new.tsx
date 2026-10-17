@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActivityIndicator, Alert, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +20,7 @@ import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { LocationFields } from "@/components/LocationFields";
 import { FormScrollView } from "@/components/FormScrollView";
 import { HostRequirements } from "@/components/HostRequirements";
+import { showAlert } from "@/lib/alert";
 
 // Plus with a verified ID, admins included (migration 0035 enforces it). The button
 // that leads here only shows for them; anyone reaching it by URL sees what they're
@@ -54,7 +55,7 @@ export default function NewCircle() {
       { ...values, latitude: coords?.latitude ?? null, longitude: coords?.longitude ?? null },
       {
         onSuccess: (circleId) => router.replace(`/(app)/circles/${circleId}`),
-        onError: (error) => Alert.alert(t("circles.createCircleError"), error.message),
+        onError: (error) => showAlert(t("circles.createCircleError"), error.message),
       }
     );
   }

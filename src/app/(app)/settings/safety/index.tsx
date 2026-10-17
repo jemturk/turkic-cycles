@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { SubPage, Group, Item, Note } from "@/components/SettingsUI";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,6 +12,7 @@ import { useMyProfile } from "@/hooks/useProfile";
 import { useCancelSafetyPlan, useCheckInSafetyPlan, useMySafetyPlans } from "@/hooks/useSafety";
 import { alertMessage, cancelCheckInReminders, checkInTime, planContacts, textContacts } from "@/lib/safetyAlerts";
 import type { Tables } from "@/types/database";
+import { showAlert } from "@/lib/alert";
 
 type SafetyItem = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -60,7 +61,7 @@ function YourPlans() {
   async function alertContacts(plan: Tables<"safety_plans">) {
     const result = await textContacts(planContacts(plan), alertMessage(t, plan, profile?.display_name || ""));
     if (result === "unavailable" || result === "no-phones") {
-      Alert.alert(t("safetyAlerts.cantTextTitle"), t("safetyAlerts.cantTextBody"));
+      showAlert(t("safetyAlerts.cantTextTitle"), t("safetyAlerts.cantTextBody"));
     }
   }
 

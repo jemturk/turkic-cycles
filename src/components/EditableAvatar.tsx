@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActivityIndicator, Alert, Modal, Pressable, View } from "react-native";
+import { ActivityIndicator, Modal, Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useDeleteAvatar, useUploadAvatar } from "@/hooks/useAvatar";
 import { Avatar } from "@/components/Avatar";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { showAlert } from "@/lib/alert";
 
 type EditableAvatarProps = {
   userId: string;
@@ -38,7 +39,7 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
   function onRemove() {
     setSheetVisible(false);
     deleteAvatar.mutate(undefined, {
-      onError: (error) => Alert.alert(t("avatar.removeErrorTitle"), error.message),
+      onError: (error) => showAlert(t("avatar.removeErrorTitle"), error.message),
     });
   }
 
@@ -50,7 +51,7 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
         ? await ImagePicker.requestCameraPermissionsAsync()
         : await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert(
+      showAlert(
         source === "camera" ? t("avatar.cameraAccessNeededTitle") : t("avatar.photoAccessNeededTitle"),
         source === "camera" ? t("avatar.cameraAccessNeededBody") : t("avatar.photoAccessNeededBody"),
       );
@@ -70,7 +71,7 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
     const asset = result.assets[0];
     uploadAvatar.mutate(
       { uri: asset.uri, mimeType: asset.mimeType ?? "image/jpeg" },
-      { onError: (error) => Alert.alert(t("avatar.uploadErrorTitle"), error.message) },
+      { onError: (error) => showAlert(t("avatar.uploadErrorTitle"), error.message) },
     );
   }
 

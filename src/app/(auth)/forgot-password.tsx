@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, View } from "react-native";
+import { View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
@@ -12,6 +12,7 @@ import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { FormScrollView } from "@/components/FormScrollView";
 import { useCaptcha } from "@/hooks/useCaptcha";
+import { showAlert } from "@/lib/alert";
 
 export default function ForgotPassword() {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ export default function ForgotPassword() {
     captcha.reset();
 
     if (error) {
-      Alert.alert(t("auth.forgotPassword.errorTitle"), error.message);
+      showAlert(t("auth.forgotPassword.errorTitle"), error.message);
       return;
     }
 

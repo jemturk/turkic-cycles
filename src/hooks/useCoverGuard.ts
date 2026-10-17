@@ -1,8 +1,8 @@
-import { Alert, Platform } from "react-native";
 import type { TFunction } from "i18next";
 
 import { COVER_POSITION } from "@/api/gallery";
 import { useProfilePhotos } from "@/hooks/useGallery";
+import { showAlert } from "@/lib/alert";
 
 // Whether the user has a photo in the cover slot. undefined while photos load, so
 // nothing is blocked before we actually know.
@@ -18,11 +18,5 @@ export function useHasCover(userId: string | undefined): boolean | undefined {
 }
 
 export function alertCoverRequired(t: TFunction) {
-  // react-native-web's Alert.alert does nothing, so the browser's own dialog
-  // stands in there -- otherwise a blocked tab tap on web would fail silently.
-  if (Platform.OS === "web") {
-    window.alert(`${t("gallery.coverRequiredTitle")}\n\n${t("gallery.coverRequiredBody")}`);
-    return;
-  }
-  Alert.alert(t("gallery.coverRequiredTitle"), t("gallery.coverRequiredBody"));
+  showAlert(t("gallery.coverRequiredTitle"), t("gallery.coverRequiredBody"));
 }
