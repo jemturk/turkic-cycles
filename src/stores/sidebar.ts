@@ -4,7 +4,7 @@ import { create } from "zustand";
 // only exists on the web, so it's remembered in this browser's localStorage --
 // guarded, since storage can be blocked (private windows, cleared site data), in
 // which case it just starts expanded.
-const STORAGE_KEY = "turanci.sidebarCollapsed";
+const STORAGE_KEY = "turek.sidebarCollapsed";
 
 function readCollapsed(): boolean {
   try {
