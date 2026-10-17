@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Alert, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import { useTranslation } from "react-i18next";
@@ -15,7 +15,9 @@ import { useCaptcha } from "@/hooks/useCaptcha";
 
 export default function ForgotPassword() {
   const { t } = useTranslation();
-  const [email, setEmail] = useState("");
+  // Starts with the email typed on the login page, if any.
+  const params = useLocalSearchParams<{ email?: string }>();
+  const [email, setEmail] = useState(params.email ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const captcha = useCaptcha();

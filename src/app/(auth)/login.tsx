@@ -22,6 +22,7 @@ export default function Login() {
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<AuthCredentials>({
     resolver: zodResolver(authCredentialsSchema),
@@ -83,7 +84,11 @@ export default function Login() {
           />
           <Text
             className="self-end text-sm font-medium text-primary-500"
-            onPress={() => router.push("/(auth)/forgot-password")}
+            // Carries over the email typed here, so it's already filled in there.
+            onPress={() => {
+              const email = getValues("email").trim();
+              router.push({ pathname: "/(auth)/forgot-password", params: email ? { email } : {} });
+            }}
           >
             {t("auth.login.forgotPassword")}
           </Text>
