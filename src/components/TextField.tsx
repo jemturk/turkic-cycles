@@ -1,5 +1,5 @@
 import { useState, type Ref } from "react";
-import { Pressable, TextInput, View, type TextInputProps } from "react-native";
+import { Platform, Pressable, TextInput, View, type TextInputProps } from "react-native";
 import { Text } from "@/components/Text";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -11,7 +11,11 @@ type TextFieldProps = TextInputProps & {
   ref?: Ref<TextInput>;
 };
 
-export function TextField({ label, error, secureTextEntry, ref, ...inputProps }: TextFieldProps) {
+// text-base carries a line height, and iOS clips a single-line TextInput's descenders
+// (the tail of g, y, p) to it. 0 there means "no fixed line height".
+const IOS_INPUT_STYLE = Platform.OS === "ios" ? { lineHeight: 0 } : undefined;
+
+export function TextField({ label, error, secureTextEntry, ref, style, ...inputProps }: TextFieldProps) {
   const [isVisible, setIsVisible] = useState(false);
   const canToggleVisibility = !!secureTextEntry;
 
@@ -27,6 +31,7 @@ export function TextField({ label, error, secureTextEntry, ref, ...inputProps }:
           placeholderTextColor="#8A7C76"
           secureTextEntry={canToggleVisibility && !isVisible}
           {...inputProps}
+          style={[IOS_INPUT_STYLE, style]}
         />
         {canToggleVisibility ? (
           <Pressable

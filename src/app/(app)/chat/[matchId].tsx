@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
@@ -541,7 +541,8 @@ export default function ChatThread() {
                 // one sits inside TextField's own bordered box, which already masks the
                 // browser's default focus ring) -- react-native-web's outlineStyle prop
                 // suppresses that ring, keeping the pill's edge clean when focused.
-                style={{ outlineStyle: "none" } as never}
+                // lineHeight 0 on iOS: its fixed line height (from text-base) clips the tail of g/y/p.
+                style={{ outlineStyle: "none", ...(Platform.OS === "ios" ? { lineHeight: 0 } : null) } as never}
                 placeholder={t("chat.typeMessage")}
                 placeholderTextColor="#8A7C76"
                 value={draft}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FlatList, Modal, Pressable, TextInput, View } from "react-native";
+import { FlatList, Modal, Platform, Pressable, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -120,7 +120,8 @@ export function SearchablePicker({
               autoCorrect={false}
               autoComplete="off"
               className="flex-1 text-base text-ink-900 dark:text-ink-50"
-              style={{ outlineStyle: "none" } as never}
+              // lineHeight 0 on iOS: its fixed line height (from text-base) clips the tail of g/y/p.
+              style={{ outlineStyle: "none", ...(Platform.OS === "ios" ? { lineHeight: 0 } : null) } as never}
             />
             {query ? (
               <Pressable accessibilityLabel={t("common.clear")} hitSlop={8} onPress={() => setQuery("")}>
