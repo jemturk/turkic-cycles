@@ -185,9 +185,9 @@ export function DesktopSidebar({ state, descriptors, navigation }: BottomTabBarP
               await supabase.auth.signOut({ scope: "global" });
               router.replace("/");
             }}
-            className="h-10 w-10 items-center justify-center rounded-xl web:hover:bg-accent-100 dark:web:hover:bg-ink-700"
+            className="h-10 w-10 items-center justify-center rounded-xl web:hover:bg-teal-50 dark:web:hover:bg-ink-700"
           >
-            <Ionicons name="log-out-outline" size={22} color="#9E370B" />
+            <Ionicons name="log-out-outline" size={22} color="#206E65" />
           </Pressable>
         )}
       </View>
