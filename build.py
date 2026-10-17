@@ -3,21 +3,26 @@ r"""Build, publish, and install Turkic Circles.
 
   -w  export the web build and deploy it to EAS Hosting (production)
   -a  build a release APK locally with Gradle
+  -b  build a release app bundle (.aab) for Google Play, signed with the upload
+      key and with a new version code
   -i  install the release APK on the connected device
   -g  copy the release APK to C:\DEV\Cloud\Apk (keeps the newest 3 there)
 
   -d  debug: stream every command and its full output (otherwise each step
       shows one progress line, and the output goes to .expo/build.log)
 
-Flags combine (-wa, -ai, -ag, -aig, -waid, ...). Each step runs at most once, in
-the order web -> APK -> install -> copy. -i or -g on their own use the APK from
+Flags combine (-wa, -ai, -ag, -aig, -ab, -waid, ...). Each step runs at most once, in
+the order web -> APK -> bundle -> install -> copy. -i or -g on their own use the APK from
 the last build.
 
 Without -d, a step's percentage and time left are estimated from how long it took
 the last few times (.expo/build-durations.json); the first run guesses. If a step
 fails, the end of its output is printed along with the log's path.
 
-Before -w or -a, scripts/check_anon_access.py checks the live database for data or
+Release builds are signed with the upload key in ~/.turek/upload-keystore.properties
+(see plugins/withReleaseSigning.js); without it they use the debug key, and -b stops.
+
+Before -w, -a or -b, scripts/check_anon_access.py checks the live database for data or
 functions reachable with the public anon key, and stops the build if it finds any
 (--skip-anon-check to bypass, e.g. offline).
 """
@@ -35,6 +40,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 ANDROID_DIR = ROOT / "android"
 APK_PATH = ANDROID_DIR / "app" / "build" / "outputs" / "apk" / "release" / "app-release.apk"
+AAB_PATH = ANDROID_DIR / "app" / "build" / "outputs" / "bundle" / "release" / "app-release.aab"
+# The upload key's details (plugins/withReleaseSigning.js reads the same file).
+UPLOAD_PROPERTIES = Path(os.environ.get("TUREK_UPLOAD_PROPERTIES", Path.home() / ".turek" / "upload-keystore.properties"))
 APP_ID = "com.turek.app"
 APK_COPY_DIR = Path("C:/DEV/Cloud/Apk")
 APK_COPIES_TO_KEEP = 3
@@ -263,11 +271,8 @@ def require_env_file() -> None:
         raise BuildError(".env is missing -- copy .env.example and fill in the Supabase values")
 
 
-def build_apk() -> None:
-    step("Building release APK")
-    require_env_file()
-    env = android_env()
-    env["NODE_ENV"] = "production"
+def prepare_android(env: dict[str, str]) -> Path:
+    """Stops the Gradle daemon and regenerates android/; returns the gradlew path."""
 
     gradlew = ANDROID_DIR / ("gradlew.bat" if IS_WINDOWS else "gradlew")
 
@@ -299,12 +304,52 @@ def build_apk() -> None:
             else:
                 log(f"prebuild failed (attempt {attempt}/{attempts}); retrying in 5s...")
             time.sleep(5)
+    return gradlew
 
+
+def build_apk() -> None:
+    step("Building release APK")
+    require_env_file()
+    env = android_env()
+    env["NODE_ENV"] = "production"
+    gradlew = prepare_android(env)
     run([str(gradlew), "assembleRelease", "--console=plain"], cwd=ANDROID_DIR, env=env)
 
     if not APK_PATH.is_file():
         raise BuildError(f"Gradle reported success but no APK at {APK_PATH}")
     note(f"APK: {APK_PATH} ({APK_PATH.stat().st_size / 1_000_000:.1f} MB)")
+
+
+def build_bundle() -> None:
+    step("Building release app bundle")
+    # Play rejects bundles signed with the debug key, so don't build one without the
+    # upload key.
+    if not UPLOAD_PROPERTIES.is_file():
+        raise BuildError(
+            f"no upload key at {UPLOAD_PROPERTIES} -- Google Play rejects debug-signed bundles. "
+            "See plugins/withReleaseSigning.js for the file's format."
+        )
+    require_env_file()
+    env = android_env()
+    env["NODE_ENV"] = "production"
+    # Play needs a higher version code for every upload: minutes since 1970 always
+    # goes up and stays far below Play's limit (2,100,000,000).
+    version_code = int(time.time() // 60)
+    env["ANDROID_VERSION_CODE"] = str(version_code)
+    gradlew = prepare_android(env)
+    run([str(gradlew), "bundleRelease", "--console=plain"], cwd=ANDROID_DIR, env=env)
+
+    if not AAB_PATH.is_file():
+        raise BuildError(f"Gradle reported success but no bundle at {AAB_PATH}")
+    # Check who actually signed it: a debug-signed bundle is rejected by Play, and a
+    # signing misconfiguration would otherwise only show up there.
+    keytool = Path(env["JAVA_HOME"]) / "bin" / ("keytool.exe" if IS_WINDOWS else "keytool")
+    signer = subprocess.run(
+        [str(keytool), "-printcert", "-jarfile", str(AAB_PATH)], capture_output=True, text=True, env=env
+    ).stdout
+    if "CN=Android Debug" in signer or "Owner:" not in signer:
+        raise BuildError(f"the bundle at {AAB_PATH} is signed with the debug key, not the upload key -- don't upload it")
+    note(f"Bundle: {AAB_PATH} ({AAB_PATH.stat().st_size / 1_000_000:.1f} MB), version code {version_code}")
 
 
 def install_apk() -> None:
@@ -324,7 +369,20 @@ def install_apk() -> None:
     if len(devices) > 1:
         raise BuildError(f"multiple devices connected ({', '.join(devices)}); set ANDROID_SERIAL to pick one")
 
-    run([adb, "install", "-r", str(APK_PATH)], env=env)
+    # Run directly rather than through run(), to read why an install failed.
+    result = subprocess.run([adb, "install", "-r", str(APK_PATH)], capture_output=True, text=True, env=env)
+    output = (result.stdout or "") + (result.stderr or "")
+    if DEBUG:
+        print(output, end="", flush=True)
+    else:
+        log(output)
+    if result.returncode != 0:
+        if "INSTALL_FAILED_UPDATE_INCOMPATIBLE" in output or "signatures do not match" in output:
+            raise BuildError(
+                "the app on the phone was signed with a different key (e.g. the old debug key). Uninstall it "
+                f"once -- adb uninstall {APP_ID}, or from the phone; you'll need to sign in again -- and rerun -i."
+            )
+        raise BuildError(f"adb install failed: {output.strip()[-300:]}")
     run([adb, "shell", "monkey", "-p", APP_ID, "-c", "android.intent.category.LAUNCHER", "1"], env=env)
 
 
@@ -373,6 +431,7 @@ def main() -> int:
     parser.add_argument("-h", "-help", "--help", action="help", help="show this help message and exit")
     parser.add_argument("-w", "--web", action="store_true", help="build and publish to web")
     parser.add_argument("-a", "--apk", action="store_true", help="build a release APK")
+    parser.add_argument("-b", "--bundle", action="store_true", help="build a release app bundle (.aab) for Google Play")
     parser.add_argument("-i", "--install", action="store_true", help="install the APK on the connected device")
     parser.add_argument("-g", "--copy", action="store_true", help=f"copy the APK to {APK_COPY_DIR}")
     parser.add_argument("-d", "--debug", action="store_true", help="stream every command's full output")
@@ -394,13 +453,13 @@ def main() -> int:
     if IS_WINDOWS and use_color():
         os.system("")
 
-    if not (args.web or args.apk or args.install or args.copy):
+    if not (args.web or args.apk or args.bundle or args.install or args.copy):
         parser.print_help()
         return 2
 
     total_start = time.monotonic()
     try:
-        if (args.web or args.apk) and not args.skip_anon_check:
+        if (args.web or args.apk or args.bundle) and not args.skip_anon_check:
             with Stage("anon-check", "Checking database access"):
                 check_anon_access()
         if args.web:
@@ -409,6 +468,9 @@ def main() -> int:
         if args.apk:
             with Stage("apk", "Building release APK"):
                 build_apk()
+        if args.bundle:
+            with Stage("bundle", "Building release app bundle"):
+                build_bundle()
         if args.install:
             with Stage("install", "Installing on device"):
                 install_apk()
