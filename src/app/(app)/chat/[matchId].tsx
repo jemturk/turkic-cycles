@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Pressable, ScrollView, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
@@ -7,6 +7,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { useSession } from "@/hooks/useSession";
 import {
@@ -25,6 +26,24 @@ import type { Tables } from "@/types/database";
 
 // Message bubbles: pale turquoise for yours, pale coral for theirs (a step past the
 // palette's lightest shades, primary-100 / accent-50), both with dark text.
+// Back-to-back messages from the same person this close together form a run: they
+// sit tight together, and only the last shows its time.
+const RUN_GAP_MS = 5 * 60 * 1000;
+
+// Bubble corners: round, tighter on the sender's side between bubbles of a run, and
+// the last of a run comes to a point toward its sender, like a speech bubble.
+const BUBBLE_RADIUS = 18;
+const RUN_RADIUS = 8;
+
+function sameRun(a: Message | undefined, b: Message | undefined) {
+  return (
+    !!a &&
+    !!b &&
+    a.sender_id === b.sender_id &&
+    Math.abs(new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) < RUN_GAP_MS
+  );
+}
+
 const BUBBLE_COLORS = {
   own: { background: "#BEDFE2", text: "#0E3F45" },
   their: { background: "#F8DBCF", text: "#2B2320" },
@@ -273,24 +292,48 @@ export default function ChatThread() {
               </Text>
             ) : null}
 
-            {(messages ?? []).map((message) => {
+            {(messages ?? []).map((message, index, list) => {
               const isOwn = message.sender_id === userId;
+              const joinsPrevious = sameRun(list[index - 1], message);
+              const continues = sameRun(message, list[index + 1]);
+              const top = joinsPrevious ? RUN_RADIUS : BUBBLE_RADIUS;
+              const bottom = continues ? RUN_RADIUS : 0;
+              const corners = isOwn
+                ? { borderRadius: BUBBLE_RADIUS, borderTopRightRadius: top, borderBottomRightRadius: bottom }
+                : { borderRadius: BUBBLE_RADIUS, borderTopLeftRadius: top, borderBottomLeftRadius: bottom };
               const colors = BUBBLE_COLORS[isOwn ? "own" : "their"];
               const messageReactions = (reactions ?? []).filter((r) => r.messageId === message.id);
               const showHoverActions = wide && !isOwn && (hovered === message.id || actionsFor === message.id);
               const bubble = (
                 <View
-                  className={
-                    wide
-                      ? `shrink rounded-[18px] px-4 py-3 ${isOwn ? "rounded-br-md" : "rounded-bl-md"}`
-                      : "shrink rounded-2xl px-4 py-3"
-                  }
-                  style={{ backgroundColor: colors.background }}
+                  className="shrink"
+                  style={[
+                    corners,
+                    {
+                      backgroundColor: colors.background,
+                      shadowColor: "#2B2320",
+                      shadowOffset: { width: 0, height: 1 },
+                      shadowOpacity: 0.08,
+                      shadowRadius: 2,
+                      elevation: 1,
+                    },
+                  ]}
                 >
-                  {message.reply_to_id ? renderQuote(message.reply_to_id, isOwn) : null}
-                  <Text className="text-base" style={{ color: colors.text }}>
-                    {message.body}
-                  </Text>
+                  {/* Yours has a faint top-to-bottom sheen; theirs stays flat. */}
+                  {isOwn ? (
+                    <LinearGradient
+                      colors={["#C9E6E8", "#B2D8DB"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0.4, y: 1 }}
+                      style={[StyleSheet.absoluteFill, corners]}
+                    />
+                  ) : null}
+                  <View className="px-4 py-3">
+                    {message.reply_to_id ? renderQuote(message.reply_to_id, isOwn) : null}
+                    <Text className="text-base" style={{ color: colors.text }}>
+                      {message.body}
+                    </Text>
+                  </View>
                   {/* Reactions sit on the bubble's bottom corner, like most chat apps. */}
                   {messageReactions.length > 0 ? (
                     <View
@@ -319,11 +362,15 @@ export default function ChatThread() {
                 </View>
               );
               return (
-                <View key={message.id} className={isOwn ? "items-end" : "items-start"}>
+                <View
+                  key={message.id}
+                  // gap-3 between messages; a run's bubbles sit 4px apart instead.
+                  className={`${isOwn ? "items-end" : "items-start"} ${joinsPrevious ? "-mt-2" : ""}`}
+                >
                   {actionsFor === message.id ? renderReactionBar(message) : null}
                   {/* Yours in pale turquoise, theirs in pale coral -- light tints rather
-                    than solid brand colors, so a long thread is calm to read. Desktop
-                    adds a tail corner on each side. Only the other person's can be
+                    than solid brand colors, so a long thread is calm to read. Only the
+                    other person's can be
                     reacted to or replied to: long-press on a phone, hover on desktop. */}
                   <View className={`flex-row items-center gap-1.5 ${wide ? "max-w-[60%]" : "max-w-[80%]"}`}>
                     {isOwn ? (
@@ -366,16 +413,22 @@ export default function ChatThread() {
                       </View>
                     ) : null}
                   </View>
-                  <View className={`flex-row items-center gap-1 ${messageReactions.length > 0 ? "mt-4" : "mt-1"}`}>
-                    <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
-                    {isOwn ? (
-                      <MaterialIcons
-                        name={message.read_at || message.delivered_at ? "done-all" : "done"}
-                        size={16}
-                        color={message.read_at ? "#127A87" : "#A99C95"}
-                      />
-                    ) : null}
-                  </View>
+                  {/* The time (and your read ticks) only under the last bubble of a run; an
+                      earlier one with reactions keeps room for its badge. */}
+                  {continues ? (
+                    messageReactions.length > 0 ? <View className="h-4" /> : null
+                  ) : (
+                    <View className={`flex-row items-center gap-1 ${messageReactions.length > 0 ? "mt-4" : "mt-1"}`}>
+                      <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
+                      {isOwn ? (
+                        <MaterialIcons
+                          name={message.read_at || message.delivered_at ? "done-all" : "done"}
+                          size={16}
+                          color={message.read_at ? "#127A87" : "#A99C95"}
+                        />
+                      ) : null}
+                    </View>
+                  )}
                 </View>
               );
             })}
