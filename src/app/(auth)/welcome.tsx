@@ -345,9 +345,15 @@ export default function Welcome() {
             ))}
           </View>
 
-          {isLast ? (
-            <View className="gap-3">
+          <View className="gap-3">
+            {isLast ? (
               <Button label={t("welcome.getStarted")} onPress={() => router.push("/(auth)/sign-up")} />
+            ) : (
+              <Button label={t("welcome.next")} onPress={next} />
+            )}
+            {/* Always laid out, shown only on the last slide, so the button and dots
+                don't jump up when it appears. */}
+            <View style={{ opacity: isLast ? 1 : 0 }} pointerEvents={isLast ? "auto" : "none"}>
               <Text className="text-center text-sm text-ink-400">
                 {t("welcome.alreadyHaveAccount")}{" "}
                 <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/login")}>
@@ -355,9 +361,7 @@ export default function Welcome() {
                 </Text>
               </Text>
             </View>
-          ) : (
-            <Button label={t("welcome.next")} onPress={next} />
-          )}
+          </View>
         </View>
       </View>
     </SafeAreaView>
