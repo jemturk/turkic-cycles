@@ -422,9 +422,10 @@ export default function ChatThread() {
               className="flex-row items-center gap-2 rounded-full bg-white dark:bg-ink-800 py-2 pl-4 pr-2"
               style={{
                 shadowColor: "#000000",
+                // iOS (and web) draw the shadow from these; tuned to match Android's elevation 3.
                 shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.08,
-                shadowRadius: 12,
+                shadowOpacity: 0.16,
+                shadowRadius: 5,
                 elevation: 3,
               }}
             >
