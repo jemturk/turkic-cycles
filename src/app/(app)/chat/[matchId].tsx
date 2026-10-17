@@ -81,17 +81,19 @@ export default function ChatThread() {
   // The thread opens already at its latest message: until the messages have loaded
   // and the list has jumped to the end (instantly), it stays hidden, so the jump is
   // never seen. After that, new messages scroll smoothly.
-  const [positioned, setPositioned] = useState(false);
+  // Which thread has been positioned -- per thread, since on desktop the screen stays
+  // mounted while switching between them.
+  const [positionedFor, setPositionedFor] = useState<string | null>(null);
+  const positioned = positionedFor === matchId;
   // Whether the list is at (or near) its end -- so when the keyboard shrinks the
   // list, it stays pinned to the newest message, but not if you're reading older ones.
   const atBottomRef = useRef(true);
 
-  // Each thread opens at its end again (on desktop the screen stays mounted while
-  // switching threads), and never stays hidden if no size change comes after loading.
+  // Each thread opens at its end, and never stays hidden if no size change comes
+  // after its messages load.
   useEffect(() => {
-    setPositioned(false);
     atBottomRef.current = true;
-    const fallback = setTimeout(() => setPositioned(true), 1000);
+    const fallback = setTimeout(() => setPositionedFor(matchId ?? null), 1000);
     return () => clearTimeout(fallback);
   }, [matchId]);
 
@@ -294,7 +296,7 @@ export default function ChatThread() {
               scrollRef.current?.scrollToEnd({ animated: true });
             } else if (messages) {
               scrollRef.current?.scrollToEnd({ animated: false });
-              requestAnimationFrame(() => setPositioned(true));
+              requestAnimationFrame(() => setPositionedFor(matchId ?? null));
             }
           }}
           // The keyboard opening (or the reply preview appearing) makes the list
