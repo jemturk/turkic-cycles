@@ -35,7 +35,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 ANDROID_DIR = ROOT / "android"
 APK_PATH = ANDROID_DIR / "app" / "build" / "outputs" / "apk" / "release" / "app-release.apk"
-APP_ID = "com.turanci.app"
+APP_ID = "com.turek.app"
 APK_COPY_DIR = Path("C:/DEV/Cloud/Apk")
 APK_COPIES_TO_KEEP = 3
 IS_WINDOWS = os.name == "nt"

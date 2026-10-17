@@ -24,7 +24,7 @@ Google requires your own Firebase project for FCM (the old shared legacy key Exp
 used to provide is gone):
 
 1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-   and add an Android app with package name `com.turanci.app` (matches `app.json`'s
+   and add an Android app with package name `com.turek.app` (matches `app.json`'s
    `android.package`).
 2. Firebase Console → Project Settings → Service Accounts → generate a new private
    key (downloads a JSON file). Keep this file out of git.

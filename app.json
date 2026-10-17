@@ -10,10 +10,10 @@
     "ios": {
       "supportsTablet": true,
       "icon": "./assets/icon-ios.png",
-      "bundleIdentifier": "com.turanci.app"
+      "bundleIdentifier": "com.turek.app"
     },
     "android": {
-      "package": "com.turanci.app",
+      "package": "com.turek.app",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#FCEAD6",
