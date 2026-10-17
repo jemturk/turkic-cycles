@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   graphql_public: {
     Tables: {
@@ -379,20 +379,32 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "messages_reply_to_id_fkey"
-            columns: ["reply_to_id"]
-            isOneToOne: false
-            referencedRelation: "messages"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "messages_match_id_fkey"
             columns: ["match_id"]
             isOneToOne: false
             referencedRelation: "matches"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      mock_users: {
+        Row: {
+          user_id: string
+        }
+        Insert: {
+          user_id: string
+        }
+        Update: {
+          user_id?: string
+        }
+        Relationships: []
       }
       plus_waitlist: {
         Row: {
@@ -744,6 +756,21 @@ export type Database = {
           },
         ]
       }
+      test_accounts: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_connection_types: {
         Row: {
           connection_type: string
@@ -788,6 +815,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_host: { Args: never; Returns: boolean }
+      can_view_profile: { Args: { target: string }; Returns: boolean }
+      count_incoming_likes: { Args: never; Returns: number }
+      create_circle: {
+        Args: {
+          p_city: string
+          p_country: string
+          p_description: string
+          p_latitude: number | null
+          p_longitude: number | null
+          p_name: string
+          p_state: string
+          p_topic: string
+        }
+        Returns: string
+      }
+      debug_set_my_tier: { Args: { p_tier: string }; Returns: undefined }
+      debug_set_my_verified: {
+        Args: { p_verified: boolean }
+        Returns: undefined
+      }
       get_origin_countries_with_consent: {
         Args: { target_ids: string[] }
         Returns: {
@@ -795,42 +843,39 @@ export type Database = {
           user_id: string
         }[]
       }
-      can_view_profile: { Args: { target: string }; Returns: boolean }
-      count_incoming_likes: { Args: never; Returns: number }
-      list_incoming_likes: {
-        Args: never
-        Returns: {
-          circle_id: string | null
-          liked_at: string
-          user_id: string
-        }[]
-      }
-      create_circle: {
-        Args: {
-          p_name: string
-          p_description: string
-          p_topic: string
-          p_city: string
-          p_state: string
-          p_country: string
-          p_latitude: number | null
-          p_longitude: number | null
-        }
-        Returns: string
-      }
-      debug_set_my_tier: { Args: { p_tier: string }; Returns: undefined }
-      debug_set_my_verified: { Args: { p_verified: boolean }; Returns: undefined }
+      has_plus: { Args: { uid: string }; Returns: boolean }
       is_app_admin: { Args: never; Returns: boolean }
-      is_test_account: { Args: never; Returns: boolean }
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
+      is_test_account: { Args: never; Returns: boolean }
+      is_visible_person: { Args: { target: string }; Returns: boolean }
       list_global_discover_candidates: {
         Args: { max_count?: number }
         Returns: {
           user_id: string
         }[]
       }
+      list_incoming_likes: {
+        Args: never
+        Returns: {
+          circle_id: string
+          liked_at: string
+          user_id: string
+        }[]
+      }
+      pending_incoming_likes: {
+        Args: never
+        Returns: {
+          circle_id: string
+          liked_at: string
+          user_id: string
+        }[]
+      }
       process_overdue_safety_checkins: { Args: never; Returns: undefined }
-      register_push_token: { Args: { p_platform: string; p_token: string }; Returns: undefined }
+      register_push_token: {
+        Args: { p_platform: string; p_token: string }
+        Returns: undefined
+      }
+      sees_mocks: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
