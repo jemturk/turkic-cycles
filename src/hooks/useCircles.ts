@@ -8,6 +8,7 @@ import {
   getCircle,
   getCircleEvent,
   getMyRsvp,
+  listEventAttendees,
   joinCircle,
   leaveCircle,
   listCircleEvents,
@@ -83,6 +84,14 @@ export function useMyRsvp(eventId: string | undefined, userId: string | undefine
   });
 }
 
+export function useEventAttendees(eventId: string | undefined) {
+  return useQuery({
+    queryKey: ["eventAttendees", eventId],
+    queryFn: () => listEventAttendees(eventId as string),
+    enabled: !!eventId,
+  });
+}
+
 export function useJoinCircle(userId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -119,6 +128,7 @@ export function useUpsertRsvp(eventId: string | undefined, userId: string | unde
       // going_count / interested_count are recomputed by a trigger on event_rsvps.
       queryClient.invalidateQueries({ queryKey: ["circleEvents"] });
       queryClient.invalidateQueries({ queryKey: ["circleEvent", eventId] });
+      queryClient.invalidateQueries({ queryKey: ["eventAttendees", eventId] });
     },
   });
 }

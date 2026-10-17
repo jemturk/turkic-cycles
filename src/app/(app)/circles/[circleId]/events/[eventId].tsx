@@ -10,7 +10,7 @@ import { useSession } from "@/hooks/useSession";
 import {
   useCircle,
   useCircleEvent,
-  useCircleMembers,
+  useEventAttendees,
   useJoinCircle,
   useMyCircleMemberships,
   useMyRsvp,
@@ -27,8 +27,6 @@ import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { Avatar } from "@/components/Avatar";
 import { CircleHeader } from "@/components/CircleHeader";
 import { useWideLayout } from "@/hooks/useWideLayout";
-
-const MEMBERS_PREVIEW_COUNT = 6;
 
 export default function CircleEventDetail() {
   const { t } = useTranslation();
@@ -49,7 +47,7 @@ export default function CircleEventDetail() {
   const { data: memberships } = useMyCircleMemberships(userId);
   const { data: event } = useCircleEvent(eventId);
   const { data: rsvp } = useMyRsvp(event?.id, userId);
-  const { data: membersPreview } = useCircleMembers(circleId, MEMBERS_PREVIEW_COUNT);
+  const { data: attendees } = useEventAttendees(event?.id);
   const joinCircle = useJoinCircle(userId);
   const upsertRsvp = useUpsertRsvp(event?.id, userId);
   const wide = useWideLayout();
@@ -72,9 +70,46 @@ export default function CircleEventDetail() {
     />
   );
 
+  // Who is going and who is interested, each a white card of photos (hidden when
+  // empty), or one card inviting a first reply when no one has. "Not going" is private.
+  const groups = [
+    { key: "going", label: t("circles.attendeesGoing"), people: attendees?.going ?? [] },
+    { key: "interested", label: t("circles.attendeesInterested"), people: attendees?.interested ?? [] },
+  ].filter((group) => group.people.length > 0);
+  const attendeeCards =
+    !event || !attendees ? null : groups.length === 0 ? (
+      <View className="flex-row items-center gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+        <Ionicons name="people-outline" size={20} color="#A99C95" />
+        <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">{t("circles.noRsvpsYet")}</Text>
+      </View>
+    ) : (
+      groups.map((group) => (
+        <View key={group.key} className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+          <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">
+            {group.label} · {group.people.length}
+          </Text>
+          <View className="flex-row flex-wrap gap-4">
+            {group.people.map((person) => (
+              <Pressable
+                key={person.userId}
+                className="items-center gap-1"
+                style={{ width: 56 }}
+                onPress={() => router.push(`/(app)/user/${person.userId}`)}
+              >
+                <Avatar uri={person.avatarUrl} name={person.displayName} size={48} />
+                <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
+                  {person.displayName || t("common.member")}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      ))
+    );
+
   // Desktop web: a large title row like the circle's own page, the event on the
   // left (a date tile in the circle's topic colors, when and where, the
-  // description, RSVP) and the circle on the right (Join, members, Meet members).
+  // description, RSVP) and on the right the circle (Join), then who is going and interested.
   if (wide) {
     const colors = CIRCLE_TOPIC_COLORS[topic];
     const startsAt = event ? new Date(event.starts_at) : null;
@@ -178,42 +213,7 @@ export default function CircleEventDetail() {
               </Pressable>
             </View>
 
-            {membersPreview && membersPreview.length > 0 ? (
-              <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
-                <View className="flex-row items-center justify-between">
-                  <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("circles.members")}</Text>
-                  <Pressable onPress={() => router.push(`/(app)/circles/${circle.id}/members`)}>
-                    <Text className="text-sm font-medium text-primary-600">
-                      {t("circles.seeAll", { count: circle.member_count })}
-                    </Text>
-                  </Pressable>
-                </View>
-                <View className="flex-row flex-wrap gap-3">
-                  {membersPreview.map((member) => (
-                    <Pressable
-                      key={member.userId}
-                      className="items-center gap-1"
-                      style={{ width: 92 }}
-                      onPress={() => router.replace(`/(app)/user/${member.userId}`)}
-                    >
-                      <Avatar uri={member.avatarUrl} name={member.displayName} size={48} />
-                      <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
-                        {member.displayName || t("common.member")}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
-            ) : null}
-
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => router.push(`/(app)/circles/${circle.id}/discover`)}
-              className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 web:hover:bg-primary-600"
-            >
-              <Ionicons name="sparkles-outline" size={18} color="#FFFFFF" />
-              <Text className="font-semibold text-white">{t("circles.meetMembers")}</Text>
-            </Pressable>
+            {attendeeCards}
           </View>
         </View>
       </ScrollView>
@@ -225,7 +225,7 @@ export default function CircleEventDetail() {
       <CircleHeader name={circle.name} topic={topic} onBack={goBack} />
 
       {/* The desktop page's cards in one column: the event (date tile, when and where,
-          description, RSVP), the circle (Join), its members, then Meet members. */}
+          description, RSVP), who is going and interested, then the circle (Join). */}
       <ScrollView className="flex-1" contentContainerClassName="gap-4 px-4 pb-10 pt-4">
         {event ? (
           <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800">
@@ -266,6 +266,8 @@ export default function CircleEventDetail() {
           </View>
         ) : null}
 
+        {attendeeCards}
+
         <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
           <View className="flex-row items-center gap-3">
             <View className="flex-1">
@@ -299,43 +301,6 @@ export default function CircleEventDetail() {
             <Text className="text-sm text-ink-700 dark:text-ink-200">{circle.description}</Text>
           ) : null}
         </View>
-
-        {membersPreview && membersPreview.length > 0 ? (
-          <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
-            <View className="flex-row items-center justify-between">
-              <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("circles.members")}</Text>
-              <Pressable onPress={() => router.push(`/(app)/circles/${circle.id}/members`)}>
-                <Text className="text-sm font-medium text-primary-600">
-                  {t("circles.seeAll", { count: circle.member_count })}
-                </Text>
-              </Pressable>
-            </View>
-            <View className="flex-row flex-wrap gap-4">
-              {membersPreview.map((member) => (
-                <Pressable
-                  key={member.userId}
-                  className="items-center gap-1"
-                  style={{ width: 56 }}
-                  onPress={() => router.replace(`/(app)/user/${member.userId}`)}
-                >
-                  <Avatar uri={member.avatarUrl} name={member.displayName} size={48} />
-                  <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
-                    {member.displayName || t("common.member")}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-        ) : null}
-
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => router.push(`/(app)/circles/${circle.id}/discover`)}
-          className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500"
-        >
-          <Ionicons name="sparkles-outline" size={18} color="#FFFFFF" />
-          <Text className="font-semibold text-white">{t("circles.meetMembers")}</Text>
-        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );

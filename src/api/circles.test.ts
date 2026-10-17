@@ -6,6 +6,7 @@ import {
   listUpcomingEventsInCircles,
   listCircleEvents,
   getCircleEvent,
+  listEventAttendees,
 } from "./circles";
 
 const mockFrom = jest.fn();
@@ -113,5 +114,34 @@ describe("getCircleEvent", () => {
   it("returns the event row", async () => {
     queueResponses({ circle_events: [ok({ id: "e1", title: "Meetup" })] });
     expect(await getCircleEvent("e1")).toEqual({ id: "e1", title: "Meetup" });
+  });
+});
+
+describe("listEventAttendees", () => {
+  it("splits RSVPs into going and interested, joined with each person's profile", async () => {
+    queueResponses({
+      event_rsvps: [
+        ok([
+          { user_id: "alice", status: "going" },
+          { user_id: "bob", status: "interested" },
+          { user_id: "cem", status: "going" },
+        ]),
+      ],
+      profiles: [ok([{ id: "alice", display_name: "Alice", avatar_url: "a.png", city: "Tampa" }])],
+    });
+
+    expect(await listEventAttendees("event-1")).toEqual({
+      going: [
+        { userId: "alice", displayName: "Alice", avatarUrl: "a.png", city: "Tampa" },
+        { userId: "cem", displayName: "", avatarUrl: null, city: null },
+      ],
+      interested: [{ userId: "bob", displayName: "", avatarUrl: null, city: null }],
+    });
+  });
+
+  it("skips the profiles query when no one has replied", async () => {
+    queueResponses({ event_rsvps: [ok([])] });
+    expect(await listEventAttendees("event-1")).toEqual({ going: [], interested: [] });
+    expect(mockFrom).toHaveBeenCalledTimes(1);
   });
 });

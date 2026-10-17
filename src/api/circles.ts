@@ -127,6 +127,41 @@ export async function getMyRsvp(eventId: string, userId: string) {
   return data;
 }
 
+// Who is going to and interested in an event, earliest RSVP first, each with their
+// name, photo and city. Readable to the event's circle members (migration 0040);
+// "not going" RSVPs are never returned.
+export async function listEventAttendees(eventId: string) {
+  const { data: rsvpRows, error: rsvpError } = await supabase
+    .from("event_rsvps")
+    .select("user_id, status")
+    .eq("event_id", eventId)
+    .in("status", ["going", "interested"])
+    .order("updated_at");
+  if (rsvpError) throw rsvpError;
+  if (!rsvpRows || rsvpRows.length === 0) return { going: [], interested: [] };
+
+  const { data: profileRows, error: profileError } = await supabase
+    .from("profiles")
+    .select("id, display_name, avatar_url, city")
+    .in(
+      "id",
+      rsvpRows.map((row) => row.user_id)
+    );
+  if (profileError) throw profileError;
+
+  const profileById = new Map((profileRows ?? []).map((p) => [p.id, p]));
+  const toPerson = (row: { user_id: string }) => ({
+    userId: row.user_id,
+    displayName: profileById.get(row.user_id)?.display_name ?? "",
+    avatarUrl: profileById.get(row.user_id)?.avatar_url ?? null,
+    city: profileById.get(row.user_id)?.city ?? null,
+  });
+  return {
+    going: rsvpRows.filter((row) => row.status === "going").map(toPerson),
+    interested: rsvpRows.filter((row) => row.status === "interested").map(toPerson),
+  };
+}
+
 export async function upsertRsvp(eventId: string, userId: string, status: "going" | "interested" | "not_going") {
   const { error } = await supabase
     .from("event_rsvps")
