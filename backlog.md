@@ -48,13 +48,6 @@ The stores would reject the app, or it would break for real users, without these
 - [ ] **Store listings and forms** [you, with help from code] — Apple privacy labels,
   Google Data safety form, age ratings (18+), real screenshots, descriptions,
   support/privacy URLs (`turek.expo.app/privacy`, `/terms`).
-- [ ] **Account deletion web page** [code] — Google Play requires a public URL where
-  people can ask to delete their account without the app (e.g.
-  `turek.expo.app/delete-account`: the steps via Settings → Delete account on the website,
-  plus the support email). See `store-submission.md` §3.
-- [ ] **iPad: yes or no** [you] — `app.json` has `supportsTablet: true`, which makes
-  Apple require iPad screenshots and review on iPad. Set it to `false` before the first
-  iOS build unless you want iPad. See `store-submission.md` §1.
 - [ ] **App Review test account** [both] — reviewers need a working login. Decide
   whether it should be a tester (sees the mock profiles, so the app looks alive) or a
   regular account (sees only real people; may look empty). Add it with

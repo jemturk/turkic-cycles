@@ -25,10 +25,9 @@ Placeholders: **[NAME]** = the final app name (currently "Turkic Circles").
 | Price | Free (with in-app purchases) | Free (contains in-app purchases) |
 | Contains ads | No | No |
 
-**iPad:** `app.json` currently has `"supportsTablet": true`, so Apple requires iPad
-screenshots and reviews the app on an iPad too. The app is designed for phones; unless
-you want iPad, set it to `false` before the first iOS build (it can't be removed
-easily after release).
+**iPad:** not supported (`"supportsTablet": false` in `app.json`), so no iPad
+screenshots are needed and Apple reviews on iPhone. iPads can still run the iPhone
+version.
 
 ---
 
@@ -77,11 +76,9 @@ Play Console → App content → Data safety.
   in the app (Settings → Delete account) and on the web (see *Account deletion URL*).
 - Account creation: **Username/email and password**, plus **OAuth** (Google, Apple).
 
-**Account deletion URL (required by Google):** Google needs a web page where people can
-ask for deletion without the app. Today members can sign in at https://turek.expo.app
-and use Settings → Delete account; a short public page explaining that (and offering
-the support email) should be added, e.g. `turek.expo.app/delete-account`. *(Not built
-yet — see backlog.)*
+**Account deletion URL (required by Google):** https://turek.expo.app/delete-account —
+explains deleting in the app, on the website, or by email, what gets deleted, and that
+Plus must be cancelled separately.
 
 **Data types** — for each: Collected **Yes**, Shared **No** (Google doesn't count
 service providers acting on your behalf as "sharing"), Processed ephemerally **No**,
@@ -246,8 +243,7 @@ with real-looking content. Suggested order — the first two matter most:
 
 **Sizes**
 - **Apple:** 6.9" iPhone, 1320 × 2868 px (portrait) — required; Apple scales it for
-  smaller iPhones. If iPad stays supported: 13" iPad, 2064 × 2752 px — required too.
-  Up to 10 per size; at least 1.
+  smaller iPhones. Up to 10; at least 1. (No iPad screenshots: iPad isn't supported.)
 - **Google:** phone screenshots, 2–8, 16:9 or 9:16, each side 320–3840 px
   (e.g. 1080 × 1920). Plus a **feature graphic** 1024 × 500 px and an **app icon**
   512 × 512 px (PNG, 32-bit).

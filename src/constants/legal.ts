@@ -313,3 +313,55 @@ export const TERMS_OF_SERVICE: LegalDocument = {
     },
   ],
 };
+
+// turek.expo.app/delete-account: how to delete an account, for people who no longer
+// have the app. Google Play requires a public page like this (Data safety).
+export const DELETE_ACCOUNT: LegalDocument = {
+  title: "Delete your account",
+  intro:
+    `You can delete your ${APP_NAME} account and its data at any time, in the app or on the website. ` +
+    "Deleting is permanent and can't be undone.",
+  sections: [
+    {
+      heading: "In the app",
+      body: [
+        "- Open the app and sign in.",
+        "- Go to Settings and tap Delete account.",
+        "- Confirm. Your account is deleted straight away and you're signed out.",
+      ],
+    },
+    {
+      heading: "On the website (no app needed)",
+      body: [
+        "- Go to https://turek.expo.app and sign in with the same email and password, or Google account. " +
+          "(Sign in with Apple works in the iPhone app only; if that's how you signed up, use the app or email us.)",
+        "- Open Settings and choose Delete account, then confirm.",
+      ],
+    },
+    {
+      heading: "By email",
+      body: [
+        `If you can't sign in, email ${LEGAL_CONTACT} from the address on your account and ask us to delete ` +
+          "it. We may ask you to confirm it's your account, and we'll delete it within 30 days.",
+      ],
+    },
+    {
+      heading: "What's deleted",
+      body: [
+        "Your profile and photos, your circle memberships and event RSVPs, your likes and matches, your " +
+          "messages and reactions, your safety plans and trusted contacts, your settings and your " +
+          "verification status.",
+        "Copies may remain in our providers' encrypted backups for a limited time before they're " +
+          "overwritten. We may keep limited records where the law requires it or to deal with reports of " +
+          "abuse.",
+      ],
+    },
+    {
+      heading: "Plus subscriptions",
+      body: [
+        "Deleting your account doesn't cancel a Plus subscription. Cancel it in your App Store or Google " +
+          "Play account settings first, so you're not charged again.",
+      ],
+    },
+  ],
+};
