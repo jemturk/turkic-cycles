@@ -48,10 +48,9 @@ The stores would reject the app, or it would break for real users, without these
 - [ ] **Store listings and forms** [you, with help from code] — Apple privacy labels,
   Google Data safety form, age ratings (18+), real screenshots, descriptions,
   support/privacy URLs (`turek.expo.app/privacy`, `/terms`).
-- [ ] **App Review test account** [both] — reviewers need a working login. Decide
-  whether it should be a tester (sees the mock profiles, so the app looks alive) or a
-  regular account (sees only real people; may look empty). Add it with
-  `insert into public.test_accounts …` if it should be a tester.
+- [x] **App Review test account** — "Nurlan H." (`mock003@turek-mock.invalid`, a test
+  account); password in `~/.turek/review-account.txt`. Enter it in Play Console → App
+  access and App Store Connect → App Review Information.
 - [ ] **Plus purchases end to end** [you] — create the subscription products in App
   Store Connect and Play Console, set up RevenueCat for `com.turek.app` (both
   platforms), then test a sandbox purchase and Restore.

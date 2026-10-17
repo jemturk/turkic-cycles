@@ -202,7 +202,11 @@ Both stores need a working login. Create a dedicated review account (not one of 
 fully onboarded, and **add it as a test account** so the app isn't empty for the
 reviewer (`insert into public.test_accounts …` — it then sees the sample members).
 
-**Sign-in information:** email + password of the review account.
+**Sign-in information:** the review account is set up: sample member "Nurlan H.",
+`mock003@turek-mock.invalid`, a test account (sees the sample members), verified, in 4
+circles, with a chat, RSVPs and a safety plan. Its password is in
+`~/.turek/review-account.txt` (outside the repo). The screenshots in `store-assets/`
+were taken with it.
 
 **Notes to paste (Apple → App Review Information → Notes; Google → App access):**
 
