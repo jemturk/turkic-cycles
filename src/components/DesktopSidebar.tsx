@@ -187,7 +187,7 @@ export function DesktopSidebar({ state, descriptors, navigation }: BottomTabBarP
             }}
             className="h-10 w-10 items-center justify-center rounded-xl web:hover:bg-teal-50 dark:web:hover:bg-ink-700"
           >
-            <Ionicons name="log-out-outline" size={22} color="#206E65" />
+            <Ionicons name="log-out-outline" size={22} color="#6F948F" />
           </Pressable>
         )}
       </View>
