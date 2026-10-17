@@ -9,7 +9,7 @@ export const TURNSTILE_SITE_KEY = process.env.EXPO_PUBLIC_TURNSTILE_SITE_KEY || 
 // Turnstile only issues tokens on hostnames listed for the site key in Cloudflare.
 // The web build runs on this host; the native WebView loads its HTML with this as
 // the base URL so it counts as the same host.
-export const TURNSTILE_HOSTNAME = "https://turanci.expo.app";
+export const TURNSTILE_HOSTNAME = "https://turek.expo.app";
 
 export const TURNSTILE_SCRIPT = "https://challenges.cloudflare.com/turnstile/v0/api.js";
 
