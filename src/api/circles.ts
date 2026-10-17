@@ -49,7 +49,7 @@ export async function listCircleMembers(circleId: string, limit?: number) {
 
   const { data: profileRows, error: profileError } = await supabase
     .from("profiles")
-    .select("id, display_name, avatar_url")
+    .select("id, display_name, avatar_url, city")
     .in(
       "id",
       memberRows.map((row) => row.user_id)
@@ -62,6 +62,7 @@ export async function listCircleMembers(circleId: string, limit?: number) {
     joinedAt: row.joined_at,
     displayName: profileById.get(row.user_id)?.display_name ?? "",
     avatarUrl: profileById.get(row.user_id)?.avatar_url ?? null,
+    city: profileById.get(row.user_id)?.city ?? null,
   }));
 }
 

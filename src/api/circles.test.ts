@@ -33,14 +33,14 @@ describe("listCircleMembers", () => {
   it("joins member rows with their profile, defaulting missing fields", async () => {
     queueResponses({
       circle_members: [ok([{ user_id: "alice", joined_at: "2026-01-01" }, { user_id: "bob", joined_at: "2026-01-02" }])],
-      profiles: [ok([{ id: "alice", display_name: "Alice", avatar_url: "a.png" }])],
+      profiles: [ok([{ id: "alice", display_name: "Alice", avatar_url: "a.png", city: "Tampa" }])],
     });
 
     const result = await listCircleMembers("circle-1");
 
     expect(result).toEqual([
-      { userId: "alice", joinedAt: "2026-01-01", displayName: "Alice", avatarUrl: "a.png" },
-      { userId: "bob", joinedAt: "2026-01-02", displayName: "", avatarUrl: null },
+      { userId: "alice", joinedAt: "2026-01-01", displayName: "Alice", avatarUrl: "a.png", city: "Tampa" },
+      { userId: "bob", joinedAt: "2026-01-02", displayName: "", avatarUrl: null, city: null },
     ]);
   });
 
