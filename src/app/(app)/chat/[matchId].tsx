@@ -233,52 +233,62 @@ export default function ChatThread() {
           className={
             wide ? "flex-1 bg-[#FFFAF4] px-6 pt-5 dark:bg-ink-900" : "flex-1 bg-[#FFFAF4] px-4 pt-4 dark:bg-ink-900"
           }
-          contentContainerClassName="gap-3 pb-4"
+          contentContainerClassName="grow pb-4"
           // After the new content has laid out, not when the state changes: scrolling
           // from an effect ran before a new message or the typing bubble had any
           // height, stopping short and leaving it half behind the input bar.
           onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
           onScrollBeginDrag={() => setActionsFor(null)}
         >
-          {participant?.match ? (
-            <Text className="text-center text-xs text-ink-400">
-              {t("chat.youMatched", { date: format(new Date(participant.match.created_at), "MMM d") })}
-            </Text>
-          ) : null}
+          {/* With the reaction bar open, a tap anywhere outside it -- empty space,
+              another bubble, the message box -- closes it. Buttons inside (the bar,
+              the bubbles) take their own taps first; this only gets the rest. */}
+          <Pressable
+            onPress={() => setActionsFor(null)}
+            disabled={!actionsFor}
+            accessible={false}
+            className="grow gap-3"
+            style={{ cursor: "auto" } as never}
+          >
+            {participant?.match ? (
+              <Text className="text-center text-xs text-ink-400">
+                {t("chat.youMatched", { date: format(new Date(participant.match.created_at), "MMM d") })}
+              </Text>
+            ) : null}
 
-          {(messages ?? []).map((message) => {
-            const isOwn = message.sender_id === userId;
-            const colors = BUBBLE_COLORS[isOwn ? "own" : "their"];
-            const messageReactions = (reactions ?? []).filter((r) => r.messageId === message.id);
-            const showHoverActions = wide && !isOwn && (hovered === message.id || actionsFor === message.id);
-            const bubble = (
-              <View
-                className={
-                  wide
-                    ? `shrink rounded-[18px] px-4 py-3 ${isOwn ? "rounded-br-md" : "rounded-bl-md"}`
-                    : "shrink rounded-2xl px-4 py-3"
-                }
-                style={{ backgroundColor: colors.background }}
-              >
-                {message.reply_to_id ? renderQuote(message.reply_to_id, isOwn) : null}
-                <Text className="text-base" style={{ color: colors.text }}>
-                  {message.body}
-                </Text>
-                {/* Reactions sit on the bubble's bottom corner, like most chat apps. */}
-                {messageReactions.length > 0 ? (
-                  <View
-                    className={`absolute -bottom-3.5 flex-row rounded-full border border-white bg-white px-1.5 py-0.5 dark:border-ink-800 dark:bg-ink-800 ${
-                      isOwn ? "left-2" : "right-2"
-                    }`}
-                    style={{
-                      shadowColor: "#000",
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: 0.1,
-                      shadowRadius: 3,
-                      elevation: 2,
-                    }}
-                  >
-                    {messageReactions.map((r) => (
+            {(messages ?? []).map((message) => {
+              const isOwn = message.sender_id === userId;
+              const colors = BUBBLE_COLORS[isOwn ? "own" : "their"];
+              const messageReactions = (reactions ?? []).filter((r) => r.messageId === message.id);
+              const showHoverActions = wide && !isOwn && (hovered === message.id || actionsFor === message.id);
+              const bubble = (
+                <View
+                  className={
+                    wide
+                      ? `shrink rounded-[18px] px-4 py-3 ${isOwn ? "rounded-br-md" : "rounded-bl-md"}`
+                      : "shrink rounded-2xl px-4 py-3"
+                  }
+                  style={{ backgroundColor: colors.background }}
+                >
+                  {message.reply_to_id ? renderQuote(message.reply_to_id, isOwn) : null}
+                  <Text className="text-base" style={{ color: colors.text }}>
+                    {message.body}
+                  </Text>
+                  {/* Reactions sit on the bubble's bottom corner, like most chat apps. */}
+                  {messageReactions.length > 0 ? (
+                    <View
+                      className={`absolute -bottom-3.5 flex-row rounded-full border border-white bg-white px-1.5 py-0.5 dark:border-ink-800 dark:bg-ink-800 ${
+                        isOwn ? "left-2" : "right-2"
+                      }`}
+                      style={{
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 1 },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 3,
+                        elevation: 2,
+                      }}
+                    >
+                      {messageReactions.map((r) => (
                         // A fixed box with the emoji centred in it: Android measures emoji
                         // narrower than it draws them, which clipped their left edge.
                         <View key={r.userId} className="h-5 w-5 items-center justify-center">
@@ -287,71 +297,74 @@ export default function ChatThread() {
                           </Text>
                         </View>
                       ))}
-                  </View>
-                ) : null}
-              </View>
-            );
-            return (
-              <View key={message.id} className={isOwn ? "items-end" : "items-start"}>
-                {actionsFor === message.id ? renderReactionBar(message) : null}
-                {/* Yours in pale turquoise, theirs in pale coral -- light tints rather
-                    than solid brand colors, so a long thread is calm to read. Desktop
-                    adds a tail corner on each side. Only the other person's can be
-                    reacted to or replied to: long-press on a phone, hover on desktop. */}
-                <View className={`flex-row items-center gap-1.5 ${wide ? "max-w-[60%]" : "max-w-[80%]"}`}>
-                  {isOwn ? (
-                    bubble
-                  ) : (
-                    <Pressable
-                      onLongPress={() => setActionsFor(actionsFor === message.id ? null : message.id)}
-                      delayLongPress={300}
-                      onHoverIn={() => setHovered(message.id)}
-                      onHoverOut={() => setHovered((id) => (id === message.id ? null : id))}
-                      className="shrink"
-                    >
-                      {bubble}
-                    </Pressable>
-                  )}
-                  {!isOwn && wide ? (
-                    <View
-                      className="flex-row gap-1"
-                      style={{ opacity: showHoverActions ? 1 : 0 }}
-                      onPointerEnter={() => setHovered(message.id)}
-                    >
-                      <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel={t("chat.react")}
-                        onPress={() => setActionsFor(actionsFor === message.id ? null : message.id)}
-                        className="h-8 w-8 items-center justify-center rounded-full web:hover:bg-white dark:web:hover:bg-ink-800"
-                      >
-                        <Ionicons name="happy-outline" size={18} color="#8A7C76" />
-                      </Pressable>
-                      <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel={t("chat.reply")}
-                        onPress={() => startReply(message)}
-                        className="h-8 w-8 items-center justify-center rounded-full web:hover:bg-white dark:web:hover:bg-ink-800"
-                      >
-                        <Ionicons name="arrow-undo-outline" size={18} color="#8A7C76" />
-                      </Pressable>
                     </View>
                   ) : null}
                 </View>
-                <View className={`flex-row items-center gap-1 ${messageReactions.length > 0 ? "mt-4" : "mt-1"}`}>
-                  <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
-                  {isOwn ? (
-                    <MaterialIcons
-                      name={message.read_at || message.delivered_at ? "done-all" : "done"}
-                      size={16}
-                      color={message.read_at ? "#127A87" : "#A99C95"}
-                    />
-                  ) : null}
+              );
+              return (
+                <View key={message.id} className={isOwn ? "items-end" : "items-start"}>
+                  {actionsFor === message.id ? renderReactionBar(message) : null}
+                  {/* Yours in pale turquoise, theirs in pale coral -- light tints rather
+                    than solid brand colors, so a long thread is calm to read. Desktop
+                    adds a tail corner on each side. Only the other person's can be
+                    reacted to or replied to: long-press on a phone, hover on desktop. */}
+                  <View className={`flex-row items-center gap-1.5 ${wide ? "max-w-[60%]" : "max-w-[80%]"}`}>
+                    {isOwn ? (
+                      bubble
+                    ) : (
+                      <Pressable
+                        onLongPress={() => setActionsFor(actionsFor === message.id ? null : message.id)}
+                        // A plain tap on any bubble closes an open reaction bar.
+                        onPress={() => setActionsFor(null)}
+                        delayLongPress={300}
+                        onHoverIn={() => setHovered(message.id)}
+                        onHoverOut={() => setHovered((id) => (id === message.id ? null : id))}
+                        className="shrink"
+                      >
+                        {bubble}
+                      </Pressable>
+                    )}
+                    {!isOwn && wide ? (
+                      <View
+                        className="flex-row gap-1"
+                        style={{ opacity: showHoverActions ? 1 : 0 }}
+                        onPointerEnter={() => setHovered(message.id)}
+                      >
+                        <Pressable
+                          accessibilityRole="button"
+                          accessibilityLabel={t("chat.react")}
+                          onPress={() => setActionsFor(actionsFor === message.id ? null : message.id)}
+                          className="h-8 w-8 items-center justify-center rounded-full web:hover:bg-white dark:web:hover:bg-ink-800"
+                        >
+                          <Ionicons name="happy-outline" size={18} color="#8A7C76" />
+                        </Pressable>
+                        <Pressable
+                          accessibilityRole="button"
+                          accessibilityLabel={t("chat.reply")}
+                          onPress={() => startReply(message)}
+                          className="h-8 w-8 items-center justify-center rounded-full web:hover:bg-white dark:web:hover:bg-ink-800"
+                        >
+                          <Ionicons name="arrow-undo-outline" size={18} color="#8A7C76" />
+                        </Pressable>
+                      </View>
+                    ) : null}
+                  </View>
+                  <View className={`flex-row items-center gap-1 ${messageReactions.length > 0 ? "mt-4" : "mt-1"}`}>
+                    <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
+                    {isOwn ? (
+                      <MaterialIcons
+                        name={message.read_at || message.delivered_at ? "done-all" : "done"}
+                        size={16}
+                        color={message.read_at ? "#127A87" : "#A99C95"}
+                      />
+                    ) : null}
+                  </View>
                 </View>
-              </View>
-            );
-          })}
+              );
+            })}
 
-          {isOtherTyping ? <TypingDots /> : null}
+            {isOtherTyping ? <TypingDots /> : null}
+          </Pressable>
         </ScrollView>
 
         {replyTo ? (
@@ -391,6 +404,7 @@ export default function ChatThread() {
               placeholderTextColor="#8A7C76"
               value={draft}
               onChangeText={onDraftChange}
+              onFocus={() => setActionsFor(null)}
               onSubmitEditing={onSend}
             />
             <Pressable
@@ -425,6 +439,7 @@ export default function ChatThread() {
                 placeholderTextColor="#8A7C76"
                 value={draft}
                 onChangeText={onDraftChange}
+                onFocus={() => setActionsFor(null)}
                 onSubmitEditing={onSend}
               />
               <Pressable
