@@ -591,9 +591,9 @@
       "checkInAfter": "Şu kadar dakika sonra kontrol et",
       "yourTrustedContact": "Güvenilir kişin",
       "theirNameFallback": "onun",
-      "willGetText": "{{contacts}} kişisine {{name}} ismini, konumu ve saati mesajla gönderilecek.",
-      "checkinNote": " {{time}} saatinde iyi olup olmadığını soracağız.",
-      "followUpNote": " Yanıt vermezsen takip edeceğiz. (SMS gönderimi şimdilik yer tutucu — henüz gerçek bir mesaj gönderilmiyor.)",
+      "willGetText": "Planları paylaş'a dokunduğunda Mesajlar uygulaman açılır ve {{contacts}} için kiminle, nerede ve ne zaman buluşacağını anlatan bir mesaj hazır olur. Sadece Gönder'e dokun.",
+      "checkinNote": " Saat {{time}} olduğunda haber vermeni hatırlatacağız.",
+      "followUpNote": " Haber vermezsen tekrar hatırlatırız ve Güvenlik Merkezi'nden tek dokunuşla kişilerini uyarabilirsin.",
       "sharing": "Paylaşılıyor...",
       "sharePlans": "Planları paylaş"
     },
@@ -665,5 +665,22 @@
     "waitlistErrorTitle": "Bekleme listesi güncellenemedi",
     "statusActive": "Aktif",
     "statusWaitlisted": "Bekleme listesinde"
+  },
+  "safetyAlerts": {
+    "planText": "Merhaba, ben {{name}}. {{when}} tarihinde {{location}} konumunda {{meetingWith}} ile buluşuyorum. En geç {{checkIn}} itibarıyla haber vereceğim. O saate kadar benden haber alamazsan lütfen bana ulaşmaya çalış. (Turkic Circles'tan gönderildi)",
+    "alertText": "Ben {{name}}. {{when}} tarihinde {{location}} konumunda {{meetingWith}} ile buluştuktan sonra henüz haber veremedim. Lütfen bana ulaşmaya çalış; ulaşamazsan yerel acil servisleri aramayı düşün. (Turkic Circles'tan gönderildi)",
+    "reminderTitle": "Haber verme zamanı",
+    "reminderBody": "{{meetingWith}} ile buluşman nasıl geçti? Haber vermek için dokun.",
+    "overdueTitle": "Henüz haber vermedin",
+    "overdueBody": "İyi misin? Haber vermek ya da güvendiğin kişileri uyarmak için dokun.",
+    "yourPlans": "Planların",
+    "meeting": "{{name}} ile buluşma",
+    "checkInBy": "En geç {{time}} itibarıyla haber ver",
+    "overdueSince": "{{time}} itibarıyla haber verme gecikti",
+    "checkIn": "İyiyim, haber ver",
+    "alertContacts": "Kişilerimi uyar",
+    "cancelPlan": "Planı iptal et",
+    "cantTextTitle": "Mesajlar açılamıyor",
+    "cantTextBody": "Bu cihaz SMS gönderemiyor. Lütfen güvendiğin kişilere başka bir yolla ulaş."
   }
 }

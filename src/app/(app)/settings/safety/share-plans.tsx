@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useCreateSafetyPlan } from "@/hooks/useSafety";
+import { useMyProfile } from "@/hooks/useProfile";
+import { planMessage, scheduleCheckInReminders, textContacts } from "@/lib/safetyAlerts";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { Chip } from "@/components/Chip";
@@ -17,6 +19,7 @@ export default function SharePlans() {
   const { t } = useTranslation();
   const { session } = useSession();
   const createPlan = useCreateSafetyPlan(session?.user.id);
+  const { data: profile } = useMyProfile(session?.user.id);
 
   const [meetingWith, setMeetingWith] = useState("");
   const [location, setLocation] = useState("");
@@ -32,7 +35,8 @@ export default function SharePlans() {
   const checkinAt = meetingAtValid ? addMinutes(meetingAt, autoCheckinMinutes) : null;
 
   function addContact() {
-    if (!contactName.trim()) return;
+    // A phone number is what the text goes to.
+    if (!contactName.trim() || !contactPhone.trim()) return;
     setContacts([...contacts, { name: contactName.trim(), phone: contactPhone.trim() }]);
     setContactName("");
     setContactPhone("");
@@ -48,7 +52,15 @@ export default function SharePlans() {
         trustedContacts: contacts,
         autoCheckinMinutes,
       },
-      { onSuccess: () => router.back() },
+      {
+        // Saved: set the check-in reminders, then open Messages with the plan
+        // written out for the contacts -- they're told only when you tap Send.
+        onSuccess: async (plan) => {
+          await scheduleCheckInReminders(t, plan).catch(() => {});
+          await textContacts(contacts, planMessage(t, plan, profile?.display_name || "")).catch(() => {});
+          router.back();
+        },
+      },
     );
   }
 
@@ -105,6 +117,8 @@ export default function SharePlans() {
           <View className="flex-1">
             <TextField
               placeholder={t("settings.sharePlansScreen.phonePlaceholder")}
+              keyboardType="phone-pad"
+              textContentType="telephoneNumber"
               value={contactPhone}
               onChangeText={setContactPhone}
             />

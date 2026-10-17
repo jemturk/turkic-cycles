@@ -591,9 +591,9 @@
       "checkInAfter": "Check in after (minutes)",
       "yourTrustedContact": "Your trusted contact",
       "theirNameFallback": "their",
-      "willGetText": "{{contacts}} will get {{name}} name, the location, and time by text.",
-      "checkinNote": " We'll ask if you're okay at {{time}}.",
-      "followUpNote": " If you don't respond, we'll follow up. (SMS delivery is stubbed for now — no message is actually sent yet.)",
+      "willGetText": "When you tap Share plans, your Messages app opens with a text to {{contacts}} saying who you're meeting, where and when. Just tap Send.",
+      "checkinNote": " At {{time}} we'll remind you to check in.",
+      "followUpNote": " If you don't, we'll remind you again and you can alert your contacts in one tap from the Safety Center.",
       "sharing": "Sharing...",
       "sharePlans": "Share plans"
     },
@@ -665,5 +665,22 @@
     "waitlistErrorTitle": "Couldn't update the waitlist",
     "statusActive": "Active",
     "statusWaitlisted": "On the waitlist"
+  },
+  "safetyAlerts": {
+    "planText": "Hi, it's {{name}}. I'm meeting {{meetingWith}} at {{location}} on {{when}}. I'll check in by {{checkIn}}. If you don't hear from me by then, please try to reach me. (Sent from Turkic Circles)",
+    "alertText": "It's {{name}}. I haven't checked in after meeting {{meetingWith}} at {{location}} on {{when}}. Please try to reach me, and if you can't, consider contacting local emergency services. (Sent from Turkic Circles)",
+    "reminderTitle": "Time to check in",
+    "reminderBody": "How did it go with {{meetingWith}}? Tap to check in.",
+    "overdueTitle": "You haven't checked in",
+    "overdueBody": "Are you okay? Tap to check in, or alert your trusted contacts.",
+    "yourPlans": "Your plans",
+    "meeting": "Meeting {{name}}",
+    "checkInBy": "Check in by {{time}}",
+    "overdueSince": "Check-in overdue since {{time}}",
+    "checkIn": "I'm okay, check in",
+    "alertContacts": "Alert my contacts",
+    "cancelPlan": "Cancel plan",
+    "cantTextTitle": "Can't open Messages",
+    "cantTextBody": "This device can't send texts. Please contact your trusted contacts another way."
   }
 }

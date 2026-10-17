@@ -52,8 +52,9 @@ export const PRIVACY_POLICY: LegalDocument = {
         "- Activity: the circles you join, events you RSVP to, the people you like or pass on, your matches, " +
           "the messages, replies and reactions you send, and people you block or report.",
         "- Safety plans: when you create one, the person you're meeting, the place and time, and the names " +
-          "and phone numbers of the trusted contacts you enter. The app does not currently send messages to " +
-          "those contacts itself.",
+          "and phone numbers of the trusted contacts you enter. The app writes a text to those contacts and " +
+          "opens your phone's Messages app; it's only sent if you send it, from your own phone. Check-in " +
+          "reminders are scheduled on your device.",
         "- Verification: if you request profile verification, its status.",
         "- Support: anything you send us when you contact us.",
       ],
