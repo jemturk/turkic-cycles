@@ -82,3 +82,11 @@ export async function listIncomingLikes(): Promise<SavedPerson[]> {
   if (error) throw error;
   return loadPeople(new Map((data ?? []).map((row) => [row.user_id, row.circle_id])));
 }
+
+// Whether the signed-in user is a test account (migration 0042): they see the mock
+// profiles and the Settings test controls. False for everyone else, and on error.
+export async function getIsTestAccount(): Promise<boolean> {
+  const { data, error } = await supabase.rpc("is_test_account");
+  if (error) return false;
+  return !!data;
+}

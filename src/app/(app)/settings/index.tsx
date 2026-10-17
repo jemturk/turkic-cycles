@@ -10,9 +10,15 @@ import { supabase } from "@/api/client";
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { useMyVerificationStatus } from "@/hooks/useVerification";
-import { useDebugSetTier, useDebugSetVerified, useHasPlus, useMySubscription, usePlusWaitlist } from "@/hooks/usePlus";
+import {
+  useDebugSetTier,
+  useDebugSetVerified,
+  useHasPlus,
+  useIsTestAccount,
+  useMySubscription,
+  usePlusWaitlist,
+} from "@/hooks/usePlus";
 import type { Tier } from "@/api/plus";
-import { useIsAppAdmin } from "@/hooks/useCircles";
 import {
   useDeleteAccount,
   useUpdateAppLocale,
@@ -141,7 +147,8 @@ function Section({ title, children }: { title?: string; children: ReactNode }) {
   );
 }
 
-// TEMPORARY test controls (migration 0036).
+// Test controls, for test accounts only (migration 0042): switch your own
+// subscription tier and Verified badge.
 const TEST_TIERS: { tier: Tier; label: string }[] = [
   { tier: "free", label: "Free" },
   { tier: "plus", label: "Plus" },
@@ -156,8 +163,8 @@ export default function Settings() {
   const { data: verification } = useMyVerificationStatus(userId);
   const subscribed = useHasPlus(userId);
   const { data: onPlusWaitlist } = usePlusWaitlist(userId);
-  // TEMPORARY free/Plus switch for testing; remove with migration 0034's function.
-  const { data: isAdmin } = useIsAppAdmin(userId);
+  // Test accounts only; the switches' functions refuse anyone else too.
+  const { data: isTestAccount } = useIsTestAccount(userId);
   const { data: subscription } = useMySubscription(userId);
   const debugSetTier = useDebugSetTier(userId);
   const debugSetVerified = useDebugSetVerified(userId);
@@ -184,12 +191,12 @@ export default function Settings() {
 
   const adminSection = (
     <>
-      {/* TEMPORARY test controls (migration 0036), at the top while testing. */}
-      {isAdmin ? (
+      {/* Test controls, shown to test accounts only (migration 0042). */}
+      {isTestAccount ? (
         <View className="gap-3 rounded-xl border border-dashed border-accent-500 bg-white dark:bg-ink-800 px-4 py-3">
           <View>
             <Text className="text-base text-ink-900 dark:text-ink-50">Test: subscription</Text>
-            <Text className="text-sm text-ink-400">temporary, admins only</Text>
+            <Text className="text-sm text-ink-400">test accounts only</Text>
           </View>
           <View accessibilityRole="radiogroup" className="flex-row gap-4">
             {TEST_TIERS.map(({ tier, label }) => {

@@ -821,6 +821,7 @@ export type Database = {
       debug_set_my_tier: { Args: { p_tier: string }; Returns: undefined }
       debug_set_my_verified: { Args: { p_verified: boolean }; Returns: undefined }
       is_app_admin: { Args: never; Returns: boolean }
+      is_test_account: { Args: never; Returns: boolean }
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
       list_global_discover_candidates: {
         Args: { max_count?: number }

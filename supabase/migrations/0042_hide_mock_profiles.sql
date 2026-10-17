@@ -216,3 +216,54 @@ update public.circle_events e set
     where r.event_id = e.id and r.status = 'interested'
       and not exists (select 1 from public.mock_users mu where mu.user_id = r.user_id)
   );
+
+-- The Settings test controls (0034's subscription switch, 0036's Verified switch)
+-- are for test accounts now rather than app admins: the app shows them to testers
+-- only (is_test_account), and the switches themselves refuse anyone else.
+create or replace function public.is_test_account()
+returns boolean
+language sql
+stable
+security definer set search_path = public
+as $$
+  select public.sees_mocks();
+$$;
+revoke execute on function public.is_test_account() from public, anon;
+grant execute on function public.is_test_account() to authenticated;
+
+create or replace function public.debug_set_my_tier(p_tier text)
+returns void
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if not public.is_test_account() then
+    raise exception 'Only test accounts can do this.' using errcode = 'insufficient_privilege';
+  end if;
+  if p_tier not in ('free', 'plus', 'premium') then
+    raise exception 'Unknown tier: %', p_tier using errcode = 'check_violation';
+  end if;
+
+  update public.subscriptions
+  set tier = p_tier,
+      status = 'active',
+      current_period_end = null
+  where user_id = auth.uid();
+end;
+$$;
+
+create or replace function public.debug_set_my_verified(p_verified boolean)
+returns void
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if not public.is_test_account() then
+    raise exception 'Only test accounts can do this.' using errcode = 'insufficient_privilege';
+  end if;
+
+  insert into public.verification_status (user_id, status)
+  values (auth.uid(), case when p_verified then 'verified' else 'unverified' end)
+  on conflict (user_id) do update set status = excluded.status;
+end;
+$$;

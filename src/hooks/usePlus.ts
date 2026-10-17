@@ -4,6 +4,7 @@ import {
   countIncomingLikes,
   debugSetMyTier,
   debugSetMyVerified,
+  getIsTestAccount,
   getMySubscription,
   hasPlus,
   isOnPlusWaitlist,
@@ -123,5 +124,14 @@ export function useIncomingLikes(userId: string | undefined, enabled: boolean) {
     queryKey: ["incomingLikes", userId],
     queryFn: listIncomingLikes,
     enabled: !!userId && enabled,
+  });
+}
+
+// Test accounts (migration 0042) see the Settings test controls.
+export function useIsTestAccount(userId: string | undefined) {
+  return useQuery({
+    queryKey: ["isTestAccount", userId],
+    queryFn: getIsTestAccount,
+    enabled: !!userId,
   });
 }
