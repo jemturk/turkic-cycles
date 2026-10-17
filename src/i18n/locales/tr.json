@@ -75,6 +75,11 @@
       "done": "E-posta doğrulandı! Seni içeri alıyoruz...",
       "invalidLink": "Bu onay bağlantısı geçersiz veya süresi dolmuş.",
       "backToLogin": "Girişe dön"
+    },
+    "social": {
+      "or": "veya",
+      "google": "Google ile devam et",
+      "errorTitle": "Giriş yapılamadı"
     }
   },
   "circles": {

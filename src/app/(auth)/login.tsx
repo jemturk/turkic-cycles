@@ -14,6 +14,7 @@ import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { FormScrollView } from "@/components/FormScrollView";
 import { useCaptcha } from "@/hooks/useCaptcha";
+import { SocialSignIn } from "@/components/SocialSignIn";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -100,6 +101,11 @@ export default function Login() {
             label={t("auth.login.submit")}
             onPress={handleSubmit(onSubmit)}
             disabled={isSubmitting || !captcha.ready}
+          />
+          <SocialSignIn
+            captchaToken={captcha.captchaToken}
+            captchaReady={captcha.ready}
+            onCaptchaUsed={captcha.reset}
           />
           <Text className="text-center text-sm text-ink-400">
             {t("auth.login.noAccount")}{" "}

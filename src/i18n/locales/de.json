@@ -75,6 +75,11 @@
       "done": "E-Mail bestätigt! Du wirst weitergeleitet...",
       "invalidLink": "Dieser Bestätigungslink ist ungültig oder abgelaufen.",
       "backToLogin": "Zurück zur Anmeldung"
+    },
+    "social": {
+      "or": "oder",
+      "google": "Weiter mit Google",
+      "errorTitle": "Anmeldung fehlgeschlagen"
     }
   },
   "circles": {

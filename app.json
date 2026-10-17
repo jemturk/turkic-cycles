@@ -10,7 +10,8 @@
     "ios": {
       "supportsTablet": true,
       "icon": "./assets/icon-ios.png",
-      "bundleIdentifier": "com.turek.app"
+      "bundleIdentifier": "com.turek.app",
+      "usesAppleSignIn": true
     },
     "android": {
       "package": "com.turek.app",
@@ -63,7 +64,8 @@
         {
           "locationWhenInUsePermission": "Turkic Circles uses your location to show circle events near you."
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

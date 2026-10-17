@@ -75,6 +75,11 @@
       "done": "Email confirmed! Taking you in...",
       "invalidLink": "This confirmation link is invalid or has expired.",
       "backToLogin": "Back to log in"
+    },
+    "social": {
+      "or": "or",
+      "google": "Continue with Google",
+      "errorTitle": "Couldn't sign in"
     }
   },
   "circles": {
