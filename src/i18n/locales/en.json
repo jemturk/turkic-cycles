@@ -178,6 +178,7 @@
     "seeWhoLikesYou": "See who likes you"
   },
   "chat": {
+    "typing": "typing…",
     "empty": "No conversations yet.",
     "member": "Member",
     "typeMessage": "Type a message...",

@@ -178,6 +178,7 @@
     "seeWhoLikesYou": "Sieh, wer dich mag"
   },
   "chat": {
+    "typing": "schreibt…",
     "empty": "Noch keine Unterhaltungen.",
     "member": "Mitglied",
     "typeMessage": "Nachricht schreiben...",

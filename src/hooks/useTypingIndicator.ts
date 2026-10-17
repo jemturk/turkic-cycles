@@ -29,6 +29,12 @@ export function useTypingIndicator(matchId: string | undefined, userId: string |
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
       hideTimerRef.current = setTimeout(() => setIsOtherTyping(false), TYPING_TIMEOUT_MS);
     });
+    // Sent when they send the message or clear the box, so the dots go at once rather
+    // than waiting out the timeout. If it's lost, the timeout still hides them.
+    channel.on("broadcast", { event: "stopped" }, ({ payload }) => {
+      if (payload?.userId === userId) return;
+      clearOtherTyping();
+    });
     channel.subscribe();
     channelRef.current = channel;
 
@@ -47,5 +53,19 @@ export function useTypingIndicator(matchId: string | undefined, userId: string |
     channelRef.current?.send({ type: "broadcast", event: "typing", payload: { userId } });
   }
 
-  return { isOtherTyping, notifyTyping };
+  // Tells the other side this user stopped typing (sent the message, cleared the
+  // box). Only when a "typing" went out since the last one, to keep traffic down.
+  function notifyStopped() {
+    if (lastSentAtRef.current === 0) return;
+    lastSentAtRef.current = 0;
+    channelRef.current?.send({ type: "broadcast", event: "stopped", payload: { userId } });
+  }
+
+  // Hides the dots now -- when their message arrives, which ends the typing.
+  function clearOtherTyping() {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    setIsOtherTyping(false);
+  }
+
+  return { isOtherTyping, notifyTyping, notifyStopped, clearOtherTyping };
 }

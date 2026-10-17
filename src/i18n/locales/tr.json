@@ -178,6 +178,7 @@
     "seeWhoLikesYou": "Seni kimlerin beğendiğini gör"
   },
   "chat": {
+    "typing": "yazıyor…",
     "empty": "Henüz bir konuşman yok.",
     "member": "Üye",
     "typeMessage": "Bir mesaj yaz...",

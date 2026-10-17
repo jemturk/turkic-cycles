@@ -48,7 +48,7 @@ export default function ChatThread() {
   const { data: messages } = useMessages(matchId);
   const sendMessage = useSendMessage(matchId, userId);
   const markThreadRead = useMarkThreadRead(matchId, userId);
-  const { isOtherTyping, notifyTyping } = useTypingIndicator(matchId, userId);
+  const { isOtherTyping, notifyTyping, notifyStopped, clearOtherTyping } = useTypingIndicator(matchId, userId);
   const { data: reactions } = useReactions(matchId);
   const toggleReaction = useToggleReaction(matchId, userId);
 
@@ -68,12 +68,21 @@ export default function ChatThread() {
   function onDraftChange(text: string) {
     setDraft(text);
     if (text.trim()) notifyTyping();
+    else notifyStopped();
   }
+
+  // Their new message ends their typing: hide the dots now, not when the timeout runs out.
+  const lastMessage = messages?.[messages.length - 1];
+  useEffect(() => {
+    if (lastMessage && lastMessage.sender_id !== userId) clearOtherTyping();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastMessage?.id]);
 
   function onSend() {
     const body = draft.trim();
     if (!body) return;
     setDraft("");
+    notifyStopped();
     sendMessage.mutate({ body, replyToId: replyTo?.id });
     setReplyTo(null);
   }
@@ -206,9 +215,17 @@ export default function ChatThread() {
           }}
         >
           <Avatar uri={participant?.profile.avatar_url} name={participant?.profile.display_name} size={40} />
-          <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
-            {participant?.profile.display_name || t("common.member")}
-          </Text>
+          <View>
+            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
+              {participant?.profile.display_name || t("common.member")}
+            </Text>
+            {/* Also in the header, so it shows while reading further up the thread. */}
+            {isOtherTyping ? (
+              <Text className="-mt-0.5 text-xs font-medium text-primary-600 dark:text-primary-400">
+                {t("chat.typing")}
+              </Text>
+            ) : null}
+          </View>
         </Pressable>
         {wide && participant?.profile.id ? (
           <Pressable
