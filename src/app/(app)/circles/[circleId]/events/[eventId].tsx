@@ -143,7 +143,7 @@ export default function CircleEventDetail() {
                 {event.description ? (
                   <Text className="text-base text-ink-700 dark:text-ink-200">{event.description}</Text>
                 ) : null}
-                <View className="border-t border-primary-50 pt-4 dark:border-ink-700">{rsvpChips}</View>
+                <View className="border-t border-[#F3E3D2] pt-4 dark:border-ink-700">{rsvpChips}</View>
               </View>
             ) : null}
           </View>

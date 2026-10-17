@@ -138,7 +138,7 @@ export default function Plus() {
                     accessibilityRole="radio"
                     accessibilityState={{ selected: isSelected }}
                     className={`flex-row items-center justify-between rounded-xl border bg-white dark:bg-ink-800 px-4 py-3 ${
-                      isSelected ? "border-primary-500" : "border-primary-100 dark:border-ink-700"
+                      isSelected ? "border-[#F3E3D2]0" : "border-primary-100 dark:border-ink-700"
                     }`}
                   >
                     <Text className="text-base text-ink-900 dark:text-ink-50">{priceLabel(pkg)}</Text>

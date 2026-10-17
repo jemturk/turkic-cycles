@@ -63,7 +63,7 @@ export default function AppTabsLayout() {
     const slack = Math.max(0, windowWidth - sidebarWidth - maxWidth);
     return {
       sceneStyle: {
-        backgroundColor: isDark ? "#171310" : "#FCEAD6",
+        backgroundColor: isDark ? "#171310" : "#FEF6EC",
         paddingLeft: align === "center" ? slack / 2 : 0,
         paddingRight: align === "center" ? slack / 2 : slack,
       },
@@ -86,7 +86,7 @@ export default function AppTabsLayout() {
   // What shows past the tab bar's rounded corners: an open conversation's lighter
   // cream (chat/[matchId].tsx), else the page color.
   const inConversation = /^\/chat\/[^/]+/.test(pathname);
-  const cornerColor = inConversation ? (isDark ? "#2B2320" : "#FFFAF4") : isDark ? "#171310" : "#FCEAD6";
+  const cornerColor = inConversation ? (isDark ? "#2B2320" : "#FFFAF4") : isDark ? "#171310" : "#FEF6EC";
   const coverMissing = hasCover === false;
   useEffect(() => {
     if (coverMissing && pathname !== COVER_SETUP_PATH) router.replace("/(app)/me");

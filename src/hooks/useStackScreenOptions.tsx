@@ -16,7 +16,7 @@ export function useStackScreenOptions() {
 
   return {
     headerShown: false as const,
-    contentStyle: { backgroundColor: colorScheme === "dark" ? "#171310" : "#FCEAD6" },
+    contentStyle: { backgroundColor: colorScheme === "dark" ? "#171310" : "#FEF6EC" },
     header: ({ options }: { options: { title?: string } }) => <AppHeader title={options.title} />,
   };
 }

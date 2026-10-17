@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FCEAD6",
+    backgroundColor: "#FEF6EC",
     zIndex: 999,
   },
 });

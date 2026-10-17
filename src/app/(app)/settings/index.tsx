@@ -119,7 +119,7 @@ function Row({
 function Section({ title, children }: { title?: string; children: ReactNode }) {
   const wide = useWideLayout();
   const rows = Children.toArray(children).map((child, index) => (
-    <View key={index} className={index > 0 ? "border-t border-primary-50 dark:border-ink-700" : undefined}>
+    <View key={index} className={index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : undefined}>
       {child}
     </View>
   ));

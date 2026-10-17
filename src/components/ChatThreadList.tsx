@@ -89,7 +89,7 @@ export function ChatThreadList({
               key={thread.matchId}
               onPress={() => onOpen(thread.matchId)}
               className={`flex-row items-center gap-3 px-4 py-3 ${
-                index > 0 ? "border-t border-primary-50 dark:border-ink-700" : ""
+                index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : ""
               }`}
             >
               <Avatar uri={thread.otherAvatarUrl} name={thread.otherDisplayName} size={52} />

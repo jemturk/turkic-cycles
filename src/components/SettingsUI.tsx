@@ -92,7 +92,7 @@ export function Group({ title, children }: { title?: string; children: ReactNode
   const card = (
     <View className="overflow-hidden rounded-2xl bg-white dark:bg-ink-800">
       {Children.toArray(children).map((child, index) => (
-        <View key={index} className={index > 0 ? "border-t border-primary-50 dark:border-ink-700" : undefined}>
+        <View key={index} className={index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : undefined}>
           {child}
         </View>
       ))}

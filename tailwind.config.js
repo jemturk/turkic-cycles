@@ -25,7 +25,7 @@ module.exports = {
         // primary: buttons, selected states, links, icons. 50 is the apricot-cream
         // page ground and 100 the hairline border/tint -- the roles coral-50/100 had.
         primary: {
-          50: "#FCEAD6",
+          50: "#FEF6EC",
           100: "#D5EBEC",
           400: "#3E9BA7",
           500: "#127A87",
