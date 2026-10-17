@@ -3,9 +3,11 @@ import * as SMS from "expo-sms";
 import { checkInTime, planContacts, planMessage, textContacts } from "./safetyAlerts";
 import type { Tables } from "@/types/database";
 
-jest.mock("@react-native-async-storage/async-storage", () =>
-  require("@react-native-async-storage/async-storage/jest/async-storage-mock")
-);
+jest.mock("@react-native-async-storage/async-storage", () => ({
+  getItem: jest.fn(async () => null),
+  setItem: jest.fn(async () => {}),
+  removeItem: jest.fn(async () => {}),
+}));
 jest.mock("expo-sms", () => ({
   isAvailableAsync: jest.fn(),
   sendSMSAsync: jest.fn(),
