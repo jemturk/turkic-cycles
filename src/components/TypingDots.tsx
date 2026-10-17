@@ -37,12 +37,12 @@ function Dot({ delay, color }: { delay: number; color: string }) {
 
   const style = useAnimatedStyle(() => ({
     opacity: 0.3 + progress.value * 0.45,
-    transform: [{ translateY: -4 * progress.value }],
+    transform: [{ translateY: -2.5 * progress.value }],
   }));
 
   // Inline style rather than className -- see the note on DiscoverDeck's
   // Animated.View: NativeWind classes on Reanimated views don't reliably apply.
-  return <Animated.View style={[{ width: 8, height: 8, borderRadius: 4, backgroundColor: color }, style]} />;
+  return <Animated.View style={[{ width: 6, height: 6, borderRadius: 3, backgroundColor: color }, style]} />;
 }
 
 // The other participant's "typing..." bubble: a lighter shade of their peach message
@@ -55,7 +55,7 @@ export function TypingDots() {
   return (
     <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(150)} className="items-start">
       <View
-        className="flex-row items-center gap-1.5 rounded-[20px] px-4 py-3.5"
+        className="flex-row items-center gap-1 rounded-2xl px-3 py-2.5"
         style={{ backgroundColor: dark ? "#3A302C" : "#FBEAE2" }}
       >
         <Dot delay={0} color={dark ? "#E8DED8" : "#2B2320"} />
