@@ -4,11 +4,13 @@
 // takes away every other way to put a photo in front of other members.
 //
 // The check is Google Cloud Vision SafeSearch, which rates how likely an image is to
-// be adult (nudity, sexual content), racy, violent, etc.:
-//   * adult LIKELY or VERY_LIKELY, or violence VERY_LIKELY  -> rejected, file deleted
-//   * adult POSSIBLE, or racy VERY_LIKELY                   -> published, logged for review
-//   * otherwise                                             -> published
-// Swimwear and gym photos usually come out "racy" but not "adult", so they pass.
+// be adult (explicit sexual content), racy (nudity, revealing), violent, etc.:
+//   * adult POSSIBLE or more, racy VERY_LIKELY, or violence VERY_LIKELY -> rejected, file deleted
+//   * racy LIKELY                                                       -> published, logged for review
+//   * otherwise                                                         -> published
+// "adult" alone isn't enough: in testing, plain nudity scored adult UNLIKELY but racy
+// VERY_LIKELY (a nude painting: racy LIKELY). Swimwear and gym photos mostly land at
+// racy LIKELY, so they're published but logged.
 // Every verdict goes into public.photo_moderation; review the borderline ones with
 //   select * from photo_moderation where verdict <> 'approved' order by created_at desc;
 //
@@ -45,8 +47,10 @@ function atLeast(value: string | undefined, level: string) {
 }
 
 function verdictFor(s: SafeSearch): "approved" | "review" | "rejected" {
-  if (atLeast(s.adult, "LIKELY") || atLeast(s.violence, "VERY_LIKELY")) return "rejected";
-  if (atLeast(s.adult, "POSSIBLE") || atLeast(s.racy, "VERY_LIKELY")) return "review";
+  if (atLeast(s.adult, "POSSIBLE") || atLeast(s.racy, "VERY_LIKELY") || atLeast(s.violence, "VERY_LIKELY")) {
+    return "rejected";
+  }
+  if (atLeast(s.racy, "LIKELY")) return "review";
   return "approved";
 }
 
