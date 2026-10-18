@@ -25,6 +25,11 @@ Release builds are signed with the upload key in ~/.turek/upload-keystore.proper
 Before -w, -a or -b, scripts/check_anon_access.py checks the live database for data or
 functions reachable with the public anon key, and stops the build if it finds any
 (--skip-anon-check to bypass, e.g. offline).
+
+Before -w, -a or -b, and again after -b with the bundle's merged manifest,
+scripts/check_declarations.py checks the app against store-declarations.json -- the
+permissions, dependencies and data behind the store forms (Data safety etc.) -- and
+stops on anything new (see store-declarations.md; --skip-declarations-check to bypass).
 """
 
 import argparse
@@ -41,6 +46,12 @@ ROOT = Path(__file__).resolve().parent
 ANDROID_DIR = ROOT / "android"
 APK_PATH = ANDROID_DIR / "app" / "build" / "outputs" / "apk" / "release" / "app-release.apk"
 AAB_PATH = ANDROID_DIR / "app" / "build" / "outputs" / "bundle" / "release" / "app-release.aab"
+# The release manifest after Gradle merges in every library's -- the permissions the
+# bundle actually asks for. The task folder's name differs between AGP versions.
+MERGED_MANIFESTS = [
+    ANDROID_DIR / "app" / "build" / "intermediates" / "merged_manifests" / "release" / "processReleaseManifest" / "AndroidManifest.xml",
+    ANDROID_DIR / "app" / "build" / "intermediates" / "merged_manifest" / "release" / "processReleaseMainManifest" / "AndroidManifest.xml",
+]
 # The upload key's details (plugins/withReleaseSigning.js reads the same file).
 UPLOAD_PROPERTIES = Path(os.environ.get("TUREK_UPLOAD_PROPERTIES", Path.home() / ".turek" / "upload-keystore.properties"))
 APP_ID = "com.turek.app"
@@ -62,7 +73,7 @@ LOG_PATH = STATE_DIR / "build.log"
 DURATIONS_PATH = STATE_DIR / "build-durations.json"
 DURATIONS_KEPT = 3
 # First-run guesses, in seconds.
-DEFAULT_DURATIONS = {"anon-check": 15, "web": 120, "apk": 360, "install": 20, "copy": 5}
+DEFAULT_DURATIONS = {"anon-check": 15, "declarations": 2, "web": 120, "apk": 360, "install": 20, "copy": 5}
 BAR_WIDTH = 24
 FAILURE_TAIL_LINES = 30
 
@@ -322,7 +333,7 @@ def build_apk() -> None:
     note(f"APK: {APK_PATH} ({APK_PATH.stat().st_size / 1_000_000:.1f} MB)")
 
 
-def build_bundle() -> None:
+def build_bundle(check_manifest: bool = True) -> None:
     step("Building release app bundle")
     # Play rejects bundles signed with the debug key, so don't build one without the
     # upload key.
@@ -351,6 +362,12 @@ def build_bundle() -> None:
     ).stdout
     if "CN=Android Debug" in signer or "Owner:" not in signer:
         raise BuildError(f"the bundle at {AAB_PATH} is signed with the debug key, not the upload key -- don't upload it")
+    if check_manifest:
+        # The permissions only exist once Gradle has merged the libraries' manifests.
+        manifest = next((m for m in MERGED_MANIFESTS if m.is_file()), None)
+        if not manifest:
+            raise BuildError("no merged release manifest found to check permissions against store-declarations.json")
+        check_declarations(manifest)
     note(f"Bundle: {AAB_PATH} ({AAB_PATH.stat().st_size / 1_000_000:.1f} MB), version code {version_code}")
 
 
@@ -417,6 +434,11 @@ def check_anon_access() -> None:
     run([sys.executable, str(ROOT / "scripts" / "check_anon_access.py")])
 
 
+def check_declarations(manifest: Path | None = None) -> None:
+    step("Checking store declarations" + (" (bundle permissions)" if manifest else ""))
+    run([sys.executable, str(ROOT / "scripts" / "check_declarations.py"), *(["--manifest", str(manifest)] if manifest else [])])
+
+
 def publish_web() -> None:
     step("Exporting and deploying web build")
     require_env_file()
@@ -439,6 +461,11 @@ def main() -> int:
     parser.add_argument("-d", "--debug", action="store_true", help="stream every command's full output")
     parser.add_argument(
         "--skip-anon-check", action="store_true", help="don't check the database for anonymous access first"
+    )
+    parser.add_argument(
+        "--skip-declarations-check",
+        action="store_true",
+        help="don't check the app against store-declarations.json",
     )
     args = parser.parse_args()
 
@@ -464,6 +491,9 @@ def main() -> int:
         if (args.web or args.apk or args.bundle) and not args.skip_anon_check:
             with Stage("anon-check", "Checking database access"):
                 check_anon_access()
+        if (args.web or args.apk or args.bundle) and not args.skip_declarations_check:
+            with Stage("declarations", "Checking store declarations"):
+                check_declarations()
         if args.web:
             with Stage("web", "Deploying web build"):
                 publish_web()
@@ -472,7 +502,7 @@ def main() -> int:
                 build_apk()
         if args.bundle:
             with Stage("bundle", "Building release app bundle"):
-                build_bundle()
+                build_bundle(check_manifest=not args.skip_declarations_check)
         if args.install:
             with Stage("install", "Installing on device"):
                 install_apk()

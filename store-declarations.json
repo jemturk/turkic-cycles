@@ -1,0 +1,299 @@
+{
+  "_about": "Reviewed baseline for scripts/check_declarations.py. What each item means for the store forms: store-declarations.md.",
+  "permissions": {
+    "android.permission.ACCESS_COARSE_LOCATION": "expo-location; distance filter on device -> precise/approximate location from GPS NOT collected",
+    "android.permission.ACCESS_FINE_LOCATION": "expo-location; distance filter on device -> precise location NOT collected",
+    "android.permission.ACCESS_NETWORK_STATE": "Networking",
+    "android.permission.CAMERA": "Taking a profile photo -> Photos",
+    "android.permission.INTERNET": "Networking",
+    "android.permission.POST_NOTIFICATIONS": "Push notifications",
+    "android.permission.READ_APP_BADGE": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "android.permission.RECEIVE_BOOT_COMPLETED": "expo-notifications: re-schedules local safety check-in reminders after reboot",
+    "android.permission.VIBRATE": "Notifications",
+    "android.permission.WAKE_LOCK": "Push notifications (FCM)",
+    "com.anddoes.launcher.permission.UPDATE_COUNT": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.android.launcher.permission.INSTALL_SHORTCUT": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.android.launcher.permission.READ_SETTINGS": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.android.launcher.permission.UNINSTALL_SHORTCUT": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.android.launcher.permission.WRITE_SETTINGS": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.android.vending.BILLING": "Google Play billing for Plus (RevenueCat) -> Purchase history",
+    "com.google.android.c2dm.permission.RECEIVE": "Push notifications (FCM)",
+    "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE": "Play install referrer (RevenueCat); not the advertising ID -> Advertising ID: No",
+    "com.htc.launcher.permission.READ_SETTINGS": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.htc.launcher.permission.UPDATE_SHORTCUT": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.huawei.android.launcher.permission.CHANGE_BADGE": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.huawei.android.launcher.permission.READ_SETTINGS": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.huawei.android.launcher.permission.WRITE_SETTINGS": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.majeur.launcher.permission.UPDATE_BADGE": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.oppo.launcher.permission.READ_SETTINGS": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.oppo.launcher.permission.WRITE_SETTINGS": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.sec.android.provider.badge.permission.READ": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.sec.android.provider.badge.permission.WRITE": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.sonyericsson.home.permission.BROADCAST_BADGE": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.sonymobile.home.permission.PROVIDER_INSERT_BADGE": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "com.turek.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION": "Android-generated, app-internal",
+    "me.everything.badger.permission.BADGE_COUNT_READ": "Launcher badge counts (expo-notifications / ShortcutBadger); no data",
+    "me.everything.badger.permission.BADGE_COUNT_WRITE": "Launcher badge counts (expo-notifications / ShortcutBadger); no data"
+  },
+  "dependencies": {
+    "@expo-google-fonts/fraunces": "Bundled font; UI only, no data collection",
+    "@expo/vector-icons": "Bundled icons; UI only, no data collection",
+    "@hookform/resolvers": "Form validation; UI only, no data collection",
+    "@react-native-async-storage/async-storage": "On-device storage (session, settings); nothing leaves the phone",
+    "@sentry/react-native": "Crash logs + diagnostics + user ID + install ID -> Data safety: Crash logs, Diagnostics, App interactions, User IDs, Device IDs (Analytics). Service provider, not shared",
+    "@supabase/supabase-js": "Backend (auth, database, storage, functions) over HTTPS; holds all collected data. Service provider",
+    "@tanstack/react-query": "Data fetching cache; UI only, no data collection",
+    "date-fns": "Date formatting; UI only, no data collection",
+    "expo": "Framework",
+    "expo-apple-authentication": "Sign in with Apple -> account creation: OAuth",
+    "expo-asset": "Bundled assets; UI only, no data collection",
+    "expo-constants": "App config; UI only, no data collection",
+    "expo-crypto": "Nonce for Apple sign-in; on device",
+    "expo-font": "Font loading; UI only, no data collection",
+    "expo-image-manipulator": "Resizes photos on device before upload",
+    "expo-image-picker": "Profile photos (images only; microphonePermission false) -> Data safety: Photos. CAMERA permission",
+    "expo-linear-gradient": "UI only, no data collection",
+    "expo-linking": "Deep links; UI only, no data collection",
+    "expo-localization": "Device language for the UI; not sent",
+    "expo-location": "GPS for distance filter, on device only -> precise location NOT collected. Typed addresses geocoded by the OS",
+    "expo-notifications": "Push token stored in Supabase -> Device or other IDs (App functionality). Adds launcher badge permissions",
+    "expo-router": "Navigation; UI only, no data collection",
+    "expo-sms": "Opens Messages with safety text; the user sends it. App reads/sends no SMS -> SMS not collected",
+    "expo-splash-screen": "UI only, no data collection",
+    "expo-status-bar": "UI only, no data collection",
+    "expo-web-browser": "Opens Google sign-in and Stripe Identity in a browser; the app records nothing from them",
+    "i18next": "Translations; UI only, no data collection",
+    "nativewind": "Styling; UI only, no data collection",
+    "react": "Framework",
+    "react-dom": "Framework (web)",
+    "react-hook-form": "Forms; UI only, no data collection",
+    "react-i18next": "Translations; UI only, no data collection",
+    "react-native": "Framework",
+    "react-native-gesture-handler": "UI only, no data collection",
+    "react-native-keyboard-controller": "UI only, no data collection",
+    "react-native-purchases": "RevenueCat: Plus purchases + app user ID -> Purchase history, Device or other IDs. No ad ID (no play-services-ads-identifier). BILLING + install referrer permissions",
+    "react-native-reanimated": "UI only, no data collection",
+    "react-native-safe-area-context": "UI only, no data collection",
+    "react-native-screens": "UI only, no data collection",
+    "react-native-svg": "UI only, no data collection",
+    "react-native-url-polyfill": "URL support for supabase-js; UI only, no data collection",
+    "react-native-web": "Web build; UI only, no data collection",
+    "react-native-webview": "Embedded web content (Turnstile captcha); no data collection by the app",
+    "react-native-worklets": "UI only, no data collection",
+    "zod": "Validation; UI only, no data collection",
+    "zustand": "In-memory state; UI only, no data collection"
+  },
+  "data": {
+    "app_admins": [
+      "created_at",
+      "user_id"
+    ],
+    "blocked_users": [
+      "blocked_id",
+      "blocker_id",
+      "created_at"
+    ],
+    "circle_events": [
+      "circle_id",
+      "created_at",
+      "description",
+      "ends_at",
+      "going_count",
+      "id",
+      "interested_count",
+      "location",
+      "starts_at",
+      "title"
+    ],
+    "circle_members": [
+      "circle_id",
+      "joined_at",
+      "role",
+      "user_id"
+    ],
+    "circles": [
+      "city",
+      "country",
+      "created_at",
+      "description",
+      "id",
+      "latitude",
+      "longitude",
+      "member_count",
+      "name",
+      "slug",
+      "state",
+      "topic",
+      "updated_at"
+    ],
+    "consent_records": [
+      "field_key",
+      "granted",
+      "granted_at",
+      "id",
+      "purpose",
+      "revoked_at",
+      "user_id"
+    ],
+    "event_rsvps": [
+      "event_id",
+      "status",
+      "updated_at",
+      "user_id"
+    ],
+    "matches": [
+      "circle_id",
+      "connection_type",
+      "created_at",
+      "id",
+      "user_a",
+      "user_b"
+    ],
+    "matching_preferences": [
+      "age_max",
+      "age_min",
+      "languages",
+      "max_distance_miles",
+      "updated_at",
+      "user_id"
+    ],
+    "message_reactions": [
+      "created_at",
+      "emoji",
+      "message_id",
+      "user_id"
+    ],
+    "messages": [
+      "body",
+      "created_at",
+      "delivered_at",
+      "id",
+      "match_id",
+      "read_at",
+      "reply_to_id",
+      "sender_id"
+    ],
+    "mock_users": [
+      "user_id"
+    ],
+    "plus_waitlist": [
+      "created_at",
+      "user_id"
+    ],
+    "profile_photos": [
+      "created_at",
+      "id",
+      "position",
+      "storage_path",
+      "user_id"
+    ],
+    "profile_sensitive": [
+      "citizenship_status_detail",
+      "created_at",
+      "origin_countries",
+      "religious_affiliation",
+      "updated_at",
+      "user_id"
+    ],
+    "profiles": [
+      "app_locale",
+      "avatar_url",
+      "bio",
+      "birthdate",
+      "city",
+      "country",
+      "created_at",
+      "deletion_requested_at",
+      "discoverable",
+      "display_name",
+      "email_notifications_enabled",
+      "european_citizenship",
+      "hobbies",
+      "id",
+      "interests",
+      "languages",
+      "occupation",
+      "onboarding_completed_at",
+      "onboarding_step",
+      "profile_visibility",
+      "push_notifications_enabled",
+      "state",
+      "text_size",
+      "theme_preference",
+      "travel_frequency",
+      "travel_style",
+      "updated_at",
+      "us_citizenship",
+      "us_residency"
+    ],
+    "push_tokens": [
+      "created_at",
+      "id",
+      "platform",
+      "token",
+      "user_id"
+    ],
+    "questionnaire_responses": [
+      "answers",
+      "core",
+      "created_at",
+      "schema_version",
+      "updated_at",
+      "user_id"
+    ],
+    "reports": [
+      "created_at",
+      "details",
+      "id",
+      "reason",
+      "reported_user_id",
+      "reporter_id",
+      "status"
+    ],
+    "safety_plans": [
+      "auto_checkin_minutes",
+      "checked_in_at",
+      "created_at",
+      "id",
+      "location",
+      "meeting_at",
+      "meeting_with",
+      "status",
+      "trusted_contacts",
+      "user_id"
+    ],
+    "subscriptions": [
+      "current_period_end",
+      "product_id",
+      "status",
+      "stripe_customer_id",
+      "stripe_subscription_id",
+      "tier",
+      "updated_at",
+      "user_id"
+    ],
+    "swipes": [
+      "action",
+      "actor_id",
+      "circle_id",
+      "created_at",
+      "target_id",
+      "updated_at"
+    ],
+    "test_accounts": [
+      "created_at",
+      "user_id"
+    ],
+    "user_connection_types": [
+      "connection_type",
+      "created_at",
+      "user_id"
+    ],
+    "verification_status": [
+      "status",
+      "stripe_identity_session_id",
+      "updated_at",
+      "user_id"
+    ]
+  }
+}

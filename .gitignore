@@ -50,3 +50,6 @@ yarn-error.*
 
 # Personal editor settings (e.g. written by VS Code extensions).
 .vscode/settings.json
+
+# Python
+__pycache__/

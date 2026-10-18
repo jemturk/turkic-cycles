@@ -80,34 +80,9 @@ Play Console → App content → Data safety.
 explains deleting in the app, on the website, or by email, what gets deleted, and that
 Plus must be cancelled separately.
 
-**Data types** — for each: Collected **Yes**, Shared **No** (Google doesn't count
-service providers acting on your behalf as "sharing"), Processed ephemerally **No**,
-Required or optional as noted, Purpose **App functionality** (plus *Analytics* for
-crash logs).
-
-| Google category | Data type | Required? | Notes |
-| --- | --- | --- | --- |
-| Location | Approximate location | Optional | City/state/country on the profile (not device GPS) |
-| Personal info | Name | Required | Display name |
-| Personal info | Email address | Required | Account email |
-| Personal info | User IDs | Required | Account ID |
-| Personal info | Race and ethnicity | Optional | Countries of origin (consent-based) |
-| Personal info | Religious or philosophical beliefs | Optional | Religion (consent-based) |
-| Personal info | Other info | Required | Date of birth; citizenship/residency status (optional) |
-| Messages | Other in-app messages | Optional | Chat |
-| Photos and videos | Photos | Required | Profile photos (a cover photo is required) |
-| Contacts | Contacts | Optional | Trusted contacts for safety plans |
-| App activity | App interactions | Required | Circles, RSVPs, likes, matches |
-| App activity | Other user-generated content | Optional | Bio, interests, questionnaire, reports |
-| App info and performance | Crash logs | Required | Sentry |
-| App info and performance | Diagnostics | Required | Sentry error reports |
-| Device or other IDs | Device or other IDs | Optional | Push notification token |
-| Financial info | Purchase history | Optional | Plus subscription |
-| Personal info | (Identity verification) | Optional | ID photo + selfie go to Stripe Identity; declare under *Photos* / *Other info* if Play asks |
-
-Not collected: precise location, phone number (own), address, web browsing, audio,
-files and docs, calendar, health and fitness, payment info (Google Play Billing handles
-it).
+**Data types:** the full, current answers (each type, required or optional, purposes,
+and what would change them) are in **[store-declarations.md](store-declarations.md)**,
+which `build.py` keeps honest. Don't duplicate them here.
 
 ---
 
