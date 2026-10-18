@@ -365,3 +365,66 @@ export const DELETE_ACCOUNT: LegalDocument = {
     },
   ],
 };
+
+// turek.expo.app/child-safety: published standards against child sexual abuse and
+// exploitation (CSAE). Google Play requires a public page like this for social apps.
+export const CHILD_SAFETY: LegalDocument = {
+  title: "Child safety standards",
+  intro:
+    `${APP_NAME} is for adults only. We have zero tolerance for child sexual abuse and exploitation (CSAE), ` +
+    "including child sexual abuse material (CSAM), grooming, sextortion and any sexualisation of minors. " +
+    "These standards explain how we prevent it, how to report it, and what we do when it's reported.",
+  sections: [
+    {
+      heading: "Adults only",
+      body: [
+        "- You must be 18 or older to use the app. Members give their date of birth when they sign up, and " +
+          "accounts under 18 can't be created.",
+        "- Accounts we believe belong to someone under 18 are removed.",
+        "- Members can verify their identity with a government ID and a live selfie, and verified members " +
+          "show a badge.",
+      ],
+    },
+    {
+      heading: "What's prohibited",
+      body: [
+        "- Any content that sexualises, exploits or endangers a minor, including images, video, text, links " +
+          "and drawn or AI-generated material.",
+        "- Grooming: contacting, befriending or manipulating a minor for sexual purposes, or asking anyone " +
+          "for access to a minor.",
+        "- Sextortion, trafficking, or offering, requesting or sharing CSAM in any form.",
+        "- Using the app to arrange contact with a minor, including at circle events.",
+      ],
+    },
+    {
+      heading: "How to report",
+      body: [
+        "- In the app: open the person's profile or your conversation with them, choose Report, and pick " +
+          "\"Child safety\". You can add details. You can also block them straight away.",
+        `- By email: ${LEGAL_CONTACT}. Please don't attach or forward abusive images; describe what you ` +
+          "saw and where, and we'll find it.",
+        "- If a child is in immediate danger, call your local emergency number (911 in the US) first.",
+        "- In the US you can also report directly to the National Center for Missing & Exploited Children " +
+          "(NCMEC) at report.cybertip.org or 1-800-843-5678.",
+      ],
+    },
+    {
+      heading: "What we do",
+      body: [
+        "- Child safety reports are reviewed first, before any other reports.",
+        "- We remove the content and permanently ban the accounts involved, and stop them from signing up " +
+          "again where we can.",
+        "- We report apparent CSAM to NCMEC, as US law requires, and to other relevant authorities. We " +
+          "preserve the relevant information and cooperate with law enforcement requests.",
+        "- We don't tell the reported person who reported them.",
+      ],
+    },
+    {
+      heading: "Contact",
+      body: [
+        `Our designated contact for child safety, including questions from authorities, is ${LEGAL_OWNER}, ` +
+          `${LEGAL_CONTACT}.`,
+      ],
+    },
+  ],
+};

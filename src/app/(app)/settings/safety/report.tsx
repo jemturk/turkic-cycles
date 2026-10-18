@@ -11,7 +11,7 @@ import { TextField } from "@/components/TextField";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { SubPage, Card } from "@/components/SettingsUI";
 
-const REASON_VALUES = ["harassment", "fake_profile", "inappropriate", "safety_concern", "other"] as const;
+const REASON_VALUES = ["harassment", "fake_profile", "inappropriate", "child_safety", "safety_concern", "other"] as const;
 
 export default function Report() {
   const { t } = useTranslation();

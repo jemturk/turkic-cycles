@@ -579,6 +579,7 @@
         "harassment": "Harassment or abuse",
         "fake_profile": "Fake profile",
         "inappropriate": "Inappropriate content",
+        "child_safety": "Child safety (involves a minor)",
         "safety_concern": "Safety concern",
         "other": "Other"
       }
