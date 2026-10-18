@@ -201,7 +201,9 @@
     "you": "You",
     "viewProfile": "View profile",
     "selectConversation": "Select a conversation to start chatting.",
-    "youMatched": "You matched · {{date}}"
+    "youMatched": "You matched · {{date}}",
+    "contactTip": "Only share your phone number or email with people you trust. You can block or report anyone from their profile.",
+    "dismissTip": "Dismiss tip"
   },
   "onboarding": {
     "next": "Next",
@@ -323,7 +325,8 @@
     "europeanCitizen": "European citizen?",
     "travelFrequency": "How often do you travel?",
     "travelStyle": "Travel style",
-    "editProfileHeading": "Edit profile"
+    "editProfileHeading": "Edit profile",
+    "bioContactHint": "Contact details like phone numbers and emails don't belong in your bio. Share them in chat, with people you trust."
   },
   "common": {
     "member": "Member",

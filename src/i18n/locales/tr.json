@@ -201,7 +201,9 @@
     "you": "Sen",
     "viewProfile": "Profili gör",
     "selectConversation": "Sohbete başlamak için bir konuşma seçin.",
-    "youMatched": "Eşleştiniz · {{date}}"
+    "youMatched": "Eşleştiniz · {{date}}",
+    "contactTip": "Telefon numaranı veya e-postanı yalnızca güvendiğin kişilerle paylaş. Herkesi profilinden engelleyebilir veya şikâyet edebilirsin.",
+    "dismissTip": "İpucunu kapat"
   },
   "onboarding": {
     "next": "İleri",
@@ -323,7 +325,8 @@
     "europeanCitizen": "Avrupa vatandaşı mısın?",
     "travelFrequency": "Ne sıklıkla seyahat edersin?",
     "travelStyle": "Seyahat tarzı",
-    "editProfileHeading": "Profili düzenle"
+    "editProfileHeading": "Profili düzenle",
+    "bioContactHint": "Telefon numarası ve e-posta gibi iletişim bilgileri biyografine konmaz. Bunları sohbette, güvendiğin kişilerle paylaş."
   },
   "common": {
     "member": "Üye",

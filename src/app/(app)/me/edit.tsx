@@ -31,6 +31,7 @@ import { BranchingQuestionsFields } from "@/components/BranchingQuestionsFields"
 import { FormScrollView } from "@/components/FormScrollView";
 import { LocationFields } from "@/components/LocationFields";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
 import { useProfilePhotos } from "@/hooks/useGallery";
 import { OwnPhotos } from "@/components/OwnPhotos";
 import { TAG_TONES } from "@/constants/tagTones";
@@ -91,6 +92,7 @@ export default function ProfileEdit() {
   } = useForm<ProfileEditValues>({ resolver, values });
 
   const watchedConnectionTypes = useWatch({ control, name: "connectionTypes" }) ?? [];
+  const bioValue = useWatch({ control, name: "bio" });
   const country = useController({ control, name: "country" });
   const city = useController({ control, name: "city" });
   const state = useController({ control, name: "state" });
@@ -140,6 +142,10 @@ export default function ProfileEdit() {
           />
         )}
       />
+      {/* A reminder, not a block: contact details belong in chat, not on a public profile. */}
+      {containsPhoneNumber(bioValue ?? "") || containsEmail(bioValue ?? "") ? (
+        <Text className="-mt-2 text-xs text-ink-500 dark:text-ink-300">{t("fields.bioContactHint")}</Text>
+      ) : null}
     </>
   );
 

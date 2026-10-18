@@ -201,7 +201,9 @@
     "you": "Du",
     "viewProfile": "Profil ansehen",
     "selectConversation": "Wähle eine Unterhaltung aus, um zu chatten.",
-    "youMatched": "Ihr habt gematcht · {{date}}"
+    "youMatched": "Ihr habt gematcht · {{date}}",
+    "contactTip": "Teile deine Telefonnummer oder E-Mail nur mit Menschen, denen du vertraust. Du kannst jede Person über ihr Profil blockieren oder melden.",
+    "dismissTip": "Hinweis schließen"
   },
   "onboarding": {
     "next": "Weiter",
@@ -323,7 +325,8 @@
     "europeanCitizen": "Europäischer Staatsbürger?",
     "travelFrequency": "Wie oft reist du?",
     "travelStyle": "Reisestil",
-    "editProfileHeading": "Profil bearbeiten"
+    "editProfileHeading": "Profil bearbeiten",
+    "bioContactHint": "Kontaktdaten wie Telefonnummern und E-Mails gehören nicht in deine Bio. Teile sie im Chat mit Menschen, denen du vertraust."
   },
   "common": {
     "member": "Mitglied",

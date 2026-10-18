@@ -22,6 +22,7 @@ import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 import { Avatar } from "@/components/Avatar";
 import { TypingDots } from "@/components/TypingDots";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
 import type { Tables } from "@/types/database";
 
 // Message bubbles: pale turquoise for yours, pale coral for theirs (a step past the
@@ -77,6 +78,11 @@ export default function ChatThread() {
   const [actionsFor, setActionsFor] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
+  // A safety tip while the draft holds what looks like a phone number or email
+  // address; once closed, it stays closed for this conversation. Advisory only --
+  // sending isn't held up.
+  const [contactTipDismissed, setContactTipDismissed] = useState(false);
+  const showContactTip = !contactTipDismissed && (containsPhoneNumber(draft) || containsEmail(draft));
   const scrollRef = useRef<ScrollView>(null);
   // The thread opens already at its latest message: until the messages have loaded
   // and the list has jumped to the end (instantly), it stays hidden, so the jump is
@@ -473,6 +479,27 @@ export default function ChatThread() {
           </Pressable>
         </ScrollView>
 
+        {showContactTip ? (
+          <View
+            accessibilityRole="alert"
+            className={`flex-row items-center gap-3 bg-primary-100/60 dark:bg-ink-800 ${
+              wide ? "border-t border-[#F3E3D2] px-6 py-3 dark:border-ink-700" : "mx-4 mt-2 rounded-2xl px-4 py-2.5"
+            }`}
+          >
+            <Ionicons name="shield-checkmark-outline" size={20} color="#127A87" />
+            <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">{t("chat.contactTip")}</Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("chat.dismissTip")}
+              hitSlop={8}
+              onPress={() => setContactTipDismissed(true)}
+              className="h-8 w-8 items-center justify-center rounded-full web:hover:bg-primary-100/40"
+            >
+              <Ionicons name="close" size={18} color="#4A3F3A" />
+            </Pressable>
+          </View>
+        ) : null}
+
         {replyTo ? (
           <View
             className={`flex-row items-center gap-3 bg-white dark:bg-ink-800 ${
@@ -500,7 +527,7 @@ export default function ChatThread() {
         {wide ? (
           <View
             className={`flex-row items-center gap-2.5 px-6 py-4 ${
-              replyTo ? "" : "border-t border-[#F3E3D2] dark:border-ink-700"
+              replyTo || showContactTip ? "" : "border-t border-[#F3E3D2] dark:border-ink-700"
             }`}
           >
             <TextInput

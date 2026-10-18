@@ -210,6 +210,8 @@ export const TERMS_OF_SERVICE: LegalDocument = {
         "- impersonate anyone, or misrepresent your identity, age or intentions;",
         "- scam, solicit money, advertise, spam, or promote other services without our permission;",
         "- share someone else's private information without their consent;",
+        "- put contact details (phone numbers, email addresses, social media handles) in your profile or bio; " +
+          "share them in chat, with people you choose;",
         "- post content you don't have the right to share, or that breaks the law;",
         "- use the app for anything illegal, or try to hack, scrape, overload or misuse it.",
       ],
