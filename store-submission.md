@@ -204,7 +204,7 @@ reviewer (`insert into public.test_accounts …` — it then sees the sample mem
 
 **Sign-in information:** the review account is set up: sample member "Nurlan H.",
 `mock003@turek-mock.invalid`, a test account (sees the sample members), verified, in 4
-circles, with a chat, RSVPs and a safety plan. Its password is in
+circles, with a chat, RSVPs, a safety plan, **Premium** (all paid features) and 5 incoming likes so "See who likes you" has people in it. Its password is in
 `~/.turek/review-account.txt` (outside the repo). The screenshots in `store-assets/`
 were taken with it.
 

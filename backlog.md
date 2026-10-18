@@ -104,7 +104,6 @@ Built and committed but only checked in a browser preview or not at all.
 - [ ] Apple and Google sign-in, including new accounts going through onboarding and an
   existing email account being linked.
 - [ ] Forgot password: email carried over; reset link opens the right place.
-- [ ] Test controls visible to testers only (after the next deploy/APK).
 
 ## 4. Nice-to-haves
 
@@ -132,6 +131,12 @@ Built and committed but only checked in a browser preview or not at all.
   testers (migration 0042); delete once real activity is enough to test with.
 
 ## 5. Tech debt
+
+- [ ] The Settings test card is gone (tier / Verified switches, Send test error). Its
+  pieces remain unused: the `debug_set_my_tier` / `debug_set_my_verified` functions
+  (test accounts only, 0042) and the `useDebugSetTier` / `useDebugSetVerified` /
+  `useIsTestAccount` hooks. Remove them, or reuse them for an admin screen. Until then,
+  change a test account's tier or badge with SQL (`subscriptions`, `verification_status`).
 
 - [ ] Note, not a task: `app.json` `"slug"` must stay `turanci`. It's the Expo project's
   permanent slug (project ID `45279546-…`, can't be renamed); expo.dev shows the display

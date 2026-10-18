@@ -7,19 +7,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
-import { Sentry, sentryEnabled } from "@/lib/sentry";
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { useMyVerificationStatus } from "@/hooks/useVerification";
 import {
-  useDebugSetTier,
-  useDebugSetVerified,
   useHasPlus,
-  useIsTestAccount,
-  useMySubscription,
   usePlusWaitlist,
 } from "@/hooks/usePlus";
-import type { Tier } from "@/api/plus";
 import {
   useDeleteAccount,
   useUpdateAppLocale,
@@ -149,14 +143,6 @@ function Section({ title, children }: { title?: string; children: ReactNode }) {
   );
 }
 
-// Test controls, for test accounts only (migration 0042): switch your own
-// subscription tier and Verified badge.
-const TEST_TIERS: { tier: Tier; label: string }[] = [
-  { tier: "free", label: "Free" },
-  { tier: "plus", label: "Plus" },
-  { tier: "premium", label: "Premium" },
-];
-
 export default function Settings() {
   const { t } = useTranslation();
   const { session } = useSession();
@@ -165,11 +151,6 @@ export default function Settings() {
   const { data: verification } = useMyVerificationStatus(userId);
   const subscribed = useHasPlus(userId);
   const { data: onPlusWaitlist } = usePlusWaitlist(userId);
-  // Test accounts only; the switches' functions refuse anyone else too.
-  const { data: isTestAccount } = useIsTestAccount(userId);
-  const { data: subscription } = useMySubscription(userId);
-  const debugSetTier = useDebugSetTier(userId);
-  const debugSetVerified = useDebugSetVerified(userId);
   const updateAppLocale = useUpdateAppLocale(userId);
   const updateThemePreference = useUpdateThemePreference(userId);
   const updateTextSize = useUpdateTextSize(userId);
@@ -190,72 +171,6 @@ export default function Settings() {
     await supabase.auth.signOut({ scope });
     router.replace("/");
   };
-
-  const adminSection = (
-    <>
-      {/* Test controls, shown to test accounts only (migration 0042). */}
-      {isTestAccount ? (
-        <View className="gap-3 rounded-xl border border-dashed border-accent-500 bg-white dark:bg-ink-800 px-4 py-3">
-          <View>
-            <Text className="text-base text-ink-900 dark:text-ink-50">Test: subscription</Text>
-            <Text className="text-sm text-ink-400">test accounts only</Text>
-          </View>
-          <View accessibilityRole="radiogroup" className="flex-row gap-4">
-            {TEST_TIERS.map(({ tier, label }) => {
-              const selected = subscription?.tier === tier;
-              return (
-                <Pressable
-                  key={tier}
-                  accessibilityRole="radio"
-                  accessibilityState={{ checked: selected }}
-                  disabled={!subscription || debugSetTier.isPending}
-                  onPress={() =>
-                    debugSetTier.mutate(tier, { onError: (e) => showAlert("Couldn't switch", e.message) })
-                  }
-                  className="flex-row items-center gap-1.5"
-                >
-                  <Ionicons
-                    name={selected ? "radio-button-on" : "radio-button-off"}
-                    size={20}
-                    color={selected ? "#127A87" : "#9CA3AF"}
-                  />
-                  <Text className="text-base text-ink-900 dark:text-ink-50">{label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-          <View className="flex-row items-center justify-between">
-            <Text className="text-base text-ink-900 dark:text-ink-50">Verified</Text>
-            <Switch
-              value={verification?.status === "verified"}
-              disabled={!verification || debugSetVerified.isPending}
-              onValueChange={(verified) =>
-                debugSetVerified.mutate(verified, { onError: (e) => showAlert("Couldn't switch", e.message) })
-              }
-            />
-          </View>
-          {/* Checks crash reporting end to end: the error should appear in Sentry
-              (release builds and the website only; development never reports). */}
-          <View className="flex-row items-center justify-between">
-            <Text className="text-base text-ink-900 dark:text-ink-50">Crash reporting</Text>
-            <Pressable
-              onPress={() => {
-                if (!sentryEnabled) {
-                  showAlert("Sentry is off", "Reports are only sent from release builds and the website.");
-                  return;
-                }
-                Sentry.captureException(new Error("Test error from Settings (test controls)"));
-                showAlert("Sent", "A test error was sent to Sentry.");
-              }}
-              className="rounded-full border border-primary-500 px-3 py-1.5"
-            >
-              <Text className="text-sm font-semibold text-primary-500">Send test error</Text>
-            </Pressable>
-          </View>
-        </View>
-      ) : null}
-    </>
-  );
 
   const verified = verification?.status === "verified";
 
@@ -577,7 +492,6 @@ export default function Settings() {
         <Text className="font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.settings")}</Text>
         <View className="flex-row items-start gap-6">
           <View className="flex-1 gap-4">
-            {adminSection}
             {profileSection}
             {appearanceSection}
             {accountSection}
@@ -597,7 +511,6 @@ export default function Settings() {
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <ScrollView className="flex-1 px-6 pt-4" contentContainerClassName="gap-3 pb-10">
-        {adminSection}
         {profileSection}
         {appearanceSection}
         {accountSection}
