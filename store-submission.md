@@ -244,3 +244,33 @@ going", "Chat and make plans", "Safe by design").
   (Local filter, while in use), notifications. No sensitive permissions like SMS or
   call log (Messages is opened for the user to send texts; the app doesn't send SMS
   itself).
+
+---
+
+## 9. Internal app sharing (`build.py -bs`)
+
+A local APK is signed with the upload key; anything installed from Play is re-signed
+with Google's app signing key, so the two can't update each other. Internal app sharing
+gives a Play-signed install link for any bundle, straight away and without review, so
+your own builds install over the Play build (and back).
+
+One-time setup:
+
+1. **Service account** — Google Cloud console (the project linked to Play) → IAM & Admin
+   → Service accounts → Create (e.g. `play-uploader`), no project roles needed → Keys →
+   Add key → JSON. Save it as `~/.turek/play-service-account.json` (outside the repo,
+   like the upload key; never commit it).
+2. **Enable the API** — APIs & Services → Library → **Google Play Android Developer
+   API** → Enable.
+3. **Invite it in Play Console** — Users and permissions → Invite new users → the
+   service account's email → App permissions: Turkic Circles → **Release apps to testing
+   tracks** (enough for internal app sharing). It can take up to a day to start working.
+4. **Uploaders and testers** — Play Console → Test and release → **Internal app
+   sharing** → Manage uploaders and testers: allow uploads from the service account (or
+   "Anyone you shared the link with" for testers) and add your own Google account.
+5. **On the phone** — Play Store app → Settings → About → tap *Play Store version* 7
+   times → Settings → General → **Internal app sharing** on.
+
+Then `python build.py -bs` builds the bundle, uploads it and prints the install link
+(`-s` alone re-shares the last bundle). Open the link on the phone, signed in to Play
+with the account from step 4.

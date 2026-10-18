@@ -5,15 +5,22 @@ r"""Build, publish, and install Turkic Circles.
   -a  build a release APK locally with Gradle
   -b  build a release app bundle (.aab) for Google Play, signed with the upload
       key and with a new version code
+  -s  share the app bundle through Google Play's internal app sharing and print
+      the install link (Play-signed, so it installs over a Play build and back)
   -i  install the release APK on the connected device
   -g  copy the release APK to C:\DEV\Cloud\Apk (keeps the newest 3 there)
 
   -d  debug: stream every command and its full output (otherwise each step
       shows one progress line, and the output goes to .expo/build.log)
 
-Flags combine (-wa, -ai, -ag, -aig, -ab, -waid, ...). Each step runs at most once, in
-the order web -> APK -> bundle -> install -> copy. -i or -g on their own use the APK from
-the last build.
+Flags combine (-wa, -ai, -ag, -aig, -ab, -bs, -waid, ...). Each step runs at most once,
+in the order web -> APK -> bundle -> share -> install -> copy. -s, -i or -g on their own
+use the bundle or APK from the last build.
+
+A local APK (-a, -i) is signed with the upload key, and a Play install with Google's
+app signing key, so neither can update the other; use -bs to test on a phone that
+has the Play build. -s needs a service account key at
+~/.turek/play-service-account.json (scripts/play_internal_share.mjs).
 
 Without -d, a step's percentage and time left are estimated from how long it took
 the last few times (.expo/build-durations.json); the first run guesses. If a step
@@ -73,7 +80,7 @@ LOG_PATH = STATE_DIR / "build.log"
 DURATIONS_PATH = STATE_DIR / "build-durations.json"
 DURATIONS_KEPT = 3
 # First-run guesses, in seconds.
-DEFAULT_DURATIONS = {"anon-check": 15, "declarations": 2, "web": 120, "apk": 360, "install": 20, "copy": 5}
+DEFAULT_DURATIONS = {"anon-check": 15, "declarations": 2, "web": 120, "apk": 360, "share": 60, "install": 20, "copy": 5}
 BAR_WIDTH = 24
 FAILURE_TAIL_LINES = 30
 
@@ -378,6 +385,22 @@ def build_bundle(check_manifest: bool = True) -> None:
     note(f"Bundle: {AAB_PATH} ({AAB_PATH.stat().st_size / 1_000_000:.1f} MB), version code {version_code}")
 
 
+def share_bundle() -> None:
+    step("Sharing bundle through internal app sharing")
+    if not AAB_PATH.is_file():
+        raise BuildError(f"no bundle at {AAB_PATH} -- build one with -b")
+    cmd = [find_executable("node"), str(ROOT / "scripts" / "play_internal_share.mjs"), str(AAB_PATH)]
+    log("$ " + " ".join(cmd))
+    result = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    log(result.stdout + result.stderr)
+    if result.returncode != 0:
+        raise BuildError((result.stderr or result.stdout).strip() or "upload failed")
+    if DEBUG:
+        print(result.stdout, end="", flush=True)
+    lines = result.stdout.strip().splitlines()
+    note(f"Install link (open it on the phone, signed in to Play as an internal app sharing tester): {lines[-1]}")
+
+
 def install_apk() -> None:
     step("Installing APK on device")
     if not APK_PATH.is_file():
@@ -470,6 +493,9 @@ def main() -> int:
     parser.add_argument("-w", "--web", action="store_true", help="build and publish to web")
     parser.add_argument("-a", "--apk", action="store_true", help="build a release APK")
     parser.add_argument("-b", "--bundle", action="store_true", help="build a release app bundle (.aab) for Google Play")
+    parser.add_argument(
+        "-s", "--share", action="store_true", help="share the bundle through Play's internal app sharing"
+    )
     parser.add_argument("-i", "--install", action="store_true", help="install the APK on the connected device")
     parser.add_argument("-g", "--copy", action="store_true", help=f"copy the APK to {APK_COPY_DIR}")
     parser.add_argument("-d", "--debug", action="store_true", help="stream every command's full output")
@@ -496,7 +522,7 @@ def main() -> int:
     if IS_WINDOWS and use_color():
         os.system("")
 
-    if not (args.web or args.apk or args.bundle or args.install or args.copy):
+    if not (args.web or args.apk or args.bundle or args.share or args.install or args.copy):
         parser.print_help()
         return 2
 
@@ -517,6 +543,9 @@ def main() -> int:
         if args.bundle:
             with Stage("bundle", "Building release app bundle"):
                 build_bundle(check_manifest=not args.skip_declarations_check)
+        if args.share:
+            with Stage("share", "Sharing bundle"):
+                share_bundle()
         if args.install:
             with Stage("install", "Installing on device"):
                 install_apk()
