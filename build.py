@@ -320,11 +320,20 @@ def prepare_android(env: dict[str, str]) -> Path:
     return gradlew
 
 
+def clock_version_code() -> int:
+    # Play needs a higher version code for every upload: minutes since 1970 always
+    # goes up and stays far below Play's limit (2,100,000,000).
+    return int(time.time() // 60)
+
+
 def build_apk() -> None:
     step("Building release APK")
     require_env_file()
     env = android_env()
     env["NODE_ENV"] = "production"
+    # Same clock-based version code as bundles: a phone that has a Play build installed
+    # refuses an APK with a lower one (INSTALL_FAILED_VERSION_DOWNGRADE).
+    env["ANDROID_VERSION_CODE"] = str(clock_version_code())
     gradlew = prepare_android(env)
     run([str(gradlew), "assembleRelease", "--console=plain"], cwd=ANDROID_DIR, env=env)
 
@@ -345,9 +354,7 @@ def build_bundle(check_manifest: bool = True) -> None:
     require_env_file()
     env = android_env()
     env["NODE_ENV"] = "production"
-    # Play needs a higher version code for every upload: minutes since 1970 always
-    # goes up and stays far below Play's limit (2,100,000,000).
-    version_code = int(time.time() // 60)
+    version_code = clock_version_code()
     env["ANDROID_VERSION_CODE"] = str(version_code)
     gradlew = prepare_android(env)
     run([str(gradlew), "bundleRelease", "--console=plain"], cwd=ANDROID_DIR, env=env)
@@ -400,6 +407,11 @@ def install_apk() -> None:
             raise BuildError(
                 "the app on the phone was signed with a different key (e.g. the old debug key). Uninstall it "
                 f"once -- adb uninstall {APP_ID}, or from the phone; you'll need to sign in again -- and rerun -i."
+            )
+        if "INSTALL_FAILED_VERSION_DOWNGRADE" in output:
+            raise BuildError(
+                "the app on the phone has a newer version code than this APK (e.g. a Play build installed "
+                f"since). Rebuild with -a, or uninstall it once -- adb uninstall {APP_ID} -- and rerun -i."
             )
         raise BuildError(f"adb install failed: {output.strip()[-300:]}")
     run([adb, "shell", "monkey", "-p", APP_ID, "-c", "android.intent.category.LAUNCHER", "1"], env=env)
