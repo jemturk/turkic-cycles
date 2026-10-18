@@ -37,6 +37,17 @@ html.dark body {
   }
 }
 
+/* Inside the desktop device frame (AppFrame), scroll like a phone: no scrollbar, which
+   would otherwise show as a grey bar clipped by the frame's rounded corners. The
+   wheel, trackpad and keyboard still scroll. */
+[data-app-frame] * {
+  scrollbar-width: none;
+}
+
+[data-app-frame] *::-webkit-scrollbar {
+  display: none;
+}
+
 /* At phone-width viewports (matching the app's own max-w-[480px] breakpoint) the
    backdrop above is never meant to be visible -- but real mobile browsers can still
    reveal a sliver of it at the very bottom edge (address bar / home-indicator chrome),
