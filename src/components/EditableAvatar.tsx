@@ -10,6 +10,7 @@ import { useDeleteAvatar, useUploadAvatar } from "@/hooks/useAvatar";
 import { Avatar } from "@/components/Avatar";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { showAlert } from "@/lib/alert";
+import { photoUploadErrorMessage } from "@/lib/photoErrors";
 
 type EditableAvatarProps = {
   userId: string;
@@ -71,7 +72,7 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
     const asset = result.assets[0];
     uploadAvatar.mutate(
       { uri: asset.uri, mimeType: asset.mimeType ?? "image/jpeg" },
-      { onError: (error) => showAlert(t("avatar.uploadErrorTitle"), error.message) },
+      { onError: (error) => showAlert(t("avatar.uploadErrorTitle"), photoUploadErrorMessage(error, t)) },
     );
   }
 

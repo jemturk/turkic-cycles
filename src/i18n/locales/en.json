@@ -692,5 +692,9 @@
     "cancelPlan": "Cancel plan",
     "cantTextTitle": "Can't open Messages",
     "cantTextBody": "This device can't send texts. Please contact your trusted contacts another way."
+  },
+  "photos": {
+    "rejected": "This photo can't be used. Photos can't contain nudity, sexual content or graphic violence (see our community rules). Please choose another one.",
+    "checkFailed": "We couldn't check this photo just now. Please try again in a moment."
   }
 }

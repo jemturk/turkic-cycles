@@ -55,6 +55,24 @@ The stores would reject the app, or it would break for real users, without these
   Store Connect and Play Console, set up RevenueCat for `com.turek.app` (both
   platforms), then test a sandbox purchase and Restore.
 
+- [ ] **Photo check (Google Cloud Vision): finish setup** [you] — code done (migration
+  0044, function `moderate-photo`). In this order, so uploads never break:
+  1. Google Cloud console (the project used for Google sign-in): enable **Cloud Vision
+     API**, then Credentials → Create API key → restrict it to Cloud Vision API.
+  2. `npx supabase secrets set GOOGLE_VISION_API_KEY=...`
+  3. `npx supabase functions deploy moderate-photo` and
+     `npx supabase functions deploy delete-account`
+  4. `npx supabase db push` (0044 — from here, apps without the change can't upload photos)
+  5. `python build.py -w`, then `-b` for Play.
+  - Then test: upload a normal photo (works) and a swimsuit photo (works, may be logged
+    as `review`); review borderline ones with
+    `select * from photo_moderation where verdict <> 'approved' order by created_at desc;`
+- [ ] **Photos uploaded before 0044 were never checked** [code] — a one-off script
+  running every existing `avatars` file through `moderate-photo`'s check.
+- [ ] **CSAM hash matching** [you, then code] — apply for Microsoft PhotoDNA (free for
+  qualifying services; approval takes a while) and add it to `moderate-photo`. Backs
+  the promises on the child safety page.
+
 ## 2. Setup to finish on your side
 
 - [ ] **Own domain** — for the website (instead of `turek.expo.app`), the email sender,

@@ -12,6 +12,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const AVATAR_BUCKET = "avatars";
+const UPLOAD_BUCKET = "photo-uploads";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -45,13 +46,17 @@ Deno.serve(async (req) => {
   try {
     // Storage objects don't cascade from auth.users, so remove them first. Paths
     // follow src/api/avatar.ts ("{id}/avatar.ext") and gallery.ts ("{id}/gallery/...").
-    for (const folder of [userId, `${userId}/gallery`]) {
-      const { data: files, error: listError } = await admin.storage.from(AVATAR_BUCKET).list(folder, { limit: 1000 });
-      if (listError) throw listError;
-      const paths = (files ?? []).filter((f) => f.id !== null).map((f) => `${folder}/${f.name}`);
-      if (paths.length > 0) {
-        const { error: removeError } = await admin.storage.from(AVATAR_BUCKET).remove(paths);
-        if (removeError) throw removeError;
+    // The same layout in UPLOAD_BUCKET, for any photo left awaiting its check
+    // (moderate-photo, migration 0044).
+    for (const bucket of [AVATAR_BUCKET, UPLOAD_BUCKET]) {
+      for (const folder of [userId, `${userId}/gallery`]) {
+        const { data: files, error: listError } = await admin.storage.from(bucket).list(folder, { limit: 1000 });
+        if (listError) throw listError;
+        const paths = (files ?? []).filter((f) => f.id !== null).map((f) => `${folder}/${f.name}`);
+        if (paths.length > 0) {
+          const { error: removeError } = await admin.storage.from(bucket).remove(paths);
+          if (removeError) throw removeError;
+        }
       }
     }
 

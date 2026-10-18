@@ -85,7 +85,8 @@ export const PRIVACY_POLICY: LegalDocument = {
         "- To send you notifications you've allowed, such as new messages and matches, and account emails " +
           "such as sign-up confirmation and password resets.",
         "- To keep the community safe: to review reports, prevent abuse, fraud and spam, enforce our Terms, and " +
-          "comply with the law.",
+          "comply with the law. Photos you add to your profile are checked automatically for nudity, sexual " +
+          "content and graphic violence before other members can see them.",
         "- To handle Plus subscriptions.",
         "- To fix problems and improve the app.",
       ],
@@ -109,6 +110,7 @@ export const PRIVACY_POLICY: LegalDocument = {
         "- Expo (650 Industries): app updates, the website, and push notification delivery.",
         "- Google Firebase Cloud Messaging and Apple Push Notification service: delivering notifications.",
         "- Cloudflare: bot protection (Turnstile).",
+        "- Google Cloud Vision: the automatic check of profile photos, processed only to run the check.",
         "- Stripe: identity verification (Stripe Identity), if you choose to get verified.",
         "- Sentry (Functional Software): crash and error reports, identified only by your account ID, to " +
           "help us fix problems.",

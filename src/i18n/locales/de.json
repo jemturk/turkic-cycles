@@ -692,5 +692,9 @@
     "cancelPlan": "Plan absagen",
     "cantTextTitle": "Nachrichten lässt sich nicht öffnen",
     "cantTextBody": "Dieses Gerät kann keine SMS senden. Bitte erreiche deine Vertrauenspersonen auf anderem Weg."
+  },
+  "photos": {
+    "rejected": "Dieses Foto kann nicht verwendet werden. Fotos dürfen keine Nacktheit, sexuellen Inhalte oder drastische Gewalt zeigen (siehe unsere Community-Regeln). Bitte wähle ein anderes.",
+    "checkFailed": "Wir konnten dieses Foto gerade nicht prüfen. Bitte versuche es gleich noch einmal."
   }
 }

@@ -176,6 +176,14 @@
     "mock_users": [
       "user_id"
     ],
+    "photo_moderation": [
+      "created_at",
+      "id",
+      "safe_search",
+      "storage_path",
+      "user_id",
+      "verdict"
+    ],
     "plus_waitlist": [
       "created_at",
       "user_id"

@@ -692,5 +692,9 @@
     "cancelPlan": "Planı iptal et",
     "cantTextTitle": "Mesajlar açılamıyor",
     "cantTextBody": "Bu cihaz SMS gönderemiyor. Lütfen güvendiğin kişilere başka bir yolla ulaş."
+  },
+  "photos": {
+    "rejected": "Bu fotoğraf kullanılamaz. Fotoğraflarda çıplaklık, cinsel içerik veya şiddet görüntüsü olamaz (topluluk kurallarımıza bak). Lütfen başka bir fotoğraf seç.",
+    "checkFailed": "Bu fotoğrafı şu anda kontrol edemedik. Lütfen birazdan tekrar dene."
   }
 }

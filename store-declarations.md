@@ -22,7 +22,8 @@ changes in a store console, change it here in the same commit as the code.
   in a JSON column, a new Sentry option). Those need a human look; the rule in
   `AGENTS.md` covers AI-made changes.
 
-Service providers (Supabase, Sentry, RevenueCat, Expo/Firebase push, Stripe Identity)
+Service providers (Supabase, Sentry, RevenueCat, Expo/Firebase push, Stripe Identity,
+Google Cloud Vision for the photo check)
 process data for us, so in Google's terms that's **collected, not shared**. A third
 party that uses data for its own purposes (ads, analytics networks) would be
 **shared** — none today.
@@ -56,7 +57,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | Financial → Payment info | — not collected | | Google Play / App Store handle payment | Direct card payments (e.g. Stripe checkout) |
 | Messages → Other in-app messages | Opt. | Functionality, Fraud prevention/security | Chat, reactions (`messages`, `message_reactions`) | |
 | Messages → Emails, SMS | — not collected | | Safety texts are sent by the member from Messages (`expo-sms`) | The app reads or sends SMS itself |
-| Photos and videos → Photos | Req. | Functionality, Fraud prevention/security | Profile + cover photos (cover required); ID photo + selfie via Stripe Identity | Video uploads (→ Videos) |
+| Photos and videos → Photos | Req. | Functionality, Fraud prevention/security | Profile + cover photos (cover required), checked by Google Cloud Vision before publishing (`moderate-photo`, `photo_moderation`); ID photo + selfie via Stripe Identity | Video uploads (→ Videos); photos in chat |
 | Audio | — not collected | | No microphone (`RECORD_AUDIO` blocked) | Voice messages, video recording |
 | Contacts → Contacts | Opt. | Functionality | Trusted contacts' names and phone numbers in safety plans (`safety_plans.trusted_contacts`) | Reading the phone's address book |
 | App activity → App interactions | Req. | Functionality, Analytics | Circles joined, RSVPs; Sentry breadcrumbs | |

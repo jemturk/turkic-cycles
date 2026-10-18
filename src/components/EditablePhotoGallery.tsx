@@ -10,6 +10,7 @@ import { MAX_PROFILE_PHOTOS, useAddProfilePhotos, useRemoveProfilePhoto, useReor
 import { useDiscoverCardAspect } from "@/lib/discoverCard";
 import { CoverPreviewModal } from "@/components/CoverPreviewModal";
 import { showAlert } from "@/lib/alert";
+import { photoUploadErrorMessage } from "@/lib/photoErrors";
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -303,7 +304,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
     if (result.canceled || result.assets.length === 0) return;
     addPhotos.mutate(
       { photos: result.assets.map((asset) => ({ uri: asset.uri, mimeType: asset.mimeType ?? "image/jpeg" })) },
-      { onError: (error) => showAlert(t("gallery.uploadErrorTitle"), error.message) }
+      { onError: (error) => showAlert(t("gallery.uploadErrorTitle"), photoUploadErrorMessage(error, t)) }
     );
   }
 
@@ -325,7 +326,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
       setHasCover(true);
       setPendingCover(null);
     } catch (error) {
-      showAlert(t("gallery.uploadErrorTitle"), (error as Error).message);
+      showAlert(t("gallery.uploadErrorTitle"), photoUploadErrorMessage(error as Error, t));
     } finally {
       setIsSavingCover(false);
     }

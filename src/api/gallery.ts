@@ -1,4 +1,5 @@
 import { supabase } from "@/api/client";
+import { uploadCheckedPhoto } from "@/api/photoModeration";
 import { toUploadableImage } from "@/lib/uploadableImage";
 
 const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
@@ -61,10 +62,8 @@ export async function addProfilePhoto(
   const response = await fetch(uri);
   const body = await response.arrayBuffer();
 
-  const { error: uploadError } = await supabase.storage
-    .from("avatars")
-    .upload(path, body, { contentType: mimeType });
-  if (uploadError) throw uploadError;
+  // Checked before it's published into avatars (see photoModeration.ts).
+  await uploadCheckedPhoto(path, body, mimeType);
 
   const { data, error } = await supabase
     .from("profile_photos")
