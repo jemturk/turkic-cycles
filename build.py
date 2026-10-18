@@ -405,8 +405,10 @@ def install_apk() -> None:
     if result.returncode != 0:
         if "INSTALL_FAILED_UPDATE_INCOMPATIBLE" in output or "signatures do not match" in output:
             raise BuildError(
-                "the app on the phone was signed with a different key (e.g. the old debug key). Uninstall it "
-                f"once -- adb uninstall {APP_ID}, or from the phone; you'll need to sign in again -- and rerun -i."
+                "the app on the phone was signed with a different key -- usually because it came from Google "
+                "Play, which re-signs apps with Google's app signing key (or it's an old debug build). A local "
+                f"APK can't update it: uninstall once -- adb uninstall {APP_ID}, or from the phone; you'll need "
+                "to sign in again -- and rerun -i."
             )
         if "INSTALL_FAILED_VERSION_DOWNGRADE" in output:
             raise BuildError(
