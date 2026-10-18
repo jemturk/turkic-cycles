@@ -695,6 +695,7 @@
   },
   "photos": {
     "rejected": "Bu fotoğraf kullanılamaz. Fotoğraflarda çıplaklık, aşırı açık görüntü, cinsel içerik veya şiddet olamaz (topluluk kurallarımıza bak). Lütfen başka bir fotoğraf seç.",
-    "checkFailed": "Bu fotoğrafı şu anda kontrol edemedik. Lütfen birazdan tekrar dene."
+    "checkFailed": "Bu fotoğrafı şu anda kontrol edemedik. Lütfen birazdan tekrar dene.",
+    "tooManyTries": "Kısa sürede çok sayıda fotoğraf denedin. Lütfen yenisini eklemeden önce bir süre bekle."
   }
 }

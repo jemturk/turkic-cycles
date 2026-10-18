@@ -695,6 +695,7 @@
   },
   "photos": {
     "rejected": "Dieses Foto kann nicht verwendet werden. Fotos dürfen keine Nacktheit zeigen, nicht zu freizügig sein und keine sexuellen Inhalte oder drastische Gewalt enthalten (siehe unsere Community-Regeln). Bitte wähle ein anderes.",
-    "checkFailed": "Wir konnten dieses Foto gerade nicht prüfen. Bitte versuche es gleich noch einmal."
+    "checkFailed": "Wir konnten dieses Foto gerade nicht prüfen. Bitte versuche es gleich noch einmal.",
+    "tooManyTries": "Du hast in kurzer Zeit sehr viele Fotos ausprobiert. Bitte warte eine Weile, bevor du ein weiteres hinzufügst."
   }
 }

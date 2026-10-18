@@ -695,6 +695,7 @@
   },
   "photos": {
     "rejected": "This photo can't be used. Photos can't show nudity, be very revealing, or contain sexual content or graphic violence (see our community rules). Please choose another one.",
-    "checkFailed": "We couldn't check this photo just now. Please try again in a moment."
+    "checkFailed": "We couldn't check this photo just now. Please try again in a moment.",
+    "tooManyTries": "You've tried a lot of photos in a short time. Please wait a while before adding another."
   }
 }

@@ -17,6 +17,13 @@
 // If Vision can't be reached, the photo isn't published (fail closed) and the member
 // is asked to try again.
 //
+// Limits, counted from photo_moderation (429, "too many tries"): MAX_CHECKS_PER_HOUR
+// stops a script running up Vision charges; MAX_REJECTIONS_PER_DAY stops someone
+// probing the filter. Members who keep getting rejected: photo_moderation_offenders.
+//
+// Published files get a short cache (PUBLIC_CACHE_SECONDS) instead of Storage's
+// default hour, so a photo the member deletes stops loading from caches quickly.
+//
 // Secrets: GOOGLE_VISION_API_KEY (Google Cloud → APIs & Services → Credentials, an API
 // key restricted to the Cloud Vision API).
 // Deploy with: supabase functions deploy moderate-photo  (JWT verification on)
@@ -25,6 +32,9 @@ import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 
 const UPLOAD_BUCKET = "photo-uploads";
 const PUBLIC_BUCKET = "avatars";
+const PUBLIC_CACHE_SECONDS = "300";
+const MAX_CHECKS_PER_HOUR = 30;
+const MAX_REJECTIONS_PER_DAY = 5;
 
 const LIKELIHOOD = ["UNKNOWN", "VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"];
 type SafeSearch = Record<"adult" | "spoof" | "medical" | "violence" | "racy", string>;
@@ -91,10 +101,24 @@ Deno.serve(async (req) => {
   if (typeof path !== "string" || !ownPhoto.test(path)) return json({ error: "invalid path" }, 400);
   const isAvatar = path.startsWith(`${userId}/avatar.`);
 
+  const removeUpload = () => admin.storage.from(UPLOAD_BUCKET).remove([path]);
+
+  const since = (ms: number) => new Date(Date.now() - ms).toISOString();
+  const [checks, rejections] = await Promise.all([
+    admin.from("photo_moderation").select("id", { count: "exact", head: true })
+      .eq("user_id", userId).gte("created_at", since(60 * 60 * 1000)),
+    admin.from("photo_moderation").select("id", { count: "exact", head: true })
+      .eq("user_id", userId).eq("verdict", "rejected").gte("created_at", since(24 * 60 * 60 * 1000)),
+  ]);
+  if ((checks.count ?? 0) >= MAX_CHECKS_PER_HOUR || (rejections.count ?? 0) >= MAX_REJECTIONS_PER_DAY) {
+    console.warn("moderate-photo: limit reached", userId, { checks: checks.count, rejections: rejections.count });
+    await removeUpload();
+    return json({ error: "too many tries" }, 429);
+  }
+
   const { data: file, error: downloadError } = await admin.storage.from(UPLOAD_BUCKET).download(path);
   if (downloadError || !file) return json({ error: "upload not found" }, 404);
   const image = new Uint8Array(await file.arrayBuffer());
-  const removeUpload = () => admin.storage.from(UPLOAD_BUCKET).remove([path]);
 
   let scores: SafeSearch;
   try {
@@ -119,7 +143,7 @@ Deno.serve(async (req) => {
   try {
     const { error: publishError } = await admin.storage
       .from(PUBLIC_BUCKET)
-      .upload(path, image, { contentType: file.type || "image/jpeg", upsert: isAvatar });
+      .upload(path, image, { contentType: file.type || "image/jpeg", upsert: isAvatar, cacheControl: PUBLIC_CACHE_SECONDS });
     if (publishError) throw publishError;
     await removeUpload();
 
