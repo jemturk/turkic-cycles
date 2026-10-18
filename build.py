@@ -236,7 +236,9 @@ def find_executable(name: str) -> str:
 
 
 def npx(*args: str) -> list[str]:
-    return [find_executable("npx"), *args]
+    # --yes: install a missing package (e.g. a new eas-cli@latest) without asking
+    # "Ok to proceed?" -- in quiet mode that prompt goes to the log and the run hangs.
+    return [find_executable("npx"), "--yes", *args]
 
 
 def android_env() -> dict[str, str]:
