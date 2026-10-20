@@ -1,9 +1,8 @@
 import Svg, { Circle } from "react-native-svg";
 import { useTranslation } from "react-i18next";
 
-// Your message's status under its bubble, drawn from the logo's circles ("Corona"):
-// sent = a teal ring, delivered = a teal sun, read = the sun wrapped edge to edge in
-// a coral band. Each step differs in shape and lightness, not only color.
+// Your message's status under its bubble, drawn from the logo's circles: sent = a
+// teal ring, delivered = a teal sun, read = the sun with a coral dot at its center.
 const TEAL = "#127A87";
 const CORAL = "#C1440E";
 
@@ -23,8 +22,8 @@ export function MessageStatus({ status, size = 16 }: { status: MessageStatusValu
       {status === "delivered" ? <Circle cx={8} cy={8} r={5} fill={TEAL} /> : null}
       {status === "read" ? (
         <>
-          <Circle cx={8} cy={8} r={6.4} fill={CORAL} />
-          <Circle cx={8} cy={8} r={4.2} fill={TEAL} />
+          <Circle cx={8} cy={8} r={5} fill={TEAL} />
+          <Circle cx={8} cy={8} r={2.2} fill={CORAL} />
         </>
       ) : null}
     </Svg>
