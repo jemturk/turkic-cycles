@@ -377,20 +377,10 @@ export default function ChatThread() {
                       {message.body}
                     </Text>
                   </View>
-                  {/* Reactions sit on the bubble's bottom corner, like most chat apps. */}
+                  {/* Reactions sit on the bubble's bottom corner, like most chat apps --
+                      just the emoji, no badge behind them. */}
                   {messageReactions.length > 0 ? (
-                    <View
-                      className={`absolute -bottom-3.5 flex-row rounded-full border border-white bg-white px-1.5 py-0.5 dark:border-ink-800 dark:bg-ink-800 ${
-                        isOwn ? "left-2" : "right-2"
-                      }`}
-                      style={{
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 1 },
-                        shadowOpacity: 0.1,
-                        shadowRadius: 3,
-                        elevation: 2,
-                      }}
-                    >
+                    <View className={`absolute -bottom-3.5 flex-row px-1.5 py-0.5 ${isOwn ? "left-2" : "right-2"}`}>
                       {messageReactions.map((r) => (
                         // A fixed box with the emoji centred in it: Android measures emoji
                         // narrower than it draws them, which clipped their left edge.
