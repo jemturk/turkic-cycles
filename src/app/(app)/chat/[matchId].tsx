@@ -154,12 +154,15 @@ export default function ChatThread() {
   }
 
   // The quick reactions, plus Reply (a phone has no hover buttons to reach it).
-  function renderReactionBar(message: Message) {
+  // Floats over the message above (or, for the first message, just below), so opening
+  // it never moves the bubble you long-pressed.
+  function renderReactionBar(message: Message, below: boolean) {
     const mine = (reactions ?? []).find((r) => r.messageId === message.id && r.userId === userId)?.emoji;
     return (
       <View
-        className="mb-1.5 flex-row items-center gap-0.5 rounded-full bg-white px-1.5 py-1 dark:bg-ink-800"
+        className="absolute left-0 flex-row items-center gap-0.5 rounded-full bg-white px-1.5 py-1 dark:bg-ink-800"
         style={{
+          ...(below ? { top: "100%", marginTop: 6 } : { bottom: "100%", marginBottom: 6 }),
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.12,
@@ -441,8 +444,10 @@ export default function ChatThread() {
                 <View
                   // gap-3 between messages; a run's bubbles sit 4px apart instead.
                   className={`${isOwn ? "items-end" : "items-start"} ${joinsPrevious ? "-mt-2" : ""}`}
+                  // Above its neighbours while its reaction bar is open, which overlaps them.
+                  style={actionsFor === message.id ? { zIndex: 10, elevation: 5 } : undefined}
                 >
-                  {actionsFor === message.id ? renderReactionBar(message) : null}
+                  {actionsFor === message.id ? renderReactionBar(message, index === 0) : null}
                   {/* Yours in pale turquoise, theirs in pale coral -- light tints rather
                     than solid brand colors, so a long thread is calm to read. Only the
                     other person's can be
