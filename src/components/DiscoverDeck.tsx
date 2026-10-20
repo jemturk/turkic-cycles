@@ -245,6 +245,13 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const passPulse = useSharedValue(1);
   const likePulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: likePulse.value }] }));
   const passPulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: passPulse.value }] }));
+  const savePulse = useSharedValue(1);
+  const savePulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: savePulse.value }] }));
+  // Pops a button up and springs it back: after a swipe, and when it's tapped.
+  function pulse(button: SharedValue<number>) {
+    "worklet";
+    button.set(withSequence(withTiming(1.18, { duration: 130 }), withSpring(1, { damping: 9, stiffness: 220 })));
+  }
   // The stamp left in the middle when someone is liked (1) or passed (-1): it pops up
   // where the eyes are while the card flies off, holds a moment, and fades.
   const stampKind = useSharedValue(1);
@@ -328,9 +335,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
         // The matching button below pulses, so even a quick flick reads as "liked" or
         // "passed" -- the button you'd have pressed.
         showStamp(like ? 1 : -1);
-        (like ? likePulse : passPulse).set(
-          withSequence(withTiming(1.18, { duration: 130 }), withSpring(1, { damping: 9, stiffness: 220 }))
-        );
+        pulse(like ? likePulse : passPulse);
         return;
       }
       const up = e.translationY < -SKIP_DISTANCE || e.velocityY < -SKIP_VELOCITY;
@@ -379,6 +384,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   // The like / pass buttons fly the card off the same way a swipe does; save just
   // moves on.
   function onButton(action: "like" | "pass" | "save") {
+    pulse(action === "like" ? likePulse : action === "pass" ? passPulse : savePulse);
     if (action === "save") {
       answer(action);
       return;
@@ -473,7 +479,9 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
             <Animated.View style={passPulseStyle}>
               <SwipeButton action="pass" onPress={() => onButton("pass")} />
             </Animated.View>
-            <SwipeButton action="save" onPress={() => onButton("save")} />
+            <Animated.View style={savePulseStyle}>
+              <SwipeButton action="save" onPress={() => onButton("save")} />
+            </Animated.View>
             <Animated.View style={likePulseStyle}>
               <SwipeButton action="like" onPress={() => onButton("like")} />
             </Animated.View>
