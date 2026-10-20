@@ -75,6 +75,7 @@ function RollCard({
   step,
   front,
   swipeX,
+  swipeDown,
   children,
 }: {
   index: number;
@@ -83,13 +84,17 @@ function RollCard({
   step: SharedValue<number>;
   front: SharedValue<number>;
   swipeX: SharedValue<number>;
+  swipeDown: SharedValue<number>;
   children: ReactNode;
 }) {
   const style = useAnimatedStyle(() => {
     const x = front.value === index ? swipeX.value : 0;
+    // A save slides the card in front straight down, on its own (not the roll's drag,
+    // which would pull the previous person in from above).
+    const down = front.value === index ? swipeDown.value : 0;
     return {
       transform: [
-        { translateY: index * step.value - base.value + drag.value },
+        { translateY: index * step.value - base.value + drag.value + down },
         { translateX: x },
         { rotate: `${x / 25}deg` },
       ],
@@ -247,6 +252,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   // Which index is in front (kept in step with base), and the sideways swipe.
   const front = useSharedValue(0);
   const swipeX = useSharedValue(0);
+  const swipeDown = useSharedValue(0);
   // A drag's direction, decided by its first movement: 0 not yet, 1 up/down (roll),
   // 2 sideways (like / pass).
   const axis = useSharedValue(0);
@@ -262,7 +268,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     "worklet";
     button.set(withSequence(withTiming(1.18, { duration: 130 }), withSpring(1, { damping: 9, stiffness: 220 })));
   }
-  // The stamp left in the middle when someone is liked (1) or passed (-1): it pops up
+  // The stamp left in the middle when someone is liked (1), passed (-1) or saved (0): it pops up
   // where the eyes are while the card flies off, holds a moment, and fades.
   const stampKind = useSharedValue(1);
   const stampScale = useSharedValue(1);
@@ -275,7 +281,11 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     opacity: stampKind.value === -1 ? stampOpacity.value : 0,
     transform: [{ scale: stampScale.value }],
   }));
-  function showStamp(kind: 1 | -1) {
+  const saveStampStyle = useAnimatedStyle(() => ({
+    opacity: stampKind.value === 0 ? stampOpacity.value : 0,
+    transform: [{ scale: stampScale.value }],
+  }));
+  function showStamp(kind: 1 | -1 | 0) {
     "worklet";
     stampKind.set(kind);
     stampScale.set(0.6);
@@ -297,15 +307,16 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     front.set(roll.pos);
     drag.set(0);
     if (roll.fade) {
-      // After a like / pass the next person waits for the stamp to finish, so it never
-      // sits on them as if they were the one answered. The stamp starts as the card
-      // takes off and this runs as it lands, so what's left is the stamp less the
-      // flight. A save has no stamp: no wait.
+      // After a like / pass / save the next person waits for the stamp to finish, so it
+      // never sits on them as if they were the one answered. The stamp starts as the
+      // card takes off and this runs as it lands, so what's left is the stamp less the
+      // flight. (No stamp showing -- a screen reader's action, say -- no wait.)
       const wait = stampOpacity.get() > 0 ? Math.max(0, STAMP_MS - FLY_MS) : 0;
       opacity.set(0);
       opacity.set(withDelay(wait, withTiming(1, { duration: NEXT_FADE_MS })));
       // The next person takes the front place: not where the last one flew off to.
       swipeX.set(0);
+      swipeDown.set(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roll]);
@@ -402,12 +413,17 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     );
   }
 
-  // The like / pass buttons fly the card off the same way a swipe does; save just
-  // moves on.
+  // The like / pass buttons fly the card off the same way a swipe does; save slides it
+  // down. Each with its button's pulse and stamp.
   function onButton(action: "like" | "pass" | "save") {
     pulse(action === "like" ? likePulse : action === "pass" ? passPulse : savePulse);
     if (action === "save") {
-      answer(action);
+      showStamp(0);
+      swipeDown.set(
+        withTiming(FLY_OFF, { duration: FLY_MS }, (finished) => {
+          if (finished) runOnJS(answer)("save");
+        })
+      );
       return;
     }
     showStamp(action === "like" ? 1 : -1);
@@ -460,6 +476,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
                     step={step}
                     front={front}
                     swipeX={swipeX}
+                    swipeDown={swipeDown}
                   >
                     <RollFace
                       person={person}
@@ -492,6 +509,9 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
             </Animated.View>
             <Animated.View style={[STAMP, { backgroundColor: "#FBE9E1" }, passStampStyle]}>
               <Ionicons name="close" size={52} color="#C1440E" />
+            </Animated.View>
+            <Animated.View style={[STAMP, { backgroundColor: "#FFFFFF" }, saveStampStyle]}>
+              <Ionicons name="star" size={46} color="#D9663D" />
             </Animated.View>
           </View>
           </View>
