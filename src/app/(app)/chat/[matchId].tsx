@@ -101,6 +101,8 @@ export default function ChatThread() {
   // Whether the list is at (or near) its end -- so when the keyboard shrinks the
   // list, it stays pinned to the newest message, but not if you're reading older ones.
   const atBottomRef = useRef(true);
+  // The newest message the list has followed, to tell a new message from other growth.
+  const lastMessageIdRef = useRef<string | null>(null);
 
   // Each thread opens at its end, and never stays hidden if no size change comes
   // after its messages load.
@@ -304,10 +306,20 @@ export default function ChatThread() {
           // After the new content has laid out, not when the state changes: scrolling
           // from an effect ran before a new message or the typing bubble had any
           // height, stopping short and leaving it half behind the input bar.
+          // Once positioned, only follow the end for a new message (yours always; theirs
+          // if you're at the bottom) or, at the bottom, the typing bubble -- never for a
+          // reaction bar or reaction appearing, which would yank an older bubble you
+          // long-pressed out from under your finger.
           onContentSizeChange={() => {
             if (positioned) {
-              scrollRef.current?.scrollToEnd({ animated: true });
+              const last = messages?.[messages.length - 1];
+              const newMessage = !!last && last.id !== lastMessageIdRef.current;
+              if (last) lastMessageIdRef.current = last.id;
+              if (newMessage ? last.sender_id === userId || atBottomRef.current : atBottomRef.current && !actionsFor) {
+                scrollRef.current?.scrollToEnd({ animated: true });
+              }
             } else if (messages) {
+              lastMessageIdRef.current = messages[messages.length - 1]?.id ?? null;
               scrollRef.current?.scrollToEnd({ animated: false });
               requestAnimationFrame(() => setPositionedFor(matchId ?? null));
             }
