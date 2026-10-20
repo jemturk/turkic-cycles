@@ -102,24 +102,28 @@ function RollCard({
   return (
     <Animated.View style={[{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }, style]}>
       {children}
-      {/* Each badge on the side the card moves away from: like top left when swiping right. */}
-      <Animated.View pointerEvents="none" style={[BADGE, { left: 20, backgroundColor: "#C1440E" }, likeStyle]}>
-        <Ionicons name="heart" size={30} color="#FFFFFF" />
+      {/* Both in the middle of the card; only the one for the swipe's direction shows. */}
+      <Animated.View pointerEvents="none" style={[BADGE, { backgroundColor: "#C1440E" }, likeStyle]}>
+        <Ionicons name="heart" size={38} color="#FFFFFF" />
       </Animated.View>
-      <Animated.View pointerEvents="none" style={[BADGE, { right: 20, backgroundColor: "#FBE9E1" }, passStyle]}>
-        <Ionicons name="close" size={34} color="#C1440E" />
+      <Animated.View pointerEvents="none" style={[BADGE, { backgroundColor: "#FBE9E1" }, passStyle]}>
+        <Ionicons name="close" size={44} color="#C1440E" />
       </Animated.View>
     </Animated.View>
   );
 }
 
 // The like / pass badges on the card, in the buttons' colors (SwipeButton).
+const BADGE_SIZE = 80;
 const BADGE = {
   position: "absolute",
-  top: 20,
-  width: 64,
-  height: 64,
-  borderRadius: 32,
+  top: "50%",
+  left: "50%",
+  marginTop: -BADGE_SIZE / 2,
+  marginLeft: -BADGE_SIZE / 2,
+  width: BADGE_SIZE,
+  height: BADGE_SIZE,
+  borderRadius: BADGE_SIZE / 2,
   alignItems: "center",
   justifyContent: "center",
 } as const;
