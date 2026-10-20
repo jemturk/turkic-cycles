@@ -20,7 +20,6 @@ import { DiscoverCardView } from "@/components/DiscoverCardView";
 import { SwipeButton } from "@/components/SwipeButton";
 import { DiscoverGrid } from "@/components/DiscoverGrid";
 import { useWideLayout } from "@/hooks/useWideLayout";
-import { DECK_PEEK } from "@/lib/discoverCard";
 
 // How far (points) or how fast (points/second) a vertical swipe has to go to count
 // -- up to skip, down to go back; anything less springs the card back.
@@ -70,8 +69,6 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     ...(candidates ?? []).filter((c) => !inOrder.has(c.userId)).map((c) => c.userId),
   ];
   const candidate = queueIds.length > 0 ? byId.get(queueIds[0]) : undefined;
-  // Who's next, peeking out under the card -- a hint that there's more to swipe up to.
-  const nextCandidate = queueIds.length > 1 ? byId.get(queueIds[1]) : undefined;
   // The last skip whose person is still around (they may have been acted on since).
   const backId = [...skipHistory].reverse().find((id) => byId.has(id) && id !== candidate?.userId);
   const canGoBack = backId !== undefined;
@@ -161,22 +158,8 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
         // views don't reliably apply (on web they're dropped), which once left the
         // card only as tall as its text.
         <View style={{ flex: 1, marginTop: 12 }}>
-          <View style={{ flex: 1 }}>
-          {/* The next person's card, behind this one: a little narrower and DECK_PEEK
-              lower, so its bottom edge shows under the card like the next in a deck.
-              Decoration only -- not pressable, hidden from screen readers. */}
-          {nextCandidate ? (
-            <View
-              pointerEvents="none"
-              accessibilityElementsHidden
-              importantForAccessibility="no-hide-descendants"
-              style={{ position: "absolute", top: DECK_PEEK, bottom: 0, left: 10, right: 10, opacity: 0.6 }}
-            >
-              <DiscoverCardView person={nextCandidate} verificationStatus={undefined} />
-            </View>
-          ) : null}
           <GestureDetector gesture={verticalSwipe}>
-            <Animated.View style={[{ flex: 1, marginBottom: DECK_PEEK }, cardStyle]}>
+            <Animated.View style={[{ flex: 1 }, cardStyle]}>
               <Pressable
                 style={{ flex: 1 }}
                 onPress={() => onOpenProfile(candidate.userId)}
@@ -195,7 +178,6 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
               </Pressable>
             </Animated.View>
           </GestureDetector>
-          </View>
 
           <View className="mt-4 flex-row items-center justify-center gap-6">
             <SwipeButton action="pass" onPress={() => onSwipe("pass")} />
