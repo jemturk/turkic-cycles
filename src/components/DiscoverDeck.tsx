@@ -116,6 +116,14 @@ function RollCard({
 }
 
 // The like / pass badges on the card, in the buttons' colors (SwipeButton).
+// The stamp: popping in, holding, fading out. About a third of a second in all.
+const STAMP_IN_MS = 80;
+const STAMP_HOLD_MS = 90;
+const STAMP_OUT_MS = 160;
+const STAMP_MS = STAMP_IN_MS + STAMP_HOLD_MS + STAMP_OUT_MS;
+// How long a liked or passed card takes to fly off.
+const FLY_MS = 200;
+
 const BADGE_SIZE = 80;
 // The stamp a like / pass leaves in the middle (SwipeDeck), a size up from the badge.
 const STAMP = {
@@ -269,8 +277,14 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     "worklet";
     stampKind.set(kind);
     stampScale.set(0.6);
-    stampScale.set(withSequence(withTiming(1.15, { duration: 160 }), withSpring(1, { damping: 10, stiffness: 200 })));
-    stampOpacity.set(withSequence(withTiming(1, { duration: 90 }), withDelay(380, withTiming(0, { duration: 260 }))));
+    stampScale.set(withSequence(withTiming(1.15, { duration: STAMP_IN_MS + 40 }), withSpring(1, { damping: 10, stiffness: 200 })));
+    // In, a short hold, out: gone before the next person appears (see the fade below).
+    stampOpacity.set(
+      withSequence(
+        withTiming(1, { duration: STAMP_IN_MS }),
+        withDelay(STAMP_HOLD_MS, withTiming(0, { duration: STAMP_OUT_MS }))
+      )
+    );
   }
 
   // Puts the animation where the roll is after a change the gesture didn't make; the
@@ -281,8 +295,13 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     front.set(roll.pos);
     drag.set(0);
     if (roll.fade) {
+      // After a like / pass the next person waits for the stamp to finish, so it never
+      // sits on them as if they were the one answered. The stamp starts as the card
+      // takes off and this runs as it lands, so what's left is the stamp less the
+      // flight. A save has no stamp: no wait.
+      const wait = stampOpacity.get() > 0 ? Math.max(0, STAMP_MS - FLY_MS) : 0;
       opacity.set(0);
-      opacity.set(withTiming(1, { duration: 250 }));
+      opacity.set(withDelay(wait, withTiming(1, { duration: 250 })));
       // The next person takes the front place: not where the last one flew off to.
       swipeX.set(0);
     }
@@ -328,7 +347,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
           return;
         }
         swipeX.set(
-          withTiming(like ? FLY_OFF : -FLY_OFF, { duration: 200 }, (finished) => {
+          withTiming(like ? FLY_OFF : -FLY_OFF, { duration: FLY_MS }, (finished) => {
             if (finished) runOnJS(answer)(like ? "like" : "pass");
           })
         );
@@ -391,7 +410,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     }
     showStamp(action === "like" ? 1 : -1);
     swipeX.set(
-      withTiming(action === "like" ? FLY_OFF : -FLY_OFF, { duration: 200 }, (finished) => {
+      withTiming(action === "like" ? FLY_OFF : -FLY_OFF, { duration: FLY_MS }, (finished) => {
         if (finished) runOnJS(answer)(action);
       })
     );
