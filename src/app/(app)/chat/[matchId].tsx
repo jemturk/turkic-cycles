@@ -34,10 +34,10 @@ import type { Tables } from "@/types/database";
 // sit tight together, and only the last shows its time.
 const RUN_GAP_MS = 5 * 60 * 1000;
 
-// Bubble corners: round, tighter on the sender's side between bubbles of a run, and
+// Bubble corners: round, square on the sender's side where bubbles of a run meet, and
 // the last of a run comes to a point toward its sender, like a speech bubble.
 const BUBBLE_RADIUS = 18;
-const RUN_RADIUS = 8;
+const RUN_RADIUS = 0;
 
 function sameDay(a: Message, b: Message) {
   return new Date(a.created_at).toDateString() === new Date(b.created_at).toDateString();
