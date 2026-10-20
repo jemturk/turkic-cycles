@@ -169,14 +169,6 @@ export async function upsertRsvp(eventId: string, userId: string, status: "going
   if (error) throw error;
 }
 
-// Whether the user is an app admin (migration 0031's app_admins). Each user can only
-// read their own row, so this answers for the signed-in user only.
-export async function getIsAppAdmin(userId: string): Promise<boolean> {
-  const { data, error } = await supabase.from("app_admins").select("user_id").eq("user_id", userId).maybeSingle();
-  if (error) throw error;
-  return !!data;
-}
-
 // The user's role in a circle -- "member", "moderator" or "owner" -- or null if they
 // haven't joined it.
 export async function getMyCircleRole(circleId: string, userId: string): Promise<string | null> {

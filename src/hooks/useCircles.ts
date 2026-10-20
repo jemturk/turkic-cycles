@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createCircle,
   createCircleEvent,
-  getIsAppAdmin,
   getMyCircleRole,
   getCircle,
   getCircleEvent,
@@ -130,14 +129,6 @@ export function useUpsertRsvp(eventId: string | undefined, userId: string | unde
       queryClient.invalidateQueries({ queryKey: ["circleEvent", eventId] });
       queryClient.invalidateQueries({ queryKey: ["eventAttendees", eventId] });
     },
-  });
-}
-
-export function useIsAppAdmin(userId: string | undefined) {
-  return useQuery({
-    queryKey: ["isAppAdmin", userId],
-    queryFn: () => getIsAppAdmin(userId as string),
-    enabled: !!userId,
   });
 }
 

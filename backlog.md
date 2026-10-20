@@ -129,9 +129,10 @@ Built and committed but only checked in a browser preview or not at all.
 - [ ] **Automatic trusted-contact alerts** — the server texts contacts when a plan is
   overdue, even if the phone is off (Twilio: ~$1/month number + ~1¢/text, US carrier
   registration takes days to weeks). Today the member sends texts from their own phone.
-- [ ] **Push function logging** — `send-message-push` only logs unregistered devices;
-  log every delivery error and check receipts, so failures like the missing FCM key
-  show up.
+- [ ] **Push delivery receipts** — `send-message-push` now logs every failed ticket
+  (and reads the message from the database, so forged calls can't push made-up text).
+  Left: Expo's delivery receipts, which arrive ~15 minutes later -- store the ticket
+  ids and check them on a schedule (pg_cron + a small function).
 - [ ] **Emails in each member's language** — the templates are English; a Send Email
   hook could pick the language from the profile.
 - [ ] **Native Google sign-in** — Google's account sheet instead of the browser page
@@ -167,11 +168,9 @@ Built and committed but only checked in a browser preview or not at all.
 
 ## 5. Tech debt
 
-- [ ] The Settings test card is gone (tier / Verified switches, Send test error). Its
-  pieces remain unused: the `debug_set_my_tier` / `debug_set_my_verified` functions
-  (test accounts only, 0042) and the `useDebugSetTier` / `useDebugSetVerified` /
-  `useIsTestAccount` hooks. Remove them, or reuse them for an admin screen. Until then,
-  change a test account's tier or badge with SQL (`subscriptions`, `verification_status`).
+- [x] The Settings test card's leftovers are removed: the debug functions (migration
+  0047) and their hooks. Change a test account's tier or badge with SQL
+  (`subscriptions`, `verification_status`).
 
 - [ ] Note, not a task: `app.json` `"slug"` must stay `turanci`. It's the Expo project's
   permanent slug (project ID `45279546-…`, can't be renamed); expo.dev shows the display
@@ -183,7 +182,7 @@ Built and committed but only checked in a browser preview or not at all.
 - [ ] `expo-doctor` patch-version drift recurs; run `npx expo install --fix` now and then.
 - [ ] Formatting is inconsistent with Prettier's defaults (trailing commas); decide on a
   Prettier config and format once, or leave as is.
-- [ ] `useIsAppAdmin` is no longer used by Settings; remove it if nothing else needs it.
+- [x] `useIsAppAdmin` removed (nothing used it).
 - [ ] `supabase/config.toml` redirect URLs use `/*`; change to `/**` to match the
   dashboard (local-only file).
 - [ ] The `global-discover` branch has many unpushed commits; push and open a PR to

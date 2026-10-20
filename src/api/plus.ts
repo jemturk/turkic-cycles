@@ -30,18 +30,6 @@ export function hasPlus(subscription: MySubscription | undefined): boolean {
   return !subscription.currentPeriodEnd || new Date(subscription.currentPeriodEnd).getTime() > Date.now();
 }
 
-// TEMPORARY (migration 0036): admin-only test controls for the signed-in user's own
-// tier and verification status.
-export async function debugSetMyTier(tier: Tier) {
-  const { error } = await supabase.rpc("debug_set_my_tier", { p_tier: tier });
-  if (error) throw error;
-}
-
-export async function debugSetMyVerified(verified: boolean) {
-  const { error } = await supabase.rpc("debug_set_my_verified", { p_verified: verified });
-  if (error) throw error;
-}
-
 // After a purchase or restore: pull the new state from RevenueCat now rather than
 // waiting for the webhook.
 export async function syncMySubscription() {
@@ -81,12 +69,4 @@ export async function listIncomingLikes(): Promise<SavedPerson[]> {
   const { data, error } = await supabase.rpc("list_incoming_likes");
   if (error) throw error;
   return loadPeople(new Map((data ?? []).map((row) => [row.user_id, row.circle_id])));
-}
-
-// Whether the signed-in user is a test account (migration 0042): they see the mock
-// profiles and the Settings test controls. False for everyone else, and on error.
-export async function getIsTestAccount(): Promise<boolean> {
-  const { data, error } = await supabase.rpc("is_test_account");
-  if (error) return false;
-  return !!data;
 }

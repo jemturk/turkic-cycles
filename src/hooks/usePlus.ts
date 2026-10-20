@@ -2,9 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   countIncomingLikes,
-  debugSetMyTier,
-  debugSetMyVerified,
-  getIsTestAccount,
   getMySubscription,
   hasPlus,
   isOnPlusWaitlist,
@@ -27,26 +24,6 @@ export function useMySubscription(userId: string | undefined) {
 export function useHasPlus(userId: string | undefined): boolean | undefined {
   const { data } = useMySubscription(userId);
   return data ? hasPlus(data) : undefined;
-}
-
-// TEMPORARY: see debugSetMyTier / debugSetMyVerified.
-export function useDebugSetTier(userId: string | undefined) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: debugSetMyTier,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["subscription", userId] });
-      queryClient.invalidateQueries({ queryKey: ["incomingLikes", userId] });
-    },
-  });
-}
-
-export function useDebugSetVerified(userId: string | undefined) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: debugSetMyVerified,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["verificationStatus", userId] }),
-  });
 }
 
 export function usePlusWaitlist(userId: string | undefined) {
@@ -124,14 +101,5 @@ export function useIncomingLikes(userId: string | undefined, enabled: boolean) {
     queryKey: ["incomingLikes", userId],
     queryFn: listIncomingLikes,
     enabled: !!userId && enabled,
-  });
-}
-
-// Test accounts (migration 0042) see the Settings test controls.
-export function useIsTestAccount(userId: string | undefined) {
-  return useQuery({
-    queryKey: ["isTestAccount", userId],
-    queryFn: getIsTestAccount,
-    enabled: !!userId,
   });
 }
