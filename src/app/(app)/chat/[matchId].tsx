@@ -42,6 +42,8 @@ const BUBBLE_RADIUS = 18;
 const RUN_RADIUS = 6;
 const TAIL_WIDTH = 5;
 const TAIL_HEIGHT = 9;
+// Below the flick, for its drawn-in shadow.
+const TAIL_SHADOW_ROOM = 2;
 // A short, flat sweep out from the bubble's bottom corner (its edge is the 1px overlap).
 const TAIL_PATH_THEIRS = "M5 0 L5 9 L0 9 C2.6 8.2 4.4 5.2 5 0 Z";
 const TAIL_PATH_OWN = "M0 0 L0 9 L5 9 C2.4 8.2 0.6 5.2 0 0 Z";
@@ -409,13 +411,31 @@ export default function ChatThread() {
                   ) : null}
                   {/* The last bubble of a run ends in a small flick toward its sender. */}
                   {!continues ? (
+                    // Its shadow is drawn in (a faint copy 1px lower, like the bubble's own
+                    // shadow): Android's elevation can only shade a rectangle.
                     <Svg
                       width={TAIL_WIDTH}
-                      height={TAIL_HEIGHT}
-                      viewBox={`0 0 ${TAIL_WIDTH} ${TAIL_HEIGHT}`}
-                      style={{ position: "absolute", bottom: 0, [isOwn ? "right" : "left"]: -TAIL_WIDTH + 1 }}
+                      height={TAIL_HEIGHT + TAIL_SHADOW_ROOM}
+                      viewBox={`0 0 ${TAIL_WIDTH} ${TAIL_HEIGHT + TAIL_SHADOW_ROOM}`}
+                      style={{
+                        position: "absolute",
+                        bottom: -TAIL_SHADOW_ROOM,
+                        [isOwn ? "right" : "left"]: -TAIL_WIDTH + 1,
+                      }}
                       aria-hidden
                     >
+                      <Path
+                        d={isOwn ? TAIL_PATH_OWN : TAIL_PATH_THEIRS}
+                        fill="#2B2320"
+                        opacity={0.06}
+                        transform="translate(0 1)"
+                      />
+                      <Path
+                        d={isOwn ? TAIL_PATH_OWN : TAIL_PATH_THEIRS}
+                        fill="#2B2320"
+                        opacity={0.04}
+                        transform="translate(0 2)"
+                      />
                       <Path d={isOwn ? TAIL_PATH_OWN : TAIL_PATH_THEIRS} fill={colors.tail} />
                     </Svg>
                   ) : null}
