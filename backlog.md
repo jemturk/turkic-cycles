@@ -148,6 +148,15 @@ Built and committed but only checked in a browser preview or not at all.
 - [ ] **Delete the mock profiles** eventually — today they're hidden from everyone but
   testers (migration 0042); delete once real activity is enough to test with.
 
+## 4b. Design decisions to revisit
+
+- [ ] **Chat bubble sheen** — your own bubbles have a faint top-to-bottom gradient
+  (`#C9E6E8` → `#B2D8DB`, `LinearGradient` in `src/app/(app)/chat/[matchId].tsx`);
+  theirs are flat coral. With the soft shadow under a run's last bubble it gives your
+  side a slight 3D feel. Options: keep as is (a quiet "this is you" cue), make both
+  sides flat, or give theirs an equally faint coral sheen. If the sheen goes, the
+  tail's color (`BUBBLE_COLORS.own.tail`) becomes the flat bubble color.
+
 ## 5. Tech debt
 
 - [ ] The Settings test card is gone (tier / Verified switches, Send test error). Its
