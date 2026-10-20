@@ -219,10 +219,21 @@ export async function markThreadRead(matchId: string, userId: string) {
   if (error) throw error;
 }
 
-// Called by the recipient's own device the moment it receives the push for this
-// message -- distinct from markThreadRead (which fires only once they open that
-// specific thread): this can fire while the app is merely open somewhere, giving
-// "delivered" its own meaning separate from "read".
+// "Delivered" = the message has reached the recipient's app, distinct from
+// markThreadRead (which fires only once they open that thread). useMarkDelivered
+// calls these from the recipient's own app: markAllDelivered whenever it opens or
+// comes back to the foreground (everything that arrived while it was away), and
+// markMessageDelivered for each new message while it's open on any screen.
+export async function markAllDelivered(userId: string) {
+  // RLS limits this to the user's own conversations; only messages sent to them.
+  const { error } = await supabase
+    .from("messages")
+    .update({ delivered_at: new Date().toISOString() })
+    .neq("sender_id", userId)
+    .is("delivered_at", null);
+  if (error) throw error;
+}
+
 export async function markMessageDelivered(messageId: string) {
   const { error } = await supabase
     .from("messages")

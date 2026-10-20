@@ -3,6 +3,7 @@ import {
   listNewConnections,
   listMessageThreads,
   listReactions,
+  markAllDelivered,
   markMessageDelivered,
   sendMessage,
   toggleReaction,
@@ -138,6 +139,19 @@ describe("listMessageThreads", () => {
     });
     const result = await listMessageThreads("me");
     expect(result[0].unreadCount).toBe(0);
+  });
+});
+
+describe("markAllDelivered", () => {
+  it("marks only messages sent to the user that aren't delivered yet", async () => {
+    queueResponses({ messages: [ok(null)] });
+
+    await markAllDelivered("me");
+
+    const chain = mockFrom.mock.results[0].value;
+    expect(chain.update).toHaveBeenCalledWith(expect.objectContaining({ delivered_at: expect.any(String) }));
+    expect(chain.neq).toHaveBeenCalledWith("sender_id", "me");
+    expect(chain.is).toHaveBeenCalledWith("delivered_at", null);
   });
 });
 

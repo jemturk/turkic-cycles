@@ -14,6 +14,7 @@ import { PlatformPressable } from "expo-router/build/react-navigation/elements/P
 
 import { useSession } from "@/hooks/useSession";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useMarkDelivered } from "@/hooks/useMarkDelivered";
 import { SearchOverlay } from "@/components/SearchOverlay";
 import { AppMark } from "@/components/AppMark";
 import { CirclesIcon } from "@/components/CirclesIcon";
@@ -72,6 +73,7 @@ export default function AppTabsLayout() {
   const { t } = useTranslation();
   const { session } = useSession();
   usePushNotifications(session?.user.id);
+  useMarkDelivered(session?.user.id);
   const searchOpen = useSearchOverlay((s) => s.open);
   const setSearchOpen = useSearchOverlay((s) => s.setOpen);
   const wide = useWideLayout();
