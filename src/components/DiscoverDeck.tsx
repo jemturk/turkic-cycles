@@ -1,8 +1,15 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, type ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+  type SharedValue,
+} from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
@@ -12,6 +19,7 @@ import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { DiscoverCardView } from "@/components/DiscoverCardView";
 import { SwipeButton } from "@/components/SwipeButton";
 import { DiscoverGrid } from "@/components/DiscoverGrid";
+import { moveTo, reconcile, type Roll } from "@/lib/discoverRoll";
 import { useWideLayout } from "@/hooks/useWideLayout";
 
 // How far (points) or how fast (points/second) a vertical swipe has to go to count
@@ -44,6 +52,32 @@ type DiscoverDeckProps = {
   onOpenProfile: (userId: string) => void;
 };
 
+// One card at a fixed place on the roll: `index` steps from the start. The roll
+// moves (base minus the drag), never the cards' places, so landing on a new person
+// changes nothing on screen -- that was the flicker when cards swapped people.
+function RollCard({
+  index,
+  base,
+  drag,
+  step,
+  children,
+}: {
+  index: number;
+  base: SharedValue<number>;
+  drag: SharedValue<number>;
+  step: SharedValue<number>;
+  children: ReactNode;
+}) {
+  const style = useAnimatedStyle(() => ({
+    transform: [{ translateY: index * step.value - base.value + drag.value }],
+  }));
+  return (
+    <Animated.View style={[{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }, style]}>
+      {children}
+    </Animated.View>
+  );
+}
+
 function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const { t } = useTranslation();
   const { session } = useSession();
@@ -52,82 +86,58 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const { data: candidates, isLoading } = useDiscoverCandidates(circleId, userId);
   const recordSwipe = useRecordSwipe(circleId, userId);
   const [matchedName, setMatchedName] = useState<string | null>(null);
-  // The queue order this visit (user ids), and the skips in the order they happened
-  // so swiping down can undo them. The candidate list can change underneath (a fresh
-  // batch after a like/pass/save): people no longer in it drop out of the order, and
-  // newcomers join at the end.
-  const [order, setOrder] = useState<string[]>([]);
-  const [skipHistory, setSkipHistory] = useState<string[]>([]);
+  const [roll, setRoll] = useState<Roll>({ ids: [], pos: 0 });
+
+  // The candidate list changes underneath (the first load, a fresh batch, someone
+  // liked / passed / saved): people no longer in it leave the roll, newcomers join
+  // its end. Adjusted while rendering, React's pattern for state that follows props.
+  const candidateKey = (candidates ?? []).map((c) => c.userId).join(",");
+  // null: nothing seen yet, so the first list (even one already cached) fills the roll.
+  const [rollKey, setRollKey] = useState<string | null>(null);
+  if (rollKey !== candidateKey) {
+    setRollKey(candidateKey);
+    setRoll(reconcile(roll, candidates ?? []));
+  }
 
   const byId = new Map((candidates ?? []).map((c) => [c.userId, c]));
-  const inOrder = new Set(order);
-  const queueIds = [
-    ...order.filter((id) => byId.has(id)),
-    ...(candidates ?? []).filter((c) => !inOrder.has(c.userId)).map((c) => c.userId),
-  ];
-  const candidate = queueIds.length > 0 ? byId.get(queueIds[0]) : undefined;
-  // The last skip whose person is still around (they may have been acted on since).
-  const backId = [...skipHistory].reverse().find((id) => byId.has(id) && id !== candidate?.userId);
-  const canGoBack = backId !== undefined;
-  // Their neighbours on the roll: who slides in from below, and from above.
-  const nextCandidate = queueIds.length > 1 ? byId.get(queueIds[1]) : undefined;
-  const previousCandidate = backId !== undefined ? byId.get(backId) : undefined;
+  const candidate = byId.get(roll.ids[roll.pos] ?? "");
+  const canGoBack = roll.pos > 0;
+  const hasNext = roll.pos < roll.ids.length - 1;
   const { data: candidateVerification } = useOtherUserVerificationStatus(candidate?.userId);
-  const opacity = useSharedValue(1);
-  const translateY = useSharedValue(0);
-  // One step along the roll: the card's height plus the gap. Measured, so the next
-  // card lands exactly where this one was.
-  const step = useSharedValue(0);
-  // Whether the card just changed by rolling (already in place) or by a button.
-  const rolled = useSharedValue(false);
-  // While the roll hands over to the new person: the neighbours stay hidden for that
-  // frame, so the one after next never flashes in the slot below.
-  const swapping = useSharedValue(false);
 
-  // A new person in front: back to the middle of the roll. After a roll they're
-  // already where they belong, so no fade; after like / pass / save they fade in.
+  // The roll's position in points: base = where the person in front sits, drag = the
+  // finger. step = one card's height plus the gap, measured.
+  const base = useSharedValue(0);
+  const drag = useSharedValue(0);
+  const step = useSharedValue(0);
+  const opacity = useSharedValue(1);
+
+  // Puts the animation where the roll is after a change the gesture didn't make; the
+  // next person fades in when the one in front left.
   useLayoutEffect(() => {
-    translateY.set(0);
-    requestAnimationFrame(() => swapping.set(false));
-    if (rolled.get()) {
-      rolled.set(false);
-      opacity.set(1);
-    } else {
+    if (!roll.resync) return;
+    base.set(roll.pos * step.get());
+    drag.set(0);
+    if (roll.fade) {
       opacity.set(0);
       opacity.set(withTiming(1, { duration: 250 }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [candidate?.userId, order]);
+  }, [roll]);
 
-  // The three cards move together with the finger. Only the cards: the buttons
-  // below stay put.
-  const cardStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-    opacity: opacity.value,
-  }));
-  const nextStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value + step.value }],
-    opacity: swapping.value ? 0 : 1,
-  }));
-  const previousStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value - step.value }],
-    opacity: swapping.value ? 0 : 1,
-  }));
-
-  function skip(skippedUserId: string) {
-    setOrder([...queueIds.filter((id) => id !== skippedUserId), skippedUserId]);
-    setSkipHistory((history) => [...history, skippedUserId]);
+  // Moves the roll by one without animating (screen readers' skip / back actions).
+  function jump(delta: 1 | -1) {
+    setRoll((current) => ({ ...moveTo(current, current.pos + delta), resync: true }));
   }
 
-  function goBack(returningUserId: string) {
-    setOrder([returningUserId, ...queueIds.filter((id) => id !== returningUserId)]);
-    setSkipHistory((history) => history.slice(0, history.lastIndexOf(returningUserId)));
+  // After the roll has landed on the UI thread (base already moved): just record it.
+  function landed(delta: 1 | -1) {
+    setRoll((current) => moveTo(current, current.pos + delta));
   }
 
   // Vertical only: it activates after 12pt of up or down movement and gives way to
   // sideways movement, so a tap still opens the profile. With no one to roll to in
   // that direction, the drag only stretches a little and springs back.
-  const hasNext = nextCandidate !== undefined;
   const verticalSwipe = Gesture.Pan()
     .activeOffsetY([-12, 12])
     .failOffsetX([-24, 24])
@@ -135,36 +145,26 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
       const blocked = e.translationY > 0 ? !canGoBack : !hasNext;
       // .set() rather than assigning .value: same effect, and it's the form the
       // React Compiler lint accepts for Reanimated shared values.
-      translateY.set(blocked ? e.translationY * 0.2 : e.translationY);
+      drag.set(blocked ? e.translationY * 0.2 : e.translationY);
     })
     .onEnd((e) => {
       const up = e.translationY < -SKIP_DISTANCE || e.velocityY < -SKIP_VELOCITY;
       const down = e.translationY > SKIP_DISTANCE || e.velocityY > SKIP_VELOCITY;
-      if (candidate && up && hasNext) {
-        const id = candidate.userId;
-        translateY.set(
-          withTiming(-step.value, { duration: 220 }, (finished) => {
-            if (finished) {
-              rolled.set(true);
-              swapping.set(true);
-              runOnJS(skip)(id);
-            }
-          })
-        );
-      } else if (down && backId !== undefined) {
-        const id = backId;
-        translateY.set(
-          withTiming(step.value, { duration: 220 }, (finished) => {
-            if (finished) {
-              rolled.set(true);
-              swapping.set(true);
-              runOnJS(goBack)(id);
-            }
-          })
-        );
-      } else {
-        translateY.set(withSpring(0));
+      const delta = up && hasNext ? 1 : down && canGoBack ? -1 : 0;
+      if (delta === 0) {
+        drag.set(withSpring(0));
+        return;
       }
+      drag.set(
+        withTiming(-delta * step.value, { duration: 220 }, (finished) => {
+          if (!finished) return;
+          // In one frame: the roll's base moves on and the drag resets, so nothing
+          // on screen moves; React then only learns who's in front.
+          base.set(base.value + delta * step.value);
+          drag.set(0);
+          runOnJS(landed)(delta);
+        })
+      );
     });
 
   function onSwipe(action: "like" | "pass" | "save") {
@@ -179,6 +179,10 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     );
   }
 
+  // The person in front and their neighbours on the roll; the rest aren't drawn.
+  const visible = [roll.pos - 1, roll.pos, roll.pos + 1].filter((i) => i >= 0 && i < roll.ids.length);
+  const frameStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+
   return (
     <>
       {isLoading ? null : !candidate ? (
@@ -186,58 +190,61 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
           <Text className="text-center text-base text-ink-700 dark:text-ink-200">{emptyLabel}</Text>
         </View>
       ) : (
-        // The card fills the space above the buttons (flex: 1). Its Animated.View
-        // below takes inline styles, not className: NativeWind classes on Reanimated
-        // views don't reliably apply (on web they're dropped), which once left the
-        // card only as tall as its text.
+        // The cards fill the space above the buttons (flex: 1). Animated views take
+        // inline styles, not className: NativeWind classes on Reanimated views don't
+        // reliably apply (on web they're dropped), which once left the card only as
+        // tall as its text.
         <View style={{ flex: 1, marginTop: 12 }}>
-          {/* The roll's frame: the neighbours wait one step above and below it, out of
-              sight, and slide through as you drag. */}
-          <View
-            style={{ flex: 1, overflow: "hidden" }}
-            onLayout={(e) => step.set(e.nativeEvent.layout.height + ROLL_GAP)}
-          >
-          {nextCandidate ? (
-            <Animated.View
-              pointerEvents="none"
-              accessibilityElementsHidden
-              importantForAccessibility="no-hide-descendants"
-              style={[{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }, nextStyle]}
-            >
-              <DiscoverCardView person={nextCandidate} verificationStatus={undefined} />
-            </Animated.View>
-          ) : null}
-          {previousCandidate ? (
-            <Animated.View
-              pointerEvents="none"
-              accessibilityElementsHidden
-              importantForAccessibility="no-hide-descendants"
-              style={[{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }, previousStyle]}
-            >
-              <DiscoverCardView person={previousCandidate} verificationStatus={undefined} />
-            </Animated.View>
-          ) : null}
+          {/* The roll's frame: the neighbours wait one step above and below, out of
+              sight, and slide through as you drag. Only the cards move: the buttons
+              below stay put. */}
           <GestureDetector gesture={verticalSwipe}>
-            <Animated.View style={[{ flex: 1 }, cardStyle]}>
-              <Pressable
-                style={{ flex: 1 }}
-                onPress={() => onOpenProfile(candidate.userId)}
-                accessibilityHint={t("discover.swipeUpHint")}
-                // Screen readers can't swipe the card, so skip and back are actions too.
-                accessibilityActions={[
-                  { name: "skip", label: t("discover.skip") },
-                  ...(canGoBack ? [{ name: "back", label: t("discover.previous") }] : []),
-                ]}
-                onAccessibilityAction={(e) => {
-                  if (e.nativeEvent.actionName === "skip") skip(candidate.userId);
-                  if (e.nativeEvent.actionName === "back" && backId !== undefined) goBack(backId);
-                }}
-              >
-                <DiscoverCardView person={candidate} verificationStatus={candidateVerification} />
-              </Pressable>
+            <Animated.View
+              style={[{ flex: 1, overflow: "hidden" }, frameStyle]}
+              onLayout={(e) => {
+                const height = e.nativeEvent.layout.height + ROLL_GAP;
+                step.set(height);
+                base.set(roll.pos * height);
+              }}
+            >
+              {visible.map((index) => {
+                const person = byId.get(roll.ids[index]);
+                if (!person) return null;
+                return (
+                  <RollCard key={index} index={index} base={base} drag={drag} step={step}>
+                    {index === roll.pos ? (
+                      <Pressable
+                        style={{ flex: 1 }}
+                        onPress={() => onOpenProfile(person.userId)}
+                        accessibilityHint={t("discover.swipeUpHint")}
+                        // Screen readers can't swipe the card, so skip and back are actions too.
+                        accessibilityActions={[
+                          ...(hasNext ? [{ name: "skip", label: t("discover.skip") }] : []),
+                          ...(canGoBack ? [{ name: "back", label: t("discover.previous") }] : []),
+                        ]}
+                        onAccessibilityAction={(e) => {
+                          if (e.nativeEvent.actionName === "skip" && hasNext) jump(1);
+                          if (e.nativeEvent.actionName === "back" && canGoBack) jump(-1);
+                        }}
+                      >
+                        <DiscoverCardView person={person} verificationStatus={candidateVerification} />
+                      </Pressable>
+                    ) : (
+                      // A neighbour: decoration until it's in front.
+                      <View
+                        style={{ flex: 1 }}
+                        pointerEvents="none"
+                        accessibilityElementsHidden
+                        importantForAccessibility="no-hide-descendants"
+                      >
+                        <DiscoverCardView person={person} verificationStatus={undefined} />
+                      </View>
+                    )}
+                  </RollCard>
+                );
+              })}
             </Animated.View>
           </GestureDetector>
-          </View>
 
           <View className="mt-4 flex-row items-center justify-center gap-6">
             <SwipeButton action="pass" onPress={() => onSwipe("pass")} />
