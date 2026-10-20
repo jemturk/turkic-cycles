@@ -43,6 +43,8 @@ The stores would reject the app, or it would break for real users, without these
   - `eas build -p ios` (registers `com.turek.app`, Sign in with Apple capability).
   - iOS push credentials: `eas credentials` → iOS → push (APNs key).
   - TestFlight testing, including push notifications, Sign in with Apple, purchases.
+  - Store screenshots for Apple: 6.9" iPhone, 1320 x 2868 (the Play set is 1080 x 1920);
+    make them the same way as `store-assets/play-screenshot-*`, once the account is approved.
 - [ ] **Google Play closed test** [you] — new personal developer accounts must run a
   closed test with at least 12 testers for 14 days before going public.
 - [ ] **Store listings and forms** [you, with help from code] — Apple privacy labels,
