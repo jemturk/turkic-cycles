@@ -378,11 +378,14 @@ export default function ChatThread() {
                     corners,
                     {
                       backgroundColor: colors.background,
+                      // Only the last bubble of a run casts a shadow, so the run sits on the
+                      // page as one card -- one under each would show as a dark line in
+                      // the 2px seam between them.
                       shadowColor: "#2B2320",
                       shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: 0.08,
+                      shadowOpacity: continues ? 0 : 0.08,
                       shadowRadius: 2,
-                      elevation: 1,
+                      elevation: continues ? 0 : 1,
                     },
                   ]}
                 >
@@ -442,8 +445,8 @@ export default function ChatThread() {
                   </View>
                 ) : null}
                 <View
-                  // gap-3 between messages; a run's bubbles sit 4px apart instead.
-                  className={`${isOwn ? "items-end" : "items-start"} ${joinsPrevious ? "-mt-2" : ""}`}
+                  // gap-3 between messages; a run's bubbles sit 2px apart instead.
+                  className={`${isOwn ? "items-end" : "items-start"} ${joinsPrevious ? "-mt-2.5" : ""}`}
                   // Above its neighbours while its reaction bar is open, which overlaps them.
                   style={actionsFor === message.id ? { zIndex: 10, elevation: 5 } : undefined}
                 >
