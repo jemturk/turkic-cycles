@@ -8,6 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
+import Svg, { Path } from "react-native-svg";
 
 import { useSession } from "@/hooks/useSession";
 import {
@@ -34,10 +35,16 @@ import type { Tables } from "@/types/database";
 // sit tight together, and only the last shows its time.
 const RUN_GAP_MS = 2 * 60 * 1000;
 
-// Bubble corners: round, square on the sender's side where bubbles of a run meet, and
-// the last of a run comes to a point toward its sender, like a speech bubble.
+// Bubble corners: round, softer on the sender's side where bubbles of a run meet, and
+// the last of a run comes to a point toward its sender with a small flick, like a
+// speech bubble.
 const BUBBLE_RADIUS = 18;
-const RUN_RADIUS = 0;
+const RUN_RADIUS = 6;
+const TAIL_WIDTH = 5;
+const TAIL_HEIGHT = 9;
+// A short, flat sweep out from the bubble's bottom corner (its edge is the 1px overlap).
+const TAIL_PATH_THEIRS = "M5 0 L5 9 L0 9 C2.6 8.2 4.4 5.2 5 0 Z";
+const TAIL_PATH_OWN = "M0 0 L0 9 L5 9 C2.4 8.2 0.6 5.2 0 0 Z";
 
 function sameDay(a: Message, b: Message) {
   return new Date(a.created_at).toDateString() === new Date(b.created_at).toDateString();
@@ -52,9 +59,11 @@ function sameRun(a: Message | undefined, b: Message | undefined) {
   );
 }
 
+// tail: the color at the bubble's bottom corner, where the flick joins it (yours is
+// the end of the sheen).
 const BUBBLE_COLORS = {
-  own: { background: "#BEDFE2", text: "#0E3F45" },
-  their: { background: "#F8DBCF", text: "#2B2320" },
+  own: { background: "#BEDFE2", text: "#0E3F45", tail: "#B2D8DB" },
+  their: { background: "#F8DBCF", text: "#2B2320", tail: "#F8DBCF" },
 };
 
 // The quick reactions offered on the other person's messages (migration 0038 stores
@@ -397,6 +406,18 @@ export default function ChatThread() {
                       end={{ x: 0.4, y: 1 }}
                       style={[StyleSheet.absoluteFill, corners]}
                     />
+                  ) : null}
+                  {/* The last bubble of a run ends in a small flick toward its sender. */}
+                  {!continues ? (
+                    <Svg
+                      width={TAIL_WIDTH}
+                      height={TAIL_HEIGHT}
+                      viewBox={`0 0 ${TAIL_WIDTH} ${TAIL_HEIGHT}`}
+                      style={{ position: "absolute", bottom: 0, [isOwn ? "right" : "left"]: -TAIL_WIDTH + 1 }}
+                      aria-hidden
+                    >
+                      <Path d={isOwn ? TAIL_PATH_OWN : TAIL_PATH_THEIRS} fill={colors.tail} />
+                    </Svg>
                   ) : null}
                   <View className="px-4 py-3">
                     {message.reply_to_id ? renderQuote(message.reply_to_id, isOwn) : null}
