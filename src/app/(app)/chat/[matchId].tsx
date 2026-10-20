@@ -407,12 +407,27 @@ export default function ChatThread() {
               return (
                 <Fragment key={message.id}>
                 {startsDay ? (
-                  <Text accessibilityRole="header" className="pt-2 text-center text-xs font-medium text-ink-400">
-                    {dayLabel(new Date(message.created_at), new Date(), i18n.language, {
-                      today: t("chat.today"),
-                      yesterday: t("chat.yesterday"),
-                    })}
-                  </Text>
+                  // A hairline either side of the label, fading out toward the edges.
+                  <View className="flex-row items-center gap-3 px-2 pt-2">
+                    <LinearGradient
+                      colors={["rgba(169,156,149,0)", "rgba(169,156,149,0.55)"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={{ flex: 1, height: StyleSheet.hairlineWidth * 2 }}
+                    />
+                    <Text accessibilityRole="header" className="text-xs font-medium text-ink-400">
+                      {dayLabel(new Date(message.created_at), new Date(), i18n.language, {
+                        today: t("chat.today"),
+                        yesterday: t("chat.yesterday"),
+                      })}
+                    </Text>
+                    <LinearGradient
+                      colors={["rgba(169,156,149,0.55)", "rgba(169,156,149,0)"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={{ flex: 1, height: StyleSheet.hairlineWidth * 2 }}
+                    />
+                  </View>
                 ) : null}
                 <View
                   // gap-3 between messages; a run's bubbles sit 4px apart instead.
