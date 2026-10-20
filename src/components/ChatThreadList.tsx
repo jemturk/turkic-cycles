@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Pressable, View } from "react-native";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -5,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Text } from "@/components/Text";
 import { useSession } from "@/hooks/useSession";
 import { useMessageThreads } from "@/hooks/useChat";
+import { useTypingMatches } from "@/hooks/useTypingMatches";
 import { Avatar } from "@/components/Avatar";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import type { MessageThread } from "@/api/chat";
@@ -35,6 +37,18 @@ export function ChatThreadList({
   const { t } = useTranslation();
   const { session } = useSession();
   const { data: threads, refetch, isRefetching } = useMessageThreads(session?.user.id);
+  const matchIds = useMemo(() => (threads ?? []).map((thread) => thread.matchId), [threads]);
+  const typing = useTypingMatches(matchIds, session?.user.id);
+
+  // While they're typing, "typing…" (as in the conversation's header) stands in for
+  // the last message.
+  function typingLine() {
+    return (
+      <Text className="text-sm font-medium text-primary-600 dark:text-primary-400" numberOfLines={1}>
+        {t("chat.typing")}
+      </Text>
+    );
+  }
 
   // Desktop web's left pane: compact rows, the open one highlighted.
   function renderCompactRow(thread: MessageThread) {
@@ -53,9 +67,13 @@ export function ChatThreadList({
           <Text className="text-base font-semibold text-ink-900 dark:text-ink-50" numberOfLines={1}>
             {thread.otherDisplayName}
           </Text>
-          <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={1}>
-            {thread.lastMessageBody}
-          </Text>
+          {typing.has(thread.matchId) ? (
+            typingLine()
+          ) : (
+            <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={1}>
+              {thread.lastMessageBody}
+            </Text>
+          )}
         </View>
         {thread.unreadCount > 0 ? (
           <UnreadCount count={thread.unreadCount} />
@@ -100,16 +118,20 @@ export function ChatThreadList({
                 >
                   {thread.otherDisplayName}
                 </Text>
-                <Text
-                  className={`text-sm ${
-                    thread.unreadCount > 0
-                      ? "font-medium text-ink-900 dark:text-ink-50"
-                      : "text-ink-700 dark:text-ink-200"
-                  }`}
-                  numberOfLines={1}
-                >
-                  {thread.lastMessageBody}
-                </Text>
+                {typing.has(thread.matchId) ? (
+                  typingLine()
+                ) : (
+                  <Text
+                    className={`text-sm ${
+                      thread.unreadCount > 0
+                        ? "font-medium text-ink-900 dark:text-ink-50"
+                        : "text-ink-700 dark:text-ink-200"
+                    }`}
+                    numberOfLines={1}
+                  >
+                    {thread.lastMessageBody}
+                  </Text>
+                )}
               </View>
               <View className="items-end gap-1.5">
                 <Text
