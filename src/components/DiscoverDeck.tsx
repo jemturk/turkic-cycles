@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState, type ReactNode } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, View, type AccessibilityActionEvent, type AccessibilityActionInfo } from "react-native";
 import { Text } from "@/components/Text";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useDiscoverCandidates, useRecordSwipe } from "@/hooks/useDiscover";
+import type { DiscoverCandidate } from "@/api/discover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { DiscoverCardView } from "@/components/DiscoverCardView";
@@ -78,6 +79,45 @@ function RollCard({
   );
 }
 
+// What a card on the roll shows. The same tree in front and as a neighbour -- only
+// props change when it lands -- so its photo isn't torn down and reloaded (on iOS a
+// remounted Image shows blank for a moment: the flicker on landing). It loads its own
+// verification badge too, so that's ready before it lands rather than popping in.
+function RollFace({
+  person,
+  inFront,
+  onPress,
+  accessibilityHint,
+  accessibilityActions,
+  onAccessibilityAction,
+}: {
+  person: DiscoverCandidate;
+  inFront: boolean;
+  onPress: () => void;
+  accessibilityHint: string;
+  accessibilityActions: AccessibilityActionInfo[];
+  onAccessibilityAction: (e: AccessibilityActionEvent) => void;
+}) {
+  const { data: verification } = useOtherUserVerificationStatus(person.userId);
+  return (
+    <Pressable
+      style={{ flex: 1 }}
+      // A neighbour is decoration until it's in front: not tappable, hidden from
+      // screen readers.
+      disabled={!inFront}
+      pointerEvents={inFront ? "auto" : "none"}
+      accessibilityElementsHidden={!inFront}
+      importantForAccessibility={inFront ? "auto" : "no-hide-descendants"}
+      onPress={onPress}
+      accessibilityHint={inFront ? accessibilityHint : undefined}
+      accessibilityActions={inFront ? accessibilityActions : undefined}
+      onAccessibilityAction={inFront ? onAccessibilityAction : undefined}
+    >
+      <DiscoverCardView person={person} verificationStatus={verification} />
+    </Pressable>
+  );
+}
+
 function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const { t } = useTranslation();
   const { session } = useSession();
@@ -103,7 +143,6 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const candidate = byId.get(roll.ids[roll.pos] ?? "");
   const canGoBack = roll.pos > 0;
   const hasNext = roll.pos < roll.ids.length - 1;
-  const { data: candidateVerification } = useOtherUserVerificationStatus(candidate?.userId);
 
   // The roll's position in points: base = where the person in front sits, drag = the
   // finger. step = one card's height plus the gap, measured.
@@ -212,34 +251,21 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
                 if (!person) return null;
                 return (
                   <RollCard key={index} index={index} base={base} drag={drag} step={step}>
-                    {index === roll.pos ? (
-                      <Pressable
-                        style={{ flex: 1 }}
-                        onPress={() => onOpenProfile(person.userId)}
-                        accessibilityHint={t("discover.swipeUpHint")}
-                        // Screen readers can't swipe the card, so skip and back are actions too.
-                        accessibilityActions={[
-                          ...(hasNext ? [{ name: "skip", label: t("discover.skip") }] : []),
-                          ...(canGoBack ? [{ name: "back", label: t("discover.previous") }] : []),
-                        ]}
-                        onAccessibilityAction={(e) => {
-                          if (e.nativeEvent.actionName === "skip" && hasNext) jump(1);
-                          if (e.nativeEvent.actionName === "back" && canGoBack) jump(-1);
-                        }}
-                      >
-                        <DiscoverCardView person={person} verificationStatus={candidateVerification} />
-                      </Pressable>
-                    ) : (
-                      // A neighbour: decoration until it's in front.
-                      <View
-                        style={{ flex: 1 }}
-                        pointerEvents="none"
-                        accessibilityElementsHidden
-                        importantForAccessibility="no-hide-descendants"
-                      >
-                        <DiscoverCardView person={person} verificationStatus={undefined} />
-                      </View>
-                    )}
+                    <RollFace
+                      person={person}
+                      inFront={index === roll.pos}
+                      onPress={() => onOpenProfile(person.userId)}
+                      accessibilityHint={t("discover.swipeUpHint")}
+                      // Screen readers can't swipe the card, so skip and back are actions too.
+                      accessibilityActions={[
+                        ...(hasNext ? [{ name: "skip", label: t("discover.skip") }] : []),
+                        ...(canGoBack ? [{ name: "back", label: t("discover.previous") }] : []),
+                      ]}
+                      onAccessibilityAction={(e) => {
+                        if (e.nativeEvent.actionName === "skip" && hasNext) jump(1);
+                        if (e.nativeEvent.actionName === "back" && canGoBack) jump(-1);
+                      }}
+                    />
                   </RollCard>
                 );
               })}
