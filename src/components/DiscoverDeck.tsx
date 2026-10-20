@@ -7,6 +7,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withSequence,
   withSpring,
   withTiming,
@@ -116,6 +117,20 @@ function RollCard({
 
 // The like / pass badges on the card, in the buttons' colors (SwipeButton).
 const BADGE_SIZE = 80;
+// The stamp a like / pass leaves in the middle (SwipeDeck), a size up from the badge.
+const STAMP = {
+  position: "absolute",
+  width: 96,
+  height: 96,
+  borderRadius: 48,
+  alignItems: "center",
+  justifyContent: "center",
+  shadowColor: "#000000",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.15,
+  shadowRadius: 12,
+  elevation: 6,
+} as const;
 const BADGE = {
   position: "absolute",
   top: "50%",
@@ -230,6 +245,26 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const passPulse = useSharedValue(1);
   const likePulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: likePulse.value }] }));
   const passPulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: passPulse.value }] }));
+  // The stamp left in the middle when someone is liked (1) or passed (-1): it pops up
+  // where the eyes are while the card flies off, holds a moment, and fades.
+  const stampKind = useSharedValue(1);
+  const stampScale = useSharedValue(1);
+  const stampOpacity = useSharedValue(0);
+  const likeStampStyle = useAnimatedStyle(() => ({
+    opacity: stampKind.value === 1 ? stampOpacity.value : 0,
+    transform: [{ scale: stampScale.value }],
+  }));
+  const passStampStyle = useAnimatedStyle(() => ({
+    opacity: stampKind.value === -1 ? stampOpacity.value : 0,
+    transform: [{ scale: stampScale.value }],
+  }));
+  function showStamp(kind: 1 | -1) {
+    "worklet";
+    stampKind.set(kind);
+    stampScale.set(0.6);
+    stampScale.set(withSequence(withTiming(1.15, { duration: 160 }), withSpring(1, { damping: 10, stiffness: 200 })));
+    stampOpacity.set(withSequence(withTiming(1, { duration: 90 }), withDelay(380, withTiming(0, { duration: 260 }))));
+  }
 
   // Puts the animation where the roll is after a change the gesture didn't make; the
   // next person fades in when the one in front left.
@@ -292,6 +327,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
         );
         // The matching button below pulses, so even a quick flick reads as "liked" or
         // "passed" -- the button you'd have pressed.
+        showStamp(like ? 1 : -1);
         (like ? likePulse : passPulse).set(
           withSequence(withTiming(1.18, { duration: 130 }), withSpring(1, { damping: 9, stiffness: 220 }))
         );
@@ -347,6 +383,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
       answer(action);
       return;
     }
+    showStamp(action === "like" ? 1 : -1);
     swipeX.set(
       withTiming(action === "like" ? FLY_OFF : -FLY_OFF, { duration: 200 }, (finished) => {
         if (finished) runOnJS(answer)(action);
@@ -373,6 +410,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
           {/* The roll's frame: the neighbours wait one step above and below, out of
               sight, and slide through as you drag. Only the cards move: the buttons
               below stay put. */}
+          <View style={{ flex: 1 }}>
           <GestureDetector gesture={swipe}>
             <Animated.View
               style={[{ flex: 1, overflow: "hidden" }, frameStyle]}
@@ -416,6 +454,20 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
               })}
             </Animated.View>
           </GestureDetector>
+          {/* The like / pass stamp, over the cards but outside their frame, so it stays
+              while the next person fades in. */}
+          <View
+            pointerEvents="none"
+            style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, alignItems: "center", justifyContent: "center" }}
+          >
+            <Animated.View style={[STAMP, { backgroundColor: "#C1440E" }, likeStampStyle]}>
+              <Ionicons name="heart" size={46} color="#FFFFFF" />
+            </Animated.View>
+            <Animated.View style={[STAMP, { backgroundColor: "#FBE9E1" }, passStampStyle]}>
+              <Ionicons name="close" size={52} color="#C1440E" />
+            </Animated.View>
+          </View>
+          </View>
 
           <View className="mt-4 flex-row items-center justify-center gap-6">
             <Animated.View style={passPulseStyle}>
