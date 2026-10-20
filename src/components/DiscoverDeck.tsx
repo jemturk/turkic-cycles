@@ -38,6 +38,8 @@ const ROLL_GAP = 16;
 const ANSWER_DISTANCE = 110;
 const ANSWER_VELOCITY = 800;
 const FLY_OFF = 600;
+// How far a drag goes before its direction (roll or like / pass) is decided.
+const AXIS_DECIDE_DISTANCE = 8;
 
 // The one-at-a-time candidate card with pass / save / like, shared by a circle's
 // "Meet members" screen (circleId) and the global Discover tab (circleId null).
@@ -341,7 +343,15 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
       axis.set(0);
     })
     .onUpdate((e) => {
-      if (axis.value === 0) axis.set(Math.abs(e.translationX) > Math.abs(e.translationY) ? 2 : 1);
+      if (axis.value === 0) {
+        const dx = Math.abs(e.translationX);
+        const dy = Math.abs(e.translationY);
+        // Decide only once the finger has really moved: Android's first update can
+        // report no movement yet, which read as "not sideways" and made every drag
+        // a roll.
+        if (Math.max(dx, dy) < AXIS_DECIDE_DISTANCE) return;
+        axis.set(dx > dy ? 2 : 1);
+      }
       if (axis.value === 2) {
         swipeX.set(e.translationX);
         return;
