@@ -7,6 +7,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withSpring,
   withTiming,
   type SharedValue,
@@ -224,6 +225,11 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   // A drag's direction, decided by its first movement: 0 not yet, 1 up/down (roll),
   // 2 sideways (like / pass).
   const axis = useSharedValue(0);
+  // The like / pass buttons' scale, pulsed when a swipe answers.
+  const likePulse = useSharedValue(1);
+  const passPulse = useSharedValue(1);
+  const likePulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: likePulse.value }] }));
+  const passPulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: passPulse.value }] }));
 
   // Puts the animation where the roll is after a change the gesture didn't make; the
   // next person fades in when the one in front left.
@@ -283,6 +289,11 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
           withTiming(like ? FLY_OFF : -FLY_OFF, { duration: 200 }, (finished) => {
             if (finished) runOnJS(answer)(like ? "like" : "pass");
           })
+        );
+        // The matching button below pulses, so even a quick flick reads as "liked" or
+        // "passed" -- the button you'd have pressed.
+        (like ? likePulse : passPulse).set(
+          withSequence(withTiming(1.18, { duration: 130 }), withSpring(1, { damping: 9, stiffness: 220 }))
         );
         return;
       }
@@ -407,9 +418,13 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
           </GestureDetector>
 
           <View className="mt-4 flex-row items-center justify-center gap-6">
-            <SwipeButton action="pass" onPress={() => onButton("pass")} />
+            <Animated.View style={passPulseStyle}>
+              <SwipeButton action="pass" onPress={() => onButton("pass")} />
+            </Animated.View>
             <SwipeButton action="save" onPress={() => onButton("save")} />
-            <SwipeButton action="like" onPress={() => onButton("like")} />
+            <Animated.View style={likePulseStyle}>
+              <SwipeButton action="like" onPress={() => onButton("like")} />
+            </Animated.View>
           </View>
         </View>
       )}
