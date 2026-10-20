@@ -208,7 +208,9 @@
       "sent": "Gesendet",
       "delivered": "Zugestellt",
       "read": "Gelesen"
-    }
+    },
+    "today": "Heute",
+    "yesterday": "Gestern"
   },
   "onboarding": {
     "next": "Weiter",

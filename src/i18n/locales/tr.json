@@ -208,7 +208,9 @@
       "sent": "Gönderildi",
       "delivered": "İletildi",
       "read": "Okundu"
-    }
+    },
+    "today": "Bugün",
+    "yesterday": "Dün"
   },
   "onboarding": {
     "next": "İleri",

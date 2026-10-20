@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -24,6 +24,7 @@ import { TypingDots } from "@/components/TypingDots";
 import { MessageStatus, messageStatus } from "@/components/MessageStatus";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
+import { dayLabel } from "@/lib/dayLabel";
 import type { Tables } from "@/types/database";
 
 // Message bubbles: pale turquoise for yours, pale coral for theirs (a step past the
@@ -36,6 +37,10 @@ const RUN_GAP_MS = 5 * 60 * 1000;
 // the last of a run comes to a point toward its sender, like a speech bubble.
 const BUBBLE_RADIUS = 18;
 const RUN_RADIUS = 8;
+
+function sameDay(a: Message, b: Message) {
+  return new Date(a.created_at).toDateString() === new Date(b.created_at).toDateString();
+}
 
 function sameRun(a: Message | undefined, b: Message | undefined) {
   return (
@@ -59,7 +64,7 @@ type Message = Tables<"messages">;
 
 export default function ChatThread() {
   const insets = useSafeAreaInsets();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const wide = useWideLayout();
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
   const { session } = useSession();
@@ -337,8 +342,11 @@ export default function ChatThread() {
 
             {(messages ?? []).map((message, index, list) => {
               const isOwn = message.sender_id === userId;
-              const joinsPrevious = sameRun(list[index - 1], message);
-              const continues = sameRun(message, list[index + 1]);
+              // A day divider above the first message of each day; runs don't cross it.
+              const startsDay = !list[index - 1] || !sameDay(list[index - 1], message);
+              const nextStartsDay = !!list[index + 1] && !sameDay(message, list[index + 1]);
+              const joinsPrevious = !startsDay && sameRun(list[index - 1], message);
+              const continues = !nextStartsDay && sameRun(message, list[index + 1]);
               const top = joinsPrevious ? RUN_RADIUS : BUBBLE_RADIUS;
               const bottom = continues ? RUN_RADIUS : 0;
               const corners = isOwn
@@ -380,7 +388,9 @@ export default function ChatThread() {
                   {/* Reactions sit on the bubble's bottom corner, like most chat apps --
                       just the emoji, no badge behind them. */}
                   {messageReactions.length > 0 ? (
-                    <View className={`absolute -bottom-3.5 flex-row px-1.5 py-0.5 ${isOwn ? "left-2" : "right-2"}`}>
+                    // 20px tall and 10px below: the bubble's bottom edge runs through
+                    // the middle of the emoji.
+                    <View className={`absolute -bottom-2.5 flex-row px-1.5 ${isOwn ? "left-2" : "right-2"}`}>
                       {messageReactions.map((r) => (
                         // A fixed box with the emoji centred in it: Android measures emoji
                         // narrower than it draws them, which clipped their left edge.
@@ -395,8 +405,16 @@ export default function ChatThread() {
                 </View>
               );
               return (
+                <Fragment key={message.id}>
+                {startsDay ? (
+                  <Text accessibilityRole="header" className="pt-2 text-center text-xs font-medium text-ink-400">
+                    {dayLabel(new Date(message.created_at), new Date(), i18n.language, {
+                      today: t("chat.today"),
+                      yesterday: t("chat.yesterday"),
+                    })}
+                  </Text>
+                ) : null}
                 <View
-                  key={message.id}
                   // gap-3 between messages; a run's bubbles sit 4px apart instead.
                   className={`${isOwn ? "items-end" : "items-start"} ${joinsPrevious ? "-mt-2" : ""}`}
                 >
@@ -449,14 +467,15 @@ export default function ChatThread() {
                   {/* The time (and your read ticks) only under the last bubble of a run; an
                       earlier one with reactions keeps room for its badge. */}
                   {continues ? (
-                    messageReactions.length > 0 ? <View className="h-4" /> : null
+                    messageReactions.length > 0 ? <View className="h-3" /> : null
                   ) : (
-                    <View className={`flex-row items-center gap-1 ${messageReactions.length > 0 ? "mt-4" : "mt-1"}`}>
+                    <View className={`flex-row items-center gap-1 ${messageReactions.length > 0 ? "mt-3" : "mt-1"}`}>
                       <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
                       {isOwn ? <MessageStatus status={messageStatus(message)} /> : null}
                     </View>
                   )}
                 </View>
+                </Fragment>
               );
             })}
 
