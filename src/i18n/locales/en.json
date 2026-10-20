@@ -203,7 +203,12 @@
     "selectConversation": "Select a conversation to start chatting.",
     "youMatched": "You matched · {{date}}",
     "contactTip": "Only share your phone number or email with people you trust. You can block or report anyone from their profile.",
-    "dismissTip": "Dismiss tip"
+    "dismissTip": "Dismiss tip",
+    "status": {
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "read": "Read"
+    }
   },
   "onboarding": {
     "next": "Next",

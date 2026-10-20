@@ -203,7 +203,12 @@
     "selectConversation": "Sohbete başlamak için bir konuşma seçin.",
     "youMatched": "Eşleştiniz · {{date}}",
     "contactTip": "Telefon numaranı veya e-postanı yalnızca güvendiğin kişilerle paylaş. Herkesi profilinden engelleyebilir veya şikâyet edebilirsin.",
-    "dismissTip": "İpucunu kapat"
+    "dismissTip": "İpucunu kapat",
+    "status": {
+      "sent": "Gönderildi",
+      "delivered": "İletildi",
+      "read": "Okundu"
+    }
   },
   "onboarding": {
     "next": "İleri",

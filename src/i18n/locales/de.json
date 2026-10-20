@@ -203,7 +203,12 @@
     "selectConversation": "Wähle eine Unterhaltung aus, um zu chatten.",
     "youMatched": "Ihr habt gematcht · {{date}}",
     "contactTip": "Teile deine Telefonnummer oder E-Mail nur mit Menschen, denen du vertraust. Du kannst jede Person über ihr Profil blockieren oder melden.",
-    "dismissTip": "Hinweis schließen"
+    "dismissTip": "Hinweis schließen",
+    "status": {
+      "sent": "Gesendet",
+      "delivered": "Zugestellt",
+      "read": "Gelesen"
+    }
   },
   "onboarding": {
     "next": "Weiter",

@@ -4,7 +4,7 @@ import { Text } from "@/components/Text";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { router, useLocalSearchParams } from "expo-router";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,6 +21,7 @@ import {
 import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 import { Avatar } from "@/components/Avatar";
 import { TypingDots } from "@/components/TypingDots";
+import { MessageStatus, messageStatus } from "@/components/MessageStatus";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
 import type { Tables } from "@/types/database";
@@ -462,13 +463,7 @@ export default function ChatThread() {
                   ) : (
                     <View className={`flex-row items-center gap-1 ${messageReactions.length > 0 ? "mt-4" : "mt-1"}`}>
                       <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
-                      {isOwn ? (
-                        <MaterialIcons
-                          name={message.read_at || message.delivered_at ? "done-all" : "done"}
-                          size={16}
-                          color={message.read_at ? "#127A87" : "#A99C95"}
-                        />
-                      ) : null}
+                      {isOwn ? <MessageStatus status={messageStatus(message)} /> : null}
                     </View>
                   )}
                 </View>
