@@ -161,11 +161,12 @@ site_url = "https://turek.expo.app"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
 # Covers: the deployed web app, the native app's custom scheme (password reset deep
 # link), and the local web dev server (this project runs `expo start --web` on 8081,
-# not the generic scaffold's default 3000).
+# not the generic scaffold's default 3000). `**`, as in the dashboard: `*` matches only
+# one path segment, so links like /auth-callback?... or turek://reset/... could miss.
 additional_redirect_urls = [
-  "https://turek.expo.app/*",
-  "turek://*",
-  "http://localhost:8081/*",
+  "https://turek.expo.app/**",
+  "turek://**",
+  "http://localhost:8081/**",
 ]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600

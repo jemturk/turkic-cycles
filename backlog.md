@@ -183,7 +183,6 @@ Built and committed but only checked in a browser preview or not at all.
 - [ ] Formatting is inconsistent with Prettier's defaults (trailing commas); decide on a
   Prettier config and format once, or leave as is.
 - [x] `useIsAppAdmin` removed (nothing used it).
-- [ ] `supabase/config.toml` redirect URLs use `/*`; change to `/**` to match the
-  dashboard (local-only file).
+- [x] `supabase/config.toml` redirect URLs now use `/**`, matching the dashboard.
 - [ ] The `global-discover` branch has many unpushed commits; push and open a PR to
   `main` when ready.
