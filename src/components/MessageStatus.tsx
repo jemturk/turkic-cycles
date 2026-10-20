@@ -18,9 +18,9 @@ export function MessageStatus({ status, size = 16 }: { status: MessageStatusValu
   const { t } = useTranslation();
   return (
     <Svg width={size} height={size} viewBox="0 0 16 16" accessibilityRole="image" accessibilityLabel={t(`chat.status.${status}`)}>
-      {status === "sent" ? <Circle cx={8} cy={8} r={4.2} fill="none" stroke={TEAL} strokeWidth={1.6} /> : null}
-      {status === "delivered" ? <Circle cx={8} cy={8} r={5} fill={TEAL} /> : null}
-      {status === "read" ? <Circle cx={8} cy={8} r={5} fill={CORAL} /> : null}
+      {status === "sent" ? <Circle cx={8} cy={8} r={3.2} fill="none" stroke={TEAL} strokeWidth={1.4} /> : null}
+      {status === "delivered" ? <Circle cx={8} cy={8} r={3.8} fill={TEAL} /> : null}
+      {status === "read" ? <Circle cx={8} cy={8} r={3.8} fill={CORAL} /> : null}
     </Svg>
   );
 }
