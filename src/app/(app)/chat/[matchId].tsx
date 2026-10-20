@@ -32,7 +32,7 @@ import type { Tables } from "@/types/database";
 // palette's lightest shades, primary-100 / accent-50), both with dark text.
 // Back-to-back messages from the same person this close together form a run: they
 // sit tight together, and only the last shows its time.
-const RUN_GAP_MS = 5 * 60 * 1000;
+const RUN_GAP_MS = 2 * 60 * 1000;
 
 // Bubble corners: round, square on the sender's side where bubbles of a run meet, and
 // the last of a run comes to a point toward its sender, like a speech bubble.
