@@ -22,6 +22,7 @@ import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 import { Avatar } from "@/components/Avatar";
 import { TypingDots } from "@/components/TypingDots";
 import { MessageStatus, messageStatus } from "@/components/MessageStatus";
+import { ReactionEmoji } from "@/components/ReactionEmoji";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
 import { dayLabel } from "@/lib/dayLabel";
@@ -175,7 +176,7 @@ export default function ChatThread() {
               mine === emoji ? "bg-primary-100 dark:bg-ink-700" : "web:hover:bg-primary-100/40"
             }`}
           >
-            <Text style={{ fontSize: 22, lineHeight: 28, width: 32, textAlign: "center" }}>{emoji}</Text>
+            <ReactionEmoji emoji={emoji} size={26} />
           </Pressable>
         ))}
         <View className="mx-1 h-6 w-px bg-ink-100 dark:bg-ink-700" />
@@ -392,12 +393,8 @@ export default function ChatThread() {
                     // the middle of the emoji.
                     <View className={`absolute -bottom-2.5 flex-row px-1.5 ${isOwn ? "left-2" : "right-2"}`}>
                       {messageReactions.map((r) => (
-                        // A fixed box with the emoji centred in it: Android measures emoji
-                        // narrower than it draws them, which clipped their left edge.
                         <View key={r.userId} className="h-5 w-5 items-center justify-center">
-                          <Text style={{ fontSize: 14, lineHeight: 18, width: 20, textAlign: "center" }}>
-                            {r.emoji}
-                          </Text>
+                          <ReactionEmoji emoji={r.emoji} size={18} />
                         </View>
                       ))}
                     </View>
