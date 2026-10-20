@@ -156,6 +156,13 @@ Built and committed but only checked in a browser preview or not at all.
   side a slight 3D feel. Options: keep as is (a quiet "this is you" cue), make both
   sides flat, or give theirs an equally faint coral sheen. If the sheen goes, the
   tail's color (`BUBBLE_COLORS.own.tail`) becomes the flat bubble color.
+- [ ] **Delivered vs read differ by color alone** — under your messages, delivered is
+  a solid teal circle and read a solid coral one, same size (`src/components/
+  MessageStatus.tsx`). Teal `#127A87` and coral `#C1440E` have nearly the same
+  lightness, so members with red-green color blindness may see the same circle for
+  both. Cheap fixes that keep the look: make read slightly larger (radius 4 instead of
+  3.4), or add a thin white ring or a white center dot to one of them. The screen
+  reader labels ("Delivered" / "Read") are already distinct.
 
 ## 5. Tech debt
 
