@@ -59,7 +59,7 @@ const BUBBLE_COLORS = {
 
 // The quick reactions offered on the other person's messages (migration 0038 stores
 // one per person per message).
-const REACTIONS = ["❤️", "😂", "👍", "😮", "😢", "🙏"];
+const REACTIONS = ["❤️", "😂", "👍", "😮", "😢", "🫶"];
 
 type Message = Tables<"messages">;
 
