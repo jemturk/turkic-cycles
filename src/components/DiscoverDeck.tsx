@@ -116,13 +116,15 @@ function RollCard({
 }
 
 // The like / pass badges on the card, in the buttons' colors (SwipeButton).
-// The stamp: popping in, holding, fading out. About a third of a second in all.
-const STAMP_IN_MS = 80;
-const STAMP_HOLD_MS = 90;
-const STAMP_OUT_MS = 160;
+// The stamp: popping in, holding, fading out. About half a second in all.
+const STAMP_IN_MS = 120;
+const STAMP_HOLD_MS = 180;
+const STAMP_OUT_MS = 220;
 const STAMP_MS = STAMP_IN_MS + STAMP_HOLD_MS + STAMP_OUT_MS;
 // How long a liked or passed card takes to fly off.
-const FLY_MS = 200;
+const FLY_MS = 260;
+// The next person fading in after an answer.
+const NEXT_FADE_MS = 350;
 
 const BADGE_SIZE = 80;
 // The stamp a like / pass leaves in the middle (SwipeDeck), a size up from the badge.
@@ -301,7 +303,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
       // flight. A save has no stamp: no wait.
       const wait = stampOpacity.get() > 0 ? Math.max(0, STAMP_MS - FLY_MS) : 0;
       opacity.set(0);
-      opacity.set(withDelay(wait, withTiming(1, { duration: 250 })));
+      opacity.set(withDelay(wait, withTiming(1, { duration: NEXT_FADE_MS })));
       // The next person takes the front place: not where the last one flew off to.
       swipeX.set(0);
     }
