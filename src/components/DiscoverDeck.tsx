@@ -172,13 +172,28 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const recordSwipe = useRecordSwipe(circleId, userId);
   const [matchedName, setMatchedName] = useState<string | null>(null);
   const [roll, setRoll] = useState<Roll>({ ids: [], pos: 0 });
+  // Everyone this visit has been sent, in arrival order. The global deck's list is a
+  // fresh random sample on every fetch (one follows each answer), so someone missing
+  // from the latest sample hasn't gone -- they just weren't drawn this time. A fetch
+  // only adds people; answering is what takes them off.
+  const [pool, setPool] = useState<DiscoverCandidate[]>([]);
+  const fetchedKey = (candidates ?? []).map((c) => c.userId).join(",");
+  const [poolKey, setPoolKey] = useState<string | null>(null);
+  if (poolKey !== fetchedKey) {
+    setPoolKey(fetchedKey);
+    const inPool = new Set(pool.map((c) => c.userId));
+    const fresh = (candidates ?? []).filter((c) => !inPool.has(c.userId));
+    // Newer details for people already here (a changed photo, say), newcomers after.
+    const latest = new Map((candidates ?? []).map((c) => [c.userId, c]));
+    setPool([...pool.map((c) => latest.get(c.userId) ?? c), ...fresh]);
+  }
   // People just liked / passed / saved here, taken off at once rather than when the
   // server's fresh list arrives -- otherwise a swiped-away card leaves a gap.
   const [answered, setAnswered] = useState<ReadonlySet<string>>(() => new Set());
-  const shown = (candidates ?? []).filter((c) => !answered.has(c.userId));
+  const shown = pool.filter((c) => !answered.has(c.userId));
 
-  // The candidate list changes underneath (the first load, a fresh batch, someone
-  // liked / passed / saved): people no longer in it leave the roll, newcomers join
+  // Who's shown changes underneath (the first load, newcomers in a fresh batch,
+  // someone liked / passed / saved): people answered leave the roll, newcomers join
   // its end. Adjusted while rendering, React's pattern for state that follows props.
   const candidateKey = shown.map((c) => c.userId).join(",");
   // null: nothing seen yet, so the first list (even one already cached) fills the roll.
