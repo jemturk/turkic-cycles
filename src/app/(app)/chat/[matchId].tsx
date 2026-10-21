@@ -117,6 +117,13 @@ export default function ChatThread() {
   const atBottomRef = useRef(true);
   // The newest message the list has followed, to tell a new message from other growth.
   const lastMessageIdRef = useRef<string | null>(null);
+  // Which thread has made its first jump to the end -- set when its messages arrive,
+  // not when the list is revealed (a slow load is revealed by the fallback first) --
+  // and, for a moment after that, "settling": reactions (their own query), photos and
+  // emoji still add height, and following that has to be instant too, or the thread
+  // visibly glides down from older bubbles as it opens.
+  const landedForRef = useRef<string | null>(null);
+  const settlingRef = useRef(false);
 
   // Each thread opens at its end, and never stays hidden if no size change comes
   // after its messages load.
@@ -328,17 +335,29 @@ export default function ChatThread() {
           // reaction bar or reaction appearing, which would yank an older bubble you
           // long-pressed out from under your finger.
           onContentSizeChange={() => {
-            if (positioned) {
-              const last = messages?.[messages.length - 1];
-              const newMessage = !!last && last.id !== lastMessageIdRef.current;
-              if (last) lastMessageIdRef.current = last.id;
-              if (newMessage ? last.sender_id === userId || atBottomRef.current : atBottomRef.current && !actionsFor) {
-                scrollRef.current?.scrollToEnd({ animated: true });
-              }
-            } else if (messages) {
-              lastMessageIdRef.current = messages[messages.length - 1]?.id ?? null;
+            if (!messages) return;
+            const last = messages[messages.length - 1];
+            if (landedForRef.current !== matchId) {
+              // First content for this thread: straight to the end, unseen.
+              landedForRef.current = matchId ?? null;
+              lastMessageIdRef.current = last?.id ?? null;
+              settlingRef.current = true;
+              setTimeout(() => {
+                settlingRef.current = false;
+              }, 1000);
               scrollRef.current?.scrollToEnd({ animated: false });
-              requestAnimationFrame(() => setPositionedFor(matchId ?? null));
+              if (!positioned) requestAnimationFrame(() => setPositionedFor(matchId ?? null));
+              return;
+            }
+            const newMessage = !!last && last.id !== lastMessageIdRef.current;
+            if (last) lastMessageIdRef.current = last.id;
+            if (settlingRef.current) {
+              scrollRef.current?.scrollToEnd({ animated: false });
+            } else if (newMessage) {
+              if (last.sender_id === userId || atBottomRef.current) scrollRef.current?.scrollToEnd({ animated: true });
+            } else if (atBottomRef.current && !actionsFor) {
+              // The typing bubble and the like: keep the end in view, instantly.
+              scrollRef.current?.scrollToEnd({ animated: false });
             }
           }}
           // The keyboard opening (or the reply preview appearing) makes the list
