@@ -25,17 +25,54 @@ const GAP = 16;
 const MIN_CARD_WIDTH = 320;
 const MAX_COLUMNS = 3;
 
-function FilterChip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+// All / Joined: one choice of two, so one connected track with the chosen half filled.
+function Segmented({
+  options,
+}: {
+  options: { label: string; selected: boolean; onPress: () => void }[];
+}) {
+  return (
+    <View
+      accessibilityRole="radiogroup"
+      className="h-9 flex-row rounded-full border border-primary-100 bg-white p-0.5 dark:border-ink-700 dark:bg-ink-800"
+    >
+      {options.map((o) => (
+        <Pressable
+          key={o.label}
+          accessibilityRole="radio"
+          aria-checked={o.selected}
+          onPress={o.onPress}
+          className={`justify-center rounded-full px-4 ${o.selected ? "bg-primary-500" : "web:hover:bg-primary-100/40"}`}
+        >
+          <Text className={`text-sm ${o.selected ? "font-semibold text-white" : "text-ink-900 dark:text-ink-50"}`}>
+            {o.label}
+          </Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
+// Near me: an extra filter on top of either, so it looks like a switch, not a third
+// choice -- a pin that fills and a check when it's on, in a pale tint rather than the
+// segmented control's solid teal.
+function ToggleChip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
   return (
     <Pressable
-      accessibilityRole="button"
-      aria-pressed={selected}
+      accessibilityRole="switch"
+      aria-checked={on}
       onPress={onPress}
-      className={`h-9 justify-center rounded-full px-4 ${
-        selected ? "bg-primary-500" : "border border-primary-100 bg-white dark:border-ink-700 dark:bg-ink-800"
+      className={`h-9 flex-row items-center gap-1.5 rounded-full border px-3.5 ${
+        on
+          ? "border-primary-500 bg-primary-100 dark:border-primary-400 dark:bg-ink-700"
+          : "border-primary-100 bg-white web:hover:bg-primary-100/40 dark:border-ink-700 dark:bg-ink-800"
       }`}
     >
-      <Text className={`text-sm ${selected ? "font-semibold text-white" : "text-ink-900 dark:text-ink-50"}`}>{label}</Text>
+      <Ionicons name={on ? "location" : "location-outline"} size={16} color={on ? "#0E6470" : "#6B5E58"} />
+      <Text className={`text-sm ${on ? "font-semibold text-primary-600 dark:text-primary-400" : "text-ink-900 dark:text-ink-50"}`}>
+        {label}
+      </Text>
+      {on ? <Ionicons name="checkmark" size={16} color="#0E6470" /> : null}
     </Pressable>
   );
 }
@@ -163,10 +200,15 @@ export function CirclesDesktop() {
           ) : null}
         </View>
 
-        <View className="flex-row flex-wrap gap-2">
-          <FilterChip label={t("circles.filterAll")} selected={!joinedOnly} onPress={() => setJoinedOnly(false)} />
-          <FilterChip label={t("circles.filterJoined")} selected={joinedOnly} onPress={() => setJoinedOnly(true)} />
-          <FilterChip label={t("circles.nearMe")} selected={nearMeOn} onPress={() => setLocalEnabled(!nearMeOn)} />
+        <View className="flex-row flex-wrap items-center gap-3">
+          <Segmented
+            options={[
+              { label: t("circles.filterAll"), selected: !joinedOnly, onPress: () => setJoinedOnly(false) },
+              { label: t("circles.filterJoined"), selected: joinedOnly, onPress: () => setJoinedOnly(true) },
+            ]}
+          />
+          <View className="h-5 w-px bg-primary-100 dark:bg-ink-700" />
+          <ToggleChip label={t("circles.nearMe")} on={nearMeOn} onPress={() => setLocalEnabled(!nearMeOn)} />
         </View>
         {localStatus === "denied" || localStatus === "unavailable" ? (
           <Text className="-mt-2 text-xs text-accent-600">
