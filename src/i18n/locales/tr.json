@@ -174,7 +174,12 @@
     "skip": "Geç",
     "swipeUpHint": "Geçmek için yukarı, geri dönmek için aşağı, beğenmek için sağa, geçmek için sola kaydır",
     "previous": "Önceki kişi",
-    "gestureHint": "Sıradaki kişi için yukarı kaydır · beğenmek ya da geçmek için yana"
+    "gestureHint": "Sıradaki kişi için yukarı kaydır · beğenmek ya da geçmek için yana",
+    "undo": "Geri al",
+    "youLiked": "{{name}} beğenildi",
+    "youPassed": "{{name}} geçildi",
+    "youSaved": "{{name}} kaydedildi",
+    "undoFailed": "Bu artık geri alınamıyor."
   },
   "connections": {
     "matched": "Eşleşmeler",

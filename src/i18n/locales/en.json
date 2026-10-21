@@ -174,7 +174,12 @@
     "skip": "Skip",
     "swipeUpHint": "Swipe up to skip, down to go back, right to like, left to pass",
     "previous": "Previous person",
-    "gestureHint": "Swipe up for the next person · sideways to like or pass"
+    "gestureHint": "Swipe up for the next person · sideways to like or pass",
+    "undo": "Undo",
+    "youLiked": "You liked {{name}}",
+    "youPassed": "You passed {{name}}",
+    "youSaved": "You saved {{name}}",
+    "undoFailed": "That can't be undone any more."
   },
   "connections": {
     "matched": "Matched",

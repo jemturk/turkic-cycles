@@ -18,7 +18,8 @@ import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
 
 import { useSession } from "@/hooks/useSession";
-import { useDiscoverCandidates, useRecordSwipe } from "@/hooks/useDiscover";
+import { useDiscoverCandidates, useRecordSwipe, useUndoSwipe } from "@/hooks/useDiscover";
+import { showAlert } from "@/lib/alert";
 import type { DiscoverCandidate } from "@/api/discover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
 import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
@@ -40,6 +41,8 @@ const ROLL_GAP = 16;
 const ANSWER_DISTANCE = 110;
 const ANSWER_VELOCITY = 800;
 const FLY_OFF = 600;
+// How long Undo stays offered after a like / pass / save.
+const UNDO_MS = 5000;
 // Remembers, on this device, that the first-visit gesture hint has been seen.
 const HINT_SEEN_KEY = "discover.gestureHintSeen";
 // How far a drag goes before its direction (roll or like / pass) is decided.
@@ -211,7 +214,20 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
 
   const { data: candidates, isLoading } = useDiscoverCandidates(circleId, userId);
   const recordSwipe = useRecordSwipe(circleId, userId);
+  const undoSwipe = useUndoSwipe(circleId, userId);
   const [matchedName, setMatchedName] = useState<string | null>(null);
+  // The last answer, undoable for UNDO_MS: who, what, and its save (done resolves to
+  // whether it made a match -- a match can't be undone).
+  const [lastAnswer, setLastAnswer] = useState<{
+    person: DiscoverCandidate;
+    action: "like" | "pass" | "save";
+    done: Promise<boolean>;
+  } | null>(null);
+  useEffect(() => {
+    if (!lastAnswer) return;
+    const timer = setTimeout(() => setLastAnswer(null), UNDO_MS);
+    return () => clearTimeout(timer);
+  }, [lastAnswer]);
   const [roll, setRoll] = useState<Roll>({ ids: [], pos: 0 });
   // Everyone this visit has been sent, in arrival order. The global deck's list is a
   // fresh random sample on every fetch (one follows each answer), so someone missing
@@ -460,21 +476,54 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     dismissHint();
     const person = candidate;
     setAnswered((current) => new Set(current).add(person.userId));
-    recordSwipe.mutate(
-      { targetId: person.userId, action },
-      {
-        onSuccess: (isMatch) => {
-          if (isMatch) setMatchedName(person.displayName);
-        },
-        onError: () => {
-          setAnswered((current) => {
-            const next = new Set(current);
-            next.delete(person.userId);
-            return next;
-          });
-        },
-      }
-    );
+    const done = recordSwipe
+      .mutateAsync({ targetId: person.userId, action })
+      .then((isMatch) => {
+        if (isMatch) {
+          setMatchedName(person.displayName);
+          // Matched: they've been told, so there's nothing to undo.
+          setLastAnswer((current) => (current?.person.userId === person.userId ? null : current));
+        }
+        return isMatch;
+      })
+      .catch(() => {
+        // Not saved: they come back, and there's nothing to undo either.
+        setAnswered((current) => {
+          const next = new Set(current);
+          next.delete(person.userId);
+          return next;
+        });
+        setLastAnswer((current) => (current?.person.userId === person.userId ? null : current));
+        return true;
+      });
+    setLastAnswer({ person, action, done });
+  }
+
+  // Undo: once the answer has been saved, it's taken back and the person returns to
+  // the front, fading in.
+  async function undo() {
+    const last = lastAnswer;
+    if (!last) return;
+    setLastAnswer(null);
+    const matchedOrFailed = await last.done;
+    if (matchedOrFailed) return;
+    try {
+      await undoSwipe.mutateAsync(last.person.userId);
+    } catch {
+      showAlert(t("discover.undoFailed"));
+      return;
+    }
+    setAnswered((current) => {
+      const next = new Set(current);
+      next.delete(last.person.userId);
+      return next;
+    });
+    setRoll((current) => {
+      const ids = current.ids.filter((id) => id !== last.person.userId);
+      const pos = Math.min(current.pos, ids.length);
+      ids.splice(pos, 0, last.person.userId);
+      return { ids, pos, resync: true, fade: true };
+    });
   }
 
   // The like / pass buttons fly the card off the same way a swipe does; save slides it
@@ -562,6 +611,49 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
               })}
             </Animated.View>
           </GestureDetector>
+          {lastAnswer ? (
+            // Undo, floating over the top of the card for a few seconds: over it rather
+            // than beside it, so the card never changes size.
+            <View
+              accessibilityRole="alert"
+              style={{
+                position: "absolute",
+                top: 14,
+                alignSelf: "center",
+                maxWidth: "92%",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                backgroundColor: "rgba(43,35,32,0.88)",
+                borderRadius: 999,
+                paddingLeft: 16,
+                paddingRight: 6,
+                paddingVertical: 6,
+              }}
+            >
+              <Text className="shrink text-sm" style={{ color: "#FFFFFF" }} numberOfLines={1}>
+                {t(
+                  lastAnswer.action === "like"
+                    ? "discover.youLiked"
+                    : lastAnswer.action === "pass"
+                      ? "discover.youPassed"
+                      : "discover.youSaved",
+                  { name: lastAnswer.person.displayName }
+                )}
+              </Text>
+              <Pressable
+                accessibilityRole="button"
+                onPress={undo}
+                className="flex-row items-center gap-1 rounded-full bg-white/15 px-3 py-1.5"
+              >
+                <Ionicons name="arrow-undo" size={14} color="#FFFFFF" />
+                <Text className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>
+                  {t("discover.undo")}
+                </Text>
+              </Pressable>
+            </View>
+          ) : null}
+
           {showHint ? (
             <View pointerEvents="box-none" style={{ position: "absolute", top: 14, left: 14, right: 14, alignItems: "center" }}>
               <View

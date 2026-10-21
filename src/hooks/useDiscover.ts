@@ -7,6 +7,7 @@ import {
   listGlobalDiscoverCandidates,
   listSavedPeople,
   recordSwipe,
+  undoSwipe,
 } from "@/api/discover";
 
 export function useOriginCountriesWithConsent(targetUserId: string | undefined) {
@@ -66,6 +67,19 @@ export function useRecordSwipe(circleId: string | null | undefined, userId: stri
       queryClient.invalidateQueries({ queryKey: ["incomingLikes", userId] });
       queryClient.invalidateQueries({ queryKey: ["incomingLikesCount", userId] });
       if (isMatch) queryClient.invalidateQueries({ queryKey: ["newConnections", userId] });
+    },
+  });
+}
+
+// Discover's Undo: takes back the last answer; the lists it touched refresh.
+export function useUndoSwipe(circleId: string | null | undefined, userId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (targetId: string) => undoSwipe(userId as string, targetId, circleId ?? null),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["savedPeople", userId] });
+      queryClient.invalidateQueries({ queryKey: ["incomingLikes", userId] });
+      queryClient.invalidateQueries({ queryKey: ["incomingLikesCount", userId] });
     },
   });
 }

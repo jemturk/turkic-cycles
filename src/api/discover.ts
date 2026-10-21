@@ -105,6 +105,17 @@ export async function listGlobalDiscoverCandidates(): Promise<DiscoverCandidate[
   return hydrateCandidates(candidateIds);
 }
 
+// Takes back a like / pass / save just made (Discover's Undo). The database only allows
+// it for your own swipe, within 10 minutes, and not once it has made a match (0048);
+// otherwise nothing is deleted and this throws.
+export async function undoSwipe(actorId: string, targetId: string, circleId: string | null) {
+  let query = supabase.from("swipes").delete().eq("actor_id", actorId).eq("target_id", targetId);
+  query = circleId === null ? query.is("circle_id", null) : query.eq("circle_id", circleId);
+  const { data, error } = await query.select("target_id");
+  if (error) throw error;
+  if (!data || data.length === 0) throw new Error("This can't be undone any more.");
+}
+
 // circleId null = the global (Discover tab) scope, here and in checkForMatch.
 export async function recordSwipe(
   actorId: string,

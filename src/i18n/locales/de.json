@@ -174,7 +174,12 @@
     "skip": "Überspringen",
     "swipeUpHint": "Nach oben zum Überspringen, nach unten zum Zurückgehen, nach rechts zum Liken, nach links zum Passen",
     "previous": "Vorherige Person",
-    "gestureHint": "Nach oben wischen für die nächste Person · zur Seite zum Liken oder Passen"
+    "gestureHint": "Nach oben wischen für die nächste Person · zur Seite zum Liken oder Passen",
+    "undo": "Rückgängig",
+    "youLiked": "Du hast {{name}} geliked",
+    "youPassed": "Du hast {{name}} übersprungen",
+    "youSaved": "Du hast {{name}} gespeichert",
+    "undoFailed": "Das kann nicht mehr rückgängig gemacht werden."
   },
   "connections": {
     "matched": "Gematcht",
