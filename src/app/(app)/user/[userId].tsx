@@ -85,25 +85,36 @@ export default function OtherProfile() {
     });
   }
 
-  // Phone: the profile's quiet text actions, at the bottom. Remove connection only
-  // once you're connected.
+  // Phone: the profile's quiet text actions, centred at the bottom with dots between,
+  // colored as the desktop ⋯ menu: Report and Remove connection in body text, Block in
+  // the destructive coral. Remove connection only once you're connected.
+  const dot = <Text className="text-sm text-ink-400 dark:text-ink-300" aria-hidden>·</Text>;
   const reportAndBlock = (
-    <View className="flex-row flex-wrap gap-x-4 gap-y-2">
-      <Pressable accessibilityRole="button" onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}>
-        <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.report")}</Text>
-      </Pressable>
-      {matchId ? (
-        <Pressable accessibilityRole="button" onPress={onRemoveConnection}>
-          <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.removeConnection")}</Text>
-        </Pressable>
-      ) : null}
+    <View className="flex-row flex-wrap items-center justify-center gap-x-2.5 gap-y-2">
       <Pressable
         accessibilityRole="button"
+        hitSlop={8}
+        onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}
+      >
+        <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("discover.report")}</Text>
+      </Pressable>
+      {matchId ? (
+        <>
+          {dot}
+          <Pressable accessibilityRole="button" hitSlop={8} onPress={onRemoveConnection}>
+            <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("discover.removeConnection")}</Text>
+          </Pressable>
+        </>
+      ) : null}
+      {dot}
+      <Pressable
+        accessibilityRole="button"
+        hitSlop={8}
         onPress={() => {
           blockUser.mutate(userId, { onSuccess: () => router.back() });
         }}
       >
-        <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.block")}</Text>
+        <Text className="text-sm font-medium text-accent-600 dark:text-accent-400">{t("discover.block")}</Text>
       </Pressable>
     </View>
   );

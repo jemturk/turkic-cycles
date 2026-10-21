@@ -35,6 +35,9 @@ module.exports = {
         accent: {
           50: "#FBE9E1",
           100: "#F5CDBE",
+          // Dark mode's coral text (dark:text-accent-400): 6.3:1 on the dark page,
+          // where 600 is only 2.6:1.
+          400: "#E8774F",
           500: "#C1440E",
           600: "#9E370B",
         },
