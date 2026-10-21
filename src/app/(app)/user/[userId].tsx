@@ -67,24 +67,6 @@ export default function OtherProfile() {
     );
   }
 
-  const reportAndBlock = (
-    <View className="flex-row gap-4">
-      <Pressable onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}>
-        <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.report")}</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => {
-          blockUser.mutate(userId, { onSuccess: () => router.back() });
-        }}
-      >
-        <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.block")}</Text>
-      </Pressable>
-    </View>
-  );
-
-  // Desktop web: under the profile card, one row of actions in the cards' shape --
-  // Pass / Like (the phone's colors) when opened from Discover, Message once you're
-  // connected -- with Report and Block tucked into a ⋯ menu at the end of the row.
   // Ends the connection without blocking, after a confirm: the chat goes for both.
   async function onRemoveConnection() {
     setMoreOpen(false);
@@ -101,6 +83,33 @@ export default function OtherProfile() {
       onError: () => showAlert(t("discover.removeConnectionFailed")),
     });
   }
+
+  // Phone: the profile's quiet text actions, at the bottom. Remove connection only
+  // once you're connected.
+  const reportAndBlock = (
+    <View className="flex-row flex-wrap gap-x-4 gap-y-2">
+      <Pressable accessibilityRole="button" onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}>
+        <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.report")}</Text>
+      </Pressable>
+      {matchId ? (
+        <Pressable accessibilityRole="button" onPress={onRemoveConnection}>
+          <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.removeConnection")}</Text>
+        </Pressable>
+      ) : null}
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => {
+          blockUser.mutate(userId, { onSuccess: () => router.back() });
+        }}
+      >
+        <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.block")}</Text>
+      </Pressable>
+    </View>
+  );
+
+  // Desktop web: under the profile card, one row of actions in the cards' shape --
+  // Pass / Like (the phone's colors) when opened from Discover, Message once you're
+  // connected -- with Report, Remove connection and Block in a ⋯ menu at the end of the row.
 
   const moreButton = (
     <View>
