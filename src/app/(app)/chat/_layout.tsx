@@ -6,6 +6,11 @@ import { useWideLayout } from "@/hooks/useWideLayout";
 import { Text } from "@/components/Text";
 import { ChatThreadList } from "@/components/ChatThreadList";
 
+// A page reached directly (a link from another tab, a notification, a deep link) still
+// has the chat list under it, so its back button goes up to it rather than to
+// whichever tab came before.
+export const unstable_settings = { initialRouteName: "index" };
+
 export default function ChatLayout() {
   const { t } = useTranslation();
   const wide = useWideLayout();
