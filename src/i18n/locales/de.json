@@ -179,7 +179,12 @@
     "youLiked": "Du hast {{name}} geliked",
     "youPassed": "Du hast {{name}} übersprungen",
     "youSaved": "Du hast {{name}} gespeichert",
-    "undoFailed": "Das kann nicht mehr rückgängig gemacht werden."
+    "undoFailed": "Das kann nicht mehr rückgängig gemacht werden.",
+    "removeConnection": "Verbindung entfernen",
+    "removeConnectionTitle": "{{name}} entfernen?",
+    "removeConnectionBody": "Euer Chat wird für euch beide gelöscht, und ihr seht euch nicht mehr unter Entdecken. Die andere Person wird nicht benachrichtigt.",
+    "removeConnectionConfirm": "Entfernen",
+    "removeConnectionFailed": "Die Verbindung konnte nicht entfernt werden. Bitte versuche es erneut."
   },
   "connections": {
     "matched": "Gematcht",

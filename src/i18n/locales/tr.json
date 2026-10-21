@@ -179,7 +179,12 @@
     "youLiked": "{{name}} beğenildi",
     "youPassed": "{{name}} geçildi",
     "youSaved": "{{name}} kaydedildi",
-    "undoFailed": "Bu artık geri alınamıyor."
+    "undoFailed": "Bu artık geri alınamıyor.",
+    "removeConnection": "Bağlantıyı kaldır",
+    "removeConnectionTitle": "{{name}} kaldırılsın mı?",
+    "removeConnectionBody": "Sohbetiniz ikiniz için de silinecek ve birbirinizi Keşfet'te görmeyeceksiniz. Karşı tarafa bildirilmez.",
+    "removeConnectionConfirm": "Kaldır",
+    "removeConnectionFailed": "Bu bağlantı kaldırılamadı. Lütfen tekrar dene."
   },
   "connections": {
     "matched": "Eşleşmeler",

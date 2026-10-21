@@ -242,3 +242,11 @@ export async function markMessageDelivered(messageId: string) {
     .is("delivered_at", null);
   if (error) throw error;
 }
+
+// Ends a connection without blocking (migration 0050): the match, its messages and
+// reactions are deleted for both people. Only either of the two can do it.
+export async function removeConnection(matchId: string) {
+  const { data, error } = await supabase.rpc("remove_connection", { p_match_id: matchId });
+  if (error) throw error;
+  if (!data) throw new Error("This connection couldn't be removed.");
+}

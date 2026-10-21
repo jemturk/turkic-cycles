@@ -179,7 +179,12 @@
     "youLiked": "You liked {{name}}",
     "youPassed": "You passed {{name}}",
     "youSaved": "You saved {{name}}",
-    "undoFailed": "That can't be undone any more."
+    "undoFailed": "That can't be undone any more.",
+    "removeConnection": "Remove connection",
+    "removeConnectionTitle": "Remove {{name}}?",
+    "removeConnectionBody": "Your chat will be deleted for both of you, and you won't see each other in Discover. They won't be told.",
+    "removeConnectionConfirm": "Remove",
+    "removeConnectionFailed": "Couldn't remove this connection. Please try again."
   },
   "connections": {
     "matched": "Matched",

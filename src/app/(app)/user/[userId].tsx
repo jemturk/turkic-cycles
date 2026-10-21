@@ -18,6 +18,8 @@ import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { Button } from "@/components/Button";
 import { SwipeButton } from "@/components/SwipeButton";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { useRemoveConnection } from "@/hooks/useChat";
+import { confirmAlert, showAlert } from "@/lib/alert";
 
 export default function OtherProfile() {
   const { t } = useTranslation();
@@ -43,6 +45,7 @@ export default function OtherProfile() {
   // No circleId = opened from the global Discover tab, so swipes go to that scope.
   const recordSwipe = useRecordSwipe(circleId ?? null, session?.user.id);
   const blockUser = useBlockUser(session?.user.id);
+  const removeConnection = useRemoveConnection(session?.user.id);
   const [matchedName, setMatchedName] = useState<string | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
 
@@ -82,6 +85,23 @@ export default function OtherProfile() {
   // Desktop web: under the profile card, one row of actions in the cards' shape --
   // Pass / Like (the phone's colors) when opened from Discover, Message once you're
   // connected -- with Report and Block tucked into a ⋯ menu at the end of the row.
+  // Ends the connection without blocking, after a confirm: the chat goes for both.
+  async function onRemoveConnection() {
+    setMoreOpen(false);
+    if (!matchId) return;
+    const name = profile?.display_name || t("common.member");
+    const confirmed = await confirmAlert(
+      t("discover.removeConnectionTitle", { name }),
+      t("discover.removeConnectionBody"),
+      { confirmLabel: t("discover.removeConnectionConfirm"), cancelLabel: t("common.cancel"), destructive: true }
+    );
+    if (!confirmed) return;
+    removeConnection.mutate(matchId, {
+      onSuccess: () => router.replace("/(app)/chat"),
+      onError: () => showAlert(t("discover.removeConnectionFailed")),
+    });
+  }
+
   const moreButton = (
     <View>
       <Pressable
@@ -109,6 +129,16 @@ export default function OtherProfile() {
             <Ionicons name="flag-outline" size={18} color="#4A3F3A" />
             <Text className="text-sm text-ink-900 dark:text-ink-50">{t("discover.report")}</Text>
           </Pressable>
+          {matchId ? (
+            <Pressable
+              accessibilityRole="menuitem"
+              onPress={onRemoveConnection}
+              className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
+            >
+              <Ionicons name="person-remove-outline" size={18} color="#4A3F3A" />
+              <Text className="text-sm text-ink-900 dark:text-ink-50">{t("discover.removeConnection")}</Text>
+            </Pressable>
+          ) : null}
           <Pressable
             accessibilityRole="menuitem"
             onPress={() => {

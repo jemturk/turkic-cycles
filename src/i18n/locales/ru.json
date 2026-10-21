@@ -187,7 +187,12 @@
     "youLiked": "Вам нравится {{name}}",
     "youPassed": "Вы пропустили {{name}}",
     "youSaved": "Вы сохранили {{name}}",
-    "undoFailed": "Это уже нельзя отменить."
+    "undoFailed": "Это уже нельзя отменить.",
+    "removeConnection": "Удалить контакт",
+    "removeConnectionTitle": "Удалить {{name}}?",
+    "removeConnectionBody": "Ваш чат будет удалён для вас обоих, и вы больше не увидите друг друга в «Обзоре». Собеседник не получит уведомления.",
+    "removeConnectionConfirm": "Удалить",
+    "removeConnectionFailed": "Не удалось удалить контакт. Попробуйте ещё раз."
   },
   "connections": {
     "matched": "Совпадения",

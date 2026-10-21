@@ -13,6 +13,7 @@ import {
   sendMessage,
   toggleReaction,
   type MessageReaction,
+  removeConnection,
 } from "@/api/chat";
 import type { Tables } from "@/types/database";
 
@@ -208,5 +209,18 @@ export function useToggleReaction(matchId: string | undefined, userId: string | 
       if (context?.previous) queryClient.setQueryData(queryKey, context.previous);
     },
     onSettled: () => queryClient.invalidateQueries({ queryKey }),
+  });
+}
+
+// Remove connection: the chat and the connection go from every list.
+export function useRemoveConnection(userId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: removeConnection,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["messageThreads", userId] });
+      queryClient.invalidateQueries({ queryKey: ["newConnections", userId] });
+      queryClient.invalidateQueries({ queryKey: ["matchParticipant"] });
+    },
   });
 }

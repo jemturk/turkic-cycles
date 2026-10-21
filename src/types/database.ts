@@ -907,6 +907,7 @@ export type Database = {
         Args: { p_platform: string; p_token: string }
         Returns: undefined
       }
+      remove_connection: { Args: { p_match_id: string }; Returns: boolean }
       sees_mocks: { Args: never; Returns: boolean }
     }
     Enums: {
