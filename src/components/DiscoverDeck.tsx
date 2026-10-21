@@ -26,6 +26,7 @@ import { DiscoverCardView } from "@/components/DiscoverCardView";
 import { SwipeButton } from "@/components/SwipeButton";
 import { DiscoverGrid } from "@/components/DiscoverGrid";
 import { moveTo, reconcile, type Roll } from "@/lib/discoverRoll";
+import { loadRecentlySkipped, rememberSkip, skippedLast } from "@/lib/skipCooldown";
 import { useWideLayout } from "@/hooks/useWideLayout";
 
 // How far (points) or how fast (points/second) a vertical swipe has to go to count
@@ -232,7 +233,25 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const [answered, setAnswered] = useState<ReadonlySet<string>>(() => new Set());
   // The first-visit hint: shown until the first swipe, answer or close, once per device.
   const [showHint, setShowHint] = useState(false);
-  const shown = pool.filter((c) => !answered.has(c.userId));
+  // People skipped in the last day, on this device (skipCooldown.ts): they go to the back
+  // of the line rather than straight back in front. null while it's being read, so the
+  // line isn't built in the wrong order first.
+  const [recentlySkipped, setRecentlySkipped] = useState<ReadonlySet<string> | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    loadRecentlySkipped().then((skipped) => {
+      if (!cancelled) setRecentlySkipped(skipped);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  const shown = recentlySkipped
+    ? skippedLast(
+        pool.filter((c) => !answered.has(c.userId)),
+        recentlySkipped
+      )
+    : [];
 
   // Who's shown changes underneath (the first load, newcomers in a fresh batch,
   // someone liked / passed / saved): people answered leave the roll, newcomers join
@@ -355,11 +374,14 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
 
   // Moves the roll by one without animating (screen readers' skip / back actions).
   function jump(delta: 1 | -1) {
+    if (delta === 1 && candidate) rememberSkip(candidate.userId);
     setRoll((current) => ({ ...moveTo(current, current.pos + delta), resync: true }));
   }
 
   // After the roll has landed on the UI thread (base already moved): just record it.
   function landed(delta: 1 | -1) {
+    // Rolling on past someone is a skip: remembered for a day (skipCooldown.ts).
+    if (delta === 1 && candidate) rememberSkip(candidate.userId);
     setRoll((current) => moveTo(current, current.pos + delta));
   }
 
@@ -482,7 +504,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
 
   return (
     <>
-      {isLoading ? null : !candidate ? (
+      {isLoading || recentlySkipped === null ? null : !candidate ? (
         <View className="flex-1 items-center justify-center">
           <Text className="text-center text-base text-ink-700 dark:text-ink-200">{emptyLabel}</Text>
         </View>
