@@ -29,6 +29,7 @@ import { DiscoverGrid } from "@/components/DiscoverGrid";
 import { moveTo, reconcile, type Roll } from "@/lib/discoverRoll";
 import { loadRecentlySkipped, rememberSkip, skippedLast } from "@/lib/skipCooldown";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { useScreenReaderEnabled } from "@/hooks/useScreenReaderEnabled";
 
 // How far (points) or how fast (points/second) a vertical swipe has to go to count
 // -- up to skip, down to go back; anything less springs the card back.
@@ -41,8 +42,10 @@ const ROLL_GAP = 16;
 const ANSWER_DISTANCE = 110;
 const ANSWER_VELOCITY = 800;
 const FLY_OFF = 600;
-// How long Undo stays offered after a like / pass / save.
+// How long Undo stays offered after a like / pass / save -- longer with a screen
+// reader, which has to read the pill out and then reach its button.
 const UNDO_MS = 2000;
+const UNDO_SCREEN_READER_MS = 5000;
 // Remembers, on this device, that the first-visit gesture hint has been seen.
 const HINT_SEEN_KEY = "discover.gestureHintSeen";
 // How far a drag goes before its direction (roll or like / pass) is decided.
@@ -215,6 +218,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const { data: candidates, isLoading } = useDiscoverCandidates(circleId, userId);
   const recordSwipe = useRecordSwipe(circleId, userId);
   const undoSwipe = useUndoSwipe(circleId, userId);
+  const screenReader = useScreenReaderEnabled();
   const [matchedName, setMatchedName] = useState<string | null>(null);
   // The last answer, undoable for UNDO_MS: who, what, and its save (done resolves to
   // whether it made a match -- a match can't be undone).
@@ -225,9 +229,9 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   } | null>(null);
   useEffect(() => {
     if (!lastAnswer) return;
-    const timer = setTimeout(() => setLastAnswer(null), UNDO_MS);
+    const timer = setTimeout(() => setLastAnswer(null), screenReader ? UNDO_SCREEN_READER_MS : UNDO_MS);
     return () => clearTimeout(timer);
-  }, [lastAnswer]);
+  }, [lastAnswer, screenReader]);
   const [roll, setRoll] = useState<Roll>({ ids: [], pos: 0 });
   // Everyone this visit has been sent, in arrival order. The global deck's list is a
   // fresh random sample on every fetch (one follows each answer), so someone missing
