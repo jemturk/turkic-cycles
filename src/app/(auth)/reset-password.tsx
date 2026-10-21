@@ -100,7 +100,7 @@ export default function ResetPassword() {
                 value={password}
                 onChangeText={setPassword}
               />
-              <Text className="text-xs text-ink-400">{t("auth.resetPassword.passwordHint")}</Text>
+              <Text className="text-xs text-ink-400 dark:text-ink-300">{t("auth.resetPassword.passwordHint")}</Text>
               {status ? <Text className="text-sm text-accent-600">{status}</Text> : null}
             </View>
             <View className="mt-8">

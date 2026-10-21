@@ -108,7 +108,7 @@ export default function Login() {
             captchaReady={captcha.ready}
             onCaptchaUsed={captcha.reset}
           />
-          <Text className="text-center text-sm text-ink-400">
+          <Text className="text-center text-sm text-ink-400 dark:text-ink-300">
             {t("auth.login.noAccount")}{" "}
             <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/sign-up")}>
               {t("auth.login.signUp")}

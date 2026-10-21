@@ -101,7 +101,7 @@ export function Group({ title, children }: { title?: string; children: ReactNode
   if (!title) return card;
   return (
     <View className="gap-1.5">
-      <Text className="ml-1 mt-1 text-xs font-medium uppercase text-ink-400">{title}</Text>
+      <Text className="ml-1 mt-1 text-xs font-medium uppercase text-ink-400 dark:text-ink-300">{title}</Text>
       {card}
     </View>
   );
@@ -135,7 +135,7 @@ export function Item({
       {leading ?? (icon ? <IconTile icon={icon} solid={solid} /> : null)}
       <View className="flex-1">
         <Text className={`text-base text-ink-900 dark:text-ink-50 ${bold ? "font-semibold" : ""}`}>{title}</Text>
-        {subtitle ? <Text className="text-sm text-ink-400">{subtitle}</Text> : null}
+        {subtitle ? <Text className="text-sm text-ink-400 dark:text-ink-300">{subtitle}</Text> : null}
       </View>
       {right}
       {onPress && !right ? <Ionicons name="chevron-forward" size={18} color="#A99C95" /> : null}

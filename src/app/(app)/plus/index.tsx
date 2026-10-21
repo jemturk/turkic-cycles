@@ -33,7 +33,7 @@ function Benefit({ icon, title, body }: { icon: keyof typeof Ionicons.glyphMap; 
       </View>
       <View className="flex-1">
         <Text className="font-display text-base text-ink-900 dark:text-ink-50">{title}</Text>
-        {body ? <Text className="text-xs text-ink-400">{body}</Text> : null}
+        {body ? <Text className="text-xs text-ink-400 dark:text-ink-300">{body}</Text> : null}
       </View>
     </View>
   );
@@ -107,7 +107,7 @@ export default function Plus() {
 
         <View className="gap-4 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
           <Benefit icon="heart" title={t("plus.seeLikes")} body={t("plus.seeLikesBody")} />
-          <Text className="mt-1 text-xs font-medium uppercase text-ink-400">{t("plus.comingSoon")}</Text>
+          <Text className="mt-1 text-xs font-medium uppercase text-ink-400 dark:text-ink-300">{t("plus.comingSoon")}</Text>
           <Benefit icon="globe-outline" title={t("plus.worldwide")} />
           <Benefit icon="options-outline" title={t("plus.filters")} />
           <Benefit icon="infinite-outline" title={t("plus.moreLikes")} />
@@ -162,7 +162,7 @@ export default function Plus() {
                 {restore.isPending ? t("common.loading") : t("plus.restore")}
               </Text>
             </Pressable>
-            <Text className="text-center text-xs text-ink-400">{t("plus.autoRenewNote")}</Text>
+            <Text className="text-center text-xs text-ink-400 dark:text-ink-300">{t("plus.autoRenewNote")}</Text>
           </>
         ) : onWaitlist ? (
           <View className="gap-2 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">

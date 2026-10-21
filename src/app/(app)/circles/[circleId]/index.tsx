@@ -112,7 +112,7 @@ export default function CircleEvents() {
             <Text className="font-display text-4xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
               {circle.name}
             </Text>
-            <Text className="text-sm text-ink-400">
+            <Text className="text-sm text-ink-400 dark:text-ink-300">
               {[t("circles.membersCount", { count: circle.member_count }), place].filter(Boolean).join(" · ")}
             </Text>
           </View>
@@ -151,7 +151,7 @@ export default function CircleEvents() {
                   {t(`circles.${value}`)}
                 </Text>
                 {count > 0 ? (
-                  <Text className={`text-xs ${selected ? "text-white/85" : "text-ink-400"}`}>{count}</Text>
+                  <Text className={`text-xs ${selected ? "text-white/85" : "text-ink-400 dark:text-ink-300"}`}>{count}</Text>
                 ) : null}
               </Pressable>
             );
@@ -198,7 +198,7 @@ export default function CircleEvents() {
                       </Text>
                       <Text className="text-sm text-ink-700 dark:text-ink-200">{format(startsAt, "EEE · h:mm a")}</Text>
                       {event.location ? (
-                        <Text className="text-sm text-ink-400" numberOfLines={1}>
+                        <Text className="text-sm text-ink-400 dark:text-ink-300" numberOfLines={1}>
                           {event.location}
                         </Text>
                       ) : null}
@@ -269,7 +269,7 @@ export default function CircleEvents() {
                   {t(`circles.${value}`)}
                 </Text>
                 {count > 0 ? (
-                  <Text className={`text-xs ${selected ? "text-white/85" : "text-ink-400"}`}>{count}</Text>
+                  <Text className={`text-xs ${selected ? "text-white/85" : "text-ink-400 dark:text-ink-300"}`}>{count}</Text>
                 ) : null}
               </Pressable>
             );
@@ -307,7 +307,7 @@ export default function CircleEvents() {
                 </Text>
                 <Text className="text-sm text-ink-700 dark:text-ink-200">{format(startsAt, "EEE · h:mm a")}</Text>
                 {event.location ? (
-                  <Text className="text-sm text-ink-400" numberOfLines={1}>
+                  <Text className="text-sm text-ink-400 dark:text-ink-300" numberOfLines={1}>
                     {event.location}
                   </Text>
                 ) : null}

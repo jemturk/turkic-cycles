@@ -67,14 +67,14 @@ export default function OtherProfile() {
   const reportAndBlock = (
     <View className="flex-row gap-4">
       <Pressable onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}>
-        <Text className="text-sm font-medium text-ink-400">{t("discover.report")}</Text>
+        <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.report")}</Text>
       </Pressable>
       <Pressable
         onPress={() => {
           blockUser.mutate(userId, { onSuccess: () => router.back() });
         }}
       >
-        <Text className="text-sm font-medium text-ink-400">{t("discover.block")}</Text>
+        <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("discover.block")}</Text>
       </Pressable>
     </View>
   );

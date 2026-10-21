@@ -25,7 +25,7 @@ function Requirement({ done, label }: { done: boolean; label: string }) {
         size={18}
         color={done ? "#2C8B80" : "#A99C95"}
       />
-      <Text className={`text-sm ${done ? "text-ink-900 dark:text-ink-50" : "text-ink-400"}`}>{label}</Text>
+      <Text className={`text-sm ${done ? "text-ink-900 dark:text-ink-50" : "text-ink-400 dark:text-ink-300"}`}>{label}</Text>
     </View>
   );
 }

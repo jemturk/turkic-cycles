@@ -158,7 +158,7 @@ export function CirclesDesktop() {
           </View>
         </View>
 
-        <Text className="text-[13px] text-ink-400" numberOfLines={1}>
+        <Text className="text-[13px] text-ink-400 dark:text-ink-300" numberOfLines={1}>
           {[
             t("circles.membersCount", { count: circle.member_count }),
             t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 }),
@@ -186,7 +186,7 @@ export function CirclesDesktop() {
             className="h-11 w-[320px] flex-row items-center gap-2 rounded-full bg-white px-4 dark:bg-ink-800"
           >
             <Ionicons name="search-outline" size={18} color="#8A7C76" />
-            <Text className="text-[15px] text-ink-400">{t("tabs.search")}</Text>
+            <Text className="text-[15px] text-ink-400 dark:text-ink-300">{t("tabs.search")}</Text>
           </Pressable>
           {/* Plus with a verified ID, admins included (migration 0035); nobody else sees it. */}
           {canHost ? (

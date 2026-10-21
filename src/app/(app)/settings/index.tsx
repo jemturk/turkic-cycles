@@ -94,14 +94,14 @@ function Row({
         {showLabel ? (
           <View className="flex-1">
             <Text className={`text-base ${danger ? "text-accent-600" : "text-ink-900 dark:text-ink-50"}`}>{label}</Text>
-            {hint ? <Text className="text-sm text-ink-400">{hint}</Text> : null}
+            {hint ? <Text className="text-sm text-ink-400 dark:text-ink-300">{hint}</Text> : null}
           </View>
         ) : null}
       </View>
       {right}
       {onPress ? (
         <View className="flex-row items-center gap-1.5">
-          {value ? <Text className="text-sm text-ink-400">{value}</Text> : null}
+          {value ? <Text className="text-sm text-ink-400 dark:text-ink-300">{value}</Text> : null}
           <Ionicons name="chevron-forward" size={18} color="#A99C95" />
         </View>
       ) : null}
@@ -128,7 +128,7 @@ function Section({ title, children }: { title?: string; children: ReactNode }) {
   if (!wide) {
     return (
       <View className="gap-1.5">
-        {title ? <Text className="ml-1 mt-2 text-xs font-medium uppercase text-ink-400">{title}</Text> : null}
+        {title ? <Text className="ml-1 mt-2 text-xs font-medium uppercase text-ink-400 dark:text-ink-300">{title}</Text> : null}
         <View className="overflow-hidden rounded-2xl bg-white dark:bg-ink-800">{rows}</View>
       </View>
     );
@@ -136,7 +136,7 @@ function Section({ title, children }: { title?: string; children: ReactNode }) {
   return (
     <View className="overflow-hidden rounded-[18px] bg-white dark:bg-ink-800">
       {title ? (
-        <Text className="px-5 pb-1 pt-4 text-xs font-semibold uppercase tracking-wider text-ink-400">{title}</Text>
+        <Text className="px-5 pb-1 pt-4 text-xs font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-300">{title}</Text>
       ) : null}
       {rows}
     </View>
@@ -183,7 +183,7 @@ export default function Settings() {
         <Text className="font-display text-2xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
           {profile?.display_name || t("profile.addYourName")}
         </Text>
-        {location ? <Text className="text-sm text-ink-400">{location}</Text> : null}
+        {location ? <Text className="text-sm text-ink-400 dark:text-ink-300">{location}</Text> : null}
         {subscribed || verified ? (
           <View className="flex-row gap-1.5">
             {subscribed ? (
@@ -227,7 +227,7 @@ export default function Settings() {
           <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
             {profile?.display_name || t("profile.addYourName")}
           </Text>
-          {location ? <Text className="text-sm text-ink-400">{location}</Text> : null}
+          {location ? <Text className="text-sm text-ink-400 dark:text-ink-300">{location}</Text> : null}
         </View>
       </View>
       <Pressable

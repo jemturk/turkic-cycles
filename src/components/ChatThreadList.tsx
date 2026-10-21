@@ -135,7 +135,7 @@ export function ChatThreadList({
               </View>
               <View className="items-end gap-1.5">
                 <Text
-                  className={`text-xs ${thread.unreadCount > 0 ? "font-semibold text-accent-600" : "text-ink-400"}`}
+                  className={`text-xs ${thread.unreadCount > 0 ? "font-semibold text-accent-600" : "text-ink-400 dark:text-ink-300"}`}
                 >
                   {formatDistanceToNowStrict(new Date(thread.lastMessageAt), { addSuffix: false })}
                 </Text>

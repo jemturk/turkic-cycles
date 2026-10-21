@@ -171,7 +171,7 @@ function PersonCard({
               {person.otherDisplayName}
             </Text>
             {meta ? (
-              <Text className="text-xs text-ink-400" numberOfLines={1}>
+              <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
                 {meta}
               </Text>
             ) : null}
@@ -236,7 +236,7 @@ function DesktopTabs({
               {tab.label}
             </Text>
             {tab.count > 0 ? (
-              <Text className={`text-xs ${selected ? "text-white/85" : "text-ink-400"}`}>
+              <Text className={`text-xs ${selected ? "text-white/85" : "text-ink-400 dark:text-ink-300"}`}>
                 {tab.count > 99 ? "99+" : tab.count}
               </Text>
             ) : null}
@@ -396,7 +396,7 @@ export default function Connections() {
                 className="h-11 w-[320px] flex-row items-center gap-2 rounded-full bg-white px-4 dark:bg-ink-800"
               >
                 <Ionicons name="search-outline" size={18} color="#8A7C76" />
-                <Text className="text-[15px] text-ink-400">{t("tabs.search")}</Text>
+                <Text className="text-[15px] text-ink-400 dark:text-ink-300">{t("tabs.search")}</Text>
               </Pressable>
             </View>
             <DesktopTabs tabs={tabItems} value={tab} onChange={selectTab} />

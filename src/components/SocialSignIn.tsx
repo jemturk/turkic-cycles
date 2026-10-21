@@ -53,7 +53,7 @@ export function SocialSignIn({
     <View className="gap-3">
       <View className="flex-row items-center gap-3">
         <View className="h-px flex-1 bg-[#F3E3D2] dark:bg-ink-700" />
-        <Text className="text-sm text-ink-400">{t("auth.social.or")}</Text>
+        <Text className="text-sm text-ink-400 dark:text-ink-300">{t("auth.social.or")}</Text>
         <View className="h-px flex-1 bg-[#F3E3D2] dark:bg-ink-700" />
       </View>
 

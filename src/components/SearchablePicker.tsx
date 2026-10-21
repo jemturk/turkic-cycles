@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
 import { normalizeForSearch } from "@/constants/countries";
+import { usePlaceholderColor } from "@/hooks/usePlaceholderColor";
 
 export type PickerOption = { value: string; label: string };
 
@@ -42,6 +43,7 @@ export function SearchablePicker({
 }: SearchablePickerProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const placeholderColor = usePlaceholderColor();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
@@ -87,7 +89,7 @@ export function SearchablePicker({
         className="flex-row items-center justify-between rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3"
       >
         <Text
-          className={`flex-1 text-base ${displayLabel ? "text-ink-900 dark:text-ink-50" : "text-ink-400"}`}
+          className={`flex-1 text-base ${displayLabel ? "text-ink-900 dark:text-ink-50" : "text-ink-400 dark:text-ink-300"}`}
           numberOfLines={1}
         >
           {displayLabel || placeholder}
@@ -115,7 +117,7 @@ export function SearchablePicker({
               value={query}
               onChangeText={setQuery}
               placeholder={searchPlaceholder}
-              placeholderTextColor="#8A7C76"
+              placeholderTextColor={placeholderColor}
               autoCapitalize="none"
               autoCorrect={false}
               autoComplete="off"
@@ -137,11 +139,11 @@ export function SearchablePicker({
             keyboardDismissMode="on-drag"
             contentContainerClassName="px-4 pb-6"
             ListEmptyComponent={
-              <Text className="py-6 text-center text-sm text-ink-400">{t("location.noResults", { query: query.trim() })}</Text>
+              <Text className="py-6 text-center text-sm text-ink-400 dark:text-ink-300">{t("location.noResults", { query: query.trim() })}</Text>
             }
             renderItem={({ item }) =>
               item.kind === "header" ? (
-                <Text className="px-1 pb-1 pt-4 text-xs font-medium uppercase text-ink-400">{item.label}</Text>
+                <Text className="px-1 pb-1 pt-4 text-xs font-medium uppercase text-ink-400 dark:text-ink-300">{item.label}</Text>
               ) : (
                 <Pressable
                   accessibilityRole="button"

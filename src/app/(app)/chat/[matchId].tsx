@@ -29,6 +29,7 @@ import { useWideLayout } from "@/hooks/useWideLayout";
 import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
 import { dayLabel } from "@/lib/dayLabel";
 import type { Tables } from "@/types/database";
+import { usePlaceholderColor } from "@/hooks/usePlaceholderColor";
 
 // Message bubbles: pale turquoise for yours, pale coral for theirs (a step past the
 // palette's lightest shades, primary-100 / accent-50), both with dark text.
@@ -77,6 +78,7 @@ type Message = Tables<"messages">;
 
 export default function ChatThread() {
   const insets = useSafeAreaInsets();
+  const placeholderColor = usePlaceholderColor();
   const { t, i18n } = useTranslation();
   const wide = useWideLayout();
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
@@ -363,7 +365,7 @@ export default function ChatThread() {
             style={{ cursor: "auto" } as never}
           >
             {participant?.match ? (
-              <Text className="text-center text-xs text-ink-400">
+              <Text className="text-center text-xs text-ink-400 dark:text-ink-300">
                 {t("chat.youMatched", { date: format(new Date(participant.match.created_at), "MMM d") })}
               </Text>
             ) : null}
@@ -470,7 +472,7 @@ export default function ChatThread() {
                       end={{ x: 1, y: 0 }}
                       style={{ flex: 1, height: StyleSheet.hairlineWidth * 2 }}
                     />
-                    <Text accessibilityRole="header" className="text-xs font-medium text-ink-400">
+                    <Text accessibilityRole="header" className="text-xs font-medium text-ink-400 dark:text-ink-300">
                       {dayLabel(new Date(message.created_at), new Date(), i18n.language, {
                         today: t("chat.today"),
                         yesterday: t("chat.yesterday"),
@@ -542,7 +544,7 @@ export default function ChatThread() {
                     messageReactions.length > 0 ? <View className="h-3" /> : null
                   ) : (
                     <View className={`flex-row items-center gap-1 ${messageReactions.length > 0 ? "mt-3" : "mt-1"}`}>
-                      <Text className="text-xs text-ink-400">{format(new Date(message.created_at), "h:mm a")}</Text>
+                      <Text className="text-xs text-ink-400 dark:text-ink-300">{format(new Date(message.created_at), "h:mm a")}</Text>
                       {isOwn ? <MessageStatus status={messageStatus(message)} /> : null}
                     </View>
                   )}
@@ -610,7 +612,7 @@ export default function ChatThread() {
               className="h-[46px] flex-1 rounded-full border border-ink-100 bg-white px-[18px] text-base text-ink-900 dark:border-ink-700 dark:bg-ink-900 dark:text-ink-50"
               style={{ outlineStyle: "none" } as never}
               placeholder={t("chat.typeMessage")}
-              placeholderTextColor="#8A7C76"
+              placeholderTextColor={placeholderColor}
               value={draft}
               onChangeText={onDraftChange}
               onFocus={() => setActionsFor(null)}
@@ -647,7 +649,7 @@ export default function ChatThread() {
                 // lineHeight 0 on iOS: its fixed line height (from text-base) clips the tail of g/y/p.
                 style={{ outlineStyle: "none", ...(Platform.OS === "ios" ? { lineHeight: 0 } : null) } as never}
                 placeholder={t("chat.typeMessage")}
-                placeholderTextColor="#8A7C76"
+                placeholderTextColor={placeholderColor}
                 value={draft}
                 onChangeText={onDraftChange}
                 onFocus={() => setActionsFor(null)}

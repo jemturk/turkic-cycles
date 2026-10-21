@@ -122,7 +122,7 @@ export function ProfileView({
           <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">{nameLabel}</Text>
           <VerifiedBadge status={verificationStatus} />
         </View>
-        <Text className="text-sm text-ink-400">
+        <Text className="text-sm text-ink-400 dark:text-ink-300">
           {[age ? `${age}` : null, location || null].filter(Boolean).join(" · ")}
         </Text>
         {profile?.occupation ? (

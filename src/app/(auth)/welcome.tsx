@@ -95,7 +95,7 @@ function CirclesMockup() {
           <Text className="font-display text-base text-ink-900 dark:text-ink-50" numberOfLines={1}>
             Tampa Türkiye Circle
           </Text>
-          <Text className="text-xs text-ink-400" numberOfLines={1}>
+          <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
             12 members · Tampa
           </Text>
         </View>
@@ -118,7 +118,7 @@ function CirclesMockup() {
             <Text className="font-display text-base text-ink-900 dark:text-ink-50" numberOfLines={1}>
               Holiday Lights Walk
             </Text>
-            <Text className="text-xs text-ink-400" numberOfLines={1}>
+            <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
               Mon · 6:30 PM · Downtown Tampa
             </Text>
           </View>
@@ -211,7 +211,7 @@ function SafetyMockup() {
             <Text className="font-display text-base text-ink-900 dark:text-ink-50">Aylin</Text>
             <Ionicons name="checkmark-circle" size={16} color="#2C8B80" />
           </View>
-          <Text className="text-xs text-ink-400">Verified member</Text>
+          <Text className="text-xs text-ink-400 dark:text-ink-300">Verified member</Text>
         </View>
       </View>
       {[
@@ -272,7 +272,7 @@ export default function Welcome() {
           onPress={() => router.push("/(auth)/login")}
           style={{ opacity: isLast ? 0 : 1 }}
         >
-          <Text className="text-sm font-medium text-ink-400">{t("welcome.skip")}</Text>
+          <Text className="text-sm font-medium text-ink-400 dark:text-ink-300">{t("welcome.skip")}</Text>
         </Pressable>
 
         {/* Measuring this wrapper's own rendered width (via onLayout) rather than using
@@ -354,7 +354,7 @@ export default function Welcome() {
             {/* Always laid out, shown only on the last slide, so the button and dots
                 don't jump up when it appears. */}
             <View style={{ opacity: isLast ? 1 : 0 }} pointerEvents={isLast ? "auto" : "none"}>
-              <Text className="text-center text-sm text-ink-400">
+              <Text className="text-center text-sm text-ink-400 dark:text-ink-300">
                 {t("welcome.alreadyHaveAccount")}{" "}
                 <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/login")}>
                   {t("welcome.logIn")}

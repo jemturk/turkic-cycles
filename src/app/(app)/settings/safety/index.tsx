@@ -67,7 +67,7 @@ function YourPlans() {
 
   return (
     <View className="gap-1.5">
-      <Text className="ml-1 mt-1 text-xs font-medium uppercase text-ink-400">{t("safetyAlerts.yourPlans")}</Text>
+      <Text className="ml-1 mt-1 text-xs font-medium uppercase text-ink-400 dark:text-ink-300">{t("safetyAlerts.yourPlans")}</Text>
       {open.map((plan) => {
         const due = checkInTime(plan);
         const overdue = plan.status === "overdue" || due.getTime() < now;
@@ -86,7 +86,7 @@ function YourPlans() {
                 <Text className="text-sm text-ink-700 dark:text-ink-200">
                   {[format(new Date(plan.meeting_at), "EEE, MMM d · h:mm a"), plan.location].filter(Boolean).join(" · ")}
                 </Text>
-                <Text className={`text-sm ${overdue ? "font-semibold text-accent-600" : "text-ink-400"}`}>
+                <Text className={`text-sm ${overdue ? "font-semibold text-accent-600" : "text-ink-400 dark:text-ink-300"}`}>
                   {overdue
                     ? t("safetyAlerts.overdueSince", { time: format(due, "h:mm a") })
                     : t("safetyAlerts.checkInBy", { time: format(due, "h:mm a") })}

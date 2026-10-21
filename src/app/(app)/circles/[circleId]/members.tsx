@@ -64,7 +64,7 @@ export default function CircleMembers() {
                 {member.displayName || t("common.member")}
               </Text>
               {member.city ? (
-                <Text className="-mt-1 text-xs text-ink-400" numberOfLines={1}>
+                <Text className="-mt-1 text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
                   {member.city}
                 </Text>
               ) : null}

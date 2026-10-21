@@ -62,7 +62,10 @@ module.exports = {
           900: "#2B2320",
           800: "#352C27",
           700: "#4A3F3A",
-          400: "#8A7C76",
+          // Secondary text. Light mode: 5.5:1+ on the cream surfaces (WCAG AA for small
+          // text; it was #8A7C76, 3.9:1). Dark mode uses 300 (dark:text-ink-300).
+          400: "#6E625C",
+          300: "#A99C95",
           200: "#C9BFB9",
           100: "#E8DFDA",
           50: "#F5F1EE",

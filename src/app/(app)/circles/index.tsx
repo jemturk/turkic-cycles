@@ -72,7 +72,7 @@ function CirclesPhone() {
         <View className="flex-row items-center justify-between gap-3 rounded-2xl bg-white dark:bg-ink-800 px-4 py-3">
           <View className="flex-1">
             <Text className="text-base text-ink-900 dark:text-ink-50">{t("circles.local")}</Text>
-            <Text className="text-xs text-ink-400">{t("circles.localHint")}</Text>
+            <Text className="text-xs text-ink-400 dark:text-ink-300">{t("circles.localHint")}</Text>
           </View>
           <Switch
             value={localEnabled || localStatus === "locating"}
@@ -112,7 +112,7 @@ function CirclesPhone() {
                     {circle.description}
                   </Text>
                 ) : null}
-                <Text className="text-xs text-ink-400" numberOfLines={1}>
+                <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
                   {[
                     t("circles.membersCount", { count: circle.member_count }),
                     t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 }),

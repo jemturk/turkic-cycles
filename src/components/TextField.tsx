@@ -2,6 +2,7 @@ import { useState, type Ref } from "react";
 import { Platform, Pressable, TextInput, View, type TextInputProps } from "react-native";
 import { Text } from "@/components/Text";
 import { Ionicons } from "@expo/vector-icons";
+import { usePlaceholderColor } from "@/hooks/usePlaceholderColor";
 
 type TextFieldProps = TextInputProps & {
   label?: string;
@@ -16,6 +17,7 @@ type TextFieldProps = TextInputProps & {
 const IOS_INPUT_STYLE = Platform.OS === "ios" ? { lineHeight: 0 } : undefined;
 
 export function TextField({ label, error, secureTextEntry, ref, style, ...inputProps }: TextFieldProps) {
+  const placeholderColor = usePlaceholderColor();
   const [isVisible, setIsVisible] = useState(false);
   const canToggleVisibility = !!secureTextEntry;
 
@@ -28,7 +30,7 @@ export function TextField({ label, error, secureTextEntry, ref, style, ...inputP
           className={`rounded-xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3 text-base text-ink-900 dark:text-ink-50 ${
             canToggleVisibility ? "pr-11" : ""
           }`}
-          placeholderTextColor="#8A7C76"
+          placeholderTextColor={placeholderColor}
           secureTextEntry={canToggleVisibility && !isVisible}
           {...inputProps}
           style={[IOS_INPUT_STYLE, style]}

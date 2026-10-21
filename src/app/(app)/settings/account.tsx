@@ -59,7 +59,7 @@ export default function Account() {
           value={newPassword}
           onChangeText={setNewPassword}
         />
-        <Text className="-mt-2 text-xs text-ink-400">{t("auth.signUp.passwordHint")}</Text>
+        <Text className="-mt-2 text-xs text-ink-400 dark:text-ink-300">{t("auth.signUp.passwordHint")}</Text>
         {status ? <Text className="text-sm text-ink-700 dark:text-ink-200">{status}</Text> : null}
         <Button
           label={isSaving ? t("common.saving") : t("settings.accountScreen.changePassword")}

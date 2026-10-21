@@ -47,7 +47,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
               <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
             </Pressable>
             <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{document.title}</Text>
-            <Text className="text-sm text-ink-400">Last updated {LEGAL_UPDATED}</Text>
+            <Text className="text-sm text-ink-400 dark:text-ink-300">Last updated {LEGAL_UPDATED}</Text>
           </View>
 
           <Text className="text-base text-ink-700 dark:text-ink-200">{document.intro}</Text>
@@ -58,7 +58,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
               {section.body.map((line) =>
                 line.startsWith("- ") ? (
                   <View key={line} className="flex-row gap-2 pl-1">
-                    <Text className="text-base text-ink-400">•</Text>
+                    <Text className="text-base text-ink-400 dark:text-ink-300">•</Text>
                     <Text className="flex-1 text-base text-ink-700 dark:text-ink-200">{line.slice(2)}</Text>
                   </View>
                 ) : (

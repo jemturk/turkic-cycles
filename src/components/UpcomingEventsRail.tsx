@@ -54,7 +54,7 @@ export function UpcomingEventsRail({
                 <Text className="text-[13px] text-ink-700 dark:text-ink-200" numberOfLines={1}>
                   {circle?.name}
                 </Text>
-                <Text className="text-xs text-ink-400">{format(startsAt, "EEE h:mm a")}</Text>
+                <Text className="text-xs text-ink-400 dark:text-ink-300">{format(startsAt, "EEE h:mm a")}</Text>
               </View>
             </Pressable>
           );

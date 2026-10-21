@@ -106,7 +106,7 @@ export default function SignUp() {
                 )}
               />
               {!errors.password ? (
-                <Text className="-mt-2 text-xs text-ink-400">{t("auth.signUp.passwordHint")}</Text>
+                <Text className="-mt-2 text-xs text-ink-400 dark:text-ink-300">{t("auth.signUp.passwordHint")}</Text>
               ) : null}
             </View>
 
@@ -118,7 +118,7 @@ export default function SignUp() {
                 disabled={isSubmitting || !captcha.ready}
               />
               {/* Agreeing to the Terms and Privacy Policy, as both stores expect at sign-up. */}
-              <Text className="text-center text-xs leading-5 text-ink-400">
+              <Text className="text-center text-xs leading-5 text-ink-400 dark:text-ink-300">
                 {t("auth.signUp.agreePrefix")}{" "}
                 <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/terms")}>
                   {t("auth.signUp.terms")}

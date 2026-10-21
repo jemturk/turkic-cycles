@@ -135,7 +135,7 @@ export default function CircleEventDetail() {
             <Text className="font-display text-4xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
               {event?.title ?? circle.name}
             </Text>
-            <Text className="text-sm text-ink-400">{circle.name}</Text>
+            <Text className="text-sm text-ink-400 dark:text-ink-300">{circle.name}</Text>
           </View>
         </View>
 
@@ -185,7 +185,7 @@ export default function CircleEventDetail() {
                   <Text className="font-display text-xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
                     {circle.name}
                   </Text>
-                  <Text className="text-[13px] text-ink-400" numberOfLines={1}>
+                  <Text className="text-[13px] text-ink-400 dark:text-ink-300" numberOfLines={1}>
                     {[t("circles.membersCount", { count: circle.member_count }), location].filter(Boolean).join(" · ")}
                   </Text>
                 </View>
@@ -274,7 +274,7 @@ export default function CircleEventDetail() {
               <Text className="font-display text-lg text-ink-900 dark:text-ink-50" numberOfLines={1}>
                 {circle.name}
               </Text>
-              <Text className="text-[13px] text-ink-400" numberOfLines={1}>
+              <Text className="text-[13px] text-ink-400 dark:text-ink-300" numberOfLines={1}>
                 {[t("circles.membersCount", { count: circle.member_count }), location].filter(Boolean).join(" · ")}
               </Text>
             </View>
