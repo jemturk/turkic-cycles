@@ -184,7 +184,10 @@
     "removeConnectionTitle": "{{name}} entfernen?",
     "removeConnectionBody": "Euer Chat wird für euch beide gelöscht, und ihr seht euch nicht mehr unter Entdecken. Die andere Person wird nicht benachrichtigt.",
     "removeConnectionConfirm": "Entfernen",
-    "removeConnectionFailed": "Die Verbindung konnte nicht entfernt werden. Bitte versuche es erneut."
+    "removeConnectionFailed": "Die Verbindung konnte nicht entfernt werden. Bitte versuche es erneut.",
+    "blockTitle": "{{name}} blockieren?",
+    "blockBody": "Ihr seht euch nirgends mehr in der App, und die Person kann dir keine Nachrichten senden. Sie wird nicht benachrichtigt. Du kannst die Blockierung unter {{place}} aufheben.",
+    "blockFailed": "Blockieren fehlgeschlagen. Bitte versuche es erneut."
   },
   "connections": {
     "matched": "Gematcht",

@@ -184,7 +184,10 @@
     "removeConnectionTitle": "Remove {{name}}?",
     "removeConnectionBody": "Your chat will be deleted for both of you, and you won't see each other in Discover. They won't be told.",
     "removeConnectionConfirm": "Remove",
-    "removeConnectionFailed": "Couldn't remove this connection. Please try again."
+    "removeConnectionFailed": "Couldn't remove this connection. Please try again.",
+    "blockTitle": "Block {{name}}?",
+    "blockBody": "You won't see each other anywhere in the app, and they can't message you. They won't be told. You can unblock them in {{place}}.",
+    "blockFailed": "Couldn't block. Please try again."
   },
   "connections": {
     "matched": "Matched",

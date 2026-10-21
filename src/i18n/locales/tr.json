@@ -184,7 +184,10 @@
     "removeConnectionTitle": "{{name}} kaldırılsın mı?",
     "removeConnectionBody": "Sohbetiniz ikiniz için de silinecek ve birbirinizi Keşfet'te görmeyeceksiniz. Karşı tarafa bildirilmez.",
     "removeConnectionConfirm": "Kaldır",
-    "removeConnectionFailed": "Bu bağlantı kaldırılamadı. Lütfen tekrar dene."
+    "removeConnectionFailed": "Bu bağlantı kaldırılamadı. Lütfen tekrar dene.",
+    "blockTitle": "{{name}} engellensin mi?",
+    "blockBody": "Uygulamanın hiçbir yerinde birbirinizi görmeyeceksiniz ve sana mesaj gönderemeyecek. Karşı tarafa bildirilmez. Engeli {{place}} bölümünden kaldırabilirsin.",
+    "blockFailed": "Engellenemedi. Lütfen tekrar dene."
   },
   "connections": {
     "matched": "Eşleşmeler",

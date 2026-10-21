@@ -68,6 +68,22 @@ export default function OtherProfile() {
     );
   }
 
+  // Blocks after a confirm, saying what it does and that it can be undone.
+  async function onBlock() {
+    setMoreOpen(false);
+    const name = profile?.display_name || t("common.member");
+    const confirmed = await confirmAlert(t("discover.blockTitle", { name }), t("discover.blockBody", { place: `${t("tabs.settings")} › ${t("settings.blockedUsers")}` }), {
+      confirmLabel: t("discover.block"),
+      cancelLabel: t("common.cancel"),
+      destructive: true,
+    });
+    if (!confirmed) return;
+    blockUser.mutate(userId, {
+      onSuccess: () => router.back(),
+      onError: () => showAlert(t("discover.blockFailed")),
+    });
+  }
+
   // Ends the connection without blocking, after a confirm: the chat goes for both.
   async function onRemoveConnection() {
     setMoreOpen(false);
@@ -110,9 +126,7 @@ export default function OtherProfile() {
       <Pressable
         accessibilityRole="button"
         hitSlop={8}
-        onPress={() => {
-          blockUser.mutate(userId, { onSuccess: () => router.back() });
-        }}
+        onPress={onBlock}
       >
         <Text className="text-sm font-medium text-accent-600 dark:text-accent-400">{t("discover.block")}</Text>
       </Pressable>
@@ -162,10 +176,7 @@ export default function OtherProfile() {
           ) : null}
           <Pressable
             accessibilityRole="menuitem"
-            onPress={() => {
-              setMoreOpen(false);
-              blockUser.mutate(userId, { onSuccess: () => router.back() });
-            }}
+            onPress={onBlock}
             className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-accent-50 dark:web:hover:bg-ink-700"
           >
             <Ionicons name="ban-outline" size={18} color="#C1440E" />
