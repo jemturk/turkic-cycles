@@ -20,6 +20,7 @@ import { SwipeButton } from "@/components/SwipeButton";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { useRemoveConnection } from "@/hooks/useChat";
 import { confirmAlert, showAlert } from "@/lib/alert";
+import { BrokenLinkIcon } from "@/components/BrokenLinkIcon";
 
 export default function OtherProfile() {
   const { t } = useTranslation();
@@ -144,7 +145,7 @@ export default function OtherProfile() {
               onPress={onRemoveConnection}
               className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
             >
-              <Ionicons name="unlink-outline" size={18} color="#4A3F3A" />
+              <BrokenLinkIcon />
               <Text className="text-sm text-ink-900 dark:text-ink-50">{t("discover.removeConnection")}</Text>
             </Pressable>
           ) : null}
