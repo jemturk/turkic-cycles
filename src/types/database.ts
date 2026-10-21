@@ -406,6 +406,33 @@ export type Database = {
         }
         Relationships: []
       }
+      photo_moderation: {
+        Row: {
+          created_at: string
+          id: string
+          safe_search: Json
+          storage_path: string
+          user_id: string
+          verdict: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          safe_search: Json
+          storage_path: string
+          user_id: string
+          verdict: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          safe_search?: Json
+          storage_path?: string
+          user_id?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
       plus_waitlist: {
         Row: {
           created_at: string
@@ -812,7 +839,17 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      photo_moderation_offenders: {
+        Row: {
+          checked: number | null
+          display_name: string | null
+          flagged: number | null
+          last_rejected_at: string | null
+          rejected: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       can_host: { Args: never; Returns: boolean }
@@ -830,11 +867,6 @@ export type Database = {
           p_topic: string
         }
         Returns: string
-      }
-      debug_set_my_tier: { Args: { p_tier: string }; Returns: undefined }
-      debug_set_my_verified: {
-        Args: { p_verified: boolean }
-        Returns: undefined
       }
       get_origin_countries_with_consent: {
         Args: { target_ids: string[] }

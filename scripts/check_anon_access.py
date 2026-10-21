@@ -144,6 +144,11 @@ def main() -> int:
         code = body.get("code") if isinstance(body, dict) else None
         if code == "42501":
             verdict = "ok    (permission denied)"
+        elif code == "PGRST202" and not body.get("hint"):
+            # No such function at all (dropped by a migration, types not regenerated):
+            # nothing to call. With a hint ("Perhaps you meant ...") it exists under other
+            # parameters and stays a failure below.
+            verdict = "gone  (not in the database -- regenerate src/types/database.ts)"
         else:
             detail = f"HTTP {status}" + (f", {code}: {body.get('message')}" if code else "")
             verdict = f"EXPOSED (anon can execute -- {detail})"
