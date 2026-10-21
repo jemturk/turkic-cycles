@@ -1,4 +1,5 @@
-import { useLayoutEffect, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useState, type ReactNode } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Pressable, View, type AccessibilityActionEvent, type AccessibilityActionInfo } from "react-native";
 import { Text } from "@/components/Text";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -38,6 +39,8 @@ const ROLL_GAP = 16;
 const ANSWER_DISTANCE = 110;
 const ANSWER_VELOCITY = 800;
 const FLY_OFF = 600;
+// Remembers, on this device, that the first-visit gesture hint has been seen.
+const HINT_SEEN_KEY = "discover.gestureHintSeen";
 // How far a drag goes before its direction (roll or like / pass) is decided.
 const AXIS_DECIDE_DISTANCE = 8;
 
@@ -227,6 +230,8 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   // People just liked / passed / saved here, taken off at once rather than when the
   // server's fresh list arrives -- otherwise a swiped-away card leaves a gap.
   const [answered, setAnswered] = useState<ReadonlySet<string>>(() => new Set());
+  // The first-visit hint: shown until the first swipe, answer or close, once per device.
+  const [showHint, setShowHint] = useState(false);
   const shown = pool.filter((c) => !answered.has(c.userId));
 
   // Who's shown changes underneath (the first load, newcomers in a fresh batch,
@@ -287,6 +292,31 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     opacity: stampKind.value === 0 ? stampOpacity.value : 0,
     transform: [{ scale: stampScale.value }],
   }));
+  // First visit: a pill says what the gestures do, and the card nudges up once to show
+  // there's someone waiting below.
+  const hasCard = roll.ids.length > 0;
+  useEffect(() => {
+    if (!hasCard) return;
+    let cancelled = false;
+    AsyncStorage.getItem(HINT_SEEN_KEY)
+      .then((seen) => {
+        if (cancelled || seen) return;
+        setShowHint(true);
+        drag.set(withDelay(700, withSequence(withTiming(-36, { duration: 320 }), withSpring(0, { damping: 12 }))));
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasCard]);
+
+  function dismissHint() {
+    if (!showHint) return;
+    setShowHint(false);
+    AsyncStorage.setItem(HINT_SEEN_KEY, "1").catch(() => {});
+  }
+
   function showStamp(kind: 1 | -1 | 0) {
     "worklet";
     stampKind.set(kind);
@@ -341,6 +371,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     .activeOffsetX([-12, 12])
     .onStart(() => {
       axis.set(0);
+      runOnJS(dismissHint)();
     })
     .onUpdate((e) => {
       if (axis.value === 0) {
@@ -404,6 +435,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   // fails, they come back.
   function answer(action: "like" | "pass" | "save") {
     if (!candidate) return;
+    dismissHint();
     const person = candidate;
     setAnswered((current) => new Set(current).add(person.userId));
     recordSwipe.mutate(
@@ -508,6 +540,37 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
               })}
             </Animated.View>
           </GestureDetector>
+          {showHint ? (
+            <View pointerEvents="box-none" style={{ position: "absolute", top: 14, left: 14, right: 14, alignItems: "center" }}>
+              <View
+                accessibilityRole="alert"
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 8,
+                  backgroundColor: "rgba(43,35,32,0.82)",
+                  borderRadius: 999,
+                  paddingLeft: 14,
+                  paddingRight: 4,
+                  paddingVertical: 4,
+                }}
+              >
+                <Ionicons name="swap-vertical" size={16} color="#FFFFFF" />
+                <Text className="shrink text-sm font-medium" style={{ color: "#FFFFFF" }}>
+                  {t("discover.gestureHint")}
+                </Text>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t("chat.dismissTip")}
+                  hitSlop={8}
+                  onPress={dismissHint}
+                  className="h-8 w-8 items-center justify-center rounded-full"
+                >
+                  <Ionicons name="close" size={18} color="#FFFFFF" />
+                </Pressable>
+              </View>
+            </View>
+          ) : null}
           {/* The like / pass stamp, over the cards but outside their frame, so it stays
               while the next person fades in. */}
           <View

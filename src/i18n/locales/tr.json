@@ -172,8 +172,9 @@
     "keepExploring": "Keşfetmeye devam et",
     "globalEmpty": "Şu an keşfedecek yeni biri yok. Yakında tekrar bak.",
     "skip": "Geç",
-    "swipeUpHint": "Geçmek için yukarı, geri dönmek için aşağı kaydır",
-    "previous": "Önceki kişi"
+    "swipeUpHint": "Geçmek için yukarı, geri dönmek için aşağı, beğenmek için sağa, geçmek için sola kaydır",
+    "previous": "Önceki kişi",
+    "gestureHint": "Sıradaki kişi için yukarı kaydır · beğenmek ya da geçmek için yana"
   },
   "connections": {
     "matched": "Eşleşmeler",

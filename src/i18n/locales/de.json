@@ -172,8 +172,9 @@
     "keepExploring": "Weiter entdecken",
     "globalEmpty": "Gerade niemand Neues zu entdecken. Schau bald wieder vorbei.",
     "skip": "Überspringen",
-    "swipeUpHint": "Nach oben wischen zum Überspringen, nach unten zum Zurückgehen",
-    "previous": "Vorherige Person"
+    "swipeUpHint": "Nach oben zum Überspringen, nach unten zum Zurückgehen, nach rechts zum Liken, nach links zum Passen",
+    "previous": "Vorherige Person",
+    "gestureHint": "Nach oben wischen für die nächste Person · zur Seite zum Liken oder Passen"
   },
   "connections": {
     "matched": "Gematcht",

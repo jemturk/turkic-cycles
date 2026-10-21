@@ -172,8 +172,9 @@
     "keepExploring": "Keep exploring",
     "globalEmpty": "No one new to discover right now. Check back soon.",
     "skip": "Skip",
-    "swipeUpHint": "Swipe up to skip, down to go back",
-    "previous": "Previous person"
+    "swipeUpHint": "Swipe up to skip, down to go back, right to like, left to pass",
+    "previous": "Previous person",
+    "gestureHint": "Swipe up for the next person · sideways to like or pass"
   },
   "connections": {
     "matched": "Matched",
