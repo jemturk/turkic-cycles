@@ -363,7 +363,8 @@
     "monthPlaceholder": "MM",
     "yearPlaceholder": "JJJJ",
     "hourPlaceholder": "HH",
-    "minutePlaceholder": "MM"
+    "minutePlaceholder": "MM",
+    "ok": "OK"
   },
   "constants": {
     "connectionTypes": {

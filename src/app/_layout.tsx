@@ -25,6 +25,7 @@ import { useMyProfile } from "@/hooks/useProfile";
 import { TextScaleProvider } from "@/hooks/useTextScale";
 import { AnimatedSplash } from "@/components/AnimatedSplash";
 import { AppFrame } from "@/components/AppFrame";
+import { DialogHost } from "@/components/DialogHost";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -164,6 +165,8 @@ function RootLayout() {
                   <AnimatedSplash onFinish={() => setShowAnimatedSplash(false)} />
                 )}
               </AppFrame>
+              {/* Alerts and confirms (lib/alert.ts), over everything. */}
+              <DialogHost />
             </TextSizeSync>
           </QueryClientProvider>
         </KeyboardProvider>

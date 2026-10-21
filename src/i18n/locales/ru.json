@@ -373,7 +373,8 @@
     "monthPlaceholder": "ММ",
     "yearPlaceholder": "ГГГГ",
     "hourPlaceholder": "ЧЧ",
-    "minutePlaceholder": "ММ"
+    "minutePlaceholder": "ММ",
+    "ok": "ОК"
   },
   "constants": {
     "connectionTypes": {

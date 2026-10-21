@@ -363,7 +363,8 @@
     "monthPlaceholder": "AA",
     "yearPlaceholder": "YYYY",
     "hourPlaceholder": "SS",
-    "minutePlaceholder": "DD"
+    "minutePlaceholder": "DD",
+    "ok": "Tamam"
   },
   "constants": {
     "connectionTypes": {
