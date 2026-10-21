@@ -37,6 +37,15 @@ html.dark body {
   }
 }
 
+/* Icons are a font (Ionicons, drawn by @expo/vector-icons with font-family: ionicons
+   inline), so on Windows ClearType smooths them like text: thin outlines get blue and
+   orange fringes that look like specks. On its own compositing layer a glyph is
+   smoothed in grey instead (Chrome / Edge), so only icons change -- text keeps
+   ClearType. */
+[style*="font-family: ionicons"] {
+  will-change: transform;
+}
+
 /* Inside the desktop device frame (AppFrame), scroll like a phone: no scrollbar, which
    would otherwise show as a grey bar clipped by the frame's rounded corners. The
    wheel, trackpad and keyboard still scroll. */
