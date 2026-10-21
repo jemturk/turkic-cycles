@@ -217,6 +217,9 @@ export default function AppTabsLayout() {
         {/* Plus (paywall / waitlist), opened from Settings and from Connections'
             Likes you -- hidden for the same reason. */}
         <Tabs.Screen name="plus" options={{ href: null }} />
+        {/* Report (and block), opened from a profile on any tab and from the Safety
+            Center -- hidden for the same reason. */}
+        <Tabs.Screen name="report" options={{ href: null, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }} />
       </Tabs>
       <SearchOverlay visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </>

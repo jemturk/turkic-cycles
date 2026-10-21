@@ -110,7 +110,7 @@ export default function OtherProfile() {
       <Pressable
         accessibilityRole="button"
         hitSlop={8}
-        onPress={() => router.push(`/(app)/settings/safety/report?userId=${userId}`)}
+        onPress={() => router.push(`/(app)/report?userId=${userId}`)}
       >
         <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("discover.report")}</Text>
       </Pressable>
@@ -157,7 +157,7 @@ export default function OtherProfile() {
             accessibilityRole="menuitem"
             onPress={() => {
               setMoreOpen(false);
-              router.push(`/(app)/settings/safety/report?userId=${userId}`);
+              router.push(`/(app)/report?userId=${userId}`);
             }}
             className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
           >

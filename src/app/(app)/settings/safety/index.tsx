@@ -142,7 +142,7 @@ export default function SafetyCenter() {
       icon: "flag-outline",
       title: t("settings.safetyCenterScreen.reportBlockTitle"),
       subtitle: t("settings.safetyCenterScreen.reportBlockSubtitle"),
-      onPress: () => router.push("/(app)/settings/safety/report"),
+      onPress: () => router.push("/(app)/report"),
     },
     {
       icon: "information-circle-outline",

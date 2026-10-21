@@ -3,6 +3,10 @@ import { useTranslation } from "react-i18next";
 import { useStackScreenOptions } from "@/hooks/useStackScreenOptions";
 import { useWideLayout } from "@/hooks/useWideLayout";
 
+// A page reached directly (a link from another tab, a deep link) still has the Settings home
+// under it, so its back button goes up to it rather than to whichever tab came before.
+export const unstable_settings = { initialRouteName: "index" };
+
 export default function SettingsLayout() {
   const { t } = useTranslation();
   const wide = useWideLayout();
