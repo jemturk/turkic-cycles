@@ -124,7 +124,7 @@ export default function OtherProfile() {
       </Pressable>
       {moreOpen ? (
         <View
-          className="absolute right-0 top-14 z-10 w-44 overflow-hidden rounded-2xl bg-white py-1 dark:bg-ink-800"
+          className="absolute right-0 top-14 z-10 w-52 overflow-hidden rounded-2xl bg-white py-1 dark:bg-ink-800"
           style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.12, shadowRadius: 16 }}
         >
           <Pressable
@@ -144,7 +144,7 @@ export default function OtherProfile() {
               onPress={onRemoveConnection}
               className="flex-row items-center gap-3 px-4 py-3 web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
             >
-              <Ionicons name="person-remove-outline" size={18} color="#4A3F3A" />
+              <Ionicons name="unlink-outline" size={18} color="#4A3F3A" />
               <Text className="text-sm text-ink-900 dark:text-ink-50">{t("discover.removeConnection")}</Text>
             </Pressable>
           ) : null}
