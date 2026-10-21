@@ -24,6 +24,7 @@ import { Avatar } from "@/components/Avatar";
 import { TypingDots } from "@/components/TypingDots";
 import { MessageStatus, messageStatus } from "@/components/MessageStatus";
 import { ReactionEmoji } from "@/components/ReactionEmoji";
+import { MessageText } from "@/components/MessageText";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
 import { dayLabel } from "@/lib/dayLabel";
@@ -441,9 +442,7 @@ export default function ChatThread() {
                   ) : null}
                   <View className="px-4 py-3">
                     {message.reply_to_id ? renderQuote(message.reply_to_id, isOwn) : null}
-                    <Text className="text-base" style={{ color: colors.text }}>
-                      {message.body}
-                    </Text>
+                    <MessageText body={message.body} color={colors.text} />
                   </View>
                   {/* Reactions sit on the bubble's bottom corner, like most chat apps --
                       just the emoji, no badge behind them. */}
