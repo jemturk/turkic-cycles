@@ -42,7 +42,7 @@ const ANSWER_DISTANCE = 110;
 const ANSWER_VELOCITY = 800;
 const FLY_OFF = 600;
 // How long Undo stays offered after a like / pass / save.
-const UNDO_MS = 5000;
+const UNDO_MS = 2000;
 // Remembers, on this device, that the first-visit gesture hint has been seen.
 const HINT_SEEN_KEY = "discover.gestureHintSeen";
 // How far a drag goes before its direction (roll or like / pass) is decided.
