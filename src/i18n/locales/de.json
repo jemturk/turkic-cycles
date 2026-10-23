@@ -549,6 +549,7 @@
     "matchingPreferencesScreen": {
       "heading": "Matching-Einstellungen",
       "filtersNote": "Alter und Sprachen filtern Entdecken in beide Richtungen: Du siehst Menschen in deinem Bereich, die auch dich sehen würden. Die Entfernung wird noch nicht verwendet.",
+      "saveFailed": "Deine Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
       "ageMin": "Alter min.",
       "ageMax": "Alter max.",
       "maxDistance": "Max. Entfernung (Meilen)",

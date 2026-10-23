@@ -101,9 +101,14 @@ export function useSubmitOnboardingPhotosAndComplete(userId: string | undefined)
 }
 
 export function useSaveProfileEdit(userId: string | undefined) {
+  const queryClient = useQueryClient();
   const invalidate = useInvalidateOnboarding(userId);
   return useMutation({
     mutationFn: (values: Parameters<typeof saveProfileEdit>[1]) => saveProfileEdit(userId as string, values),
-    onSuccess: () => invalidate(["questionnaireResponses", "profileSensitive"]),
+    onSuccess: () => {
+      invalidate(["questionnaireResponses", "profileSensitive"]);
+      // Connection types and languages feed Discover's filters (0052).
+      queryClient.invalidateQueries({ queryKey: ["discoverCandidates"] });
+    },
   });
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { router } from "expo-router";
 
 import { useSession } from "@/hooks/useSession";
 import { useMatchingPreferences, useUpsertMatchingPreferences } from "@/hooks/useSettings";
@@ -10,6 +11,7 @@ import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
 import type { Tables } from "@/types/database";
 import { SubPage, Card } from "@/components/SettingsUI";
+import { showAlert } from "@/lib/alert";
 
 type FormProps = {
   preferences: Tables<"matching_preferences"> | null | undefined;
@@ -27,13 +29,20 @@ function MatchingPreferencesForm({ preferences, userId }: FormProps) {
   const [maxDistance, setMaxDistance] = useState(preferences?.max_distance_miles?.toString() ?? "");
   const [languages, setLanguages] = useState<string[]>(preferences?.languages ?? []);
 
+  // Back to Settings once saved, like Edit profile: leaving the page is the confirmation.
   function onSave() {
-    upsert.mutate({
-      ageMin: ageMin ? Number(ageMin) : undefined,
-      ageMax: ageMax ? Number(ageMax) : undefined,
-      maxDistanceMiles: maxDistance ? Number(maxDistance) : undefined,
-      languages,
-    });
+    upsert.mutate(
+      {
+        ageMin: ageMin ? Number(ageMin) : undefined,
+        ageMax: ageMax ? Number(ageMax) : undefined,
+        maxDistanceMiles: maxDistance ? Number(maxDistance) : undefined,
+        languages,
+      },
+      {
+        onSuccess: () => router.back(),
+        onError: () => showAlert(t("settings.matchingPreferencesScreen.saveFailed")),
+      }
+    );
   }
 
   return (

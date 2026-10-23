@@ -549,6 +549,7 @@
     "matchingPreferencesScreen": {
       "heading": "Eşleştirme tercihleri",
       "filtersNote": "Yaş ve diller Keşfet'i iki yönlü filtreler: aralığınızdaki ve sizi de görecek kişileri görürsünüz. Mesafe henüz kullanılmıyor.",
+      "saveFailed": "Tercihleriniz kaydedilemedi. Lütfen tekrar deneyin.",
       "ageMin": "En düşük yaş",
       "ageMax": "En yüksek yaş",
       "maxDistance": "Maksimum mesafe (mil)",
