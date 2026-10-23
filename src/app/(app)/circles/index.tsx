@@ -6,13 +6,27 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
-import { useCircles, useJoinCircle, useMyCircleMemberships, useUpcomingEventCounts } from "@/hooks/useCircles";
+import {
+  useCircles,
+  useJoinCircle,
+  useMyCircleMemberships,
+  useUpcomingEventCounts,
+} from "@/hooks/useCircles";
+import { useCanHost } from "@/hooks/useCanHost";
 import { useIsNearby, useLocalFilter } from "@/stores/localFilter";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
-import { Chip } from "@/components/Chip";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
+import { useWideLayout } from "@/hooks/useWideLayout";
+import { CirclesDesktop } from "@/components/CirclesDesktop";
 
+// Desktop web gets its own layout (CirclesDesktop): a two-column grid with filter
+// chips and an upcoming-events column. This is the phone screen.
 export default function Circles() {
+  const wide = useWideLayout();
+  return wide ? <CirclesDesktop /> : <CirclesPhone />;
+}
+
+function CirclesPhone() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
@@ -20,6 +34,7 @@ export default function Circles() {
   const { data: memberships } = useMyCircleMemberships(userId);
   const { data: eventCounts, refetch: refetchEventCounts } = useUpcomingEventCounts();
   const joinCircle = useJoinCircle(userId);
+  const { canHost } = useCanHost(userId);
   const localEnabled = useLocalFilter((s) => s.enabled);
   const localStatus = useLocalFilter((s) => s.status);
   const setLocalEnabled = useLocalFilter((s) => s.setEnabled);
@@ -30,7 +45,7 @@ export default function Circles() {
   const shownCircles = (circles ?? []).filter(isNearby);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <RefreshableScrollView
         refreshing={isRefetching}
         onRefresh={() => {
@@ -42,10 +57,22 @@ export default function Circles() {
       >
         <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.subtitle")}</Text>
 
-        <View className="flex-row items-center justify-between gap-3 rounded-xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3">
+        {/* Plus with a verified ID, admins included (migration 0035); nobody else sees it. */}
+        {canHost ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push("/(app)/circles/new")}
+            className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-primary-500 px-4 py-3"
+          >
+            <Ionicons name="add" size={20} color="#127A87" />
+            <Text className="text-base font-medium text-primary-600">{t("circles.newCircle")}</Text>
+          </Pressable>
+        ) : null}
+
+        <View className="flex-row items-center justify-between gap-3 rounded-2xl bg-white dark:bg-ink-800 px-4 py-3">
           <View className="flex-1">
             <Text className="text-base text-ink-900 dark:text-ink-50">{t("circles.local")}</Text>
-            <Text className="text-xs text-ink-400">{t("circles.localHint")}</Text>
+            <Text className="text-xs text-ink-400 dark:text-ink-300">{t("circles.localHint")}</Text>
           </View>
           <Switch
             value={localEnabled || localStatus === "locating"}
@@ -54,7 +81,7 @@ export default function Circles() {
           />
         </View>
         {localStatus === "denied" || localStatus === "unavailable" ? (
-          <Text className="-mt-2 text-xs text-coral-600">
+          <Text className="-mt-2 text-xs text-accent-600">
             {localStatus === "denied" ? t("circles.locationDenied") : t("circles.locationUnavailable")}
           </Text>
         ) : null}
@@ -70,37 +97,49 @@ export default function Circles() {
             <Pressable
               key={circle.id}
               onPress={() => router.push(`/(app)/circles/${circle.id}`)}
-              className="flex-row gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
+              className="flex-row gap-3 rounded-[18px] bg-white p-4 dark:bg-ink-800"
             >
-              <View className={`h-12 w-12 items-center justify-center rounded-xl ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
+              <View className={`h-12 w-12 items-center justify-center rounded-[14px] ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
                 <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_COLORS[topic].fg} />
               </View>
 
               <View className="flex-1 gap-1">
-                <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{circle.name}</Text>
-                <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={2}>
-                  {circle.description}
+                <Text className="font-display text-lg text-ink-900 dark:text-ink-50" numberOfLines={1}>
+                  {circle.name}
                 </Text>
-                <Text className="text-xs text-ink-400">
-                  {t("circles.membersCount", { count: circle.member_count })}
-                  {" · "}
-                  {t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 })}
-                </Text>
-                {circle.city ? (
-                  <Text className="text-xs text-ink-400">{[circle.city, circle.state].filter(Boolean).join(", ")}</Text>
+                {circle.description ? (
+                  <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={2}>
+                    {circle.description}
+                  </Text>
                 ) : null}
+                <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
+                  {[
+                    t("circles.membersCount", { count: circle.member_count }),
+                    t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 }),
+                    [circle.city, circle.state].filter(Boolean).join(", "),
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </Text>
               </View>
 
-              <View className="justify-center">
-                <Chip
-                  label={isJoined ? t("circles.joined") : t("circles.join")}
-                  selected={isJoined}
-                  disabled={joinCircle.isPending}
-                  onPress={() => {
-                    if (!isJoined) joinCircle.mutate(circle.id);
-                  }}
-                />
-              </View>
+              {/* Only circles you're not in get a button, as on desktop. */}
+              {isJoined ? null : (
+                <View className="justify-center">
+                  <Pressable
+                    accessibilityRole="button"
+                    disabled={joinCircle.isPending}
+                    onPress={(e) => {
+                      // Don't also open the circle underneath.
+                      e.stopPropagation();
+                      joinCircle.mutate(circle.id);
+                    }}
+                    className="h-9 justify-center rounded-full bg-primary-500 px-4"
+                  >
+                    <Text className="text-sm font-semibold text-white">{t("circles.join")}</Text>
+                  </Pressable>
+                </View>
+              )}
             </Pressable>
           );
         })}

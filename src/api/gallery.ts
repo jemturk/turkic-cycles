@@ -1,10 +1,18 @@
 import { supabase } from "@/api/client";
+import { uploadCheckedPhoto } from "@/api/photoModeration";
+import { toUploadableImage } from "@/lib/uploadableImage";
 
 const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/webp": "webp",
 };
+
+// The cover -- the Discover/Connections card background -- is the photo at exactly
+// this position, not merely the lowest one: removing it leaves the slot empty
+// until the user picks or uploads a new cover, rather than silently promoting the
+// next photo.
+export const COVER_POSITION = 0;
 
 export type ProfilePhoto = {
   id: string;
@@ -13,7 +21,10 @@ export type ProfilePhoto = {
   url: string;
 };
 
-function publicUrl(storagePath: string): string {
+// storage_path is normally a path in the avatars bucket, but the mock users (see
+// migration 0026) store full image URLs there instead -- pass those through as-is.
+export function publicUrl(storagePath: string): string {
+  if (/^https?:\/\//.test(storagePath)) return storagePath;
   return supabase.storage.from("avatars").getPublicUrl(storagePath).data.publicUrl;
 }
 
@@ -38,21 +49,21 @@ export async function listProfilePhotos(userId: string): Promise<ProfilePhoto[]>
 // cache-busting query param to add: a given storage_path's contents never change.
 export async function addProfilePhoto(
   userId: string,
-  uri: string,
-  mimeType: string,
+  pickedUri: string,
+  pickedMimeType: string,
   position: number
 ): Promise<ProfilePhoto> {
+  const { uri, mimeType } = await toUploadableImage(pickedUri, pickedMimeType);
   const extension = EXTENSION_BY_MIME_TYPE[mimeType] ?? "jpg";
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
   const path = `${userId}/gallery/${filename}`;
 
+  // ArrayBuffer, not Blob -- see uploadAvatar for why.
   const response = await fetch(uri);
-  const blob = await response.blob();
+  const body = await response.arrayBuffer();
 
-  const { error: uploadError } = await supabase.storage
-    .from("avatars")
-    .upload(path, blob, { contentType: mimeType });
-  if (uploadError) throw uploadError;
+  // Checked before it's published into avatars (see photoModeration.ts).
+  await uploadCheckedPhoto(path, body, mimeType);
 
   const { data, error } = await supabase
     .from("profile_photos")
@@ -75,9 +86,13 @@ export async function removeProfilePhoto(photo: Pick<ProfilePhoto, "id" | "stora
 // Rewrites every row's position to its index in the given order -- simplest way to
 // keep positions a dense 0..n-1 sequence without tracking gaps left by past
 // deletes/reorders, and cheap enough at the 6-photo cap this is used under.
-export async function reorderProfilePhotos(orderedPhotoIds: string[]) {
+// startPosition 1 renumbers the photos while leaving the cover slot (0) empty.
+export async function reorderProfilePhotos(orderedPhotoIds: string[], startPosition = COVER_POSITION) {
   for (const [index, id] of orderedPhotoIds.entries()) {
-    const { error } = await supabase.from("profile_photos").update({ position: index }).eq("id", id);
+    const { error } = await supabase
+      .from("profile_photos")
+      .update({ position: startPosition + index })
+      .eq("id", id);
     if (error) throw error;
   }
 }

@@ -1,9 +1,5 @@
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
-import { Text } from "@/components/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
@@ -13,6 +9,7 @@ import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
 import type { Tables } from "@/types/database";
+import { SubPage, Card } from "@/components/SettingsUI";
 
 type FormProps = {
   preferences: Tables<"matching_preferences"> | null | undefined;
@@ -94,19 +91,16 @@ export default function MatchingPreferences() {
   const { data: preferences, isLoading } = useMatchingPreferences(userId);
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
-        <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
-        </Pressable>
-
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
-          {t("settings.matchingPreferencesScreen.heading")}
-        </Text>
-        <Text className="-mt-2 text-sm text-ink-400">{t("settings.matchingPreferencesScreen.notWiredUp")}</Text>
-
-        {isLoading ? null : <MatchingPreferencesForm preferences={preferences} userId={userId} />}
-      </ScrollView>
-    </SafeAreaView>
+    <SubPage
+      title={t("settings.matchingPreferencesScreen.heading")}
+      subtitle={t("settings.matchingPreferencesScreen.notWiredUp")}
+      form
+    >
+      {isLoading ? null : (
+        <Card>
+          <MatchingPreferencesForm preferences={preferences} userId={userId} />
+        </Card>
+      )}
+    </SubPage>
   );
 }

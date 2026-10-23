@@ -16,9 +16,10 @@ export const CIRCLE_TOPIC_ICONS: Record<CircleTopic, keyof typeof Ionicons.glyph
 // page's header band, so a circle reads as the same color in both places.
 export const CIRCLE_TOPIC_COLORS: Record<CircleTopic, { bg: string; fg: string }> = {
   culture: { bg: "bg-teal-50", fg: "#206E65" },
-  business: { bg: "bg-coral-100", fg: "#C24F2A" },
+  business: { bg: "bg-accent-50", fg: "#9E370B" },
   newcomers: { bg: "bg-gold-100", fg: "#9C7A28" },
-  family: { bg: "bg-ink-100", fg: "#4A3F3A" },
+  // İznik cobalt -- the tiles' third color beside the turquoise and coral-red.
+  family: { bg: "bg-[#E3EAF8]", fg: "#2E5BA8" },
   creative: { bg: "bg-teal-100", fg: "#206E65" },
 };
 

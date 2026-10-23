@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, View } from "react-native";
+import { View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -13,11 +13,16 @@ import { supabase } from "@/api/client";
 import { signUpCredentialsSchema, type SignUpCredentials } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
+import { FormScrollView } from "@/components/FormScrollView";
+import { useCaptcha } from "@/hooks/useCaptcha";
+import { SocialSignIn } from "@/components/SocialSignIn";
+import { showAlert } from "@/lib/alert";
 
 export default function SignUp() {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sentEmail, setSentEmail] = useState<string | null>(null);
+  const captcha = useCaptcha();
   const {
     control,
     handleSubmit,
@@ -31,12 +36,13 @@ export default function SignUp() {
     setIsSubmitting(true);
     const { data, error } = await supabase.auth.signUp({
       ...values,
-      options: { emailRedirectTo: Linking.createURL("confirm") },
+      options: { emailRedirectTo: Linking.createURL("confirm"), captchaToken: captcha.captchaToken },
     });
     setIsSubmitting(false);
+    captcha.reset();
 
     if (error) {
-      Alert.alert(t("auth.signUp.errorTitle"), error.message);
+      showAlert(t("auth.signUp.errorTitle"), error.message);
       return;
     }
 
@@ -53,8 +59,8 @@ export default function SignUp() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <View className="flex-1 px-6 pt-6">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1" contentContainerClassName="flex-grow px-6 pb-10 pt-6">
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
         <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">{t("auth.signUp.heading")}</Text>
@@ -100,16 +106,38 @@ export default function SignUp() {
                 )}
               />
               {!errors.password ? (
-                <Text className="-mt-2 text-xs text-ink-400">{t("auth.signUp.passwordHint")}</Text>
+                <Text className="-mt-2 text-xs text-ink-400 dark:text-ink-300">{t("auth.signUp.passwordHint")}</Text>
               ) : null}
             </View>
 
-            <View className="mt-8">
-              <Button label={t("auth.signUp.submit")} onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
+            <View className="mt-8 gap-4">
+              {captcha.widget}
+              <Button
+                label={t("auth.signUp.submit")}
+                onPress={handleSubmit(onSubmit)}
+                disabled={isSubmitting || !captcha.ready}
+              />
+              {/* Agreeing to the Terms and Privacy Policy, as both stores expect at sign-up. */}
+              <Text className="text-center text-xs leading-5 text-ink-400 dark:text-ink-300">
+                {t("auth.signUp.agreePrefix")}{" "}
+                <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/terms")}>
+                  {t("auth.signUp.terms")}
+                </Text>{" "}
+                {t("auth.signUp.agreeAnd")}{" "}
+                <Text className="font-semibold text-primary-500" onPress={() => router.push("/(auth)/privacy")}>
+                  {t("auth.signUp.privacy")}
+                </Text>
+                .
+              </Text>
+              <SocialSignIn
+                captchaToken={captcha.captchaToken}
+                captchaReady={captcha.ready}
+                onCaptchaUsed={captcha.reset}
+              />
             </View>
           </>
         )}
-      </View>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

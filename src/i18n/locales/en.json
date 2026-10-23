@@ -1,8 +1,11 @@
 {
   "tabs": {
     "circles": "Circles",
+    "discover": "Discover",
     "connections": "Connections",
     "search": "Search",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
     "chat": "Chat",
     "settings": "Settings"
   },
@@ -13,13 +16,15 @@
     "alreadyHaveAccount": "Already have an account?",
     "logIn": "Log in",
     "slide1Title": "Turkic Circles",
-    "slide1Body": "Meaningful connections within the Turkic and Turkic-adjacent community — join circles, meet people, belong somewhere.",
+    "slide1Body": "Meet people from the Turkic world near you, and find where you belong.",
     "slide2Title": "Join Circles",
-    "slide2Body": "Browse and join community groups built around your city, culture, and interests — from everyday hangouts to business networks.",
+    "slide2Body": "Groups for your city, culture and interests, with real meetups on the calendar.",
     "slide3Title": "Discover & Connect",
-    "slide3Body": "Meet people within your circles for friendship, romance, business, or mentorship — matching adapts to what you're looking for.",
+    "slide3Body": "Meet people in your circles for friendship, romance, business or mentorship.",
+    "slideChatTitle": "Chat & Make Plans",
+    "slideChatBody": "Reply, react and plan your next meetup, all in one place.",
     "slide4Title": "Safe by Design",
-    "slide4Body": "Get verified, share your plans before meeting up, and block or report anyone — your safety comes first, always."
+    "slide4Body": "Verified members, plans shared with someone you trust, and block or report anytime."
   },
   "auth": {
     "login": {
@@ -42,7 +47,11 @@
       "submit": "Create account",
       "errorTitle": "Couldn't sign up",
       "checkEmailTitle": "Check your email",
-      "checkEmailBody": "We sent a confirmation link to {{email}}. Open it to finish creating your account."
+      "checkEmailBody": "We sent a confirmation link to {{email}}. Open it to finish creating your account.",
+      "agreePrefix": "By signing up, you agree to our",
+      "terms": "Terms of Service",
+      "agreeAnd": "and",
+      "privacy": "Privacy Policy"
     },
     "forgotPassword": {
       "heading": "Reset your password",
@@ -70,11 +79,20 @@
       "done": "Email confirmed! Taking you in...",
       "invalidLink": "This confirmation link is invalid or has expired.",
       "backToLogin": "Back to log in"
+    },
+    "social": {
+      "or": "or",
+      "google": "Continue with Google",
+      "errorTitle": "Couldn't sign in"
     }
   },
   "circles": {
     "subtitle": "Find your people — join circles built around what matters to you.",
     "joined": "Joined",
+    "joinCircle": "Join circle",
+    "leaveCircle": "Leave circle",
+    "leaveConfirm": "Leave {{name}}? You can join again any time.",
+    "leave": "Leave",
     "join": "Join",
     "membersCount_one": "{{count}} member",
     "membersCount_other": "{{count}} members",
@@ -93,7 +111,15 @@
     "locationDenied": "Allow location access to see events near you.",
     "locationUnavailable": "Couldn't get your location. Try again.",
     "noLocalCircles": "No circles within 50 miles of you yet.",
+    "filterAll": "All",
+    "filterJoined": "Joined",
+    "nearMe": "Near me",
+    "upcomingEvents": "Upcoming events",
+    "noJoinedCircles": "You haven't joined any circles yet.",
     "meetMembers": "Meet members",
+    "attendeesGoing": "Going",
+    "attendeesInterested": "Interested",
+    "noRsvpsYet": "No one has replied yet. Be the first!",
     "members": "Members",
     "seeAll": "See all {{count}}",
     "rsvpLabel": "RSVP",
@@ -101,7 +127,29 @@
       "going": "Going",
       "interested": "Interested",
       "not_going": "Not going"
-    }
+    },
+    "newCircle": "New circle",
+    "newCircleTitle": "New circle",
+    "circleName": "Circle name",
+    "circleDescription": "Description",
+    "circleTopic": "Topic",
+    "createCircle": "Create circle",
+    "creating": "Creating…",
+    "createCircleError": "Couldn't create the circle",
+    "hostRequirements": "Creating circles and events needs Turkic Circles Plus and a verified ID.",
+    "requirePlus": "Turkic Circles Plus",
+    "requireVerified": "Verified ID",
+    "addEvent": "Add event",
+    "newEventTitle": "New event",
+    "eventTitle": "Title",
+    "eventDescription": "Description",
+    "eventLocation": "Location",
+    "eventLocationPlaceholder": "Venue, city",
+    "eventDate": "Date",
+    "eventTime": "Start time (24-hour)",
+    "createEvent": "Create event",
+    "createEventError": "Couldn't create the event",
+    "organizersOnly": "Only this circle's owners and moderators can add events."
   },
   "search": {
     "placeholder": "Search circles and people",
@@ -121,24 +169,67 @@
     "block": "Block",
     "itsAMatch": "It's a match!",
     "bothLiked": "You and {{name}} both liked each other.",
-    "keepExploring": "Keep exploring"
+    "keepExploring": "Keep exploring",
+    "globalEmpty": "No one new to discover right now. Check back soon.",
+    "skip": "Skip",
+    "swipeUpHint": "Swipe up to skip, down to go back, right to like, left to pass",
+    "previous": "Previous person",
+    "gestureHint": "Swipe up for the next person · sideways to like or pass",
+    "undo": "Undo",
+    "youLiked": "You liked {{name}}",
+    "youPassed": "You passed {{name}}",
+    "youSaved": "You saved {{name}}",
+    "undoFailed": "That can't be undone any more.",
+    "removeConnection": "Remove connection",
+    "removeConnectionTitle": "Remove {{name}}?",
+    "removeConnectionBody": "Your chat will be deleted for both of you, and you won't see each other in Discover. They won't be told.",
+    "removeConnectionConfirm": "Remove",
+    "removeConnectionFailed": "Couldn't remove this connection. Please try again.",
+    "blockTitle": "Block {{name}}?",
+    "blockBody": "You won't see each other anywhere in the app, and they can't message you. They won't be told. You can unblock them in {{place}}.",
+    "blockFailed": "Couldn't block. Please try again."
   },
   "connections": {
     "matched": "Matched",
     "connected": "Connected",
-    "emptyMatched": "No new matches yet — keep discovering in your circles.",
-    "emptyConnected": "No conversations yet — say hello to a match."
+    "saved": "Saved",
+    "emptyMatched": "No new matches yet — keep discovering.",
+    "emptyConnected": "No conversations yet — say hello to a match.",
+    "emptySaved": "No one saved yet. Tap the star on someone in Discover to keep them here for later.",
+    "likes": "Likes",
+    "emptyLikes": "No new likes yet. When someone likes you, they'll show up here.",
+    "likesTeaser_one": "{{count}} person likes you",
+    "likesTeaser_other": "{{count}} people like you",
+    "seeWhoLikesYou": "See who likes you"
   },
   "chat": {
+    "typing": "typing…",
     "empty": "No conversations yet.",
     "member": "Member",
     "typeMessage": "Type a message...",
     "send": "Send",
-    "youMatched": "You matched · {{date}}"
+    "reply": "Reply",
+    "react": "Add reaction",
+    "replyingTo": "Replying to {{name}}",
+    "cancelReply": "Cancel reply",
+    "you": "You",
+    "viewProfile": "View profile",
+    "selectConversation": "Select a conversation to start chatting.",
+    "youMatched": "You matched · {{date}}",
+    "contactTip": "Only share your phone number or email with people you trust. You can block or report anyone from their profile.",
+    "dismissTip": "Dismiss tip",
+    "status": {
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "read": "Read"
+    },
+    "today": "Today",
+    "yesterday": "Yesterday"
   },
   "onboarding": {
     "next": "Next",
     "saving": "Saving...",
+    "saveErrorTitle": "Couldn't save",
     "step1": {
       "heading": "Tell us about you",
       "subheading": "Let's start with the basics.",
@@ -171,6 +262,15 @@
     "step4": {
       "heading": "A few more questions",
       "finish": "Finish"
+    },
+    "step5": {
+      "heading": "Add your photos",
+      "subheading": "People connect with faces. Add a profile picture and a cover photo — the background of your Discover card.",
+      "profilePicture": "Tap to add your profile picture",
+      "morePhotos": "More photos",
+      "needProfilePicture": "Profile picture",
+      "needPhoto": "Cover photo (your Discover card)",
+      "errorTitle": "Couldn't finish setting up"
     }
   },
   "avatar": {
@@ -197,10 +297,26 @@
     "removeErrorTitle": "Couldn't remove photo",
     "reorderErrorTitle": "Couldn't reorder photos",
     "maxReachedTitle": "That's the max",
-    "maxReachedBody": "You can have up to {{max}} photos. Remove one to add another."
+    "maxReachedBody": "You can have up to {{max}} photos. Remove one to add another.",
+    "coverBadge": "Cover",
+    "coverNote": "Your first photo is the background of your Discover card. Drag another photo to the first spot to change it.",
+    "coverNoteEmpty": "Your first photo becomes the background of your Discover card — pick one that shows you well.",
+    "makeCover": "Make cover",
+    "coverNoteChoose": "Your cover is empty. Tap + in the cover spot to upload one, or tap “Make cover” on one of your photos.",
+    "addCover": "Add a cover photo",
+    "addPhotos": "Add photos",
+    "previewTitle": "Your Discover card",
+    "previewBody": "This is how people will see you in Discover with this cover.",
+    "previewConfirm": "Use this photo",
+    "coverRequiredTitle": "Add a cover photo first",
+    "coverRequiredBody": "Your cover is the background of your Discover card. Upload one, or tap “Make cover” on one of your photos, before leaving your profile.",
+    "previousPhoto": "Previous photo",
+    "nextPhoto": "Next photo",
+    "viewProfilePicture": "View profile picture"
   },
   "profile": {
     "addYourName": "Add your name",
+    "aboutMe": "About me",
     "languages": "Languages",
     "interests": "Interests",
     "hobbies": "Hobbies",
@@ -230,11 +346,13 @@
     "europeanCitizen": "European citizen?",
     "travelFrequency": "How often do you travel?",
     "travelStyle": "Travel style",
-    "editProfileHeading": "Edit profile"
+    "editProfileHeading": "Edit profile",
+    "bioContactHint": "Contact details like phone numbers and emails don't belong in your bio. Share them in chat, with people you trust."
   },
   "common": {
     "member": "Member",
     "back": "Back",
+    "more": "More",
     "cancel": "Cancel",
     "clear": "Clear",
     "close": "Close",
@@ -246,7 +364,10 @@
     "dateOfBirth": "Date of birth",
     "dayPlaceholder": "DD",
     "monthPlaceholder": "MM",
-    "yearPlaceholder": "YYYY"
+    "yearPlaceholder": "YYYY",
+    "hourPlaceholder": "HH",
+    "minutePlaceholder": "MM",
+    "ok": "OK"
   },
   "constants": {
     "connectionTypes": {
@@ -377,6 +498,8 @@
     "profileVisibility": "Profile visibility",
     "visible": "Visible",
     "hidden": "Hidden",
+    "globalDiscover": "Show me in Discover",
+    "globalDiscoverHint": "Let people outside your circles find you on the Discover tab.",
     "blockedUsers": "Blocked users",
     "dataAndPrivacy": "Data & privacy",
     "notifications": "Notifications",
@@ -387,7 +510,8 @@
     "communityGuidelines": "Community guidelines",
     "helpAndSupport": "Help & support",
     "logOut": "Log out",
-    "deleteAccountWarning": "This marks your account for deletion. You'll be signed out, and your data will be permanently removed within a few days.",
+    "deleteAccountWarning": "This permanently deletes your account, profile, photos, connections and messages. It can't be undone.",
+    "deleteAccountFailed": "Couldn't delete your account. Please try again.",
     "cancel": "Cancel",
     "confirmDelete": "Yes, delete my account",
     "deleteAccount": "Delete account",
@@ -404,17 +528,23 @@
     "verificationScreen": {
       "heading": "Get the Verified badge",
       "subheading": "Verified members are trusted faster in every circle — and it helps keep every conversation on Turkic Circles real.",
-      "pendingReview": "Pending review",
-      "pendingBody": "We'll review your submission and update your badge soon.",
+      "pendingReview": "Checking your ID",
+      "pendingBody": "Stripe is checking your ID and selfie. This usually takes a minute or two; your badge appears as soon as it's done.",
       "verifiedBody": "You're verified ✓",
-      "selfieTitle": "Take a quick selfie",
-      "selfieBody": "We match it to your profile photos",
-      "idTitle": "Upload a government ID",
-      "idBody": "Passport, driver's license, or national ID",
-      "required": "Required",
-      "disclaimer": "Your ID is only used to confirm your selfie matches. Manual review for now — real ID verification (Stripe Identity) is coming soon.",
-      "submitting": "Submitting...",
-      "submit": "Upload ID to finish"
+      "selfieTitle": "Take a live selfie",
+      "selfieBody": "Matched to the photo on your ID",
+      "idTitle": "Photograph a government ID",
+      "idBody": "Passport, driver's license or national ID",
+      "disclaimer": "Verification is done by Stripe Identity. Your ID and selfie go to Stripe, not to us; we only keep whether you're verified.",
+      "submitting": "Opening…",
+      "submit": "Verify my identity",
+      "retry": "Try again",
+      "resume": "Continue verification",
+      "failedBody": "We couldn't verify you last time, for example because the photo was unclear or the selfie didn't match the ID. You can try again.",
+      "startFailed": "Couldn't start verification",
+      "doneTitle": "Thanks, you're all set",
+      "doneBody": "You can close this page and go back to Turkic Circles. Your Verified badge appears as soon as Stripe finishes checking.",
+      "doneButton": "Back to Turkic Circles"
     },
     "matchingPreferencesScreen": {
       "heading": "Matching preferences",
@@ -441,7 +571,7 @@
       },
       "help": {
         "title": "Help & support",
-        "body": "Questions or issues? This is a placeholder support page — real contact details land alongside a real support channel."
+        "body": "Questions, problems or feedback? Email us at unturkk@gmail.com and we'll get back to you as soon as we can. To report someone, open their profile or the Safety Center."
       },
       "privacy": {
         "title": "Data & privacy",
@@ -474,6 +604,7 @@
         "harassment": "Harassment or abuse",
         "fake_profile": "Fake profile",
         "inappropriate": "Inappropriate content",
+        "child_safety": "Child safety (involves a minor)",
         "safety_concern": "Safety concern",
         "other": "Other"
       }
@@ -492,12 +623,14 @@
       "checkInAfter": "Check in after (minutes)",
       "yourTrustedContact": "Your trusted contact",
       "theirNameFallback": "their",
-      "willGetText": "{{contacts}} will get {{name}} name, the location, and time by text.",
-      "checkinNote": " We'll ask if you're okay at {{time}}.",
-      "followUpNote": " If you don't respond, we'll follow up. (SMS delivery is stubbed for now — no message is actually sent yet.)",
+      "willGetText": "When you tap Share plans, your Messages app opens with a text to {{contacts}} saying who you're meeting, where and when. Just tap Send.",
+      "checkinNote": " At {{time}} we'll remind you to check in.",
+      "followUpNote": " If you don't, we'll remind you again and you can alert your contacts in one tap from the Safety Center.",
       "sharing": "Sharing...",
       "sharePlans": "Share plans"
-    }
+    },
+    "privacyPolicy": "Privacy policy",
+    "termsOfService": "Terms of service"
   },
   "branching": {
     "allSet": "Nothing else to answer for the connection types you picked — you're all set.",
@@ -517,5 +650,74 @@
       "academic_mentor": "Academic mentorship",
       "spiritual_mentor": "Spiritual mentorship"
     }
+  },
+  "location": {
+    "country": "Country",
+    "selectCountry": "Select your country",
+    "searchCountries": "Search countries",
+    "suggested": "Suggested",
+    "allCountries": "All countries",
+    "city": "City",
+    "state": "State",
+    "province": "Province / territory",
+    "stateTerritory": "State / territory",
+    "select": "Select {{field}}",
+    "search": "Search",
+    "regionOptional": "State / region (optional)",
+    "noResults": "No matches for \"{{query}}\""
+  },
+  "plus": {
+    "title": "Turkic Circles Plus",
+    "subheading": "Get more out of the community — and help keep it running.",
+    "seeLikes": "See who likes you",
+    "seeLikesBody": "Everyone who's liked you, so you can like them back and match right away.",
+    "comingSoon": "Coming soon",
+    "worldwide": "Discover people in other countries",
+    "filters": "Advanced filters",
+    "moreLikes": "More daily likes",
+    "active": "You have Plus",
+    "billingIssue": "There's a problem with your payment. Update it in your store account to keep Plus.",
+    "renewsOn": "Renews or ends on {{date}}",
+    "manage": "Manage subscription",
+    "perMonth": "{{price}} / month",
+    "perYear": "{{price}} / year",
+    "subscribe": "Subscribe",
+    "restore": "Restore purchases",
+    "restored": "Your Plus subscription has been restored.",
+    "nothingToRestore": "No active Plus subscription found for this store account.",
+    "autoRenewNote": "Renews automatically until you cancel. Cancel anytime in your store account settings.",
+    "purchaseErrorTitle": "Couldn't complete the purchase",
+    "welcomeTitle": "Welcome to Plus",
+    "welcomeBody": "You can now see who likes you in Connections.",
+    "waitlistBody": "Plus isn't available here yet. Join the waitlist and we'll let you know as soon as it is.",
+    "joinWaitlist": "Join the waitlist",
+    "joined": "You're on the waitlist",
+    "joinedBody": "We'll let you know when Plus is available.",
+    "leaveWaitlist": "Leave the waitlist",
+    "waitlistErrorTitle": "Couldn't update the waitlist",
+    "statusActive": "Active",
+    "statusWaitlisted": "On the waitlist"
+  },
+  "safetyAlerts": {
+    "planText": "Hi, it's {{name}}. I'm meeting {{meetingWith}} at {{location}} on {{when}}. I'll check in by {{checkIn}}. If you don't hear from me by then, please try to reach me. (Sent from Turkic Circles)",
+    "alertText": "It's {{name}}. I haven't checked in after meeting {{meetingWith}} at {{location}} on {{when}}. Please try to reach me, and if you can't, consider contacting local emergency services. (Sent from Turkic Circles)",
+    "reminderTitle": "Time to check in",
+    "reminderBody": "How did it go with {{meetingWith}}? Tap to check in.",
+    "overdueTitle": "You haven't checked in",
+    "overdueBody": "Are you okay? Tap to check in, or alert your trusted contacts.",
+    "yourPlans": "Your plans",
+    "meeting": "Meeting {{name}}",
+    "checkInBy": "Check in by {{time}}",
+    "overdueSince": "Check-in overdue since {{time}}",
+    "checkIn": "I'm okay, check in",
+    "alertContacts": "Alert my contacts",
+    "cancelPlan": "Cancel plan",
+    "cantTextTitle": "Can't open Messages",
+    "cantTextBody": "This device can't send texts. Please contact your trusted contacts another way."
+  },
+  "photos": {
+    "rejected": "This photo can't be used. Photos can't show nudity, be very revealing, or contain sexual content or graphic violence (see our community rules). Please choose another one.",
+    "checkFailed": "We couldn't check this photo just now. Please try again in a moment.",
+    "tooManyTries": "You've tried a lot of photos in a short time. Please wait a while before adding another."
   }
 }

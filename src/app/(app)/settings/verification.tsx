@@ -1,98 +1,120 @@
-import { Pressable, ScrollView, View } from "react-native";
-import { Text } from "@/components/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { useCallback } from "react";
+import { Platform, View } from "react-native";
+import { useFocusEffect } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import * as WebBrowser from "expo-web-browser";
 
+import { Text } from "@/components/Text";
 import { useSession } from "@/hooks/useSession";
-import { useMyVerificationStatus, useSubmitVerificationStub } from "@/hooks/useVerification";
+import { useMyVerificationStatus, useStartVerification } from "@/hooks/useVerification";
 import { Button } from "@/components/Button";
+import { SubPage, Card, Group, Item, Note } from "@/components/SettingsUI";
+import { showAlert } from "@/lib/alert";
 
+// Identity verification with Stripe Identity: a photo of a government ID and a live
+// selfie, checked by Stripe on its own page. The result comes back through
+// stripe-identity-webhook, so this screen only starts the check and shows the status:
+//   unverified / failed -> the two steps and a button to start (again);
+//   pending             -> "checking", with a button to finish an interrupted check;
+//   verified            -> the badge.
+// The status is re-read whenever the screen is shown, e.g. on coming back from Stripe.
 export default function Verification() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
-  const { data: verification } = useMyVerificationStatus(userId);
-  const submit = useSubmitVerificationStub(userId);
+  const { data: verification, refetch } = useMyVerificationStatus(userId);
+  const start = useStartVerification(userId);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const status = verification?.status ?? "unverified";
 
+  async function verify() {
+    try {
+      const url = await start.mutateAsync(Platform.OS === "web" ? "web" : "app");
+      if (Platform.OS === "web") {
+        // Stripe brings them back to this screen when they're done.
+        window.location.href = url;
+        return;
+      }
+      // An in-app browser; when it's closed, the result is usually already in.
+      await WebBrowser.openBrowserAsync(url);
+      refetch();
+    } catch (error) {
+      showAlert(t("settings.verificationScreen.startFailed"), (error as Error).message);
+    }
+  }
+
+  const steps = (
+    <Group>
+      <Item
+        icon="card-outline"
+        title={t("settings.verificationScreen.idTitle")}
+        subtitle={t("settings.verificationScreen.idBody")}
+      />
+      <Item
+        icon="person-outline"
+        title={t("settings.verificationScreen.selfieTitle")}
+        subtitle={t("settings.verificationScreen.selfieBody")}
+      />
+    </Group>
+  );
+
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
-        <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
-        </Pressable>
-
-        <View className="items-center gap-3">
-          <View className="h-16 w-16 items-center justify-center rounded-full bg-teal-50">
-            <Ionicons name="shield-checkmark-outline" size={32} color="#2C8B80" />
-          </View>
-          <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
-            {t("settings.verificationScreen.heading")}
-          </Text>
-          <Text className="text-center text-sm text-ink-700 dark:text-ink-200">
-            {t("settings.verificationScreen.subheading")}
-          </Text>
-        </View>
-
-        {status === "pending" ? (
-          <View className="rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
-            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
-              {t("settings.verificationScreen.pendingReview")}
-            </Text>
-            <Text className="mt-1 text-sm text-ink-700 dark:text-ink-200">
-              {t("settings.verificationScreen.pendingBody")}
-            </Text>
-          </View>
-        ) : status === "verified" ? (
-          <View className="rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
-            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
+    <SubPage title={t("settings.verificationScreen.heading")} subtitle={t("settings.verificationScreen.subheading")}>
+      {status === "verified" ? (
+        <Card>
+          <View className="flex-row items-center gap-3">
+            <Ionicons name="shield-checkmark" size={28} color="#2C8B80" />
+            <Text className="flex-1 font-display text-lg text-ink-900 dark:text-ink-50">
               {t("settings.verificationScreen.verifiedBody")}
             </Text>
           </View>
-        ) : (
-          <>
-            <View className="flex-row items-center gap-3 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
-              <Ionicons name="person-outline" size={22} color="#2C8B80" />
-              <View className="flex-1">
-                <Text className="font-display text-base text-ink-900 dark:text-ink-50">
-                  {t("settings.verificationScreen.selfieTitle")}
-                </Text>
-                <Text className="text-xs text-ink-400">{t("settings.verificationScreen.selfieBody")}</Text>
-              </View>
-              <Ionicons name="checkmark" size={20} color="#2C8B80" />
-            </View>
-
-            <View className="flex-row items-center gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
-              <Ionicons name="card-outline" size={22} color="#D9663D" />
-              <View className="flex-1">
-                <Text className="font-display text-base text-ink-900 dark:text-ink-50">
-                  {t("settings.verificationScreen.idTitle")}
-                </Text>
-                <Text className="text-xs text-ink-400">{t("settings.verificationScreen.idBody")}</Text>
-              </View>
-              <Text className="text-xs font-medium text-coral-600">{t("settings.verificationScreen.required")}</Text>
-            </View>
-
-            <View className="flex-row gap-2 rounded-xl bg-teal-50 p-3">
-              <Ionicons name="lock-closed-outline" size={18} color="#2C8B80" />
-              <Text className="flex-1 text-xs text-ink-700 dark:text-ink-200">
-                {t("settings.verificationScreen.disclaimer")}
-              </Text>
-            </View>
-
-            <View className="mt-2">
-              <Button
-                label={submit.isPending ? t("settings.verificationScreen.submitting") : t("settings.verificationScreen.submit")}
-                disabled={submit.isPending}
-                onPress={() => submit.mutate()}
-              />
-            </View>
-          </>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+        </Card>
+      ) : status === "pending" ? (
+        <>
+          <Card>
+            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
+              {t("settings.verificationScreen.pendingReview")}
+            </Text>
+            <Text className="-mt-2 text-sm text-ink-700 dark:text-ink-200">
+              {t("settings.verificationScreen.pendingBody")}
+            </Text>
+          </Card>
+          <Button
+            variant="secondary"
+            label={start.isPending ? t("settings.verificationScreen.submitting") : t("settings.verificationScreen.resume")}
+            disabled={start.isPending}
+            onPress={verify}
+          />
+        </>
+      ) : (
+        <>
+          {status === "failed" ? (
+            <Note icon="alert-circle-outline" tone="warning">
+              {t("settings.verificationScreen.failedBody")}
+            </Note>
+          ) : null}
+          {steps}
+          <Note icon="lock-closed-outline">{t("settings.verificationScreen.disclaimer")}</Note>
+          <Button
+            label={
+              start.isPending
+                ? t("settings.verificationScreen.submitting")
+                : status === "failed"
+                  ? t("settings.verificationScreen.retry")
+                  : t("settings.verificationScreen.submit")
+            }
+            disabled={start.isPending}
+            onPress={verify}
+          />
+        </>
+      )}
+    </SubPage>
   );
 }

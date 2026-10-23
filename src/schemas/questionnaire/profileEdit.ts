@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import type { ConnectionType } from "@/constants/connectionTypes";
-import { onboardingStep1Schema, onboardingStep2Schema, onboardingStep3Schema } from "./core";
+import { onboardingStep1Schema, onboardingStep2Schema, onboardingStep3Schema, requireRegionForCountry } from "./core";
 import { buildStep4Schema } from "./step4";
 
 const bioSchema = z.object({ bio: z.string().optional() });
@@ -15,7 +15,8 @@ export function buildProfileEditSchema(connectionTypes: ConnectionType[]) {
     .merge(onboardingStep2Schema)
     .merge(onboardingStep3Schema)
     .merge(bioSchema)
-    .merge(buildStep4Schema(connectionTypes));
+    .merge(buildStep4Schema(connectionTypes))
+    .superRefine(requireRegionForCountry);
 }
 
 export type ProfileEditValues = z.infer<ReturnType<typeof buildProfileEditSchema>>;

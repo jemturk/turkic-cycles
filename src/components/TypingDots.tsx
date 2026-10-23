@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { View } from "react-native";
 import Animated, {
   Easing,
+  FadeIn,
+  FadeOut,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -9,39 +11,57 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { useColorScheme } from "nativewind";
 
-function Dot({ delay }: { delay: number }) {
-  const translateY = useSharedValue(0);
+// One bounce: up and darker, back down, then a rest so the three read as a wave.
+const RISE_MS = 300;
+const REST_MS = 600;
+
+function Dot({ delay, color }: { delay: number; color: string }) {
+  const progress = useSharedValue(0);
 
   useEffect(() => {
-    translateY.value = withDelay(
+    progress.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(-4, { duration: 300, easing: Easing.out(Easing.quad) }),
-          withTiming(0, { duration: 300, easing: Easing.in(Easing.quad) })
+          withTiming(1, { duration: RISE_MS, easing: Easing.out(Easing.quad) }),
+          withTiming(0, { duration: RISE_MS, easing: Easing.in(Easing.quad) }),
+          withTiming(0, { duration: REST_MS })
         ),
         -1,
         false
       )
     );
-  }, [delay, translateY]);
+  }, [delay, progress]);
 
-  const style = useAnimatedStyle(() => ({ transform: [{ translateY: translateY.value }] }));
+  const style = useAnimatedStyle(() => ({
+    opacity: 0.3 + progress.value * 0.45,
+    transform: [{ translateY: -2.5 * progress.value }],
+  }));
 
-  return <Animated.View className="h-1.5 w-1.5 rounded-full bg-ink-400" style={style} />;
+  // Inline style rather than className -- see the note on DiscoverDeck's
+  // Animated.View: NativeWind classes on Reanimated views don't reliably apply.
+  return <Animated.View style={[{ width: 6, height: 6, borderRadius: 3, backgroundColor: color }, style]} />;
 }
 
-// The other participant's "typing..." bubble -- styled like their own message
-// bubbles (white, left-aligned) so it reads as a stand-in for their next message.
+// The other participant's "typing..." bubble: a lighter shade of their peach message
+// bubble, so it reads as their next message on its way, with dark dots bouncing in a
+// wave. It fades in and out rather than popping. (Their full bubble color read as a
+// message in its own right.)
 export function TypingDots() {
+  const { colorScheme } = useColorScheme();
+  const dark = colorScheme === "dark";
   return (
-    <View className="items-start">
-      <View className="flex-row items-center gap-1 rounded-2xl bg-white dark:bg-ink-800 px-4 py-3.5">
-        <Dot delay={0} />
-        <Dot delay={120} />
-        <Dot delay={240} />
+    <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(150)} className="items-start">
+      <View
+        className="flex-row items-center gap-1 rounded-2xl px-3 py-2.5"
+        style={{ backgroundColor: dark ? "#3A302C" : "#FBEAE2" }}
+      >
+        <Dot delay={0} color={dark ? "#E8DED8" : "#2B2320"} />
+        <Dot delay={150} color={dark ? "#E8DED8" : "#2B2320"} />
+        <Dot delay={300} color={dark ? "#E8DED8" : "#2B2320"} />
       </View>
-    </View>
+    </Animated.View>
   );
 }

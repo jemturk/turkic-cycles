@@ -1,0 +1,8 @@
+# Line endings: LF everywhere, in the repo and in the working copy, regardless of
+# git's core.autocrlf (Git for Windows defaults it to true, which converted files to
+# CRLF on checkout and warned on every LF file written). Binary files are untouched.
+* text=auto eol=lf
+
+# Windows-only scripts keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf

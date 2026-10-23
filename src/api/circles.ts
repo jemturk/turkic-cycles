@@ -49,7 +49,7 @@ export async function listCircleMembers(circleId: string, limit?: number) {
 
   const { data: profileRows, error: profileError } = await supabase
     .from("profiles")
-    .select("id, display_name, avatar_url")
+    .select("id, display_name, avatar_url, city")
     .in(
       "id",
       memberRows.map((row) => row.user_id)
@@ -62,6 +62,7 @@ export async function listCircleMembers(circleId: string, limit?: number) {
     joinedAt: row.joined_at,
     displayName: profileById.get(row.user_id)?.display_name ?? "",
     avatarUrl: profileById.get(row.user_id)?.avatar_url ?? null,
+    city: profileById.get(row.user_id)?.city ?? null,
   }));
 }
 
@@ -76,6 +77,21 @@ export async function listUpcomingEventCounts(): Promise<Record<string, number>>
   const counts: Record<string, number> = {};
   for (const row of data ?? []) counts[row.circle_id] = (counts[row.circle_id] ?? 0) + 1;
   return counts;
+}
+
+// The next few events across the given circles (the ones you've joined), soonest
+// first -- the desktop Circles screen's "Upcoming events" column.
+export async function listUpcomingEventsInCircles(circleIds: string[], limit: number) {
+  if (circleIds.length === 0) return [];
+  const { data, error } = await supabase
+    .from("circle_events")
+    .select("id, circle_id, title, starts_at")
+    .in("circle_id", circleIds)
+    .gte("starts_at", new Date().toISOString())
+    .order("starts_at")
+    .limit(limit);
+  if (error) throw error;
+  return data ?? [];
 }
 
 // Upcoming events soonest first; past events most recent first.
@@ -111,9 +127,111 @@ export async function getMyRsvp(eventId: string, userId: string) {
   return data;
 }
 
+// Who is going to and interested in an event, earliest RSVP first, each with their
+// name, photo and city. Readable to the event's circle members (migration 0040);
+// "not going" RSVPs are never returned.
+export async function listEventAttendees(eventId: string) {
+  const { data: rsvpRows, error: rsvpError } = await supabase
+    .from("event_rsvps")
+    .select("user_id, status")
+    .eq("event_id", eventId)
+    .in("status", ["going", "interested"])
+    .order("updated_at");
+  if (rsvpError) throw rsvpError;
+  if (!rsvpRows || rsvpRows.length === 0) return { going: [], interested: [] };
+
+  const { data: profileRows, error: profileError } = await supabase
+    .from("profiles")
+    .select("id, display_name, avatar_url, city")
+    .in(
+      "id",
+      rsvpRows.map((row) => row.user_id)
+    );
+  if (profileError) throw profileError;
+
+  const profileById = new Map((profileRows ?? []).map((p) => [p.id, p]));
+  const toPerson = (row: { user_id: string }) => ({
+    userId: row.user_id,
+    displayName: profileById.get(row.user_id)?.display_name ?? "",
+    avatarUrl: profileById.get(row.user_id)?.avatar_url ?? null,
+    city: profileById.get(row.user_id)?.city ?? null,
+  });
+  return {
+    going: rsvpRows.filter((row) => row.status === "going").map(toPerson),
+    interested: rsvpRows.filter((row) => row.status === "interested").map(toPerson),
+  };
+}
+
 export async function upsertRsvp(eventId: string, userId: string, status: "going" | "interested" | "not_going") {
   const { error } = await supabase
     .from("event_rsvps")
     .upsert({ event_id: eventId, user_id: userId, status }, { onConflict: "event_id,user_id" });
   if (error) throw error;
+}
+
+// The user's role in a circle -- "member", "moderator" or "owner" -- or null if they
+// haven't joined it.
+export async function getMyCircleRole(circleId: string, userId: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("circle_members")
+    .select("role")
+    .eq("circle_id", circleId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.role ?? null;
+}
+
+export type NewCircle = {
+  name: string;
+  description: string;
+  topic: string;
+  city: string;
+  state: string;
+  country: string;
+  latitude: number | null;
+  longitude: number | null;
+};
+
+// Plus with a verified ID, admins included -- create_circle checks (0035), and
+// makes the creator owner.
+export async function createCircle(circle: NewCircle): Promise<string> {
+  const { data, error } = await supabase.rpc("create_circle", {
+    p_name: circle.name,
+    p_description: circle.description,
+    p_topic: circle.topic,
+    p_city: circle.city,
+    p_state: circle.state,
+    p_country: circle.country,
+    p_latitude: circle.latitude,
+    p_longitude: circle.longitude,
+  });
+  if (error) throw error;
+  return data;
+}
+
+export type NewCircleEvent = {
+  circleId: string;
+  title: string;
+  description: string;
+  location: string;
+  startsAt: string; // ISO timestamp
+};
+
+// Allowed for the circle's owners and moderators with Plus and a verified ID
+// (RLS, 0035).
+export async function createCircleEvent(event: NewCircleEvent): Promise<string> {
+  const { data, error } = await supabase
+    .from("circle_events")
+    .insert({
+      circle_id: event.circleId,
+      title: event.title.trim(),
+      description: event.description.trim() || null,
+      location: event.location.trim(),
+      starts_at: event.startsAt,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id;
 }

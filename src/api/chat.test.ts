@@ -1,5 +1,13 @@
 import { ok, queueSupabaseResponses, type SupabaseResponse } from "@/test-utils/supabaseMock";
-import { listNewConnections, listMessageThreads, markMessageDelivered } from "./chat";
+import {
+  listNewConnections,
+  listMessageThreads,
+  listReactions,
+  markAllDelivered,
+  markMessageDelivered,
+  sendMessage,
+  toggleReaction,
+} from "./chat";
 
 const mockFrom = jest.fn();
 jest.mock("@/api/client", () => ({
@@ -23,6 +31,7 @@ describe("listNewConnections", () => {
       matches: [ok([matchA, matchB])],
       messages: [ok([{ match_id: "match-a" }])],
       profiles: [ok(profiles)],
+      profile_photos: [ok([])],
     });
 
     const result = await listNewConnections("me");
@@ -39,6 +48,7 @@ describe("listNewConnections", () => {
         otherCity: null,
         otherState: null,
         otherCountry: null,
+        otherCoverPhotoUrl: null,
       },
     ]);
   });
@@ -53,6 +63,7 @@ describe("listNewConnections", () => {
       matches: [ok([matchA])],
       messages: [ok([])],
       profiles: [ok([])],
+      profile_photos: [ok([])],
     });
     const result = await listNewConnections("me");
     expect(result[0].otherDisplayName).toBe("Member");
@@ -84,6 +95,7 @@ describe("listMessageThreads", () => {
         ]),
       ],
       profiles: [ok(profiles)],
+      profile_photos: [ok([])],
     });
 
     const result = await listMessageThreads("me");
@@ -102,6 +114,7 @@ describe("listMessageThreads", () => {
       matches: [ok([matchA, matchB])],
       messages: [ok([{ match_id: "match-a", sender_id: "alice", body: "hi", read_at: null, created_at: "t" }])],
       profiles: [ok(profiles)],
+      profile_photos: [ok([])],
     });
     const result = await listMessageThreads("me");
     expect(result.map((t) => t.matchId)).toEqual(["match-a"]);
@@ -122,9 +135,23 @@ describe("listMessageThreads", () => {
         ]),
       ],
       profiles: [ok(profiles)],
+      profile_photos: [ok([])],
     });
     const result = await listMessageThreads("me");
     expect(result[0].unreadCount).toBe(0);
+  });
+});
+
+describe("markAllDelivered", () => {
+  it("marks only messages sent to the user that aren't delivered yet", async () => {
+    queueResponses({ messages: [ok(null)] });
+
+    await markAllDelivered("me");
+
+    const chain = mockFrom.mock.results[0].value;
+    expect(chain.update).toHaveBeenCalledWith(expect.objectContaining({ delivered_at: expect.any(String) }));
+    expect(chain.neq).toHaveBeenCalledWith("sender_id", "me");
+    expect(chain.is).toHaveBeenCalledWith("delivered_at", null);
   });
 });
 
@@ -138,5 +165,54 @@ describe("markMessageDelivered", () => {
     expect(chain.update).toHaveBeenCalledWith(expect.objectContaining({ delivered_at: expect.any(String) }));
     expect(chain.eq).toHaveBeenCalledWith("id", "msg-1");
     expect(chain.is).toHaveBeenCalledWith("delivered_at", null);
+  });
+});
+
+describe("sendMessage", () => {
+  it("sends the message it replies to, or null when it isn't a reply", async () => {
+    queueResponses({ messages: [ok(null), ok(null)] });
+
+    await sendMessage("match-a", "me", "Sounds good", "msg-1");
+    await sendMessage("match-a", "me", "Hi");
+
+    expect(mockFrom.mock.results[0].value.insert).toHaveBeenCalledWith({
+      match_id: "match-a",
+      sender_id: "me",
+      body: "Sounds good",
+      reply_to_id: "msg-1",
+    });
+    expect(mockFrom.mock.results[1].value.insert).toHaveBeenCalledWith(
+      expect.objectContaining({ body: "Hi", reply_to_id: null })
+    );
+  });
+});
+
+describe("listReactions", () => {
+  it("returns the conversation's reactions as plain objects", async () => {
+    queueResponses({
+      message_reactions: [ok([{ message_id: "msg-1", user_id: "alice", emoji: "❤️", messages: { match_id: "match-a" } }])],
+    });
+
+    expect(await listReactions("match-a")).toEqual([{ messageId: "msg-1", userId: "alice", emoji: "❤️" }]);
+    expect(mockFrom.mock.results[0].value.eq).toHaveBeenCalledWith("messages.match_id", "match-a");
+  });
+});
+
+describe("toggleReaction", () => {
+  it("takes the reaction off when the same emoji is picked again", async () => {
+    queueResponses({ message_reactions: [ok(null)] });
+    await toggleReaction("msg-1", "me", "👍", "👍");
+    const chain = mockFrom.mock.results[0].value;
+    expect(chain.delete).toHaveBeenCalled();
+    expect(chain.upsert).not.toHaveBeenCalled();
+  });
+
+  it("adds or replaces it otherwise, one per person per message", async () => {
+    queueResponses({ message_reactions: [ok(null)] });
+    await toggleReaction("msg-1", "me", "😂", "👍");
+    expect(mockFrom.mock.results[0].value.upsert).toHaveBeenCalledWith(
+      { message_id: "msg-1", user_id: "me", emoji: "😂" },
+      { onConflict: "message_id,user_id" }
+    );
   });
 });

@@ -8,7 +8,8 @@ import {
   submitOnboardingStep1,
   submitOnboardingStep2,
   submitOnboardingStep3,
-  submitOnboardingStep4AndComplete,
+  submitOnboardingStep4,
+  submitOnboardingPhotosAndComplete,
 } from "@/api/onboarding";
 
 export function useMyConnectionTypes(userId: string | undefined) {
@@ -83,12 +84,19 @@ export function useSubmitOnboardingStep3(userId: string | undefined) {
   });
 }
 
-export function useSubmitOnboardingStep4AndComplete(userId: string | undefined) {
+export function useSubmitOnboardingStep4(userId: string | undefined) {
   const invalidate = useInvalidateOnboarding(userId);
   return useMutation({
-    mutationFn: (answers: Parameters<typeof submitOnboardingStep4AndComplete>[1]) =>
-      submitOnboardingStep4AndComplete(userId as string, answers),
+    mutationFn: (answers: Parameters<typeof submitOnboardingStep4>[1]) => submitOnboardingStep4(userId as string, answers),
     onSuccess: () => invalidate(["questionnaireResponses"]),
+  });
+}
+
+export function useSubmitOnboardingPhotosAndComplete(userId: string | undefined) {
+  const invalidate = useInvalidateOnboarding(userId);
+  return useMutation({
+    mutationFn: () => submitOnboardingPhotosAndComplete(userId as string),
+    onSuccess: () => invalidate(),
   });
 }
 

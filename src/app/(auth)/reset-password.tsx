@@ -9,6 +9,7 @@ import { supabase } from "@/api/client";
 import { passwordComplexitySchema } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
+import { FormScrollView } from "@/components/FormScrollView";
 
 export default function ResetPassword() {
   const { t } = useTranslation();
@@ -74,8 +75,8 @@ export default function ResetPassword() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <View className="flex-1 px-6 pt-10">
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1" contentContainerClassName="flex-grow px-6 pb-10 pt-10">
         <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("auth.resetPassword.heading")}</Text>
 
         {isVerifying ? (
@@ -99,8 +100,8 @@ export default function ResetPassword() {
                 value={password}
                 onChangeText={setPassword}
               />
-              <Text className="text-xs text-ink-400">{t("auth.resetPassword.passwordHint")}</Text>
-              {status ? <Text className="text-sm text-coral-600">{status}</Text> : null}
+              <Text className="text-xs text-ink-400 dark:text-ink-300">{t("auth.resetPassword.passwordHint")}</Text>
+              {status ? <Text className="text-sm text-accent-600">{status}</Text> : null}
             </View>
             <View className="mt-8">
               <Button
@@ -111,7 +112,7 @@ export default function ResetPassword() {
             </View>
           </>
         )}
-      </View>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

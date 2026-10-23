@@ -39,3 +39,15 @@ Docs: https://docs.expo.dev/eas/index.md
 - If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
 - Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
 - Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
+
+## Store declarations
+
+The app stores were told exactly what data the app collects and which permissions it uses (Google Play Data safety, Advertising ID, Child safety, Apple privacy labels). The record is `store-declarations.md`; `store-declarations.json` is the baseline that `scripts/check_declarations.py` checks on every `build.py` run.
+
+When a change adds or removes a permission, a dependency, a table or column, a new field stored in an existing one, or anything sent to a server or third-party SDK:
+
+1. Check the affected rows in `store-declarations.md` (its **Re-check if** column) and update them in the same change.
+2. Run `python scripts/check_declarations.py --update` and give every new baseline entry a reason.
+3. Tell the user which store console answers to change, and where (e.g. "Play Console → App content → Data safety → Contacts: now required").
+
+Prefer `app.json` → `android.blockedPermissions` for permissions a library adds that no feature needs.

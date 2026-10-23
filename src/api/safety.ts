@@ -43,8 +43,10 @@ export async function createSafetyPlan(
     trusted_contacts: values.trustedContacts,
     auto_checkin_minutes: values.autoCheckinMinutes,
   };
-  const { error } = await supabase.from("safety_plans").insert(payload);
+  // Returns the new plan, for its check-in reminders and the text to the contacts.
+  const { data, error } = await supabase.from("safety_plans").insert(payload).select().single();
   if (error) throw error;
+  return data;
 }
 
 export async function checkInSafetyPlan(planId: string) {

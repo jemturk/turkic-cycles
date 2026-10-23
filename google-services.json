@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "975839424254",
+    "project_id": "turkic-cycles",
+    "storage_bucket": "turkic-cycles.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975839424254:android:3d02281229454cd5813faf",
+        "android_client_info": {
+          "package_name": "com.turek.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYclk0sPpXCA0YX0WrSYZ6qiaGUET200Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

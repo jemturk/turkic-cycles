@@ -1,9 +1,10 @@
 import { supabase } from "@/api/client";
 import type { Tables } from "@/types/database";
+import { COVER_POSITION, publicUrl } from "@/api/gallery";
 
 export type MatchWithParticipant = {
   matchId: string;
-  circleId: string;
+  circleId: string | null; // null = matched on the global Discover tab
   createdAt: string;
   otherUserId: string;
   otherDisplayName: string;
@@ -12,7 +13,27 @@ export type MatchWithParticipant = {
   otherCity: string | null;
   otherState: string | null;
   otherCountry: string | null;
+  // Their first gallery photo -- the Connections card's background.
+  otherCoverPhotoUrl: string | null;
 };
+
+// Each user's cover photo (the one in the cover slot, see COVER_POSITION) as a
+// public URL -- the background of their Discover and Connections cards. Users
+// with an empty cover slot are simply missing from the map.
+export async function getCoverPhotoUrls(userIds: string[]): Promise<Map<string, string>> {
+  if (userIds.length === 0) return new Map();
+  const { data, error } = await supabase
+    .from("profile_photos")
+    .select("user_id, storage_path, position")
+    .in("user_id", userIds)
+    .eq("position", COVER_POSITION);
+  if (error) throw error;
+  const covers = new Map<string, string>();
+  for (const row of data ?? []) {
+    if (row.position === COVER_POSITION) covers.set(row.user_id, publicUrl(row.storage_path));
+  }
+  return covers;
+}
 
 async function attachOtherParticipant(
   matches: Tables<"matches">[],
@@ -21,10 +42,10 @@ async function attachOtherParticipant(
   if (matches.length === 0) return [];
 
   const otherUserIds = matches.map((m) => (m.user_a === userId ? m.user_b : m.user_a));
-  const { data: profiles, error } = await supabase
-    .from("profiles")
-    .select("id, display_name, avatar_url, birthdate, city, state, country")
-    .in("id", otherUserIds);
+  const [{ data: profiles, error }, coverById] = await Promise.all([
+    supabase.from("profiles").select("id, display_name, avatar_url, birthdate, city, state, country").in("id", otherUserIds),
+    getCoverPhotoUrls(otherUserIds),
+  ]);
   if (error) throw error;
 
   const profileById = new Map((profiles ?? []).map((p) => [p.id, p]));
@@ -43,6 +64,7 @@ async function attachOtherParticipant(
       otherCity: otherProfile?.city ?? null,
       otherState: otherProfile?.state ?? null,
       otherCountry: otherProfile?.country ?? null,
+      otherCoverPhotoUrl: coverById.get(otherUserId) ?? null,
     };
   });
 }
@@ -144,8 +166,46 @@ export async function listMessages(matchId: string) {
   return data ?? [];
 }
 
-export async function sendMessage(matchId: string, senderId: string, body: string) {
-  const { error } = await supabase.from("messages").insert({ match_id: matchId, sender_id: senderId, body });
+// replyToId: the message this one answers (shown quoted above it); it has to be in
+// the same conversation, which the insert policy enforces (migration 0038).
+export async function sendMessage(matchId: string, senderId: string, body: string, replyToId?: string | null) {
+  const { error } = await supabase
+    .from("messages")
+    .insert({ match_id: matchId, sender_id: senderId, body, reply_to_id: replyToId ?? null });
+  if (error) throw error;
+}
+
+export type MessageReaction = { messageId: string; userId: string; emoji: string };
+
+// Every reaction in a conversation (migration 0038: one per person per message).
+export async function listReactions(matchId: string): Promise<MessageReaction[]> {
+  const { data, error } = await supabase
+    .from("message_reactions")
+    .select("message_id, user_id, emoji, messages!inner(match_id)")
+    .eq("messages.match_id", matchId);
+  if (error) throw error;
+  return (data ?? []).map((row) => ({ messageId: row.message_id, userId: row.user_id, emoji: row.emoji }));
+}
+
+// Picking the emoji you already chose takes it off; any other replaces it.
+export async function toggleReaction(
+  messageId: string,
+  userId: string,
+  emoji: string,
+  current: string | undefined
+) {
+  if (current === emoji) {
+    const { error } = await supabase
+      .from("message_reactions")
+      .delete()
+      .eq("message_id", messageId)
+      .eq("user_id", userId);
+    if (error) throw error;
+    return;
+  }
+  const { error } = await supabase
+    .from("message_reactions")
+    .upsert({ message_id: messageId, user_id: userId, emoji }, { onConflict: "message_id,user_id" });
   if (error) throw error;
 }
 
@@ -159,10 +219,21 @@ export async function markThreadRead(matchId: string, userId: string) {
   if (error) throw error;
 }
 
-// Called by the recipient's own device the moment it receives the push for this
-// message -- distinct from markThreadRead (which fires only once they open that
-// specific thread): this can fire while the app is merely open somewhere, giving
-// "delivered" its own meaning separate from "read".
+// "Delivered" = the message has reached the recipient's app, distinct from
+// markThreadRead (which fires only once they open that thread). useMarkDelivered
+// calls these from the recipient's own app: markAllDelivered whenever it opens or
+// comes back to the foreground (everything that arrived while it was away), and
+// markMessageDelivered for each new message while it's open on any screen.
+export async function markAllDelivered(userId: string) {
+  // RLS limits this to the user's own conversations; only messages sent to them.
+  const { error } = await supabase
+    .from("messages")
+    .update({ delivered_at: new Date().toISOString() })
+    .neq("sender_id", userId)
+    .is("delivered_at", null);
+  if (error) throw error;
+}
+
 export async function markMessageDelivered(messageId: string) {
   const { error } = await supabase
     .from("messages")
@@ -170,4 +241,12 @@ export async function markMessageDelivered(messageId: string) {
     .eq("id", messageId)
     .is("delivered_at", null);
   if (error) throw error;
+}
+
+// Ends a connection without blocking (migration 0050): the match, its messages and
+// reactions are deleted for both people. Only either of the two can do it.
+export async function removeConnection(matchId: string) {
+  const { data, error } = await supabase.rpc("remove_connection", { p_match_id: matchId });
+  if (error) throw error;
+  if (!data) throw new Error("This connection couldn't be removed.");
 }

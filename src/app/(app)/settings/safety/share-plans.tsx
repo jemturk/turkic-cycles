@@ -1,23 +1,25 @@
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { Text } from "@/components/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import { addMinutes, format, isValid, parse } from "date-fns";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import { useCreateSafetyPlan } from "@/hooks/useSafety";
+import { useMyProfile } from "@/hooks/useProfile";
+import { planMessage, scheduleCheckInReminders, textContacts } from "@/lib/safetyAlerts";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { Chip } from "@/components/Chip";
 import type { TrustedContact } from "@/api/safety";
+import { SubPage, Card } from "@/components/SettingsUI";
 
 export default function SharePlans() {
   const { t } = useTranslation();
   const { session } = useSession();
   const createPlan = useCreateSafetyPlan(session?.user.id);
+  const { data: profile } = useMyProfile(session?.user.id);
 
   const [meetingWith, setMeetingWith] = useState("");
   const [location, setLocation] = useState("");
@@ -33,7 +35,8 @@ export default function SharePlans() {
   const checkinAt = meetingAtValid ? addMinutes(meetingAt, autoCheckinMinutes) : null;
 
   function addContact() {
-    if (!contactName.trim()) return;
+    // A phone number is what the text goes to.
+    if (!contactName.trim() || !contactPhone.trim()) return;
     setContacts([...contacts, { name: contactName.trim(), phone: contactPhone.trim() }]);
     setContactName("");
     setContactPhone("");
@@ -49,25 +52,26 @@ export default function SharePlans() {
         trustedContacts: contacts,
         autoCheckinMinutes,
       },
-      { onSuccess: () => router.back() }
+      {
+        // Saved: set the check-in reminders, then open Messages with the plan
+        // written out for the contacts -- they're told only when you tap Send.
+        onSuccess: async (plan) => {
+          await scheduleCheckInReminders(t, plan).catch(() => {});
+          await textContacts(contacts, planMessage(t, plan, profile?.display_name || "")).catch(() => {});
+          router.back();
+        },
+      },
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-4 pb-10">
-        <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
-        </Pressable>
-
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
-          {t("settings.sharePlansScreen.heading")}
-        </Text>
-        <Text className="-mt-2 text-sm text-ink-700 dark:text-ink-200">
-          {t("settings.sharePlansScreen.subheading")}
-        </Text>
-
-        <TextField label={t("settings.sharePlansScreen.whoMeeting")} value={meetingWith} onChangeText={setMeetingWith} />
+    <SubPage title={t("settings.sharePlansScreen.heading")} subtitle={t("settings.sharePlansScreen.subheading")} form>
+      <Card>
+        <TextField
+          label={t("settings.sharePlansScreen.whoMeeting")}
+          value={meetingWith}
+          onChangeText={setMeetingWith}
+        />
         <TextField label={t("settings.sharePlansScreen.where")} value={location} onChangeText={setLocation} />
 
         <View className="flex-row gap-3">
@@ -104,10 +108,20 @@ export default function SharePlans() {
         </View>
         <View className="flex-row gap-2">
           <View className="flex-1">
-            <TextField placeholder={t("settings.sharePlansScreen.namePlaceholder")} value={contactName} onChangeText={setContactName} />
+            <TextField
+              placeholder={t("settings.sharePlansScreen.namePlaceholder")}
+              value={contactName}
+              onChangeText={setContactName}
+            />
           </View>
           <View className="flex-1">
-            <TextField placeholder={t("settings.sharePlansScreen.phonePlaceholder")} value={contactPhone} onChangeText={setContactPhone} />
+            <TextField
+              placeholder={t("settings.sharePlansScreen.phonePlaceholder")}
+              keyboardType="phone-pad"
+              textContentType="telephoneNumber"
+              value={contactPhone}
+              onChangeText={setContactPhone}
+            />
           </View>
         </View>
         <Button variant="secondary" label={t("settings.sharePlansScreen.addContact")} onPress={addContact} />
@@ -128,21 +142,21 @@ export default function SharePlans() {
                   : t("settings.sharePlansScreen.yourTrustedContact"),
               name: meetingWith || t("settings.sharePlansScreen.theirNameFallback"),
             })}
-            {checkinAt
-              ? t("settings.sharePlansScreen.checkinNote", { time: format(checkinAt, "h:mm a") })
-              : ""}
+            {checkinAt ? t("settings.sharePlansScreen.checkinNote", { time: format(checkinAt, "h:mm a") }) : ""}
             {t("settings.sharePlansScreen.followUpNote")}
           </Text>
         </View>
 
-        <View className="mt-2">
+        <View>
           <Button
-            label={createPlan.isPending ? t("settings.sharePlansScreen.sharing") : t("settings.sharePlansScreen.sharePlans")}
+            label={
+              createPlan.isPending ? t("settings.sharePlansScreen.sharing") : t("settings.sharePlansScreen.sharePlans")
+            }
             disabled={createPlan.isPending || !meetingAtValid || contacts.length === 0}
             onPress={onSubmit}
           />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </Card>
+    </SubPage>
   );
 }

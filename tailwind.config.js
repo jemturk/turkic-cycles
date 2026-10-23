@@ -17,14 +17,32 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Approximated from the prototype — swap for real brand values when available.
-        coral: {
-          50: "#FDEDE5",
-          100: "#FBD9C9",
-          400: "#E68F68",
-          500: "#D9663D",
-          600: "#C24F2A",
+        // İznik Tile palette (from the "Palette Alternatives" design canvas), tuned:
+        // turquoise-leaning primary, coral-red accent, warm apricot-cream ground. The
+        // logo's two circles are the accent and primary too (AppMark.tsx, and the
+        // icon/splash images rendered from it).
+        //
+        // primary: buttons, selected states, links, icons. 50 is the apricot-cream
+        // page ground and 100 the hairline border/tint -- the roles coral-50/100 had.
+        primary: {
+          50: "#FEF6EC",
+          100: "#D5EBEC",
+          400: "#3E9BA7",
+          500: "#127A87",
+          600: "#0E6470",
         },
+        // accent: unread dots, errors, warnings and destructive actions.
+        accent: {
+          50: "#FBE9E1",
+          100: "#F5CDBE",
+          // Dark mode's coral text (dark:text-accent-400): 6.3:1 on the dark page,
+          // where 600 is only 2.6:1.
+          400: "#E8774F",
+          500: "#C1440E",
+          600: "#9E370B",
+        },
+        // Turquoise, the tilework's second blue-green: trust and success (verified,
+        // confirmations, checkmarks) and the Discover card.
         teal: {
           50: "#E4F3F1",
           100: "#BFE3DD",
@@ -47,7 +65,10 @@ module.exports = {
           900: "#2B2320",
           800: "#352C27",
           700: "#4A3F3A",
-          400: "#8A7C76",
+          // Secondary text. Light mode: 5.5:1+ on the cream surfaces (WCAG AA for small
+          // text; it was #8A7C76, 3.9:1). Dark mode uses 300 (dark:text-ink-300).
+          400: "#6E625C",
+          300: "#A99C95",
           200: "#C9BFB9",
           100: "#E8DFDA",
           50: "#F5F1EE",

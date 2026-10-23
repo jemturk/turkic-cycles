@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -17,6 +17,8 @@ import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
+import { FormScrollView } from "@/components/FormScrollView";
+import { showAlert } from "@/lib/alert";
 
 export default function OnboardingStep2Screen() {
   const { t } = useTranslation();
@@ -38,14 +40,17 @@ export default function OnboardingStep2Screen() {
     const corePayload = buildCorePayload({ step2: values, step3: store.step3 });
     submitStep2.mutate(
       { values, corePayload },
-      { onSuccess: () => router.push("/(onboarding)/step-3") }
+      {
+        onSuccess: () => router.push("/(onboarding)/step-3"),
+        onError: (error) => showAlert(t("onboarding.saveErrorTitle"), error.message),
+      }
     );
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
-        <OnboardingProgress step={2} totalSteps={4} />
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <FormScrollView className="flex-1 px-6 pt-10" contentContainerClassName="gap-4 pb-10">
+        <OnboardingProgress step={2} totalSteps={5} />
         <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
 
         <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">
@@ -117,7 +122,7 @@ export default function OnboardingStep2Screen() {
             onPress={handleSubmit(onSubmit)}
           />
         </View>
-      </ScrollView>
+      </FormScrollView>
     </SafeAreaView>
   );
 }

@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   graphql_public: {
     Tables: {
@@ -39,6 +39,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       blocked_users: {
         Row: {
           blocked_id: string
@@ -242,7 +257,7 @@ export type Database = {
       }
       matches: {
         Row: {
-          circle_id: string
+          circle_id: string | null
           connection_type: string | null
           created_at: string
           id: string
@@ -250,7 +265,7 @@ export type Database = {
           user_b: string
         }
         Insert: {
-          circle_id: string
+          circle_id?: string | null
           connection_type?: string | null
           created_at?: string
           id?: string
@@ -258,7 +273,7 @@ export type Database = {
           user_b: string
         }
         Update: {
-          circle_id?: string
+          circle_id?: string | null
           connection_type?: string | null
           created_at?: string
           id?: string
@@ -302,6 +317,35 @@ export type Database = {
         }
         Relationships: []
       }
+      message_reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          message_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          message_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          message_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           body: string
@@ -310,6 +354,7 @@ export type Database = {
           id: string
           match_id: string
           read_at: string | null
+          reply_to_id: string | null
           sender_id: string
         }
         Insert: {
@@ -319,6 +364,7 @@ export type Database = {
           id?: string
           match_id: string
           read_at?: string | null
+          reply_to_id?: string | null
           sender_id: string
         }
         Update: {
@@ -328,6 +374,7 @@ export type Database = {
           id?: string
           match_id?: string
           read_at?: string | null
+          reply_to_id?: string | null
           sender_id?: string
         }
         Relationships: [
@@ -338,7 +385,68 @@ export type Database = {
             referencedRelation: "matches"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      mock_users: {
+        Row: {
+          user_id: string
+        }
+        Insert: {
+          user_id: string
+        }
+        Update: {
+          user_id?: string
+        }
+        Relationships: []
+      }
+      photo_moderation: {
+        Row: {
+          created_at: string
+          id: string
+          safe_search: Json
+          storage_path: string
+          user_id: string
+          verdict: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          safe_search: Json
+          storage_path: string
+          user_id: string
+          verdict: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          safe_search?: Json
+          storage_path?: string
+          user_id?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
+      plus_waitlist: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profile_photos: {
         Row: {
@@ -401,6 +509,7 @@ export type Database = {
           country: string | null
           created_at: string
           deletion_requested_at: string | null
+          discoverable: boolean
           display_name: string
           email_notifications_enabled: boolean
           european_citizenship: boolean
@@ -431,6 +540,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           deletion_requested_at?: string | null
+          discoverable?: boolean
           display_name?: string
           email_notifications_enabled?: boolean
           european_citizenship?: boolean
@@ -461,6 +571,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           deletion_requested_at?: string | null
+          discoverable?: boolean
           display_name?: string
           email_notifications_enabled?: boolean
           european_citizenship?: boolean
@@ -607,6 +718,7 @@ export type Database = {
       subscriptions: {
         Row: {
           current_period_end: string | null
+          product_id: string | null
           status: string
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
@@ -616,6 +728,7 @@ export type Database = {
         }
         Insert: {
           current_period_end?: string | null
+          product_id?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -625,6 +738,7 @@ export type Database = {
         }
         Update: {
           current_period_end?: string | null
+          product_id?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -638,7 +752,7 @@ export type Database = {
         Row: {
           action: string
           actor_id: string
-          circle_id: string
+          circle_id: string | null
           created_at: string
           target_id: string
           updated_at: string
@@ -646,7 +760,7 @@ export type Database = {
         Insert: {
           action: string
           actor_id: string
-          circle_id: string
+          circle_id?: string | null
           created_at?: string
           target_id: string
           updated_at?: string
@@ -654,7 +768,7 @@ export type Database = {
         Update: {
           action?: string
           actor_id?: string
-          circle_id?: string
+          circle_id?: string | null
           created_at?: string
           target_id?: string
           updated_at?: string
@@ -668,6 +782,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      test_accounts: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_connection_types: {
         Row: {
@@ -710,9 +839,35 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      photo_moderation_offenders: {
+        Row: {
+          checked: number | null
+          display_name: string | null
+          flagged: number | null
+          last_rejected_at: string | null
+          rejected: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      can_host: { Args: never; Returns: boolean }
+      can_view_profile: { Args: { target: string }; Returns: boolean }
+      count_incoming_likes: { Args: never; Returns: number }
+      create_circle: {
+        Args: {
+          p_city: string
+          p_country: string
+          p_description: string
+          p_latitude: number | null
+          p_longitude: number | null
+          p_name: string
+          p_state: string
+          p_topic: string
+        }
+        Returns: string
+      }
       get_origin_countries_with_consent: {
         Args: { target_ids: string[] }
         Returns: {
@@ -720,8 +875,40 @@ export type Database = {
           user_id: string
         }[]
       }
+      has_plus: { Args: { uid: string }; Returns: boolean }
+      is_app_admin: { Args: never; Returns: boolean }
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
+      is_test_account: { Args: never; Returns: boolean }
+      is_visible_person: { Args: { target: string }; Returns: boolean }
+      list_global_discover_candidates: {
+        Args: { max_count?: number }
+        Returns: {
+          user_id: string
+        }[]
+      }
+      list_incoming_likes: {
+        Args: never
+        Returns: {
+          circle_id: string
+          liked_at: string
+          user_id: string
+        }[]
+      }
+      pending_incoming_likes: {
+        Args: never
+        Returns: {
+          circle_id: string
+          liked_at: string
+          user_id: string
+        }[]
+      }
       process_overdue_safety_checkins: { Args: never; Returns: undefined }
+      register_push_token: {
+        Args: { p_platform: string; p_token: string }
+        Returns: undefined
+      }
+      remove_connection: { Args: { p_match_id: string }; Returns: boolean }
+      sees_mocks: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

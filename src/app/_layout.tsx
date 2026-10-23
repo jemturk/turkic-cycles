@@ -1,10 +1,13 @@
+// First, so errors anywhere after this are reported.
+import { Sentry, identifySentryUser } from "@/lib/sentry";
 import "@/theme/global.css";
 import "@/theme/icons";
 import { useEffect, useState } from "react";
-import { Platform, View } from "react-native";
+import { Platform } from "react-native";
 import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
@@ -21,6 +24,8 @@ import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
 import { TextScaleProvider } from "@/hooks/useTextScale";
 import { AnimatedSplash } from "@/components/AnimatedSplash";
+import { AppFrame } from "@/components/AppFrame";
+import { DialogHost } from "@/components/DialogHost";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -100,16 +105,27 @@ function LocaleSync() {
 // the untouched baseline read too small, not just "small" and "large" relative to
 // it, so the whole range shifted up rather than just widening the gaps.
 const TEXT_SIZE_MULTIPLIER: Record<string, number> = { small: 0.95, default: 1.1, large: 1.3 };
+// Text's sizes start from a 16px base on web but 14px in the app, so on web the same
+// setting read ~14% larger. Scaling web by 14/16 makes each setting match the app.
+const WEB_TEXT_SCALE = Platform.OS === "web" ? 14 / 16 : 1;
 
 function TextSizeSync({ children }: { children: React.ReactNode }) {
   const { session } = useSession();
   const { data: profile } = useMyProfile(session?.user.id);
   const textSize = profile?.text_size ?? "default";
 
-  return <TextScaleProvider scale={TEXT_SIZE_MULTIPLIER[textSize] ?? 1}>{children}</TextScaleProvider>;
+  return <TextScaleProvider scale={(TEXT_SIZE_MULTIPLIER[textSize] ?? 1) * WEB_TEXT_SCALE}>{children}</TextScaleProvider>;
 }
 
-export default function RootLayout() {
+// Tells Sentry which account an error came from (its id only).
+function SentryUserSync() {
+  const { session } = useSession();
+  const userId = session?.user.id;
+  useEffect(() => identifySentryUser(userId), [userId]);
+  return null;
+}
+
+function RootLayout() {
   const [fontsLoaded] = useFonts({
     Fraunces_400Regular,
     Fraunces_600SemiBold,
@@ -130,26 +146,34 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <ThemeSync />
-          <LocaleSync />
-          <TextSizeSync>
-            {/* Constrains the app to a phone-width column on wide (web/desktop)
-                viewports, framed against the neutral backdrop set in global.css.
-                A no-op on native/mobile-web, where the viewport is already
-                narrower than max-w-[480px]. */}
-            <View className="mx-auto w-full max-w-[480px] flex-1 bg-coral-50 dark:bg-ink-950 web:shadow-2xl">
-              <Slot />
-              {/* Plays once the native (static-image) splash hands off to JS --
-                  gives the logo mark its own animated "assembly" moment instead
-                  of cutting straight to the app. */}
-              {showAnimatedSplash && (
-                <AnimatedSplash onFinish={() => setShowAnimatedSplash(false)} />
-              )}
-            </View>
-          </TextSizeSync>
-        </QueryClientProvider>
+        {/* Powers KeyboardAwareScrollView (FormScrollView) -- keeps the focused
+            field above the keyboard, which plain ScrollViews didn't do. */}
+        <KeyboardProvider>
+          <QueryClientProvider client={queryClient}>
+            <ThemeSync />
+            <SentryUserSync />
+            <LocaleSync />
+            <TextSizeSync>
+              {/* Phone-width column on web, framed beside a brand panel on desktop;
+                  the full screen on native. */}
+              <AppFrame>
+                <Slot />
+                {/* Plays once the native (static-image) splash hands off to JS --
+                    gives the logo mark its own animated "assembly" moment instead
+                    of cutting straight to the app. */}
+                {showAnimatedSplash && (
+                  <AnimatedSplash onFinish={() => setShowAnimatedSplash(false)} />
+                )}
+              </AppFrame>
+              {/* Alerts and confirms (lib/alert.ts), over everything. */}
+              <DialogHost />
+            </TextSizeSync>
+          </QueryClientProvider>
+        </KeyboardProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }
+
+// Sentry.wrap catches errors React rendering throws, and reports them.
+export default Sentry.wrap(RootLayout);

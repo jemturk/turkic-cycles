@@ -4,11 +4,12 @@ import {
   blockUser,
   getMatchingPreferences,
   listBlockedUsers,
-  requestAccountDeletion,
+  deleteAccount,
   unblockUser,
   updateAppLocale,
   updateNotificationPreferences,
   updateProfileVisibility,
+  updateDiscoverable,
   updateTextSize,
   updateThemePreference,
   upsertMatchingPreferences,
@@ -77,6 +78,14 @@ export function useUpdateProfileVisibility(userId: string | undefined) {
   });
 }
 
+export function useUpdateDiscoverable(userId: string | undefined) {
+  const invalidate = useInvalidateProfile(userId);
+  return useMutation({
+    mutationFn: (discoverable: boolean) => updateDiscoverable(userId as string, discoverable),
+    onSuccess: invalidate,
+  });
+}
+
 export function useBlockedUsers(userId: string | undefined) {
   return useQuery({
     queryKey: ["blockedUsers", userId],
@@ -101,8 +110,6 @@ export function useUnblockUser(userId: string | undefined) {
   });
 }
 
-export function useRequestAccountDeletion(userId: string | undefined) {
-  return useMutation({
-    mutationFn: () => requestAccountDeletion(userId as string),
-  });
+export function useDeleteAccount() {
+  return useMutation({ mutationFn: deleteAccount });
 }

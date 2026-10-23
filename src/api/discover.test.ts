@@ -1,5 +1,5 @@
 import { ok, queueSupabaseResponses, type SupabaseResponse } from "@/test-utils/supabaseMock";
-import { listDiscoverCandidates, checkForMatch } from "./discover";
+import { listDiscoverCandidates, listGlobalDiscoverCandidates, listSavedPeople, checkForMatch } from "./discover";
 
 const mockFrom = jest.fn();
 const mockRpc = jest.fn();
@@ -21,6 +21,7 @@ describe("listDiscoverCandidates", () => {
       swipes: [ok([{ target_id: "bob" }])],
       profiles: [ok([{ id: "alice", display_name: "Alice", avatar_url: null, birthdate: null, city: null, state: null, occupation: null }])],
       user_connection_types: [ok([{ user_id: "alice", connection_type: "friend" }])],
+      profile_photos: [ok([])],
     });
     mockRpc.mockResolvedValue(ok([]));
 
@@ -51,6 +52,7 @@ describe("listDiscoverCandidates", () => {
           { user_id: "alice", connection_type: "business" },
         ]),
       ],
+      profile_photos: [ok([])],
     });
     mockRpc.mockResolvedValue(ok([]));
 
@@ -69,6 +71,7 @@ describe("listDiscoverCandidates", () => {
         ]),
       ],
       user_connection_types: [ok([])],
+      profile_photos: [ok([])],
     });
     mockRpc.mockResolvedValue(ok([{ user_id: "alice", origin_countries: ["Kazakhstan"] }]));
 
@@ -107,5 +110,149 @@ describe("checkForMatch", () => {
   it("returns false when no match row exists", async () => {
     queueResponses({ matches: [ok(null)] });
     expect(await checkForMatch("alice", "bob", "circle-1")).toBe(false);
+  });
+
+  it("looks only at global matches (circle_id is null) for the Discover tab's scope", async () => {
+    queueResponses({ matches: [ok({ id: "m1" })] });
+    expect(await checkForMatch("alice", "bob", null)).toBe(true);
+
+    const chain = mockFrom.mock.results[0].value;
+    expect(chain.is).toHaveBeenCalledWith("circle_id", null);
+    expect(chain.eq).not.toHaveBeenCalledWith("circle_id", expect.anything());
+  });
+});
+
+describe("listGlobalDiscoverCandidates", () => {
+  function profile(id: string, name: string) {
+    return { id, display_name: name, avatar_url: null, birthdate: null, city: null, state: null, occupation: null };
+  }
+
+  it("keeps the server's order, not the order profiles come back in", async () => {
+    mockRpc.mockImplementation((fn: string) =>
+      Promise.resolve(
+        fn === "list_global_discover_candidates"
+          ? ok([{ user_id: "carol" }, { user_id: "alice" }, { user_id: "bob" }])
+          : ok([])
+      )
+    );
+    queueResponses({
+      profiles: [ok([profile("alice", "Alice"), profile("bob", "Bob"), profile("carol", "Carol")])],
+      user_connection_types: [ok([])],
+      profile_photos: [ok([])],
+    });
+
+    const result = await listGlobalDiscoverCandidates();
+    expect(result.map((c) => c.userId)).toEqual(["carol", "alice", "bob"]);
+  });
+
+  it("drops candidates whose profile couldn't be read", async () => {
+    mockRpc.mockImplementation((fn: string) =>
+      Promise.resolve(fn === "list_global_discover_candidates" ? ok([{ user_id: "alice" }, { user_id: "ghost" }]) : ok([]))
+    );
+    queueResponses({
+      profiles: [ok([profile("alice", "Alice")])],
+      user_connection_types: [ok([])],
+      profile_photos: [ok([])],
+    });
+
+    expect((await listGlobalDiscoverCandidates()).map((c) => c.userId)).toEqual(["alice"]);
+  });
+
+  it("returns an empty array without further queries when no one is left", async () => {
+    mockRpc.mockResolvedValue(ok([]));
+    queueResponses({});
+
+    expect(await listGlobalDiscoverCandidates()).toEqual([]);
+    expect(mockFrom).not.toHaveBeenCalled();
+    expect(mockRpc).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("Discover cover photos", () => {
+  it("uses the photo in the cover slot (position 0) only, and null when it's empty", async () => {
+    mockRpc.mockImplementation((fn: string) =>
+      Promise.resolve(fn === "list_global_discover_candidates" ? ok([{ user_id: "alice" }, { user_id: "bob" }]) : ok([]))
+    );
+    queueResponses({
+      profiles: [
+        ok([
+          { id: "alice", display_name: "Alice", avatar_url: null, birthdate: null, city: null, state: null, occupation: null },
+          { id: "bob", display_name: "Bob", avatar_url: null, birthdate: null, city: null, state: null, occupation: null },
+        ]),
+      ],
+      user_connection_types: [ok([])],
+      // bob has photos, but none in the cover slot -- his card has no cover.
+      profile_photos: [
+        ok([
+          { user_id: "alice", storage_path: "https://picsum.photos/seed/b/600/800", position: 1 },
+          { user_id: "alice", storage_path: "https://picsum.photos/seed/a/600/800", position: 0 },
+          { user_id: "bob", storage_path: "https://picsum.photos/seed/c/600/800", position: 1 },
+        ]),
+      ],
+    });
+
+    const result = await listGlobalDiscoverCandidates();
+    expect(result.find((c) => c.userId === "alice")!.coverPhotoUrl).toBe("https://picsum.photos/seed/a/600/800");
+    expect(result.find((c) => c.userId === "bob")!.coverPhotoUrl).toBeNull();
+  });
+});
+
+describe("listSavedPeople", () => {
+  function profile(id: string, name: string) {
+    return { id, display_name: name, avatar_url: null, birthdate: null, city: null, state: null, country: null };
+  }
+
+  it("lists each saved person once, from their most recent save, newest first", async () => {
+    queueResponses({
+      swipes: [
+        ok([
+          { target_id: "bob", circle_id: null, updated_at: "2026-10-03" },
+          { target_id: "alice", circle_id: "circle-2", updated_at: "2026-10-02" },
+          { target_id: "bob", circle_id: "circle-1", updated_at: "2026-10-01" },
+        ]),
+      ],
+      matches: [ok([])],
+      blocked_users: [ok([])],
+      profiles: [ok([profile("alice", "Alice"), profile("bob", "Bob")])],
+      profile_photos: [ok([])],
+    });
+
+    const result = await listSavedPeople("me");
+    expect(result.map((p) => [p.otherUserId, p.circleId])).toEqual([
+      ["bob", null],
+      ["alice", "circle-2"],
+    ]);
+  });
+
+  it("leaves out people already matched with or blocked", async () => {
+    queueResponses({
+      swipes: [
+        ok([
+          { target_id: "matched", circle_id: null, updated_at: "2026-10-03" },
+          { target_id: "blocked", circle_id: null, updated_at: "2026-10-02" },
+          { target_id: "alice", circle_id: null, updated_at: "2026-10-01" },
+        ]),
+      ],
+      matches: [ok([{ user_a: "matched", user_b: "me" }])],
+      blocked_users: [ok([{ blocked_id: "blocked" }])],
+      profiles: [ok([profile("alice", "Alice")])],
+      profile_photos: [ok([])],
+    });
+
+    expect((await listSavedPeople("me")).map((p) => p.otherUserId)).toEqual(["alice"]);
+  });
+
+  it("drops saved people whose profile is no longer visible, and skips the profile query when none are left", async () => {
+    queueResponses({
+      swipes: [ok([{ target_id: "gone", circle_id: null, updated_at: "2026-10-03" }])],
+      matches: [ok([])],
+      blocked_users: [ok([])],
+      profiles: [ok([])],
+      profile_photos: [ok([])],
+    });
+    expect(await listSavedPeople("me")).toEqual([]);
+
+    queueResponses({ swipes: [ok([])], matches: [ok([])], blocked_users: [ok([])] });
+    expect(await listSavedPeople("me")).toEqual([]);
   });
 });

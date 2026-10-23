@@ -1,4 +1,6 @@
 import { supabase } from "@/api/client";
+import { uploadCheckedPhoto } from "@/api/photoModeration";
+import { toUploadableImage } from "@/lib/uploadableImage";
 
 const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -6,30 +8,21 @@ const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
   "image/webp": "webp",
 };
 
-export async function uploadAvatar(userId: string, uri: string, mimeType: string) {
+export async function uploadAvatar(userId: string, pickedUri: string, pickedMimeType: string) {
+  const { uri, mimeType } = await toUploadableImage(pickedUri, pickedMimeType);
   const extension = EXTENSION_BY_MIME_TYPE[mimeType] ?? "jpg";
   const path = `${userId}/avatar.${extension}`;
 
+  // ArrayBuffer, not Blob: supabase-js wraps a Blob in FormData, and React Native's
+  // FormData drops the blob's type -- the bucket then sees "text/plain" and rejects
+  // it (allowed_mime_types). An ArrayBuffer goes up as the raw body with contentType.
   const response = await fetch(uri);
-  const blob = await response.blob();
+  const body = await response.arrayBuffer();
 
-  const { error: uploadError } = await supabase.storage
-    .from("avatars")
-    .upload(path, blob, { contentType: mimeType, upsert: true });
-  if (uploadError) throw uploadError;
-
-  const { data } = supabase.storage.from("avatars").getPublicUrl(path);
-  // The path is stable across re-uploads (upsert overwrites the same file), so a
-  // CDN/browser cache would otherwise keep serving the old image -- a cache-busting
-  // query param forces every re-upload to be treated as a new URL.
-  const avatarUrl = `${data.publicUrl}?v=${Date.now()}`;
-
-  const { error: updateError } = await supabase
-    .from("profiles")
-    .update({ avatar_url: avatarUrl })
-    .eq("id", userId);
-  if (updateError) throw updateError;
-
+  // Checked before it's published; moderate-photo then sets profiles.avatar_url (with
+  // a cache-busting ?v=, since the path is the same on every re-upload).
+  const { avatarUrl } = await uploadCheckedPhoto(path, body, mimeType, { replace: true });
+  if (!avatarUrl) throw new Error("The photo check didn't return the new picture");
   return avatarUrl;
 }
 

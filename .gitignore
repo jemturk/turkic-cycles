@@ -41,3 +41,15 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Claude Code per-machine settings
+.claude/settings.local.json
+
+# Firebase service-account private keys (uploaded to EAS for push; never commit)
+*firebase-adminsdk*.json
+
+# Personal editor settings (e.g. written by VS Code extensions).
+.vscode/settings.json
+
+# Python
+__pycache__/

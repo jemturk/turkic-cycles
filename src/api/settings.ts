@@ -59,6 +59,10 @@ export function updateProfileVisibility(userId: string, visibility: "visible" | 
   return updateProfile(userId, { profile_visibility: visibility });
 }
 
+export function updateDiscoverable(userId: string, discoverable: boolean) {
+  return updateProfile(userId, { discoverable });
+}
+
 export async function listBlockedUsers(userId: string) {
   const { data: blocks, error } = await supabase
     .from("blocked_users")
@@ -95,8 +99,10 @@ export async function unblockUser(blockerId: string, blockedId: string) {
   if (error) throw error;
 }
 
-// Stub: marks the account for deletion rather than deleting it. Real, irreversible
-// deletion needs a service_role Edge Function -- a separate, deliberate piece of work.
-export function requestAccountDeletion(userId: string) {
-  return updateProfile(userId, { deletion_requested_at: new Date().toISOString() });
+// Permanent and immediate: the delete-account Edge Function removes the caller's
+// photos and auth user (cascading to all their rows). It needs the service-role key,
+// so it can't run client-side; it identifies the caller from their session token.
+export async function deleteAccount() {
+  const { error } = await supabase.functions.invoke("delete-account", { method: "POST" });
+  if (error) throw error;
 }

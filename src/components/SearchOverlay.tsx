@@ -11,21 +11,23 @@ import { useCircles } from "@/hooks/useCircles";
 import { useMessageThreads, useNewConnections } from "@/hooks/useChat";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { Avatar } from "@/components/Avatar";
+import { usePlaceholderColor } from "@/hooks/usePlaceholderColor";
 
 function matches(needle: string, fields: (string | null | undefined)[]) {
   return fields.some((field) => field?.toLowerCase().includes(needle));
 }
 
 function SectionLabel({ label }: { label: string }) {
-  return <Text className="px-1 pt-2 text-xs font-medium uppercase text-ink-400">{label}</Text>;
+  return <Text className="px-1 pt-2 text-xs font-medium uppercase text-ink-400 dark:text-ink-300">{label}</Text>;
 }
 
-// Floating search over whatever screen is open, opened from the tab bar's Search
-// button rather than navigating to a page of its own. Searches only data the app
+// Floating search over whatever screen is open, opened from the search icon in
+// AppHeader rather than navigating to a page of its own. Searches only data the app
 // already loads for you -- every circle, plus people you're matched or chatting
 // with -- all client-side, so there's no new query that could expose other users.
 export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const { t } = useTranslation();
+  const placeholderColor = usePlaceholderColor();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const { session } = useSession();
@@ -78,7 +80,7 @@ export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:
               value={query}
               onChangeText={setQuery}
               placeholder={t("search.placeholder")}
-              placeholderTextColor="#8A7C76"
+              placeholderTextColor={placeholderColor}
               autoCapitalize="none"
               autoCorrect={false}
               // Without these, mobile Chrome treats this as a fillable form field and
@@ -97,13 +99,23 @@ export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:
                 <Ionicons name="close-circle" size={20} color="#8A7C76" />
               </Pressable>
             ) : null}
+            {/* Closes the overlay outright -- the backdrop does too, but isn't obvious. */}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("common.close")}
+              hitSlop={8}
+              onPress={close}
+              className="h-8 w-8 items-center justify-center rounded-full web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
+            >
+              <Ionicons name="close" size={22} color="#4A3F3A" />
+            </Pressable>
           </View>
 
           {needle ? (
             <View className="rounded-2xl bg-white dark:bg-ink-800 shadow-lg" style={{ maxHeight: height * 0.6 }}>
               <ScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="gap-1 p-3">
                 {!hasResults ? (
-                  <Text className="py-2 text-center text-sm text-ink-400">
+                  <Text className="py-2 text-center text-sm text-ink-400 dark:text-ink-300">
                     {t("search.noResults", { query: query.trim() })}
                   </Text>
                 ) : null}
@@ -126,7 +138,7 @@ export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:
                         <Text className="font-display text-base text-ink-900 dark:text-ink-50" numberOfLines={1}>
                           {circle.name}
                         </Text>
-                        <Text className="text-xs text-ink-400" numberOfLines={1}>
+                        <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
                           {t("circles.membersCount", { count: circle.member_count })}
                           {circle.city ? ` · ${[circle.city, circle.state].filter(Boolean).join(", ")}` : ""}
                         </Text>
@@ -155,7 +167,7 @@ export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:
                           {person.otherDisplayName}
                         </Text>
                         {location ? (
-                          <Text className="text-xs text-ink-400" numberOfLines={1}>
+                          <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
                             {location}
                           </Text>
                         ) : null}

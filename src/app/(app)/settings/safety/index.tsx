@@ -1,9 +1,18 @@
-import { Pressable, ScrollView, View } from "react-native";
-import { Text } from "@/components/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useState } from "react";
+import { Pressable, View } from "react-native";
+import { SubPage, Group, Item, Note } from "@/components/SettingsUI";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import { format } from "date-fns";
+
+import { Text } from "@/components/Text";
+import { useSession } from "@/hooks/useSession";
+import { useMyProfile } from "@/hooks/useProfile";
+import { useCancelSafetyPlan, useCheckInSafetyPlan, useMySafetyPlans } from "@/hooks/useSafety";
+import { alertMessage, cancelCheckInReminders, checkInTime, planContacts, textContacts } from "@/lib/safetyAlerts";
+import type { Tables } from "@/types/database";
+import { showAlert } from "@/lib/alert";
 
 type SafetyItem = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -11,6 +20,108 @@ type SafetyItem = {
   subtitle: string;
   onPress: () => void;
 };
+
+// A small action button on a plan card.
+function PlanAction({ label, onPress, tone }: { label: string; onPress: () => void; tone: "solid" | "outline" | "danger" }) {
+  const styles = {
+    solid: "bg-primary-500 web:hover:bg-primary-600",
+    outline: "border border-primary-100 dark:border-ink-700 web:hover:bg-primary-100/40",
+    danger: "bg-accent-600",
+  }[tone];
+  const text = tone === "outline" ? "text-primary-600 dark:text-primary-400" : "text-white";
+  return (
+    <Pressable onPress={onPress} className={`h-10 justify-center rounded-full px-4 ${styles}`}>
+      <Text className={`text-sm font-semibold ${text}`}>{label}</Text>
+    </Pressable>
+  );
+}
+
+// The member's upcoming and overdue safety plans, each with Check in, Alert my
+// contacts (opens Messages with an alert already written) and Cancel. Hidden when
+// there are none. Overdue: the check-in time has passed without a check-in -- the
+// server marks it (0009's cron), and the card also shows it as soon as the time passes.
+function YourPlans() {
+  const { t } = useTranslation();
+  const { session } = useSession();
+  const userId = session?.user.id;
+  const { data: plans } = useMySafetyPlans(userId);
+  const { data: profile } = useMyProfile(userId);
+  const checkIn = useCheckInSafetyPlan(userId);
+  const cancel = useCancelSafetyPlan(userId);
+  // Ticks every minute, so a card turns overdue on its own while the screen is open.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const open = (plans ?? []).filter((plan) => plan.status === "active" || plan.status === "overdue");
+  if (open.length === 0) return null;
+
+  async function alertContacts(plan: Tables<"safety_plans">) {
+    const result = await textContacts(planContacts(plan), alertMessage(t, plan, profile?.display_name || ""));
+    if (result === "unavailable" || result === "no-phones") {
+      showAlert(t("safetyAlerts.cantTextTitle"), t("safetyAlerts.cantTextBody"));
+    }
+  }
+
+  return (
+    <View className="gap-1.5">
+      <Text className="ml-1 mt-1 text-xs font-medium uppercase text-ink-400 dark:text-ink-300">{t("safetyAlerts.yourPlans")}</Text>
+      {open.map((plan) => {
+        const due = checkInTime(plan);
+        const overdue = plan.status === "overdue" || due.getTime() < now;
+        return (
+          <View key={plan.id} className="gap-3 rounded-2xl bg-white p-4 dark:bg-ink-800">
+            <View className="flex-row items-start gap-3">
+              <View
+                className={`h-9 w-9 items-center justify-center rounded-lg ${overdue ? "bg-accent-600" : "bg-accent-100/60 dark:bg-ink-700"}`}
+              >
+                <Ionicons name={overdue ? "alert" : "time-outline"} size={20} color={overdue ? "#FFFFFF" : "#C1440E"} />
+              </View>
+              <View className="flex-1 gap-0.5">
+                <Text className="text-base font-semibold text-ink-900 dark:text-ink-50">
+                  {t("safetyAlerts.meeting", { name: plan.meeting_with })}
+                </Text>
+                <Text className="text-sm text-ink-700 dark:text-ink-200">
+                  {[format(new Date(plan.meeting_at), "EEE, MMM d · h:mm a"), plan.location].filter(Boolean).join(" · ")}
+                </Text>
+                <Text className={`text-sm ${overdue ? "font-semibold text-accent-600" : "text-ink-400 dark:text-ink-300"}`}>
+                  {overdue
+                    ? t("safetyAlerts.overdueSince", { time: format(due, "h:mm a") })
+                    : t("safetyAlerts.checkInBy", { time: format(due, "h:mm a") })}
+                </Text>
+              </View>
+            </View>
+            <View className="flex-row flex-wrap gap-2">
+              <PlanAction
+                tone="solid"
+                label={t("safetyAlerts.checkIn")}
+                onPress={() => {
+                  checkIn.mutate(plan.id);
+                  cancelCheckInReminders(plan.id);
+                }}
+              />
+              <PlanAction
+                tone={overdue ? "danger" : "outline"}
+                label={t("safetyAlerts.alertContacts")}
+                onPress={() => alertContacts(plan)}
+              />
+              <PlanAction
+                tone="outline"
+                label={t("safetyAlerts.cancelPlan")}
+                onPress={() => {
+                  cancel.mutate(plan.id);
+                  cancelCheckInReminders(plan.id);
+                }}
+              />
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
 
 export default function SafetyCenter() {
   const { t } = useTranslation();
@@ -31,7 +142,7 @@ export default function SafetyCenter() {
       icon: "flag-outline",
       title: t("settings.safetyCenterScreen.reportBlockTitle"),
       subtitle: t("settings.safetyCenterScreen.reportBlockSubtitle"),
-      onPress: () => router.push("/(app)/settings/safety/report"),
+      onPress: () => router.push("/(app)/report"),
     },
     {
       icon: "information-circle-outline",
@@ -54,41 +165,16 @@ export default function SafetyCenter() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950">
-      <ScrollView className="flex-1 px-6 pt-6" contentContainerClassName="gap-3 pb-10">
-        <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
-        </Pressable>
-
-        <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">
-          {t("settings.safetyCenterScreen.heading")}
-        </Text>
-        <Text className="-mt-2 text-sm text-ink-700 dark:text-ink-200">
-          {t("settings.safetyCenterScreen.subheading")}
-        </Text>
-
+    <SubPage title={t("settings.safetyCenterScreen.heading")} subtitle={t("settings.safetyCenterScreen.subheading")}>
+      <YourPlans />
+      <Group>
         {items.map((item) => (
-          <Pressable
-            key={item.title}
-            onPress={item.onPress}
-            className="flex-row items-center gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4"
-          >
-            <Ionicons name={item.icon} size={22} color="#D9663D" />
-            <View className="flex-1">
-              <Text className="font-display text-base text-ink-900 dark:text-ink-50">{item.title}</Text>
-              {item.subtitle ? <Text className="text-xs text-ink-400">{item.subtitle}</Text> : null}
-            </View>
-            <Ionicons name="chevron-forward" size={18} color="#8A7C76" />
-          </Pressable>
+          <Item key={item.title} icon={item.icon} title={item.title} subtitle={item.subtitle} onPress={item.onPress} />
         ))}
-
-        <View className="mt-2 flex-row gap-2 rounded-xl bg-coral-100 p-3">
-          <Ionicons name="warning-outline" size={18} color="#C24F2A" />
-          <Text className="flex-1 text-xs text-ink-700 dark:text-ink-200">
-            {t("settings.safetyCenterScreen.emergencyDisclaimer")}
-          </Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </Group>
+      <Note icon="warning-outline" tone="warning">
+        {t("settings.safetyCenterScreen.emergencyDisclaimer")}
+      </Note>
+    </SubPage>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActivityIndicator, Alert, Modal, Pressable, View } from "react-native";
+import { ActivityIndicator, Modal, Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
@@ -8,6 +8,9 @@ import { useTranslation } from "react-i18next";
 
 import { useDeleteAvatar, useUploadAvatar } from "@/hooks/useAvatar";
 import { Avatar } from "@/components/Avatar";
+import { useWideLayout } from "@/hooks/useWideLayout";
+import { showAlert } from "@/lib/alert";
+import { photoUploadErrorMessage } from "@/lib/photoErrors";
 
 type EditableAvatarProps = {
   userId: string;
@@ -32,11 +35,12 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
   const deleteAvatar = useDeleteAvatar(userId);
   const isPending = uploadAvatar.isPending || deleteAvatar.isPending;
   const [sheetVisible, setSheetVisible] = useState(false);
+  const wide = useWideLayout();
 
   function onRemove() {
     setSheetVisible(false);
     deleteAvatar.mutate(undefined, {
-      onError: (error) => Alert.alert(t("avatar.removeErrorTitle"), error.message),
+      onError: (error) => showAlert(t("avatar.removeErrorTitle"), error.message),
     });
   }
 
@@ -48,9 +52,9 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
         ? await ImagePicker.requestCameraPermissionsAsync()
         : await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert(
+      showAlert(
         source === "camera" ? t("avatar.cameraAccessNeededTitle") : t("avatar.photoAccessNeededTitle"),
-        source === "camera" ? t("avatar.cameraAccessNeededBody") : t("avatar.photoAccessNeededBody")
+        source === "camera" ? t("avatar.cameraAccessNeededBody") : t("avatar.photoAccessNeededBody"),
       );
       return;
     }
@@ -68,7 +72,7 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
     const asset = result.assets[0];
     uploadAvatar.mutate(
       { uri: asset.uri, mimeType: asset.mimeType ?? "image/jpeg" },
-      { onError: (error) => Alert.alert(t("avatar.uploadErrorTitle"), error.message) }
+      { onError: (error) => showAlert(t("avatar.uploadErrorTitle"), photoUploadErrorMessage(error, t)) },
     );
   }
 
@@ -88,55 +92,60 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
             <ActivityIndicator color="#FFFFFF" />
           </View>
         ) : (
-          <View className="absolute bottom-0 right-0 items-center justify-center rounded-full bg-coral-500 p-1.5">
+          <View className="absolute bottom-0 right-0 items-center justify-center rounded-full bg-primary-500 p-1.5">
             <Ionicons name="camera" size={14} color="#FFFFFF" />
           </View>
         )}
       </Pressable>
 
-      <Modal
-        transparent
-        visible={sheetVisible}
-        animationType="fade"
-        onRequestClose={() => setSheetVisible(false)}
-      >
-        <View
-          className="flex-1 justify-end bg-black/50 px-3"
-          style={{ paddingBottom: insets.bottom + 12 }}
+      <Modal transparent visible={sheetVisible} animationType="fade" onRequestClose={() => setSheetVisible(false)}>
+        {/* A bottom sheet on a phone; on desktop web a small dialog in the middle of
+            the window, rather than a sheet stretched across its whole width. */}
+        <Pressable
+          accessibilityLabel={t("common.close")}
+          onPress={() => setSheetVisible(false)}
+          className={`flex-1 bg-black/50 px-3 ${wide ? "items-center justify-center" : "justify-end"}`}
+          style={{ paddingBottom: wide ? 0 : insets.bottom + 12 }}
         >
-          {/* Two separate cards (options, then Cancel) rather than one shared
+          {/* Swallows taps, so only the dimmed backdrop closes it. */}
+          <Pressable onPress={() => {}} style={wide ? { width: 360 } : undefined}>
+            {/* Two separate cards (options, then Cancel) rather than one shared
               container: each shrink-wraps to its own content independently, so
               there's no single flex-stretching container that could end up with
               unexplained extra space around whichever row happens to be last. */}
-          <View className="gap-1 rounded-3xl bg-white dark:bg-ink-800 p-2">
-            <Pressable
-              className="flex-row items-center gap-3 rounded-2xl p-3"
-              onPress={() => pickFrom("camera")}
-            >
-              <Ionicons name="camera-outline" size={22} color="#D9663D" />
-              <Text className="text-base text-ink-900 dark:text-ink-50">{t("avatar.takePhoto")}</Text>
-            </Pressable>
-            <Pressable
-              className="flex-row items-center gap-3 rounded-2xl p-3"
-              onPress={() => pickFrom("library")}
-            >
-              <Ionicons name="image-outline" size={22} color="#D9663D" />
-              <Text className="text-base text-ink-900 dark:text-ink-50">{t("avatar.chooseFromLibrary")}</Text>
-            </Pressable>
-            {uri ? (
-              <Pressable className="flex-row items-center gap-3 rounded-2xl p-3" onPress={onRemove}>
-                <Ionicons name="trash-outline" size={22} color="#C24F2A" />
-                <Text className="text-base text-coral-600">{t("avatar.removePhoto")}</Text>
+            <View className="gap-1 rounded-3xl bg-white dark:bg-ink-800 p-2">
+              <Pressable
+                className="flex-row items-center gap-3 rounded-2xl p-3 web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
+                onPress={() => pickFrom("camera")}
+              >
+                <Ionicons name="camera-outline" size={22} color="#127A87" />
+                <Text className="text-base text-ink-900 dark:text-ink-50">{t("avatar.takePhoto")}</Text>
               </Pressable>
-            ) : null}
-          </View>
-          <Pressable
-            className="mt-2 items-center rounded-3xl bg-white dark:bg-ink-800 p-3.5"
-            onPress={() => setSheetVisible(false)}
-          >
-            <Text className="text-base font-semibold text-ink-900 dark:text-ink-50">{t("common.cancel")}</Text>
+              <Pressable
+                className="flex-row items-center gap-3 rounded-2xl p-3 web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
+                onPress={() => pickFrom("library")}
+              >
+                <Ionicons name="image-outline" size={22} color="#127A87" />
+                <Text className="text-base text-ink-900 dark:text-ink-50">{t("avatar.chooseFromLibrary")}</Text>
+              </Pressable>
+              {uri ? (
+                <Pressable
+                  className="flex-row items-center gap-3 rounded-2xl p-3 web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700"
+                  onPress={onRemove}
+                >
+                  <Ionicons name="trash-outline" size={22} color="#9E370B" />
+                  <Text className="text-base text-accent-600">{t("avatar.removePhoto")}</Text>
+                </Pressable>
+              ) : null}
+            </View>
+            <Pressable
+              className="mt-2 items-center rounded-3xl bg-white dark:bg-ink-800 p-3.5 web:hover:bg-primary-100/40"
+              onPress={() => setSheetVisible(false)}
+            >
+              <Text className="text-base font-semibold text-ink-900 dark:text-ink-50">{t("common.cancel")}</Text>
+            </Pressable>
           </Pressable>
-        </View>
+        </Pressable>
       </Modal>
     </>
   );

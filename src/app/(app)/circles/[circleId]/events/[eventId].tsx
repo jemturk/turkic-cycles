@@ -3,27 +3,30 @@ import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams, useRouter } from "expo-router";
 import { format } from "date-fns";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { useSession } from "@/hooks/useSession";
 import {
   useCircle,
   useCircleEvent,
-  useCircleMembers,
+  useEventAttendees,
   useJoinCircle,
-  useLeaveCircle,
   useMyCircleMemberships,
   useMyRsvp,
   useUpsertRsvp,
 } from "@/hooks/useCircles";
-import { RSVP_STATUSES, type CircleTopic, type RsvpStatus } from "@/constants/circles";
-import { Button } from "@/components/Button";
-import { Chip } from "@/components/Chip";
+import {
+  CIRCLE_TOPIC_COLORS,
+  CIRCLE_TOPIC_ICONS,
+  RSVP_STATUSES,
+  type CircleTopic,
+  type RsvpStatus,
+} from "@/constants/circles";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { Avatar } from "@/components/Avatar";
 import { CircleHeader } from "@/components/CircleHeader";
-
-const MEMBERS_PREVIEW_COUNT = 6;
+import { useWideLayout } from "@/hooks/useWideLayout";
 
 export default function CircleEventDetail() {
   const { t } = useTranslation();
@@ -44,10 +47,10 @@ export default function CircleEventDetail() {
   const { data: memberships } = useMyCircleMemberships(userId);
   const { data: event } = useCircleEvent(eventId);
   const { data: rsvp } = useMyRsvp(event?.id, userId);
-  const { data: membersPreview } = useCircleMembers(circleId, MEMBERS_PREVIEW_COUNT);
+  const { data: attendees } = useEventAttendees(event?.id);
   const joinCircle = useJoinCircle(userId);
-  const leaveCircle = useLeaveCircle(userId);
   const upsertRsvp = useUpsertRsvp(event?.id, userId);
+  const wide = useWideLayout();
 
   if (!circle) return null;
 
@@ -55,80 +58,248 @@ export default function CircleEventDetail() {
   const isJoined = (memberships ?? []).includes(circle.id);
   const location = [circle.city, circle.state, circle.country].filter(Boolean).join(", ");
 
+  const rsvpChips = (
+    <SingleSelectChips
+      label={t("circles.rsvpLabel")}
+      options={RSVP_STATUSES.map((s) => ({ value: s.value, label: t(`circles.rsvp.${s.value}`) }))}
+      // event_rsvps.status is a text+check column (project convention, no
+      // native Postgres enum), so the generated type is plain `string`;
+      // the check constraint guarantees it's actually one of the 3 values.
+      value={rsvp?.status as RsvpStatus | undefined}
+      onChange={(status) => upsertRsvp.mutate(status)}
+    />
+  );
+
+  // Who is going and who is interested, each a white card of photos (hidden when
+  // empty), or one card inviting a first reply when no one has. "Not going" is private.
+  const groups = [
+    { key: "going", label: t("circles.attendeesGoing"), people: attendees?.going ?? [] },
+    { key: "interested", label: t("circles.attendeesInterested"), people: attendees?.interested ?? [] },
+  ].filter((group) => group.people.length > 0);
+  const attendeeCards =
+    !event || !attendees ? null : groups.length === 0 ? (
+      <View className="flex-row items-center gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+        <Ionicons name="people-outline" size={20} color="#A99C95" />
+        <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">{t("circles.noRsvpsYet")}</Text>
+      </View>
+    ) : (
+      groups.map((group) => (
+        <View key={group.key} className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+          <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">
+            {group.label} · {group.people.length}
+          </Text>
+          <View className="flex-row flex-wrap gap-4">
+            {group.people.map((person) => (
+              <Pressable
+                key={person.userId}
+                className="items-center gap-1"
+                style={{ width: 56 }}
+                onPress={() => router.push(`/(app)/user/${person.userId}`)}
+              >
+                <Avatar uri={person.avatarUrl} name={person.displayName} size={48} />
+                <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
+                  {person.displayName || t("common.member")}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      ))
+    );
+
+  // Desktop web: a large title row like the circle's own page, the event on the
+  // left (a date tile in the circle's topic colors, when and where, the
+  // description, RSVP) and on the right the circle (Join), then who is going and interested.
+  if (wide) {
+    const colors = CIRCLE_TOPIC_COLORS[topic];
+    const startsAt = event ? new Date(event.starts_at) : null;
+    return (
+      <ScrollView
+        className="flex-1 bg-primary-50 dark:bg-ink-950"
+        contentContainerClassName="gap-6 px-20 pb-10 pt-9"
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="flex-row items-center gap-4">
+          <Pressable
+            accessibilityLabel={t("common.back")}
+            hitSlop={8}
+            onPress={goBack}
+            className="h-10 w-10 items-center justify-center rounded-full web:hover:bg-white dark:web:hover:bg-ink-800"
+          >
+            <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
+          </Pressable>
+          <View className={`h-14 w-14 items-center justify-center rounded-2xl ${colors.bg}`}>
+            <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={26} color={colors.fg} />
+          </View>
+          <View className="flex-1 gap-1">
+            <Text className="font-display text-4xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
+              {event?.title ?? circle.name}
+            </Text>
+            <Text className="text-sm text-ink-400 dark:text-ink-300">{circle.name}</Text>
+          </View>
+        </View>
+
+        <View className="flex-row items-start gap-6">
+          <View className="max-w-[720px] flex-1 gap-4">
+            {event && startsAt ? (
+              <View className="gap-5 rounded-[22px] bg-white p-6 dark:bg-ink-800">
+                <View className="flex-row items-center gap-5">
+                  <View className={`h-[76px] w-[72px] items-center justify-center rounded-2xl ${colors.bg}`}>
+                    <Text className="text-xs font-bold uppercase tracking-wider" style={{ color: colors.fg }}>
+                      {format(startsAt, "MMM")}
+                    </Text>
+                    <Text className="text-3xl font-bold" style={{ color: colors.fg }}>
+                      {format(startsAt, "d")}
+                    </Text>
+                  </View>
+                  <View className="flex-1 gap-2">
+                    <View className="flex-row items-center gap-2">
+                      <Ionicons name="time-outline" size={18} color="#4A3F3A" />
+                      <Text className="text-base text-ink-900 dark:text-ink-50">
+                        {format(startsAt, "EEEE, MMMM d · h:mm a")}
+                      </Text>
+                    </View>
+                    {event.location ? (
+                      <View className="flex-row items-center gap-2">
+                        <Ionicons name="location-outline" size={18} color="#4A3F3A" />
+                        <Text className="text-base text-ink-900 dark:text-ink-50">{event.location}</Text>
+                      </View>
+                    ) : null}
+                  </View>
+                </View>
+                {event.description ? (
+                  <Text className="text-base text-ink-700 dark:text-ink-200">{event.description}</Text>
+                ) : null}
+                <View className="border-t border-[#F3E3D2] pt-4 dark:border-ink-700">{rsvpChips}</View>
+              </View>
+            ) : null}
+          </View>
+
+          <View className="w-[360px] gap-4">
+            <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+              <View className="flex-row items-center gap-3">
+                <View className={`h-11 w-11 items-center justify-center rounded-[14px] ${colors.bg}`}>
+                  <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={20} color={colors.fg} />
+                </View>
+                <View className="flex-1">
+                  <Text className="font-display text-xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
+                    {circle.name}
+                  </Text>
+                  <Text className="text-[13px] text-ink-400 dark:text-ink-300" numberOfLines={1}>
+                    {[t("circles.membersCount", { count: circle.member_count }), location].filter(Boolean).join(" · ")}
+                  </Text>
+                </View>
+              </View>
+              {circle.description ? (
+                <Text className="text-sm text-ink-700 dark:text-ink-200">{circle.description}</Text>
+              ) : null}
+              <Pressable
+                accessibilityRole="button"
+                disabled={isJoined || joinCircle.isPending}
+                onPress={() => {
+                  // Joined is a status, not a button: leaving is in the circle page's ⋯ menu.
+                  if (!isJoined) joinCircle.mutate(circle.id);
+                }}
+                className={`h-11 flex-row items-center justify-center gap-1.5 rounded-2xl ${
+                  isJoined
+                    ? "border border-primary-100 web:hover:bg-primary-100/40 dark:border-ink-700"
+                    : "bg-primary-500 web:hover:bg-primary-600"
+                }`}
+              >
+                {isJoined ? <Ionicons name="checkmark" size={18} color="#127A87" /> : null}
+                <Text className={`font-semibold ${isJoined ? "text-primary-600 dark:text-primary-400" : "text-white"}`}>
+                  {isJoined ? t("circles.joined") : t("circles.join")}
+                </Text>
+              </Pressable>
+            </View>
+
+            {attendeeCards}
+          </View>
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
-    <SafeAreaView className="flex-1 bg-coral-50 dark:bg-ink-950" edges={["left", "right"]}>
+    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <CircleHeader name={circle.name} topic={topic} onBack={goBack} />
 
-      <ScrollView className="flex-1" contentContainerClassName="gap-4 pb-10 pt-4">
-        <View className="gap-4 px-6">
-          <View className="flex-row items-center justify-between gap-3">
-            <Text className="flex-1 text-sm text-ink-400">
-              {t("circles.membersCount", { count: circle.member_count })}
-              {location ? ` · ${location}` : ""}
-            </Text>
-            <Chip
-              label={isJoined ? t("circles.joined") : t("circles.join")}
-              selected={isJoined}
-              disabled={joinCircle.isPending || leaveCircle.isPending}
-              onPress={() => {
-                if (isJoined) leaveCircle.mutate(circle.id);
-                else joinCircle.mutate(circle.id);
-              }}
-            />
-          </View>
-
-          {circle.description ? <Text className="text-base text-ink-700 dark:text-ink-200">{circle.description}</Text> : null}
-
-          {event ? (
-            <View className="gap-3 rounded-2xl border border-coral-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
-              <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{event.title}</Text>
-              <Text className="text-sm text-ink-700 dark:text-ink-200">
-                {format(new Date(event.starts_at), "EEE, MMM d · h:mm a")}
-                {event.location ? ` · ${event.location}` : ""}
-              </Text>
-              <SingleSelectChips
-                label={t("circles.rsvpLabel")}
-                options={RSVP_STATUSES.map((s) => ({ value: s.value, label: t(`circles.rsvp.${s.value}`) }))}
-                // event_rsvps.status is a text+check column (project convention, no
-                // native Postgres enum), so the generated type is plain `string`;
-                // the check constraint guarantees it's actually one of the 3 values.
-                value={rsvp?.status as RsvpStatus | undefined}
-                onChange={(status) => upsertRsvp.mutate(status)}
-              />
-            </View>
-          ) : null}
-
-          {membersPreview && membersPreview.length > 0 ? (
-            <View className="gap-2">
-              <View className="flex-row items-center justify-between">
-                <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{t("circles.members")}</Text>
-                <Pressable onPress={() => router.push(`/(app)/circles/${circle.id}/members`)}>
-                  <Text className="text-sm font-medium text-coral-600">
-                    {t("circles.seeAll", { count: circle.member_count })}
+      {/* The desktop page's cards in one column: the event (date tile, when and where,
+          description, RSVP), who is going and interested, then the circle (Join). */}
+      <ScrollView className="flex-1" contentContainerClassName="gap-4 px-4 pb-10 pt-4">
+        {event ? (
+          <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+            <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">{event.title}</Text>
+            <View className="flex-row items-center gap-4">
+              <View
+                className={`h-16 w-[60px] items-center justify-center rounded-2xl ${CIRCLE_TOPIC_COLORS[topic].bg}`}
+              >
+                <Text
+                  className="text-[11px] font-bold uppercase tracking-wider"
+                  style={{ color: CIRCLE_TOPIC_COLORS[topic].fg }}
+                >
+                  {format(new Date(event.starts_at), "MMM")}
+                </Text>
+                <Text className="text-2xl font-bold" style={{ color: CIRCLE_TOPIC_COLORS[topic].fg }}>
+                  {format(new Date(event.starts_at), "d")}
+                </Text>
+              </View>
+              <View className="flex-1 gap-1.5">
+                <View className="flex-row items-center gap-2">
+                  <Ionicons name="time-outline" size={16} color="#4A3F3A" />
+                  <Text className="flex-1 text-sm text-ink-900 dark:text-ink-50">
+                    {format(new Date(event.starts_at), "EEEE, MMM d · h:mm a")}
                   </Text>
-                </Pressable>
-              </View>
-              <View className="flex-row flex-wrap gap-4">
-                {membersPreview.map((member) => (
-                  <Pressable
-                    key={member.userId}
-                    className="items-center gap-1"
-                    style={{ width: 56 }}
-                    onPress={() => router.replace(`/(app)/user/${member.userId}`)}
-                  >
-                    <Avatar uri={member.avatarUrl} name={member.displayName} size={48} />
-                    <Text className="text-xs text-ink-700 dark:text-ink-200" numberOfLines={1}>
-                      {member.displayName || t("common.member")}
-                    </Text>
-                  </Pressable>
-                ))}
+                </View>
+                {event.location ? (
+                  <View className="flex-row items-center gap-2">
+                    <Ionicons name="location-outline" size={16} color="#4A3F3A" />
+                    <Text className="flex-1 text-sm text-ink-900 dark:text-ink-50">{event.location}</Text>
+                  </View>
+                ) : null}
               </View>
             </View>
-          ) : null}
-
-          <View className="mt-2">
-            <Button label={t("circles.meetMembers")} onPress={() => router.push(`/(app)/circles/${circle.id}/discover`)} />
+            {event.description ? (
+              <Text className="text-base text-ink-700 dark:text-ink-200">{event.description}</Text>
+            ) : null}
+            <View className="border-t border-[#F3E3D2] pt-4 dark:border-ink-700">{rsvpChips}</View>
           </View>
+        ) : null}
+
+        {attendeeCards}
+
+        <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+          <View className="flex-row items-center gap-3">
+            <View className="flex-1">
+              <Text className="font-display text-lg text-ink-900 dark:text-ink-50" numberOfLines={1}>
+                {circle.name}
+              </Text>
+              <Text className="text-[13px] text-ink-400 dark:text-ink-300" numberOfLines={1}>
+                {[t("circles.membersCount", { count: circle.member_count }), location].filter(Boolean).join(" · ")}
+              </Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              disabled={isJoined || joinCircle.isPending}
+              onPress={() => {
+                // Joined is a status, not a button: leaving is in the circle page's ⋯ menu.
+                if (!isJoined) joinCircle.mutate(circle.id);
+              }}
+              className={`h-9 flex-row items-center justify-center gap-1 rounded-full px-4 ${
+                isJoined ? "border border-primary-100 dark:border-ink-700" : "bg-primary-500"
+              }`}
+            >
+              {isJoined ? <Ionicons name="checkmark" size={16} color="#127A87" /> : null}
+              <Text
+                className={`text-sm font-semibold ${isJoined ? "text-primary-600 dark:text-primary-400" : "text-white"}`}
+              >
+                {isJoined ? t("circles.joined") : t("circles.join")}
+              </Text>
+            </Pressable>
+          </View>
+          {circle.description ? (
+            <Text className="text-sm text-ink-700 dark:text-ink-200">{circle.description}</Text>
+          ) : null}
         </View>
       </ScrollView>
     </SafeAreaView>

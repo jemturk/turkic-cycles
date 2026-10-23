@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { CONNECTION_TYPES } from "@/constants/connectionTypes";
+import { matchRegionOption, regionConfigFor } from "@/constants/countries";
 import { TRAVEL_FREQUENCIES, TRAVEL_STYLES } from "@/constants/interests";
 import { calculateAge } from "@/lib/age";
 
@@ -10,9 +11,11 @@ import { calculateAge } from "@/lib/age";
 export const onboardingStep1Schema = z.object({
   displayName: z.string().min(1, "Enter your name"),
   connectionTypes: z.array(z.enum(CONNECTION_TYPES)).min(1, "Select at least one"),
-  city: z.string().min(1),
-  state: z.string().min(1),
-  country: z.string().min(1),
+  city: z.string().trim().min(1, "Enter your city"),
+  // Required only for countries with a fixed state/province list -- see
+  // requireRegionForCountry, applied wherever this schema is used as a form.
+  state: z.string(),
+  country: z.string().min(1, "Select your country"),
   birthdate: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Enter a valid date")
@@ -20,6 +23,20 @@ export const onboardingStep1Schema = z.object({
     .refine((v) => calculateAge(v) <= 100, "Enter a valid birthdate"),
 });
 export type OnboardingStep1 = z.infer<typeof onboardingStep1Schema>;
+
+// State/province is required (and must be on the list) for countries whose
+// LocationFields show a picker -- US, Canada, Australia -- and optional elsewhere.
+// A separate refinement rather than part of onboardingStep1Schema itself: Zod
+// won't .merge() an object that already has refinements, and the profile-edit
+// schema merges this one.
+export function requireRegionForCountry(values: { country: string; state: string }, ctx: z.RefinementCtx) {
+  const region = regionConfigFor(values.country);
+  if (region.kind === "list" && !matchRegionOption(region.options, values.state)) {
+    ctx.addIssue({ code: "custom", path: ["state"], message: "Select one from the list" });
+  }
+}
+
+export const onboardingStep1FormSchema = onboardingStep1Schema.superRefine(requireRegionForCountry);
 
 // Onboarding step 2: languages, interests, hobbies, occupation.
 export const onboardingStep2Schema = z.object({

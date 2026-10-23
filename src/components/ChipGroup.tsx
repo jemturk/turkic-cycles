@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Chip } from "@/components/Chip";
 import { TextField } from "@/components/TextField";
+import type { TagTone } from "@/constants/tagTones";
 
 type Option<T extends string> = T | { value: T; label: string };
 
@@ -18,6 +19,8 @@ type ChipGroupProps<T extends string> = {
   /** Translates bare-string options (constants.<namespace>.<value>); object-shaped
    * options keep their own given label as-is. */
   namespace?: string;
+  /** Selected chips in this soft tint instead of solid teal (Edit profile). */
+  tone?: TagTone;
 };
 
 // Multi-select chip field. When `otherOption` is set, an extra "Other" chip
@@ -32,6 +35,7 @@ export function ChipGroup<T extends string>({
   otherOption,
   error,
   namespace,
+  tone,
 }: ChipGroupProps<T>) {
   const { t } = useTranslation();
   const normalize = (option: Option<T>): { value: T; label: string } =>
@@ -78,7 +82,7 @@ export function ChipGroup<T extends string>({
       <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{label}</Text>
       <View className="flex-row flex-wrap gap-2">
         {normalized.map((option) => (
-          <Chip
+          <Chip tone={tone}
             key={option.value}
             label={option.label}
             selected={value.includes(option.value)}
@@ -87,7 +91,7 @@ export function ChipGroup<T extends string>({
           />
         ))}
         {otherOption ? (
-          <Chip
+          <Chip tone={tone}
             label={t("constants.other")}
             selected={isOtherSelected}
             onPress={toggleOther}
@@ -98,7 +102,7 @@ export function ChipGroup<T extends string>({
       {otherOption && isOtherSelected ? (
         <TextField placeholder={otherOption.placeholder} value={customValue ?? ""} onChangeText={setOtherText} />
       ) : null}
-      {error ? <Text className="text-xs text-coral-600">{error}</Text> : null}
+      {error ? <Text className="text-xs text-accent-600">{error}</Text> : null}
     </View>
   );
 }

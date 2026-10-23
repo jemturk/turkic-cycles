@@ -2,24 +2,31 @@
   "expo": {
     "name": "Turkic Circles",
     "slug": "turanci",
-    "scheme": "turanci",
+    "scheme": "turek",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.turanci.app"
+      "supportsTablet": false,
+      "icon": "./assets/icon-ios.png",
+      "bundleIdentifier": "com.turek.app",
+      "usesAppleSignIn": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
-      "package": "com.turanci.app",
+      "package": "com.turek.app",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "backgroundColor": "#FDEDE5",
+        "backgroundColor": "#FCEAD6",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": ["android.permission.RECORD_AUDIO", "android.permission.SYSTEM_ALERT_WINDOW"]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -27,6 +34,8 @@
       "output": "single"
     },
     "plugins": [
+      "./plugins/withQuietLibraryWarnings",
+      "./plugins/withReleaseSigning",
       "expo-router",
       "expo-status-bar",
       "expo-font",
@@ -34,24 +43,41 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/splash-icon.png",
+          "image": "./assets/splash-blank.png",
           "imageWidth": 160,
           "resizeMode": "contain",
-          "backgroundColor": "#FDEDE5"
+          "backgroundColor": "#FEF6EC"
         }
       ],
       [
         "expo-image-picker",
         {
           "photosPermission": "Turkic Circles needs access to your photos so you can set a profile picture.",
-          "cameraPermission": "Turkic Circles needs access to your camera so you can take a profile picture."
+          "cameraPermission": "Turkic Circles needs access to your camera so you can take a profile picture.",
+          "microphonePermission": false
         }
       ],
       "expo-asset",
       [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#127A87"
+        }
+      ],
+      [
         "expo-location",
         {
           "locationWhenInUsePermission": "Turkic Circles uses your location to show circle events near you."
+        }
+      ],
+      "expo-web-browser",
+      [
+        "@sentry/react-native",
+        {
+          "url": "https://sentry.io/",
+          "organization": "turek",
+          "project": "turek"
         }
       ]
     ],

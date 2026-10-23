@@ -1,8 +1,11 @@
 {
   "tabs": {
     "circles": "Çemberler",
+    "discover": "Keşfet",
     "connections": "Bağlantılar",
     "search": "Ara",
+    "collapseSidebar": "Kenar çubuğunu daralt",
+    "expandSidebar": "Kenar çubuğunu genişlet",
     "chat": "Sohbet",
     "settings": "Ayarlar"
   },
@@ -13,13 +16,15 @@
     "alreadyHaveAccount": "Zaten hesabın var mı?",
     "logIn": "Giriş yap",
     "slide1Title": "Turkic Circles",
-    "slide1Body": "Türk ve Türk soylu toplulukları arasında anlamlı bağlantılar kurun — çemberlere katılın, insanlarla tanışın, bir yere ait olun.",
+    "slide1Body": "Yakınındaki Türk dünyasından insanlarla tanış, ait olduğun yeri bul.",
     "slide2Title": "Çemberlere Katıl",
-    "slide2Body": "Şehrine, kültürüne ve ilgi alanlarına göre oluşturulmuş topluluk gruplarına göz at ve katıl — günlük buluşmalardan iş ağlarına kadar.",
+    "slide2Body": "Şehrin, kültürün ve ilgi alanların için gruplar; takvimde gerçek buluşmalar.",
     "slide3Title": "Keşfet ve Bağlan",
-    "slide3Body": "Çemberlerindeki insanlarla arkadaşlık, romantik ilişki, iş ya da mentorluk için tanış — eşleştirme aradığın şeye göre uyarlanır.",
+    "slide3Body": "Çemberlerindeki insanlarla arkadaşlık, romantik ilişki, iş ya da mentorluk için tanış.",
+    "slideChatTitle": "Sohbet Et, Plan Yap",
+    "slideChatBody": "Yanıtla, tepki ver ve bir sonraki buluşmanı tek yerden planla.",
     "slide4Title": "Tasarım Gereği Güvenli",
-    "slide4Body": "Kimliğini doğrula, buluşmadan önce planlarını paylaş, istediğin kişiyi engelle ya da bildir — güvenliğin her zaman önce gelir."
+    "slide4Body": "Doğrulanmış üyeler, güvendiğin biriyle paylaşılan planlar; istediğin an engelle ya da bildir."
   },
   "auth": {
     "login": {
@@ -42,7 +47,11 @@
       "submit": "Hesap oluştur",
       "errorTitle": "Kayıt olunamadı",
       "checkEmailTitle": "E-postanı kontrol et",
-      "checkEmailBody": "{{email}} adresine bir onay bağlantısı gönderdik. Hesabını oluşturmayı tamamlamak için bağlantıyı aç."
+      "checkEmailBody": "{{email}} adresine bir onay bağlantısı gönderdik. Hesabını oluşturmayı tamamlamak için bağlantıyı aç.",
+      "agreePrefix": "Kaydolarak",
+      "terms": "Kullanım Koşullarını",
+      "agreeAnd": "ve",
+      "privacy": "Gizlilik Politikasını kabul etmiş olursun"
     },
     "forgotPassword": {
       "heading": "Şifreni sıfırla",
@@ -70,11 +79,20 @@
       "done": "E-posta doğrulandı! Seni içeri alıyoruz...",
       "invalidLink": "Bu onay bağlantısı geçersiz veya süresi dolmuş.",
       "backToLogin": "Girişe dön"
+    },
+    "social": {
+      "or": "veya",
+      "google": "Google ile devam et",
+      "errorTitle": "Giriş yapılamadı"
     }
   },
   "circles": {
     "subtitle": "Kendi insanlarını bul — senin için önemli olan konular etrafında kurulmuş çemberlere katıl.",
     "joined": "Katıldın",
+    "joinCircle": "Çembere katıl",
+    "leaveCircle": "Çemberden ayrıl",
+    "leaveConfirm": "{{name}} çemberinden ayrılmak istiyor musun? İstediğin zaman yeniden katılabilirsin.",
+    "leave": "Ayrıl",
     "join": "Katıl",
     "membersCount_one": "{{count}} üye",
     "membersCount_other": "{{count}} üye",
@@ -93,7 +111,15 @@
     "locationDenied": "Yakınındaki etkinlikleri görmek için konum erişimine izin ver.",
     "locationUnavailable": "Konumun alınamadı. Tekrar dene.",
     "noLocalCircles": "50 mil içinde henüz çember yok.",
+    "filterAll": "Tümü",
+    "filterJoined": "Katıldıklarım",
+    "nearMe": "Yakınımda",
+    "upcomingEvents": "Yaklaşan etkinlikler",
+    "noJoinedCircles": "Henüz hiçbir çembere katılmadın.",
     "meetMembers": "Üyelerle tanış",
+    "attendeesGoing": "Katılıyor",
+    "attendeesInterested": "İlgileniyor",
+    "noRsvpsYet": "Henüz kimse yanıt vermedi. İlk sen ol!",
     "members": "Üyeler",
     "seeAll": "Tümünü gör · {{count}}",
     "rsvpLabel": "Katılım durumu",
@@ -101,7 +127,29 @@
       "going": "Katılıyorum",
       "interested": "İlgileniyorum",
       "not_going": "Katılmıyorum"
-    }
+    },
+    "newCircle": "Yeni çember",
+    "newCircleTitle": "Yeni çember",
+    "circleName": "Çember adı",
+    "circleDescription": "Açıklama",
+    "circleTopic": "Konu",
+    "createCircle": "Çemberi oluştur",
+    "creating": "Oluşturuluyor…",
+    "createCircleError": "Çember oluşturulamadı",
+    "hostRequirements": "Çember ve etkinlik oluşturmak için Turkic Circles Plus ve doğrulanmış kimlik gerekir.",
+    "requirePlus": "Turkic Circles Plus",
+    "requireVerified": "Doğrulanmış kimlik",
+    "addEvent": "Etkinlik ekle",
+    "newEventTitle": "Yeni etkinlik",
+    "eventTitle": "Başlık",
+    "eventDescription": "Açıklama",
+    "eventLocation": "Yer",
+    "eventLocationPlaceholder": "Mekân, şehir",
+    "eventDate": "Tarih",
+    "eventTime": "Başlangıç saati (24 saat)",
+    "createEvent": "Etkinliği oluştur",
+    "createEventError": "Etkinlik oluşturulamadı",
+    "organizersOnly": "Etkinlikleri yalnızca bu çemberin sahipleri ve moderatörleri ekleyebilir."
   },
   "search": {
     "placeholder": "Çember ve kişi ara",
@@ -121,24 +169,67 @@
     "block": "Engelle",
     "itsAMatch": "Bu bir eşleşme!",
     "bothLiked": "Sen ve {{name}} birbirinizi beğendiniz.",
-    "keepExploring": "Keşfetmeye devam et"
+    "keepExploring": "Keşfetmeye devam et",
+    "globalEmpty": "Şu an keşfedecek yeni biri yok. Yakında tekrar bak.",
+    "skip": "Geç",
+    "swipeUpHint": "Geçmek için yukarı, geri dönmek için aşağı, beğenmek için sağa, geçmek için sola kaydır",
+    "previous": "Önceki kişi",
+    "gestureHint": "Sıradaki kişi için yukarı kaydır · beğenmek ya da geçmek için yana",
+    "undo": "Geri al",
+    "youLiked": "{{name}} beğenildi",
+    "youPassed": "{{name}} geçildi",
+    "youSaved": "{{name}} kaydedildi",
+    "undoFailed": "Bu artık geri alınamıyor.",
+    "removeConnection": "Bağlantıyı kaldır",
+    "removeConnectionTitle": "{{name}} kaldırılsın mı?",
+    "removeConnectionBody": "Sohbetiniz ikiniz için de silinecek ve birbirinizi Keşfet'te görmeyeceksiniz. Karşı tarafa bildirilmez.",
+    "removeConnectionConfirm": "Kaldır",
+    "removeConnectionFailed": "Bu bağlantı kaldırılamadı. Lütfen tekrar dene.",
+    "blockTitle": "{{name}} engellensin mi?",
+    "blockBody": "Uygulamanın hiçbir yerinde birbirinizi görmeyeceksiniz ve sana mesaj gönderemeyecek. Karşı tarafa bildirilmez. Engeli {{place}} bölümünden kaldırabilirsin.",
+    "blockFailed": "Engellenemedi. Lütfen tekrar dene."
   },
   "connections": {
     "matched": "Eşleşmeler",
     "connected": "Sohbetler",
-    "emptyMatched": "Henüz yeni eşleşmen yok — çemberlerinde keşfetmeye devam et.",
-    "emptyConnected": "Henüz bir konuşman yok — bir eşleşmene merhaba de."
+    "saved": "Kaydedilenler",
+    "emptyMatched": "Henüz yeni eşleşmen yok — keşfetmeye devam et.",
+    "emptyConnected": "Henüz bir konuşman yok — bir eşleşmene merhaba de.",
+    "emptySaved": "Henüz kimseyi kaydetmedin. Keşfet'te birini sonraya saklamak için yıldıza dokun.",
+    "likes": "Beğeniler",
+    "emptyLikes": "Henüz yeni beğeni yok. Biri seni beğendiğinde burada görünecek.",
+    "likesTeaser_one": "{{count}} kişi seni beğendi",
+    "likesTeaser_other": "{{count}} kişi seni beğendi",
+    "seeWhoLikesYou": "Seni kimlerin beğendiğini gör"
   },
   "chat": {
+    "typing": "yazıyor…",
     "empty": "Henüz bir konuşman yok.",
     "member": "Üye",
     "typeMessage": "Bir mesaj yaz...",
     "send": "Gönder",
-    "youMatched": "Eşleştiniz · {{date}}"
+    "reply": "Yanıtla",
+    "react": "Tepki ekle",
+    "replyingTo": "{{name}} kişisine yanıt",
+    "cancelReply": "Yanıtı iptal et",
+    "you": "Sen",
+    "viewProfile": "Profili gör",
+    "selectConversation": "Sohbete başlamak için bir konuşma seçin.",
+    "youMatched": "Eşleştiniz · {{date}}",
+    "contactTip": "Telefon numaranı veya e-postanı yalnızca güvendiğin kişilerle paylaş. Herkesi profilinden engelleyebilir veya şikâyet edebilirsin.",
+    "dismissTip": "İpucunu kapat",
+    "status": {
+      "sent": "Gönderildi",
+      "delivered": "İletildi",
+      "read": "Okundu"
+    },
+    "today": "Bugün",
+    "yesterday": "Dün"
   },
   "onboarding": {
     "next": "İleri",
     "saving": "Kaydediliyor...",
+    "saveErrorTitle": "Kaydedilemedi",
     "step1": {
       "heading": "Kendinden bahset",
       "subheading": "Temel bilgilerle başlayalım.",
@@ -171,6 +262,15 @@
     "step4": {
       "heading": "Birkaç soru daha",
       "finish": "Bitir"
+    },
+    "step5": {
+      "heading": "Fotoğraflarını ekle",
+      "subheading": "İnsanlar yüzlerle bağ kurar. Bir profil fotoğrafı ve bir kapak fotoğrafı ekle — Keşfet kartının arka planı.",
+      "profilePicture": "Profil fotoğrafı eklemek için dokun",
+      "morePhotos": "Diğer fotoğraflar",
+      "needProfilePicture": "Profil fotoğrafı",
+      "needPhoto": "Kapak fotoğrafı (Keşfet kartın)",
+      "errorTitle": "Kurulum tamamlanamadı"
     }
   },
   "avatar": {
@@ -197,10 +297,26 @@
     "removeErrorTitle": "Fotoğraf kaldırılamadı",
     "reorderErrorTitle": "Fotoğraflar yeniden sıralanamadı",
     "maxReachedTitle": "Maksimuma ulaştın",
-    "maxReachedBody": "En fazla {{max}} fotoğrafın olabilir. Yeni eklemek için birini kaldır."
+    "maxReachedBody": "En fazla {{max}} fotoğrafın olabilir. Yeni eklemek için birini kaldır.",
+    "coverBadge": "Kapak",
+    "coverNote": "İlk fotoğrafın Keşfet kartının arka planı olur. Değiştirmek için başka bir fotoğrafı ilk sıraya sürükle.",
+    "coverNoteEmpty": "İlk fotoğrafın Keşfet kartının arka planı olacak — seni iyi gösteren bir fotoğraf seç.",
+    "makeCover": "Kapak yap",
+    "coverNoteChoose": "Kapak fotoğrafın boş. Yüklemek için kapak alanındaki +'ya ya da fotoğraflarından birindeki “Kapak yap”a dokun.",
+    "addCover": "Kapak fotoğrafı ekle",
+    "addPhotos": "Fotoğraf ekle",
+    "previewTitle": "Keşfet kartın",
+    "previewBody": "Bu kapakla insanlar seni Keşfet'te böyle görecek.",
+    "previewConfirm": "Bu fotoğrafı kullan",
+    "coverRequiredTitle": "Önce bir kapak fotoğrafı ekle",
+    "coverRequiredBody": "Kapak fotoğrafın Keşfet kartının arka planıdır. Profilinden çıkmadan önce bir tane yükle ya da fotoğraflarından birinde “Kapak yap”a dokun.",
+    "previousPhoto": "Önceki fotoğraf",
+    "nextPhoto": "Sonraki fotoğraf",
+    "viewProfilePicture": "Profil fotoğrafını görüntüle"
   },
   "profile": {
     "addYourName": "Adını ekle",
+    "aboutMe": "Hakkımda",
     "languages": "Diller",
     "interests": "İlgi alanları",
     "hobbies": "Hobiler",
@@ -230,11 +346,13 @@
     "europeanCitizen": "Avrupa vatandaşı mısın?",
     "travelFrequency": "Ne sıklıkla seyahat edersin?",
     "travelStyle": "Seyahat tarzı",
-    "editProfileHeading": "Profili düzenle"
+    "editProfileHeading": "Profili düzenle",
+    "bioContactHint": "Telefon numarası ve e-posta gibi iletişim bilgileri biyografine konmaz. Bunları sohbette, güvendiğin kişilerle paylaş."
   },
   "common": {
     "member": "Üye",
     "back": "Geri",
+    "more": "Daha fazla",
     "cancel": "Vazgeç",
     "clear": "Temizle",
     "close": "Kapat",
@@ -246,7 +364,10 @@
     "dateOfBirth": "Doğum tarihi",
     "dayPlaceholder": "GG",
     "monthPlaceholder": "AA",
-    "yearPlaceholder": "YYYY"
+    "yearPlaceholder": "YYYY",
+    "hourPlaceholder": "SS",
+    "minutePlaceholder": "DD",
+    "ok": "Tamam"
   },
   "constants": {
     "connectionTypes": {
@@ -377,6 +498,8 @@
     "profileVisibility": "Profil görünürlüğü",
     "visible": "Görünür",
     "hidden": "Gizli",
+    "globalDiscover": "Beni Keşfet'te göster",
+    "globalDiscoverHint": "Çemberlerin dışındaki kişiler seni Keşfet sekmesinde bulabilsin.",
     "blockedUsers": "Engellenen kullanıcılar",
     "dataAndPrivacy": "Veri ve gizlilik",
     "notifications": "Bildirimler",
@@ -387,7 +510,8 @@
     "communityGuidelines": "Topluluk kuralları",
     "helpAndSupport": "Yardım ve destek",
     "logOut": "Çıkış yap",
-    "deleteAccountWarning": "Bu, hesabını silinmek üzere işaretler. Oturumun kapatılacak ve verilerin birkaç gün içinde kalıcı olarak kaldırılacak.",
+    "deleteAccountWarning": "Bu işlem hesabını, profilini, fotoğraflarını, bağlantılarını ve mesajlarını kalıcı olarak siler. Geri alınamaz.",
+    "deleteAccountFailed": "Hesabın silinemedi. Lütfen tekrar dene.",
     "cancel": "Vazgeç",
     "confirmDelete": "Evet, hesabımı sil",
     "deleteAccount": "Hesabı sil",
@@ -404,17 +528,23 @@
     "verificationScreen": {
       "heading": "Onaylı rozeti al",
       "subheading": "Onaylı üyeler her çemberde daha hızlı güvenilir — ve Turkic Circles'daki her konuşmanın gerçek olmasına yardımcı olur.",
-      "pendingReview": "İnceleniyor",
-      "pendingBody": "Başvurunu inceleyip rozetini yakında güncelleyeceğiz.",
+      "pendingReview": "Kimliğin kontrol ediliyor",
+      "pendingBody": "Stripe kimliğini ve özçekimini kontrol ediyor. Genellikle bir iki dakika sürer; biter bitmez rozetin görünür.",
       "verifiedBody": "Onaylandın ✓",
-      "selfieTitle": "Hızlıca bir selfie çek",
-      "selfieBody": "Profil fotoğraflarınla eşleştiriyoruz",
-      "idTitle": "Resmi bir kimlik belgesi yükle",
-      "idBody": "Pasaport, ehliyet veya kimlik kartı",
-      "required": "Zorunlu",
-      "disclaimer": "Kimliğin yalnızca selfie'nle eşleştiğini doğrulamak için kullanılır. Şimdilik manuel inceleme yapılıyor — gerçek kimlik doğrulaması (Stripe Identity) yakında geliyor.",
-      "submitting": "Gönderiliyor...",
-      "submit": "Bitirmek için kimlik yükle"
+      "selfieTitle": "Canlı bir özçekim çek",
+      "selfieBody": "Kimliğindeki fotoğrafla eşleştirilir",
+      "idTitle": "Resmî kimliğinin fotoğrafını çek",
+      "idBody": "Pasaport, ehliyet ya da kimlik kartı",
+      "disclaimer": "Doğrulamayı Stripe Identity yapar. Kimliğin ve özçekimin bize değil Stripe'a gider; biz yalnızca doğrulanıp doğrulanmadığını saklarız.",
+      "submitting": "Açılıyor…",
+      "submit": "Kimliğimi doğrula",
+      "retry": "Tekrar dene",
+      "resume": "Doğrulamaya devam et",
+      "failedBody": "Geçen sefer seni doğrulayamadık; örneğin fotoğraf net değildi ya da özçekim kimlikle eşleşmedi. Tekrar deneyebilirsin.",
+      "startFailed": "Doğrulama başlatılamadı",
+      "doneTitle": "Teşekkürler, tamamdır",
+      "doneBody": "Bu sayfayı kapatıp Turkic Circles'a dönebilirsin. Stripe kontrolü bitirir bitirmez Doğrulandı rozetin görünür.",
+      "doneButton": "Turkic Circles'a dön"
     },
     "matchingPreferencesScreen": {
       "heading": "Eşleştirme tercihleri",
@@ -441,7 +571,7 @@
       },
       "help": {
         "title": "Yardım ve destek",
-        "body": "Soruların veya sorunların mı var? Bu geçici bir destek sayfası — gerçek iletişim bilgileri gerçek bir destek kanalıyla birlikte gelecek."
+        "body": "Sorun, soru ya da önerin mi var? unturkk@gmail.com adresine yaz, en kısa sürede dönüş yapalım. Birini bildirmek için profilini ya da Güvenlik Merkezi'ni aç."
       },
       "privacy": {
         "title": "Veri ve gizlilik",
@@ -474,6 +604,7 @@
         "harassment": "Taciz veya istismar",
         "fake_profile": "Sahte profil",
         "inappropriate": "Uygunsuz içerik",
+        "child_safety": "Çocuk güvenliği (reşit olmayan biri)",
         "safety_concern": "Güvenlik endişesi",
         "other": "Diğer"
       }
@@ -492,12 +623,14 @@
       "checkInAfter": "Şu kadar dakika sonra kontrol et",
       "yourTrustedContact": "Güvenilir kişin",
       "theirNameFallback": "onun",
-      "willGetText": "{{contacts}} kişisine {{name}} ismini, konumu ve saati mesajla gönderilecek.",
-      "checkinNote": " {{time}} saatinde iyi olup olmadığını soracağız.",
-      "followUpNote": " Yanıt vermezsen takip edeceğiz. (SMS gönderimi şimdilik yer tutucu — henüz gerçek bir mesaj gönderilmiyor.)",
+      "willGetText": "Planları paylaş'a dokunduğunda Mesajlar uygulaman açılır ve {{contacts}} için kiminle, nerede ve ne zaman buluşacağını anlatan bir mesaj hazır olur. Sadece Gönder'e dokun.",
+      "checkinNote": " Saat {{time}} olduğunda haber vermeni hatırlatacağız.",
+      "followUpNote": " Haber vermezsen tekrar hatırlatırız ve Güvenlik Merkezi'nden tek dokunuşla kişilerini uyarabilirsin.",
       "sharing": "Paylaşılıyor...",
       "sharePlans": "Planları paylaş"
-    }
+    },
+    "privacyPolicy": "Gizlilik politikası",
+    "termsOfService": "Kullanım koşulları"
   },
   "branching": {
     "allSet": "Seçtiğin bağlantı türleri için başka cevaplanacak bir şey yok — hazırsın.",
@@ -517,5 +650,74 @@
       "academic_mentor": "Akademik mentorluk",
       "spiritual_mentor": "Manevi mentorluk"
     }
+  },
+  "location": {
+    "country": "Ülke",
+    "selectCountry": "Ülkeni seç",
+    "searchCountries": "Ülke ara",
+    "suggested": "Önerilen",
+    "allCountries": "Tüm ülkeler",
+    "city": "Şehir",
+    "state": "Eyalet",
+    "province": "Eyalet / bölge",
+    "stateTerritory": "Eyalet / bölge",
+    "select": "{{field}} seç",
+    "search": "Ara",
+    "regionOptional": "Eyalet / bölge (isteğe bağlı)",
+    "noResults": "\"{{query}}\" için sonuç yok"
+  },
+  "plus": {
+    "title": "Turkic Circles Plus",
+    "subheading": "Topluluktan daha fazlasını al — ve ayakta kalmasına yardım et.",
+    "seeLikes": "Seni kimlerin beğendiğini gör",
+    "seeLikesBody": "Seni beğenen herkes; sen de beğen, hemen eşleşin.",
+    "comingSoon": "Yakında",
+    "worldwide": "Başka ülkelerdeki insanları keşfet",
+    "filters": "Gelişmiş filtreler",
+    "moreLikes": "Daha fazla günlük beğeni",
+    "active": "Plus üyesisin",
+    "billingIssue": "Ödemende bir sorun var. Plus'ı korumak için mağaza hesabından güncelle.",
+    "renewsOn": "{{date}} tarihinde yenilenir veya sona erer",
+    "manage": "Aboneliği yönet",
+    "perMonth": "{{price}} / ay",
+    "perYear": "{{price}} / yıl",
+    "subscribe": "Abone ol",
+    "restore": "Satın alımları geri yükle",
+    "restored": "Plus aboneliğin geri yüklendi.",
+    "nothingToRestore": "Bu mağaza hesabında aktif bir Plus aboneliği bulunamadı.",
+    "autoRenewNote": "İptal edene kadar otomatik olarak yenilenir. İstediğin zaman mağaza hesabı ayarlarından iptal edebilirsin.",
+    "purchaseErrorTitle": "Satın alma tamamlanamadı",
+    "welcomeTitle": "Plus'a hoş geldin",
+    "welcomeBody": "Artık Bağlantılar'da seni kimlerin beğendiğini görebilirsin.",
+    "waitlistBody": "Plus burada henüz mevcut değil. Bekleme listesine katıl, hazır olduğunda sana haber verelim.",
+    "joinWaitlist": "Bekleme listesine katıl",
+    "joined": "Bekleme listesindesin",
+    "joinedBody": "Plus hazır olduğunda sana haber vereceğiz.",
+    "leaveWaitlist": "Bekleme listesinden çık",
+    "waitlistErrorTitle": "Bekleme listesi güncellenemedi",
+    "statusActive": "Aktif",
+    "statusWaitlisted": "Bekleme listesinde"
+  },
+  "safetyAlerts": {
+    "planText": "Merhaba, ben {{name}}. {{when}} tarihinde {{location}} konumunda {{meetingWith}} ile buluşuyorum. En geç {{checkIn}} itibarıyla haber vereceğim. O saate kadar benden haber alamazsan lütfen bana ulaşmaya çalış. (Turkic Circles'tan gönderildi)",
+    "alertText": "Ben {{name}}. {{when}} tarihinde {{location}} konumunda {{meetingWith}} ile buluştuktan sonra henüz haber veremedim. Lütfen bana ulaşmaya çalış; ulaşamazsan yerel acil servisleri aramayı düşün. (Turkic Circles'tan gönderildi)",
+    "reminderTitle": "Haber verme zamanı",
+    "reminderBody": "{{meetingWith}} ile buluşman nasıl geçti? Haber vermek için dokun.",
+    "overdueTitle": "Henüz haber vermedin",
+    "overdueBody": "İyi misin? Haber vermek ya da güvendiğin kişileri uyarmak için dokun.",
+    "yourPlans": "Planların",
+    "meeting": "{{name}} ile buluşma",
+    "checkInBy": "En geç {{time}} itibarıyla haber ver",
+    "overdueSince": "{{time}} itibarıyla haber verme gecikti",
+    "checkIn": "İyiyim, haber ver",
+    "alertContacts": "Kişilerimi uyar",
+    "cancelPlan": "Planı iptal et",
+    "cantTextTitle": "Mesajlar açılamıyor",
+    "cantTextBody": "Bu cihaz SMS gönderemiyor. Lütfen güvendiğin kişilere başka bir yolla ulaş."
+  },
+  "photos": {
+    "rejected": "Bu fotoğraf kullanılamaz. Fotoğraflarda çıplaklık, aşırı açık görüntü, cinsel içerik veya şiddet olamaz (topluluk kurallarımıza bak). Lütfen başka bir fotoğraf seç.",
+    "checkFailed": "Bu fotoğrafı şu anda kontrol edemedik. Lütfen birazdan tekrar dene.",
+    "tooManyTries": "Kısa sürede çok sayıda fotoğraf denedin. Lütfen yenisini eklemeden önce bir süre bekle."
   }
 }

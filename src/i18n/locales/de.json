@@ -1,8 +1,11 @@
 {
   "tabs": {
     "circles": "Kreise",
+    "discover": "Entdecken",
     "connections": "Verbindungen",
     "search": "Suche",
+    "collapseSidebar": "Seitenleiste einklappen",
+    "expandSidebar": "Seitenleiste ausklappen",
     "chat": "Chat",
     "settings": "Einstellungen"
   },
@@ -13,13 +16,15 @@
     "alreadyHaveAccount": "Du hast bereits ein Konto?",
     "logIn": "Anmelden",
     "slide1Title": "Turkic Circles",
-    "slide1Body": "Bedeutungsvolle Verbindungen innerhalb der turksprachigen und turknahen Gemeinschaft — tritt Kreisen bei, lerne Menschen kennen, finde deinen Platz.",
+    "slide1Body": "Lerne Menschen aus der turksprachigen Welt in deiner Nähe kennen und finde deinen Platz.",
     "slide2Title": "Kreisen beitreten",
-    "slide2Body": "Entdecke und tritt Gemeinschaftsgruppen bei, die auf deiner Stadt, Kultur und deinen Interessen basieren — von zwanglosen Treffen bis zu Business-Netzwerken.",
+    "slide2Body": "Gruppen für deine Stadt, Kultur und Interessen, mit echten Treffen im Kalender.",
     "slide3Title": "Entdecken & Verbinden",
-    "slide3Body": "Lerne Menschen in deinen Kreisen kennen — für Freundschaft, Romantik, Business oder Mentoring — das Matching passt sich dem an, wonach du suchst.",
+    "slide3Body": "Lerne Menschen in deinen Kreisen kennen: für Freundschaft, Romantik, Business oder Mentoring.",
+    "slideChatTitle": "Chatten & Planen",
+    "slideChatBody": "Antworte, reagiere und plane dein nächstes Treffen, alles an einem Ort.",
     "slide4Title": "Sicher von Anfang an",
-    "slide4Body": "Lass dich verifizieren, teile deine Pläne vor einem Treffen und blockiere oder melde jeden — deine Sicherheit steht immer an erster Stelle."
+    "slide4Body": "Verifizierte Mitglieder, Pläne mit einer Vertrauensperson geteilt, und jederzeit blockieren oder melden."
   },
   "auth": {
     "login": {
@@ -42,7 +47,11 @@
       "submit": "Konto erstellen",
       "errorTitle": "Registrierung fehlgeschlagen",
       "checkEmailTitle": "Prüfe deine E-Mails",
-      "checkEmailBody": "Wir haben einen Bestätigungslink an {{email}} gesendet. Öffne ihn, um dein Konto fertig einzurichten."
+      "checkEmailBody": "Wir haben einen Bestätigungslink an {{email}} gesendet. Öffne ihn, um dein Konto fertig einzurichten.",
+      "agreePrefix": "Mit der Registrierung stimmst du unseren",
+      "terms": "Nutzungsbedingungen",
+      "agreeAnd": "und der",
+      "privacy": "Datenschutzerklärung zu"
     },
     "forgotPassword": {
       "heading": "Passwort zurücksetzen",
@@ -70,11 +79,20 @@
       "done": "E-Mail bestätigt! Du wirst weitergeleitet...",
       "invalidLink": "Dieser Bestätigungslink ist ungültig oder abgelaufen.",
       "backToLogin": "Zurück zur Anmeldung"
+    },
+    "social": {
+      "or": "oder",
+      "google": "Weiter mit Google",
+      "errorTitle": "Anmeldung fehlgeschlagen"
     }
   },
   "circles": {
     "subtitle": "Finde deine Leute — tritt Kreisen bei, die sich um das drehen, was dir wichtig ist.",
     "joined": "Beigetreten",
+    "joinCircle": "Kreis beitreten",
+    "leaveCircle": "Kreis verlassen",
+    "leaveConfirm": "{{name}} verlassen? Du kannst jederzeit wieder beitreten.",
+    "leave": "Verlassen",
     "join": "Beitreten",
     "membersCount_one": "{{count}} Mitglied",
     "membersCount_other": "{{count}} Mitglieder",
@@ -93,7 +111,15 @@
     "locationDenied": "Erlaube den Standortzugriff, um Veranstaltungen in deiner Nähe zu sehen.",
     "locationUnavailable": "Standort konnte nicht ermittelt werden. Versuch es noch einmal.",
     "noLocalCircles": "Noch keine Kreise im Umkreis von 50 Meilen.",
+    "filterAll": "Alle",
+    "filterJoined": "Beigetreten",
+    "nearMe": "In der Nähe",
+    "upcomingEvents": "Anstehende Veranstaltungen",
+    "noJoinedCircles": "Du bist noch keinem Kreis beigetreten.",
     "meetMembers": "Mitglieder kennenlernen",
+    "attendeesGoing": "Zusagen",
+    "attendeesInterested": "Interessiert",
+    "noRsvpsYet": "Noch hat niemand geantwortet. Sei die erste Person!",
     "members": "Mitglieder",
     "seeAll": "Alle {{count}} ansehen",
     "rsvpLabel": "Zusage",
@@ -101,7 +127,29 @@
       "going": "Ich komme",
       "interested": "Interessiert",
       "not_going": "Ich komme nicht"
-    }
+    },
+    "newCircle": "Neuer Kreis",
+    "newCircleTitle": "Neuer Kreis",
+    "circleName": "Name des Kreises",
+    "circleDescription": "Beschreibung",
+    "circleTopic": "Thema",
+    "createCircle": "Kreis erstellen",
+    "creating": "Wird erstellt…",
+    "createCircleError": "Kreis konnte nicht erstellt werden",
+    "hostRequirements": "Zum Erstellen von Kreisen und Veranstaltungen brauchst du Turkic Circles Plus und eine verifizierte Identität.",
+    "requirePlus": "Turkic Circles Plus",
+    "requireVerified": "Verifizierte Identität",
+    "addEvent": "Veranstaltung hinzufügen",
+    "newEventTitle": "Neue Veranstaltung",
+    "eventTitle": "Titel",
+    "eventDescription": "Beschreibung",
+    "eventLocation": "Ort",
+    "eventLocationPlaceholder": "Lokal, Stadt",
+    "eventDate": "Datum",
+    "eventTime": "Beginn (24 Std.)",
+    "createEvent": "Veranstaltung erstellen",
+    "createEventError": "Veranstaltung konnte nicht erstellt werden",
+    "organizersOnly": "Nur Inhaber und Moderatoren dieses Kreises können Veranstaltungen hinzufügen."
   },
   "search": {
     "placeholder": "Kreise und Personen suchen",
@@ -121,24 +169,67 @@
     "block": "Blockieren",
     "itsAMatch": "Es ist ein Match!",
     "bothLiked": "Du und {{name}} habt euch gegenseitig gemocht.",
-    "keepExploring": "Weiter entdecken"
+    "keepExploring": "Weiter entdecken",
+    "globalEmpty": "Gerade niemand Neues zu entdecken. Schau bald wieder vorbei.",
+    "skip": "Überspringen",
+    "swipeUpHint": "Nach oben zum Überspringen, nach unten zum Zurückgehen, nach rechts zum Liken, nach links zum Passen",
+    "previous": "Vorherige Person",
+    "gestureHint": "Nach oben wischen für die nächste Person · zur Seite zum Liken oder Passen",
+    "undo": "Rückgängig",
+    "youLiked": "Du hast {{name}} geliked",
+    "youPassed": "Du hast {{name}} übersprungen",
+    "youSaved": "Du hast {{name}} gespeichert",
+    "undoFailed": "Das kann nicht mehr rückgängig gemacht werden.",
+    "removeConnection": "Verbindung entfernen",
+    "removeConnectionTitle": "{{name}} entfernen?",
+    "removeConnectionBody": "Euer Chat wird für euch beide gelöscht, und ihr seht euch nicht mehr unter Entdecken. Die andere Person wird nicht benachrichtigt.",
+    "removeConnectionConfirm": "Entfernen",
+    "removeConnectionFailed": "Die Verbindung konnte nicht entfernt werden. Bitte versuche es erneut.",
+    "blockTitle": "{{name}} blockieren?",
+    "blockBody": "Ihr seht euch nirgends mehr in der App, und die Person kann dir keine Nachrichten senden. Sie wird nicht benachrichtigt. Du kannst die Blockierung unter {{place}} aufheben.",
+    "blockFailed": "Blockieren fehlgeschlagen. Bitte versuche es erneut."
   },
   "connections": {
     "matched": "Gematcht",
     "connected": "Verbunden",
-    "emptyMatched": "Noch keine neuen Matches — entdecke weiter in deinen Kreisen.",
-    "emptyConnected": "Noch keine Unterhaltungen — sag doch Hallo zu einem Match."
+    "saved": "Gemerkt",
+    "emptyMatched": "Noch keine neuen Matches — entdecke weiter.",
+    "emptyConnected": "Noch keine Unterhaltungen — sag doch Hallo zu einem Match.",
+    "emptySaved": "Noch niemand gemerkt. Tippe in Entdecken auf den Stern, um jemanden für später hier zu behalten.",
+    "likes": "Likes",
+    "emptyLikes": "Noch keine neuen Likes. Wenn dich jemand liked, erscheint die Person hier.",
+    "likesTeaser_one": "{{count}} Person mag dich",
+    "likesTeaser_other": "{{count}} Personen mögen dich",
+    "seeWhoLikesYou": "Sieh, wer dich mag"
   },
   "chat": {
+    "typing": "schreibt…",
     "empty": "Noch keine Unterhaltungen.",
     "member": "Mitglied",
     "typeMessage": "Nachricht schreiben...",
     "send": "Senden",
-    "youMatched": "Ihr habt gematcht · {{date}}"
+    "reply": "Antworten",
+    "react": "Reaktion hinzufügen",
+    "replyingTo": "Antwort an {{name}}",
+    "cancelReply": "Antwort abbrechen",
+    "you": "Du",
+    "viewProfile": "Profil ansehen",
+    "selectConversation": "Wähle eine Unterhaltung aus, um zu chatten.",
+    "youMatched": "Ihr habt gematcht · {{date}}",
+    "contactTip": "Teile deine Telefonnummer oder E-Mail nur mit Menschen, denen du vertraust. Du kannst jede Person über ihr Profil blockieren oder melden.",
+    "dismissTip": "Hinweis schließen",
+    "status": {
+      "sent": "Gesendet",
+      "delivered": "Zugestellt",
+      "read": "Gelesen"
+    },
+    "today": "Heute",
+    "yesterday": "Gestern"
   },
   "onboarding": {
     "next": "Weiter",
     "saving": "Wird gespeichert...",
+    "saveErrorTitle": "Speichern fehlgeschlagen",
     "step1": {
       "heading": "Erzähl uns von dir",
       "subheading": "Fangen wir mit dem Wichtigsten an.",
@@ -171,6 +262,15 @@
     "step4": {
       "heading": "Noch ein paar Fragen",
       "finish": "Fertig"
+    },
+    "step5": {
+      "heading": "Füge deine Fotos hinzu",
+      "subheading": "Menschen verbinden sich über Gesichter. Füge ein Profilbild und ein Titelbild hinzu – den Hintergrund deiner Entdecken-Karte.",
+      "profilePicture": "Tippe, um ein Profilbild hinzuzufügen",
+      "morePhotos": "Weitere Fotos",
+      "needProfilePicture": "Profilbild",
+      "needPhoto": "Titelbild (deine Entdecken-Karte)",
+      "errorTitle": "Einrichtung konnte nicht abgeschlossen werden"
     }
   },
   "avatar": {
@@ -197,10 +297,26 @@
     "removeErrorTitle": "Foto konnte nicht entfernt werden",
     "reorderErrorTitle": "Fotos konnten nicht neu sortiert werden",
     "maxReachedTitle": "Maximum erreicht",
-    "maxReachedBody": "Du kannst bis zu {{max}} Fotos haben. Entferne eins, um ein weiteres hinzuzufügen."
+    "maxReachedBody": "Du kannst bis zu {{max}} Fotos haben. Entferne eins, um ein weiteres hinzuzufügen.",
+    "coverBadge": "Titelbild",
+    "coverNote": "Dein erstes Foto ist der Hintergrund deiner Entdecken-Karte. Zieh ein anderes Foto an die erste Stelle, um es zu ändern.",
+    "coverNoteEmpty": "Dein erstes Foto wird der Hintergrund deiner Entdecken-Karte – wähle eines, das dich gut zeigt.",
+    "makeCover": "Als Titelbild",
+    "coverNoteChoose": "Dein Titelbild fehlt. Tippe auf + im Titelbild-Feld, um eins hochzuladen, oder auf „Als Titelbild“ bei einem deiner Fotos.",
+    "addCover": "Titelbild hinzufügen",
+    "addPhotos": "Fotos hinzufügen",
+    "previewTitle": "Deine Entdecken-Karte",
+    "previewBody": "So sehen dich andere mit diesem Titelbild in Entdecken.",
+    "previewConfirm": "Dieses Foto verwenden",
+    "coverRequiredTitle": "Füge zuerst ein Titelbild hinzu",
+    "coverRequiredBody": "Dein Titelbild ist der Hintergrund deiner Entdecken-Karte. Lade eins hoch oder tippe bei einem deiner Fotos auf „Als Titelbild“, bevor du dein Profil verlässt.",
+    "previousPhoto": "Vorheriges Foto",
+    "nextPhoto": "Nächstes Foto",
+    "viewProfilePicture": "Profilbild ansehen"
   },
   "profile": {
     "addYourName": "Füge deinen Namen hinzu",
+    "aboutMe": "Über mich",
     "languages": "Sprachen",
     "interests": "Interessen",
     "hobbies": "Hobbys",
@@ -230,11 +346,13 @@
     "europeanCitizen": "Europäischer Staatsbürger?",
     "travelFrequency": "Wie oft reist du?",
     "travelStyle": "Reisestil",
-    "editProfileHeading": "Profil bearbeiten"
+    "editProfileHeading": "Profil bearbeiten",
+    "bioContactHint": "Kontaktdaten wie Telefonnummern und E-Mails gehören nicht in deine Bio. Teile sie im Chat mit Menschen, denen du vertraust."
   },
   "common": {
     "member": "Mitglied",
     "back": "Zurück",
+    "more": "Mehr",
     "cancel": "Abbrechen",
     "clear": "Löschen",
     "close": "Schließen",
@@ -246,7 +364,10 @@
     "dateOfBirth": "Geburtsdatum",
     "dayPlaceholder": "TT",
     "monthPlaceholder": "MM",
-    "yearPlaceholder": "JJJJ"
+    "yearPlaceholder": "JJJJ",
+    "hourPlaceholder": "HH",
+    "minutePlaceholder": "MM",
+    "ok": "OK"
   },
   "constants": {
     "connectionTypes": {
@@ -377,6 +498,8 @@
     "profileVisibility": "Profilsichtbarkeit",
     "visible": "Sichtbar",
     "hidden": "Verborgen",
+    "globalDiscover": "Mich in Entdecken zeigen",
+    "globalDiscoverHint": "Menschen außerhalb deiner Kreise können dich im Tab „Entdecken“ finden.",
     "blockedUsers": "Blockierte Nutzer",
     "dataAndPrivacy": "Daten & Datenschutz",
     "notifications": "Benachrichtigungen",
@@ -387,7 +510,8 @@
     "communityGuidelines": "Community-Richtlinien",
     "helpAndSupport": "Hilfe & Support",
     "logOut": "Abmelden",
-    "deleteAccountWarning": "Dadurch wird dein Konto zur Löschung vorgemerkt. Du wirst abgemeldet, und deine Daten werden innerhalb weniger Tage endgültig gelöscht.",
+    "deleteAccountWarning": "Dadurch werden dein Konto, Profil, Fotos, Verbindungen und Nachrichten dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden.",
+    "deleteAccountFailed": "Dein Konto konnte nicht gelöscht werden. Bitte versuche es erneut.",
     "cancel": "Abbrechen",
     "confirmDelete": "Ja, mein Konto löschen",
     "deleteAccount": "Konto löschen",
@@ -404,17 +528,23 @@
     "verificationScreen": {
       "heading": "Das Verifiziert-Abzeichen erhalten",
       "subheading": "Verifizierte Mitglieder genießen in jedem Kreis schneller Vertrauen — und das hält jede Unterhaltung auf Turkic Circles echt.",
-      "pendingReview": "Prüfung ausstehend",
-      "pendingBody": "Wir prüfen deine Einreichung und aktualisieren dein Abzeichen bald.",
+      "pendingReview": "Dein Ausweis wird geprüft",
+      "pendingBody": "Stripe prüft deinen Ausweis und dein Selfie. Das dauert meist ein, zwei Minuten; dein Abzeichen erscheint, sobald es fertig ist.",
       "verifiedBody": "Du bist verifiziert ✓",
-      "selfieTitle": "Mach ein kurzes Selfie",
-      "selfieBody": "Wir gleichen es mit deinen Profilfotos ab",
-      "idTitle": "Amtlichen Ausweis hochladen",
+      "selfieTitle": "Mach ein Live-Selfie",
+      "selfieBody": "Wird mit dem Foto auf deinem Ausweis abgeglichen",
+      "idTitle": "Fotografiere einen amtlichen Ausweis",
       "idBody": "Reisepass, Führerschein oder Personalausweis",
-      "required": "Erforderlich",
-      "disclaimer": "Dein Ausweis dient nur dazu, deinen Selfie-Abgleich zu bestätigen. Derzeit erfolgt eine manuelle Prüfung — echte ID-Verifizierung (Stripe Identity) folgt bald.",
-      "submitting": "Wird gesendet...",
-      "submit": "Ausweis hochladen und abschließen"
+      "disclaimer": "Die Verifizierung übernimmt Stripe Identity. Ausweis und Selfie gehen an Stripe, nicht an uns; wir speichern nur, ob du verifiziert bist.",
+      "submitting": "Wird geöffnet…",
+      "submit": "Identität verifizieren",
+      "retry": "Erneut versuchen",
+      "resume": "Verifizierung fortsetzen",
+      "failedBody": "Wir konnten dich beim letzten Mal nicht verifizieren, zum Beispiel weil das Foto unscharf war oder das Selfie nicht zum Ausweis passte. Du kannst es erneut versuchen.",
+      "startFailed": "Verifizierung konnte nicht gestartet werden",
+      "doneTitle": "Danke, alles erledigt",
+      "doneBody": "Du kannst diese Seite schließen und zu Turkic Circles zurückkehren. Dein Verifiziert-Abzeichen erscheint, sobald Stripe fertig ist.",
+      "doneButton": "Zurück zu Turkic Circles"
     },
     "matchingPreferencesScreen": {
       "heading": "Matching-Einstellungen",
@@ -441,7 +571,7 @@
       },
       "help": {
         "title": "Hilfe & Support",
-        "body": "Fragen oder Probleme? Dies ist eine Platzhalter-Support-Seite — echte Kontaktdaten folgen zusammen mit einem echten Support-Kanal."
+        "body": "Fragen, Probleme oder Feedback? Schreib uns an unturkk@gmail.com, wir melden uns so schnell wie möglich. Um jemanden zu melden, öffne das Profil oder das Sicherheitscenter."
       },
       "privacy": {
         "title": "Daten & Datenschutz",
@@ -474,6 +604,7 @@
         "harassment": "Belästigung oder Missbrauch",
         "fake_profile": "Gefälschtes Profil",
         "inappropriate": "Unangemessene Inhalte",
+        "child_safety": "Kinderschutz (betrifft Minderjährige)",
         "safety_concern": "Sicherheitsbedenken",
         "other": "Sonstiges"
       }
@@ -492,12 +623,14 @@
       "checkInAfter": "Check-in nach (Minuten)",
       "yourTrustedContact": "Deine Vertrauensperson",
       "theirNameFallback": "ihren",
-      "willGetText": "{{contacts}} erhält/erhalten {{name}} Namen, den Ort und die Uhrzeit per SMS.",
-      "checkinNote": " Wir fragen um {{time}}, ob bei dir alles in Ordnung ist.",
-      "followUpNote": " Falls du nicht antwortest, melden wir uns nach. (Der SMS-Versand ist aktuell nur simuliert — es wird noch keine Nachricht tatsächlich gesendet.)",
+      "willGetText": "Wenn du auf Pläne teilen tippst, öffnet sich deine Nachrichten-App mit einer SMS an {{contacts}}: wen du triffst, wo und wann. Tippe einfach auf Senden.",
+      "checkinNote": " Um {{time}} erinnern wir dich, dich zu melden.",
+      "followUpNote": " Wenn nicht, erinnern wir dich erneut, und du kannst deine Kontakte im Sicherheitscenter mit einem Tippen benachrichtigen.",
       "sharing": "Wird geteilt...",
       "sharePlans": "Pläne teilen"
-    }
+    },
+    "privacyPolicy": "Datenschutzerklärung",
+    "termsOfService": "Nutzungsbedingungen"
   },
   "branching": {
     "allSet": "Für die gewählten Verbindungsarten gibt es nichts weiter zu beantworten — du bist startklar.",
@@ -517,5 +650,74 @@
       "academic_mentor": "Akademisches Mentoring",
       "spiritual_mentor": "Spirituelles Mentoring"
     }
+  },
+  "location": {
+    "country": "Land",
+    "selectCountry": "Wähle dein Land",
+    "searchCountries": "Länder suchen",
+    "suggested": "Vorschläge",
+    "allCountries": "Alle Länder",
+    "city": "Stadt",
+    "state": "Bundesstaat",
+    "province": "Provinz / Territorium",
+    "stateTerritory": "Bundesstaat / Territorium",
+    "select": "{{field}} wählen",
+    "search": "Suchen",
+    "regionOptional": "Bundesland / Region (optional)",
+    "noResults": "Keine Treffer für „{{query}}“"
+  },
+  "plus": {
+    "title": "Turkic Circles Plus",
+    "subheading": "Hol mehr aus der Community heraus – und hilf, sie am Laufen zu halten.",
+    "seeLikes": "Sieh, wer dich mag",
+    "seeLikesBody": "Alle, die dich geliked haben – like zurück und ihr matcht sofort.",
+    "comingSoon": "Demnächst",
+    "worldwide": "Menschen in anderen Ländern entdecken",
+    "filters": "Erweiterte Filter",
+    "moreLikes": "Mehr tägliche Likes",
+    "active": "Du hast Plus",
+    "billingIssue": "Es gibt ein Problem mit deiner Zahlung. Aktualisiere sie in deinem Store-Konto, um Plus zu behalten.",
+    "renewsOn": "Verlängert sich oder endet am {{date}}",
+    "manage": "Abo verwalten",
+    "perMonth": "{{price}} / Monat",
+    "perYear": "{{price}} / Jahr",
+    "subscribe": "Abonnieren",
+    "restore": "Käufe wiederherstellen",
+    "restored": "Dein Plus-Abo wurde wiederhergestellt.",
+    "nothingToRestore": "Für dieses Store-Konto wurde kein aktives Plus-Abo gefunden.",
+    "autoRenewNote": "Verlängert sich automatisch, bis du kündigst. Jederzeit in den Einstellungen deines Store-Kontos kündbar.",
+    "purchaseErrorTitle": "Kauf konnte nicht abgeschlossen werden",
+    "welcomeTitle": "Willkommen bei Plus",
+    "welcomeBody": "Unter Verbindungen siehst du jetzt, wer dich mag.",
+    "waitlistBody": "Plus ist hier noch nicht verfügbar. Trag dich in die Warteliste ein und wir melden uns, sobald es so weit ist.",
+    "joinWaitlist": "Auf die Warteliste",
+    "joined": "Du stehst auf der Warteliste",
+    "joinedBody": "Wir melden uns, sobald Plus verfügbar ist.",
+    "leaveWaitlist": "Warteliste verlassen",
+    "waitlistErrorTitle": "Warteliste konnte nicht aktualisiert werden",
+    "statusActive": "Aktiv",
+    "statusWaitlisted": "Auf der Warteliste"
+  },
+  "safetyAlerts": {
+    "planText": "Hallo, hier ist {{name}}. Ich treffe {{meetingWith}} am {{when}} hier: {{location}}. Ich melde mich spätestens um {{checkIn}}. Wenn du bis dahin nichts von mir hörst, versuch bitte, mich zu erreichen. (Gesendet von Turkic Circles)",
+    "alertText": "Hier ist {{name}}. Ich habe mich nach dem Treffen mit {{meetingWith}} am {{when}} ({{location}}) noch nicht gemeldet. Bitte versuch, mich zu erreichen, und wenn das nicht klappt, ruf den örtlichen Notruf. (Gesendet von Turkic Circles)",
+    "reminderTitle": "Zeit, dich zu melden",
+    "reminderBody": "Wie war es mit {{meetingWith}}? Tippe, um dich zu melden.",
+    "overdueTitle": "Du hast dich noch nicht gemeldet",
+    "overdueBody": "Alles okay? Tippe, um dich zu melden oder deine Vertrauenspersonen zu benachrichtigen.",
+    "yourPlans": "Deine Pläne",
+    "meeting": "Treffen mit {{name}}",
+    "checkInBy": "Melde dich bis {{time}}",
+    "overdueSince": "Meldung überfällig seit {{time}}",
+    "checkIn": "Mir geht's gut",
+    "alertContacts": "Kontakte benachrichtigen",
+    "cancelPlan": "Plan absagen",
+    "cantTextTitle": "Nachrichten lässt sich nicht öffnen",
+    "cantTextBody": "Dieses Gerät kann keine SMS senden. Bitte erreiche deine Vertrauenspersonen auf anderem Weg."
+  },
+  "photos": {
+    "rejected": "Dieses Foto kann nicht verwendet werden. Fotos dürfen keine Nacktheit zeigen, nicht zu freizügig sein und keine sexuellen Inhalte oder drastische Gewalt enthalten (siehe unsere Community-Regeln). Bitte wähle ein anderes.",
+    "checkFailed": "Wir konnten dieses Foto gerade nicht prüfen. Bitte versuche es gleich noch einmal.",
+    "tooManyTries": "Du hast in kurzer Zeit sehr viele Fotos ausprobiert. Bitte warte eine Weile, bevor du ein weiteres hinzufügst."
   }
 }
