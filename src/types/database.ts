@@ -880,6 +880,12 @@ export type Database = {
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
       is_test_account: { Args: never; Returns: boolean }
       is_visible_person: { Args: { target: string }; Returns: boolean }
+      list_circle_discover_candidates: {
+        Args: { target_circle: string }
+        Returns: {
+          user_id: string
+        }[]
+      }
       list_global_discover_candidates: {
         Args: { max_count?: number }
         Returns: {
@@ -893,6 +899,10 @@ export type Database = {
           liked_at: string
           user_id: string
         }[]
+      }
+      passes_discover_filters: {
+        Args: { target: string; viewer: string }
+        Returns: boolean
       }
       pending_incoming_likes: {
         Args: never

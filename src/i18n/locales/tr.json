@@ -548,7 +548,7 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Eşleştirme tercihleri",
-      "notWiredUp": "Bunlar henüz Keşfet'i filtrelemiyor — bağlandığında kullanılmak üzere kaydediliyor.",
+      "filtersNote": "Yaş ve diller Keşfet'i iki yönlü filtreler: aralığınızdaki ve sizi de görecek kişileri görürsünüz. Mesafe henüz kullanılmıyor.",
       "ageMin": "En düşük yaş",
       "ageMax": "En yüksek yaş",
       "maxDistance": "Maksimum mesafe (mil)",

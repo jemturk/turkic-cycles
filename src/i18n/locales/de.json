@@ -548,7 +548,7 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Matching-Einstellungen",
-      "notWiredUp": "Diese filtern Discover noch nicht — sie werden gespeichert, bis das eingerichtet ist.",
+      "filtersNote": "Alter und Sprachen filtern Entdecken in beide Richtungen: Du siehst Menschen in deinem Bereich, die auch dich sehen würden. Die Entfernung wird noch nicht verwendet.",
       "ageMin": "Alter min.",
       "ageMax": "Alter max.",
       "maxDistance": "Max. Entfernung (Meilen)",

@@ -548,7 +548,7 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Matching preferences",
-      "notWiredUp": "These don't filter Discover yet — they're saved for when that's wired up.",
+      "filtersNote": "Age and languages filter Discover, both ways: you see people in your range who'd also see you. Distance isn't used yet.",
       "ageMin": "Age min",
       "ageMax": "Age max",
       "maxDistance": "Max distance (miles)",

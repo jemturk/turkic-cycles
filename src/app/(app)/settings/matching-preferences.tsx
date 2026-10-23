@@ -93,7 +93,7 @@ export default function MatchingPreferences() {
   return (
     <SubPage
       title={t("settings.matchingPreferencesScreen.heading")}
-      subtitle={t("settings.matchingPreferencesScreen.notWiredUp")}
+      subtitle={t("settings.matchingPreferencesScreen.filtersNote")}
       form
     >
       {isLoading ? null : (
