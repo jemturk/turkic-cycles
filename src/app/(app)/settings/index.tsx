@@ -320,7 +320,28 @@ export default function Settings() {
     </Section>
   );
 
-  // Matching preferences lives here now, rather than in a section of its own.
+  // Who you see (matching preferences) and whether others can find you there.
+  const discoverSection = (
+    <Section title={t("tabs.discover")}>
+      <Row
+        icon="options-outline"
+        label={t("settings.matchingPreferences")}
+        onPress={() => router.push("/(app)/settings/matching-preferences")}
+      />
+      <Row
+        icon="sparkles-outline"
+        label={t("settings.globalDiscover")}
+        hint={t("settings.globalDiscoverHint")}
+        right={
+          <Switch
+            value={profile?.discoverable ?? true}
+            onValueChange={(discoverable) => updateDiscoverable.mutate(discoverable)}
+          />
+        }
+      />
+    </Section>
+  );
+
   const safetySection = (
     <Section title={t("settings.safety")}>
       <Row
@@ -333,11 +354,6 @@ export default function Settings() {
         icon="shield-half-outline"
         label={t("settings.safetyCenter")}
         onPress={() => router.push("/(app)/settings/safety")}
-      />
-      <Row
-        icon="options-outline"
-        label={t("settings.matchingPreferences")}
-        onPress={() => router.push("/(app)/settings/matching-preferences")}
       />
     </Section>
   );
@@ -360,17 +376,6 @@ export default function Settings() {
               onPress={() => updateVisibility.mutate("hidden")}
             />
           </View>
-        }
-      />
-      <Row
-        icon="sparkles-outline"
-        label={t("settings.globalDiscover")}
-        hint={t("settings.globalDiscoverHint")}
-        right={
-          <Switch
-            value={profile?.discoverable ?? true}
-            onValueChange={(discoverable) => updateDiscoverable.mutate(discoverable)}
-          />
         }
       />
       <Row
@@ -495,6 +500,7 @@ export default function Settings() {
             {profileSection}
             {appearanceSection}
             {accountSection}
+            {discoverSection}
             {safetySection}
           </View>
           <View className="flex-1 gap-4">
@@ -514,6 +520,7 @@ export default function Settings() {
         {profileSection}
         {appearanceSection}
         {accountSection}
+        {discoverSection}
         {safetySection}
         {privacySection}
         {notificationsSection}

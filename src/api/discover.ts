@@ -72,23 +72,13 @@ async function hydrateCandidates(userIds: string[]): Promise<DiscoverCandidate[]
   });
 }
 
-export async function listDiscoverCandidates(circleId: string, userId: string): Promise<DiscoverCandidate[]> {
-  const { data: memberRows, error: memberError } = await supabase
-    .from("circle_members")
-    .select("user_id")
-    .eq("circle_id", circleId)
-    .neq("user_id", userId);
-  if (memberError) throw memberError;
-
-  const { data: swipedRows, error: swipedError } = await supabase
-    .from("swipes")
-    .select("target_id")
-    .eq("actor_id", userId)
-    .eq("circle_id", circleId);
-  if (swipedError) throw swipedError;
-
-  const alreadySwiped = new Set((swipedRows ?? []).map((row) => row.target_id));
-  const candidateIds = (memberRows ?? []).map((row) => row.user_id).filter((id) => !alreadySwiped.has(id));
+// A circle's deck: its other members you haven't swiped on there, picked server-side
+// by list_circle_discover_candidates so the Discover filters (0052) apply -- they
+// read other people's matching preferences, which the client can't.
+export async function listDiscoverCandidates(circleId: string): Promise<DiscoverCandidate[]> {
+  const { data, error } = await supabase.rpc("list_circle_discover_candidates", { target_circle: circleId });
+  if (error) throw error;
+  const candidateIds = (data ?? []).map((row) => row.user_id);
   if (candidateIds.length === 0) return [];
 
   return hydrateCandidates(candidateIds);

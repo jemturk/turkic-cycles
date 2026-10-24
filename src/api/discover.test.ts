@@ -15,37 +15,44 @@ function queueResponses(queues: Record<string, SupabaseResponse[]>) {
 }
 
 describe("listDiscoverCandidates", () => {
-  it("excludes circle members the user has already swiped on", async () => {
+  function profile(id: string, name: string) {
+    return { id, display_name: name, avatar_url: null, birthdate: null, city: null, state: null, occupation: null };
+  }
+
+  function serverPicks(rows: { user_id: string }[], origins: { user_id: string; origin_countries: string[] }[] = []) {
+    mockRpc.mockImplementation((fn: string) =>
+      Promise.resolve(fn === "list_circle_discover_candidates" ? ok(rows) : ok(origins))
+    );
+  }
+
+  it("asks the server for the circle's candidates", async () => {
+    serverPicks([{ user_id: "alice" }]);
     queueResponses({
-      circle_members: [ok([{ user_id: "alice" }, { user_id: "bob" }])],
-      swipes: [ok([{ target_id: "bob" }])],
-      profiles: [ok([{ id: "alice", display_name: "Alice", avatar_url: null, birthdate: null, city: null, state: null, occupation: null }])],
+      profiles: [ok([profile("alice", "Alice")])],
       user_connection_types: [ok([{ user_id: "alice", connection_type: "friend" }])],
       profile_photos: [ok([])],
     });
-    mockRpc.mockResolvedValue(ok([]));
 
-    const result = await listDiscoverCandidates("circle-1", "me");
+    const result = await listDiscoverCandidates("circle-1");
 
+    expect(mockRpc).toHaveBeenCalledWith("list_circle_discover_candidates", { target_circle: "circle-1" });
     expect(result.map((c) => c.userId)).toEqual(["alice"]);
     expect(result[0].connectionTypes).toEqual(["friend"]);
   });
 
-  it("returns an empty array when every member has already been swiped on, without further queries", async () => {
-    queueResponses({
-      circle_members: [ok([{ user_id: "alice" }])],
-      swipes: [ok([{ target_id: "alice" }])],
-    });
+  it("returns an empty array without further queries when no one is left", async () => {
+    serverPicks([]);
+    queueResponses({});
 
-    expect(await listDiscoverCandidates("circle-1", "me")).toEqual([]);
-    expect(mockRpc).not.toHaveBeenCalled();
+    expect(await listDiscoverCandidates("circle-1")).toEqual([]);
+    expect(mockFrom).not.toHaveBeenCalled();
+    expect(mockRpc).toHaveBeenCalledTimes(1);
   });
 
   it("merges multiple connection-type rows per candidate", async () => {
+    serverPicks([{ user_id: "alice" }]);
     queueResponses({
-      circle_members: [ok([{ user_id: "alice" }])],
-      swipes: [ok([])],
-      profiles: [ok([{ id: "alice", display_name: "Alice", avatar_url: null, birthdate: null, city: null, state: null, occupation: null }])],
+      profiles: [ok([profile("alice", "Alice")])],
       user_connection_types: [
         ok([
           { user_id: "alice", connection_type: "friend" },
@@ -54,28 +61,20 @@ describe("listDiscoverCandidates", () => {
       ],
       profile_photos: [ok([])],
     });
-    mockRpc.mockResolvedValue(ok([]));
 
-    const result = await listDiscoverCandidates("circle-1", "me");
+    const result = await listDiscoverCandidates("circle-1");
     expect(result[0].connectionTypes).toEqual(["friend", "business"]);
   });
 
   it("attaches origin countries only for candidates with consent rows returned", async () => {
+    serverPicks([{ user_id: "alice" }, { user_id: "bob" }], [{ user_id: "alice", origin_countries: ["Kazakhstan"] }]);
     queueResponses({
-      circle_members: [ok([{ user_id: "alice" }, { user_id: "bob" }])],
-      swipes: [ok([])],
-      profiles: [
-        ok([
-          { id: "alice", display_name: "Alice", avatar_url: null, birthdate: null, city: null, state: null, occupation: null },
-          { id: "bob", display_name: "Bob", avatar_url: null, birthdate: null, city: null, state: null, occupation: null },
-        ]),
-      ],
+      profiles: [ok([profile("alice", "Alice"), profile("bob", "Bob")])],
       user_connection_types: [ok([])],
       profile_photos: [ok([])],
     });
-    mockRpc.mockResolvedValue(ok([{ user_id: "alice", origin_countries: ["Kazakhstan"] }]));
 
-    const result = await listDiscoverCandidates("circle-1", "me");
+    const result = await listDiscoverCandidates("circle-1");
     expect(result.find((c) => c.userId === "alice")!.originCountries).toEqual(["Kazakhstan"]);
     expect(result.find((c) => c.userId === "bob")!.originCountries).toEqual([]);
   });

@@ -27,7 +27,7 @@ export function useDiscoverCandidates(circleId: string | null | undefined, userI
   return useQuery({
     queryKey: ["discoverCandidates", circleId, userId],
     queryFn: () =>
-      circleId === null ? listGlobalDiscoverCandidates() : listDiscoverCandidates(circleId as string, userId as string),
+      circleId === null ? listGlobalDiscoverCandidates() : listDiscoverCandidates(circleId as string),
     enabled: circleId !== undefined && !!userId,
   });
 }

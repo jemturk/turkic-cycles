@@ -28,7 +28,11 @@ export function useUpsertMatchingPreferences(userId: string | undefined) {
   return useMutation({
     mutationFn: (values: Parameters<typeof upsertMatchingPreferences>[1]) =>
       upsertMatchingPreferences(userId as string, values),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["matchingPreferences", userId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["matchingPreferences", userId] });
+      // Both Discover decks filter on these server-side (0052), so refetch them.
+      queryClient.invalidateQueries({ queryKey: ["discoverCandidates"] });
+    },
   });
 }
 
