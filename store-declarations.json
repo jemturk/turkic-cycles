@@ -186,6 +186,12 @@
       "created_at",
       "user_id"
     ],
+    "profile_locations": [
+      "city",
+      "state",
+      "updated_at",
+      "user_id"
+    ],
     "profile_photos": [
       "created_at",
       "id",
@@ -218,6 +224,7 @@
       "id",
       "interests",
       "languages",
+      "location_visibility",
       "occupation",
       "onboarding_completed_at",
       "onboarding_step",

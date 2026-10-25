@@ -498,6 +498,13 @@
     "profileVisibility": "Profil görünürlüğü",
     "visible": "Görünür",
     "hidden": "Gizli",
+    "locationShown": "Gösterilen konum",
+    "locationShownHint": "Başkalarının kartınızda ve profilinizde gördüğü",
+    "locationLevel": {
+      "city": "Şehir",
+      "state": "Eyalet",
+      "country": "Ülke"
+    },
     "globalDiscover": "Beni Keşfet'te göster",
     "globalDiscoverHint": "Çemberlerin dışındaki kişiler seni Keşfet sekmesinde bulabilsin.",
     "blockedUsers": "Engellenen kullanıcılar",

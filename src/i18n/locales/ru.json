@@ -508,6 +508,13 @@
     "profileVisibility": "Видимость профиля",
     "visible": "Виден",
     "hidden": "Скрыт",
+    "locationShown": "Показывать местоположение",
+    "locationShownHint": "Что другие видят в вашей карточке и профиле",
+    "locationLevel": {
+      "city": "Город",
+      "state": "Штат",
+      "country": "Страна"
+    },
     "globalDiscover": "Показывать меня в «Знакомствах»",
     "globalDiscoverHint": "Люди вне ваших кругов смогут найти вас во вкладке «Знакомства».",
     "blockedUsers": "Заблокированные пользователи",

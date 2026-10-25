@@ -498,6 +498,13 @@
     "profileVisibility": "Profile visibility",
     "visible": "Visible",
     "hidden": "Hidden",
+    "locationShown": "Location shown",
+    "locationShownHint": "What others see on your card and profile",
+    "locationLevel": {
+      "city": "City",
+      "state": "State",
+      "country": "Country"
+    },
     "globalDiscover": "Show me in Discover",
     "globalDiscoverHint": "Let people outside your circles find you on the Discover tab.",
     "blockedUsers": "Blocked users",

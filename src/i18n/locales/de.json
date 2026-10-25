@@ -498,6 +498,13 @@
     "profileVisibility": "Profilsichtbarkeit",
     "visible": "Sichtbar",
     "hidden": "Verborgen",
+    "locationShown": "Angezeigter Ort",
+    "locationShownHint": "Was andere auf deiner Karte und deinem Profil sehen",
+    "locationLevel": {
+      "city": "Stadt",
+      "state": "Bundesland",
+      "country": "Land"
+    },
     "globalDiscover": "Mich in Entdecken zeigen",
     "globalDiscoverHint": "Menschen außerhalb deiner Kreise können dich im Tab „Entdecken“ finden.",
     "blockedUsers": "Blockierte Nutzer",

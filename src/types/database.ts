@@ -448,6 +448,27 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_locations: {
+        Row: {
+          city: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          city?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          city?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profile_photos: {
         Row: {
           created_at: string
@@ -517,6 +538,7 @@ export type Database = {
           id: string
           interests: string[]
           languages: string[]
+          location_visibility: string
           occupation: string | null
           onboarding_completed_at: string | null
           onboarding_step: number
@@ -548,6 +570,7 @@ export type Database = {
           id: string
           interests?: string[]
           languages?: string[]
+          location_visibility?: string
           occupation?: string | null
           onboarding_completed_at?: string | null
           onboarding_step?: number
@@ -579,6 +602,7 @@ export type Database = {
           id?: string
           interests?: string[]
           languages?: string[]
+          location_visibility?: string
           occupation?: string | null
           onboarding_completed_at?: string | null
           onboarding_step?: number

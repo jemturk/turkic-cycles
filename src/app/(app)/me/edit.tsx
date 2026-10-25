@@ -65,8 +65,8 @@ export default function ProfileEdit() {
     return {
       displayName: profile.display_name ?? "",
       connectionTypes: connectionTypes ?? [],
-      city: profile.city ?? "",
-      state: profile.state ?? "",
+      city: profile.realCity ?? "",
+      state: profile.realState ?? "",
       country: canonicalCountry(profile.country),
       birthdate: profile.birthdate ?? "",
       bio: profile.bio ?? "",

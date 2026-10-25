@@ -59,6 +59,14 @@ export function updateProfileVisibility(userId: string, visibility: "visible" | 
   return updateProfile(userId, { profile_visibility: visibility });
 }
 
+export type LocationVisibility = "city" | "state" | "country";
+
+// How much of their location others see; the database masks profiles.city / state
+// to match (0053).
+export function updateLocationVisibility(userId: string, visibility: LocationVisibility) {
+  return updateProfile(userId, { location_visibility: visibility });
+}
+
 export function updateDiscoverable(userId: string, discoverable: boolean) {
   return updateProfile(userId, { discoverable });
 }

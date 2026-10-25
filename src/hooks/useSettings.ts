@@ -9,6 +9,8 @@ import {
   updateAppLocale,
   updateNotificationPreferences,
   updateProfileVisibility,
+  updateLocationVisibility,
+  type LocationVisibility,
   updateDiscoverable,
   updateTextSize,
   updateThemePreference,
@@ -70,6 +72,14 @@ export function useUpdateTextSize(userId: string | undefined) {
   const invalidate = useInvalidateProfile(userId);
   return useMutation({
     mutationFn: (textSize: "small" | "default" | "large") => updateTextSize(userId as string, textSize),
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdateLocationVisibility(userId: string | undefined) {
+  const invalidate = useInvalidateProfile(userId);
+  return useMutation({
+    mutationFn: (visibility: LocationVisibility) => updateLocationVisibility(userId as string, visibility),
     onSuccess: invalidate,
   });
 }

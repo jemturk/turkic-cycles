@@ -20,6 +20,7 @@ import {
   useUpdateDiscoverable,
   useUpdateNotificationPreferences,
   useUpdateProfileVisibility,
+  useUpdateLocationVisibility,
   useUpdateTextSize,
   useUpdateThemePreference,
 } from "@/hooks/useSettings";
@@ -156,6 +157,7 @@ export default function Settings() {
   const updateTextSize = useUpdateTextSize(userId);
   const updateNotifications = useUpdateNotificationPreferences(userId);
   const updateVisibility = useUpdateProfileVisibility(userId);
+  const updateLocationVisibility = useUpdateLocationVisibility(userId);
   const updateDiscoverable = useUpdateDiscoverable(userId);
   const deleteAccount = useDeleteAccount();
   const resetOnboardingStore = useOnboardingStore((s) => s.reset);
@@ -375,6 +377,23 @@ export default function Settings() {
               selected={profile?.profile_visibility === "hidden"}
               onPress={() => updateVisibility.mutate("hidden")}
             />
+          </View>
+        }
+      />
+      <Row
+        icon="location-outline"
+        label={t("settings.locationShown")}
+        hint={t("settings.locationShownHint")}
+        right={
+          <View className="flex-row flex-wrap justify-end gap-2">
+            {(["city", "state", "country"] as const).map((level) => (
+              <Chip
+                key={level}
+                label={t(`settings.locationLevel.${level}`)}
+                selected={(profile?.location_visibility ?? "city") === level}
+                onPress={() => updateLocationVisibility.mutate(level)}
+              />
+            ))}
           </View>
         }
       />

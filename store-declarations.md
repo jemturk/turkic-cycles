@@ -42,7 +42,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 
 | Category → type | Req. | Purposes | What it is | Re-check if |
 | --- | --- | --- | --- | --- |
-| Location → Approximate | Req. | Functionality, Personalization | City/state/country typed on the profile (`profiles.city` …) | City becomes optional; anything stores coordinates |
+| Location → Approximate | Req. | Functionality, Personalization | City/state/country typed on the profile (`profiles.city` …; the real city/state in self-only `profile_locations`, others see what `location_visibility` allows) | City becomes optional; anything stores coordinates |
 | Location → Precise | — not collected | | GPS used on the phone only (`src/stores/localFilter.ts`) | Device coordinates are sent or saved anywhere |
 | Personal → Name | Req. | Functionality, Account mgmt | `profiles.display_name` | |
 | Personal → Email | Req. | Functionality, Account mgmt | Account email (Supabase Auth) | |
