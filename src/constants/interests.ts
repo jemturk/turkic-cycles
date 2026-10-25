@@ -1,24 +1,3 @@
-export const INTERESTS = [
-  "Family",
-  "Kids",
-  "Travel",
-  "Night life",
-  "Exercise",
-  "Self-development",
-  "Horoscope",
-] as const;
-
-export const HOBBIES = [
-  "Swim",
-  "Tennis",
-  "Soccer",
-  "Ski",
-  "Paint",
-  "Sing",
-  "Play an instrument",
-  "Music",
-] as const;
-
 export const TRAVEL_FREQUENCIES = [
   { value: "none", label: "None" },
   { value: "some", label: "Some — 1–2 times a year" },

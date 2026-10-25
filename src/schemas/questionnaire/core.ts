@@ -4,6 +4,7 @@ import { CONNECTION_TYPES } from "@/constants/connectionTypes";
 import { matchRegionOption, regionConfigFor } from "@/constants/countries";
 import { TRAVEL_FREQUENCIES, TRAVEL_STYLES } from "@/constants/interests";
 import { calculateAge } from "@/lib/age";
+import { SELECTION_LIMITS } from "@/constants/matching";
 
 // Onboarding step 1: what they're looking for + location + real DOB (never a
 // self-reported age bucket — profiles.birthdate is the trusted source; any age
@@ -45,7 +46,9 @@ export const onboardingStep2Schema = z.object({
   // resolver's *input* type while z.infer's *output* type keeps it required,
   // which breaks @hookform/resolvers' Resolver<> typing against useForm<T>'s
   // output-typed T. Initial "[]" is supplied via each form's defaultValues instead.
-  interests: z.array(z.string()),
+  // The matching model's interest tags (src/constants/matching.ts), 3 to 10. Hobbies
+  // were folded into them (migration 0054); the field stays for older app versions.
+  interests: z.array(z.string()).min(SELECTION_LIMITS.interests.min).max(SELECTION_LIMITS.interests.max),
   hobbies: z.array(z.string()),
   occupation: z.string().min(1),
 });

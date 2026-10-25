@@ -290,6 +290,27 @@ export type Database = {
           },
         ]
       }
+      matching_config: {
+        Row: {
+          active: boolean
+          config: Json
+          created_at: string
+          version: string
+        }
+        Insert: {
+          active?: boolean
+          config: Json
+          created_at?: string
+          version: string
+        }
+        Update: {
+          active?: boolean
+          config?: Json
+          created_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
       matching_preferences: {
         Row: {
           age_max: number | null
@@ -900,6 +921,7 @@ export type Database = {
         }[]
       }
       has_plus: { Args: { uid: string }; Returns: boolean }
+      interest_tag: { Args: { label: string }; Returns: string }
       is_app_admin: { Args: never; Returns: boolean }
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
       is_test_account: { Args: never; Returns: boolean }

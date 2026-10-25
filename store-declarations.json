@@ -147,6 +147,12 @@
       "user_a",
       "user_b"
     ],
+    "matching_config": [
+      "active",
+      "config",
+      "created_at",
+      "version"
+    ],
     "matching_preferences": [
       "age_max",
       "age_min",

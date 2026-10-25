@@ -19,7 +19,8 @@ import {
 import { buildProfileEditSchema, type ProfileEditValues } from "@/schemas/questionnaire/profileEdit";
 import { CONNECTION_TYPES } from "@/constants/connectionTypes";
 import { LANGUAGES, LANGUAGE_OTHER } from "@/constants/languages";
-import { INTERESTS, HOBBIES, TRAVEL_FREQUENCIES, TRAVEL_STYLES } from "@/constants/interests";
+import { TRAVEL_FREQUENCIES, TRAVEL_STYLES } from "@/constants/interests";
+import { InterestsPicker } from "@/components/InterestsPicker";
 import { ORIGIN_COUNTRIES, ORIGIN_MAX_SELECTIONS, ORIGIN_OTHER } from "@/constants/origins";
 import { canonicalCountry } from "@/constants/countries";
 import { Button } from "@/components/Button";
@@ -231,32 +232,12 @@ export default function ProfileEdit() {
         control={control}
         name="interests"
         render={({ field }) => (
-          <ChipGroup
+          <InterestsPicker
             label={t("fields.interests")}
-            options={INTERESTS}
             value={field.value ?? []}
             onChange={field.onChange}
-            namespace="interests"
+            error={errors.interests ? t("fields.interestsMin") : undefined}
             tone={TAG_TONES.interests}
-          />
-        )}
-      />
-    </>
-  );
-
-  const hobbiesField = (
-    <>
-      <Controller
-        control={control}
-        name="hobbies"
-        render={({ field }) => (
-          <ChipGroup
-            label={t("fields.hobbies")}
-            options={HOBBIES}
-            value={field.value ?? []}
-            onChange={field.onChange}
-            namespace="hobbies"
-            tone={TAG_TONES.hobbies}
           />
         )}
       />
@@ -447,7 +428,6 @@ export default function ProfileEdit() {
               <View className={card}>
                 {languagesField}
                 {interestsField}
-                {hobbiesField}
               </View>
               <View className={card}>
                 {travelFrequencyField}
@@ -498,7 +478,6 @@ export default function ProfileEdit() {
         <View className={phoneCard}>
           {languagesField}
           {interestsField}
-          {hobbiesField}
         </View>
         <View className={phoneCard}>
           {travelFrequencyField}

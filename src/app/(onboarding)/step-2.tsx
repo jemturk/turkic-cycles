@@ -12,10 +12,10 @@ import { useSubmitOnboardingStep2 } from "@/hooks/useOnboarding";
 import { buildCorePayload, useOnboardingStore } from "@/stores/onboarding";
 import { onboardingStep2Schema, type OnboardingStep2 } from "@/schemas/questionnaire/core";
 import { LANGUAGES, LANGUAGE_OTHER } from "@/constants/languages";
-import { INTERESTS, HOBBIES } from "@/constants/interests";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
+import { InterestsPicker } from "@/components/InterestsPicker";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
 import { FormScrollView } from "@/components/FormScrollView";
 import { showAlert } from "@/lib/alert";
@@ -78,26 +78,11 @@ export default function OnboardingStep2Screen() {
           control={control}
           name="interests"
           render={({ field }) => (
-            <ChipGroup
+            <InterestsPicker
               label={t("onboarding.step2.interests")}
-              options={INTERESTS}
               value={field.value ?? []}
               onChange={field.onChange}
-              namespace="interests"
-            />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="hobbies"
-          render={({ field }) => (
-            <ChipGroup
-              label={t("onboarding.step2.hobbies")}
-              options={HOBBIES}
-              value={field.value ?? []}
-              onChange={field.onChange}
-              namespace="hobbies"
+              error={errors.interests ? t("fields.interestsMin") : undefined}
             />
           )}
         />

@@ -55,14 +55,24 @@ describe("onboardingStep1Schema", () => {
 
 const validStep2 = {
   languages: ["English"],
-  interests: [],
+  interests: ["cooking", "soccer", "travel"],
   hobbies: [],
   occupation: "Engineer",
 };
 
 describe("onboardingStep2Schema", () => {
-  it("accepts a valid submission with empty interests/hobbies", () => {
+  it("accepts a valid submission with 3 interests and no hobbies", () => {
     expect(onboardingStep2Schema.safeParse(validStep2).success).toBe(true);
+  });
+
+  it("requires at least 3 interests", () => {
+    expect(onboardingStep2Schema.safeParse({ ...validStep2, interests: ["cooking", "soccer"] }).success).toBe(false);
+  });
+
+  it("allows at most 10 interests", () => {
+    const eleven = ["cooking", "soccer", "travel", "pets", "reading", "running", "cycling", "fishing", "gardening", "photography", "yoga_pilates"];
+    expect(onboardingStep2Schema.safeParse({ ...validStep2, interests: eleven.slice(0, 10) }).success).toBe(true);
+    expect(onboardingStep2Schema.safeParse({ ...validStep2, interests: eleven }).success).toBe(false);
   });
 
   it("requires at least one language", () => {

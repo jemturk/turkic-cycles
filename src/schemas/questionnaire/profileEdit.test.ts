@@ -16,7 +16,7 @@ const baseValues = {
   country: "USA",
   birthdate: birthdateNYearsAgo(30),
   languages: ["English"],
-  interests: [],
+  interests: ["cooking", "soccer", "travel"],
   hobbies: [],
   occupation: "Engineer",
   usResidency: true,
