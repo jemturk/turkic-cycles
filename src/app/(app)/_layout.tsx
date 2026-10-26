@@ -168,7 +168,7 @@ export default function AppTabsLayout() {
             const icons = TAB_ICONS[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };
             return (
               <View className="items-center justify-center" style={{ width: 40, height: 28 }}>
-                <Ionicons name={focused ? icons.active : icons.inactive} size={size - 2} color={color} />
+                <Ionicons name={focused ? icons.active : icons.inactive} size={size - 2} color={typeof color === "string" ? color : undefined} />
               </View>
             );
           },

@@ -1,5 +1,5 @@
 import { useRef, useState, type ComponentType } from "react";
-import { NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, StyleSheet, View, type ScrollViewInstance } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -241,7 +241,7 @@ export default function Welcome() {
   // Each slide fills the area's full height too, so its content centers vertically
   // (a horizontal ScrollView's pages otherwise only grow as tall as their content).
   const [pageHeight, setPageHeight] = useState(0);
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance>(null);
   const isLast = index === SLIDES.length - 1;
 
   function goToIndex(next: number) {

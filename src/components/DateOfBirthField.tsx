@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { TextInput, View } from "react-native";
+import { View, type TextInputInstance } from "react-native";
 import { Text } from "@/components/Text";
 import { useTranslation } from "react-i18next";
 
@@ -26,8 +26,8 @@ export function DateOfBirthField({ label, value, onChange, error }: DateOfBirthF
   const [day, setDay] = useState(value?.slice(8, 10) ?? "");
   const [month, setMonth] = useState(value?.slice(5, 7) ?? "");
   const [year, setYear] = useState(value?.slice(0, 4) ?? "");
-  const monthRef = useRef<TextInput>(null);
-  const yearRef = useRef<TextInput>(null);
+  const monthRef = useRef<TextInputInstance>(null);
+  const yearRef = useRef<TextInputInstance>(null);
 
   function maybeEmit(d: string, m: string, y: string) {
     const dn = Number(d);

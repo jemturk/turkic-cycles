@@ -25,7 +25,7 @@ export default function Chat() {
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
-      <ChatThreadList onOpen={(matchId) => router.push(`/(app)/chat/${matchId}`)} />
+      <ChatThreadList onOpen={(matchId) => router.push(`/(app)/chat/${matchId}`, { withAnchor: true })} />
     </SafeAreaView>
   );
 }

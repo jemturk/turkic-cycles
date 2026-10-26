@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View, type ScrollViewInstance } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
@@ -104,7 +104,7 @@ export default function ChatThread() {
   // sending isn't held up.
   const [contactTipDismissed, setContactTipDismissed] = useState(false);
   const showContactTip = !contactTipDismissed && (containsPhoneNumber(draft) || containsEmail(draft));
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance>(null);
   // The thread opens already at its latest message: until the messages have loaded
   // and the list has jumped to the end (instantly), it stays hidden, so the jump is
   // never seen. After that, new messages scroll smoothly.

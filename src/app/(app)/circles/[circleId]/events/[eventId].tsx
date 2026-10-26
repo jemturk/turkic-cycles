@@ -40,7 +40,7 @@ export default function CircleEventDetail() {
   // the circle's events list instead of assuming a push always happened first.
   function goBack() {
     if (navigation.canGoBack()) router.back();
-    else router.replace(`/(app)/circles/${circleId}`);
+    else router.replace(`/(app)/circles/${circleId}`, { withAnchor: true });
   }
 
   const { data: circle } = useCircle(circleId);

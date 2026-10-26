@@ -11,11 +11,15 @@ import { AppHeader } from "@/components/AppHeader";
 // headerShown defaults to false here -- most screens draw their own in-body back
 // button -- but a tab's root screen opts back in (see e.g. circles/_layout.tsx) to
 // get AppHeader (its title + your avatar) instead of an in-body title.
+//
+// headerTransparent: false keeps that header opaque on iOS 26+, where Expo Router 58
+// otherwise makes stack headers transparent (Liquid Glass) and slides content under them.
 export function useStackScreenOptions() {
   const { colorScheme } = useColorScheme();
 
   return {
     headerShown: false as const,
+    headerTransparent: false as const,
     contentStyle: { backgroundColor: colorScheme === "dark" ? "#171310" : "#FEF6EC" },
     header: ({ options }: { options: { title?: string } }) => <AppHeader title={options.title} />,
   };

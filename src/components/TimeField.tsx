@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { TextInput, View } from "react-native";
+import { View, type TextInputInstance } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
@@ -22,7 +22,7 @@ export function TimeField({
   const { t } = useTranslation();
   const [hours, setHours] = useState(value?.slice(0, 2) ?? "");
   const [minutes, setMinutes] = useState(value?.slice(3, 5) ?? "");
-  const minutesRef = useRef<TextInput>(null);
+  const minutesRef = useRef<TextInputInstance>(null);
 
   function maybeEmit(h: string, m: string) {
     const hn = Number(h);

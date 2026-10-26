@@ -130,13 +130,13 @@ export default function SafetyCenter() {
       icon: "shield-checkmark-outline",
       title: t("settings.safetyCenterScreen.verificationTitle"),
       subtitle: t("settings.safetyCenterScreen.verificationSubtitle"),
-      onPress: () => router.push("/(app)/settings/verification"),
+      onPress: () => router.push("/(app)/settings/verification", { withAnchor: true }),
     },
     {
       icon: "location-outline",
       title: t("settings.safetyCenterScreen.sharePlansTitle"),
       subtitle: t("settings.safetyCenterScreen.sharePlansSubtitle"),
-      onPress: () => router.push("/(app)/settings/safety/share-plans"),
+      onPress: () => router.push("/(app)/settings/safety/share-plans", { withAnchor: true }),
     },
     {
       icon: "flag-outline",
@@ -148,19 +148,19 @@ export default function SafetyCenter() {
       icon: "information-circle-outline",
       title: t("settings.safetyCenterScreen.meetingTipsTitle"),
       subtitle: t("settings.safetyCenterScreen.meetingTipsSubtitle"),
-      onPress: () => router.push("/(app)/settings/static-page?topic=guidelines"),
+      onPress: () => router.push("/(app)/settings/static-page?topic=guidelines", { withAnchor: true }),
     },
     {
       icon: "document-text-outline",
       title: t("settings.safetyCenterScreen.communityGuidelinesTitle"),
       subtitle: "",
-      onPress: () => router.push("/(app)/settings/static-page?topic=guidelines"),
+      onPress: () => router.push("/(app)/settings/static-page?topic=guidelines", { withAnchor: true }),
     },
     {
       icon: "headset-outline",
       title: t("settings.safetyCenterScreen.contactSupportTitle"),
       subtitle: "",
-      onPress: () => router.push("/(app)/settings/static-page?topic=help"),
+      onPress: () => router.push("/(app)/settings/static-page?topic=help", { withAnchor: true }),
     },
   ];
 

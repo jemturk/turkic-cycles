@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 import { router } from "expo-router";
-import type { BottomTabBarProps } from "expo-router/build/react-navigation/bottom-tabs";
+import type { BottomTabBarProps } from "expo-router/tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
@@ -41,7 +41,7 @@ function formatCount(count: number) {
 // round handle on its edge that shows while the pointer is over the sidebar (or the
 // handle has keyboard focus), or by clicking the logo when collapsed -- remembered
 // per browser (stores/sidebar.ts); labels then still reach screen readers.
-export function DesktopSidebar({ state, descriptors, navigation }: BottomTabBarProps) {
+export function DesktopSidebar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const { t } = useTranslation();
   const resetOnboardingStore = useOnboardingStore((s) => s.reset);
   const { colorScheme } = useColorScheme();
@@ -118,8 +118,9 @@ export function DesktopSidebar({ state, descriptors, navigation }: BottomTabBarP
           const badge = route.name === "chat" && unread > 0 ? formatCount(unread) : null;
 
           function onPress() {
-            const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
-            if (!focused && !event.defaultPrevented) navigation.navigate(route.name, route.params);
+            // As the built-in tab bar does (SDK 58: emitter + navigateToTab replace navigation).
+            const event = emitter.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+            if (!focused && !event.defaultPrevented) navigateToTab(route.key);
           }
 
           return (

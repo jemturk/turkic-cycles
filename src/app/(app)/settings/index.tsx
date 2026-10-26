@@ -215,7 +215,7 @@ export default function Settings() {
       <View className="gap-2">
         <Pressable
           accessibilityRole="button"
-          onPress={() => router.push("/(app)/me/edit")}
+          onPress={() => router.push("/(app)/me/edit", { withAnchor: true })}
           className="h-10 flex-row items-center justify-center gap-1.5 rounded-full bg-primary-500 px-4 web:hover:bg-primary-600"
         >
           <Ionicons name="pencil" size={14} color="#FFFFFF" />
@@ -246,7 +246,7 @@ export default function Settings() {
         accessibilityLabel={t("settings.edit")}
         onPress={(e) => {
           e.stopPropagation();
-          router.push("/(app)/me/edit");
+          router.push("/(app)/me/edit", { withAnchor: true });
         }}
       >
         <RowIcon icon="pencil" />
@@ -327,7 +327,7 @@ export default function Settings() {
         value={subscribed ? t("plus.statusActive") : onPlusWaitlist ? t("plus.statusWaitlisted") : undefined}
         onPress={() => router.push("/(app)/plus")}
       />
-      <Row icon="person-outline" label={t("settings.account")} onPress={() => router.push("/(app)/settings/account")} />
+      <Row icon="person-outline" label={t("settings.account")} onPress={() => router.push("/(app)/settings/account", { withAnchor: true })} />
     </Section>
   );
 
@@ -337,7 +337,7 @@ export default function Settings() {
       <Row
         icon="options-outline"
         label={t("settings.matchingPreferences")}
-        onPress={() => router.push("/(app)/settings/matching-preferences")}
+        onPress={() => router.push("/(app)/settings/matching-preferences", { withAnchor: true })}
       />
       <Row
         icon="sparkles-outline"
@@ -359,12 +359,12 @@ export default function Settings() {
         icon="shield-checkmark-outline"
         label={t("settings.getVerified")}
         value={t(`settings.verification.${verification?.status ?? "unverified"}`)}
-        onPress={() => router.push("/(app)/settings/verification")}
+        onPress={() => router.push("/(app)/settings/verification", { withAnchor: true })}
       />
       <Row
         icon="shield-half-outline"
         label={t("settings.safetyCenter")}
-        onPress={() => router.push("/(app)/settings/safety")}
+        onPress={() => router.push("/(app)/settings/safety", { withAnchor: true })}
       />
     </Section>
   );
@@ -409,12 +409,12 @@ export default function Settings() {
       <Row
         icon="ban-outline"
         label={t("settings.blockedUsers")}
-        onPress={() => router.push("/(app)/settings/blocked-users")}
+        onPress={() => router.push("/(app)/settings/blocked-users", { withAnchor: true })}
       />
       <Row
         icon="lock-closed-outline"
         label={t("settings.dataAndPrivacy")}
-        onPress={() => router.push("/(app)/settings/static-page?topic=privacy")}
+        onPress={() => router.push("/(app)/settings/static-page?topic=privacy", { withAnchor: true })}
       />
     </Section>
   );
@@ -449,27 +449,27 @@ export default function Settings() {
       <Row
         icon="information-circle-outline"
         label={t("settings.aboutApp")}
-        onPress={() => router.push("/(app)/settings/static-page?topic=about")}
+        onPress={() => router.push("/(app)/settings/static-page?topic=about", { withAnchor: true })}
       />
       <Row
         icon="book-outline"
         label={t("settings.communityGuidelines")}
-        onPress={() => router.push("/(app)/settings/static-page?topic=guidelines")}
+        onPress={() => router.push("/(app)/settings/static-page?topic=guidelines", { withAnchor: true })}
       />
       <Row
         icon="help-buoy-outline"
         label={t("settings.helpAndSupport")}
-        onPress={() => router.push("/(app)/settings/static-page?topic=help")}
+        onPress={() => router.push("/(app)/settings/static-page?topic=help", { withAnchor: true })}
       />
       <Row
         icon="document-text-outline"
         label={t("settings.privacyPolicy")}
-        onPress={() => router.push("/(app)/settings/legal?doc=privacy")}
+        onPress={() => router.push("/(app)/settings/legal?doc=privacy", { withAnchor: true })}
       />
       <Row
         icon="reader-outline"
         label={t("settings.termsOfService")}
-        onPress={() => router.push("/(app)/settings/legal?doc=terms")}
+        onPress={() => router.push("/(app)/settings/legal?doc=terms", { withAnchor: true })}
       />
     </Section>
   );

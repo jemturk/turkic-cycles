@@ -54,7 +54,7 @@ export default function NewCircle() {
     createCircle.mutate(
       { ...values, latitude: coords?.latitude ?? null, longitude: coords?.longitude ?? null },
       {
-        onSuccess: (circleId) => router.replace(`/(app)/circles/${circleId}`),
+        onSuccess: (circleId) => router.replace(`/(app)/circles/${circleId}`, { withAnchor: true }),
         onError: (error) => showAlert(t("circles.createCircleError"), error.message),
       }
     );

@@ -46,7 +46,9 @@ export function CoverPreviewModal({
   const scale = Math.min(1, available / card.height);
 
   return (
-    <Modal visible={!!photoUri} animationType="fade" onRequestClose={() => !isSaving && onCancel()}>
+    <Modal visible={!!photoUri} animationType="fade" onRequestClose={() => {
+      if (!isSaving) onCancel();
+    }}>
       <View
         className="mx-auto w-full max-w-[480px] flex-1 items-center gap-5 bg-primary-50 dark:bg-ink-950 px-6"
         style={{ paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 }}
