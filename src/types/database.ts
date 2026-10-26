@@ -550,7 +550,6 @@ export type Database = {
           city: string | null
           country: string | null
           created_at: string
-          deletion_requested_at: string | null
           discoverable: boolean
           display_name: string
           email_notifications_enabled: boolean
@@ -582,7 +581,6 @@ export type Database = {
           city?: string | null
           country?: string | null
           created_at?: string
-          deletion_requested_at?: string | null
           discoverable?: boolean
           display_name?: string
           email_notifications_enabled?: boolean
@@ -614,7 +612,6 @@ export type Database = {
           city?: string | null
           country?: string | null
           created_at?: string
-          deletion_requested_at?: string | null
           discoverable?: boolean
           display_name?: string
           email_notifications_enabled?: boolean

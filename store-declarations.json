@@ -222,7 +222,6 @@
       "city",
       "country",
       "created_at",
-      "deletion_requested_at",
       "discoverable",
       "display_name",
       "email_notifications_enabled",

@@ -69,8 +69,9 @@ export function usePushNotifications(userId: string | undefined) {
       if (data?.type === "message" && data.matchId) {
         router.push(`/(app)/chat/${data.matchId}`);
       }
-      // A new match (send-match-push): Connections lists it with the new matches.
-      if (data?.type === "match") {
+      // A new match (send-match-push): Connections lists it with the new matches. A
+      // like (send-like-push): Connections has Likes you.
+      if (data?.type === "match" || data?.type === "like") {
         router.push("/(app)/connections");
       }
       // A safety-plan check-in reminder (src/lib/safetyAlerts.ts): the Safety Center
