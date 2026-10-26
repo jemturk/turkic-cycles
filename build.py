@@ -8,14 +8,16 @@ r"""Build, publish, and install Turkic Circles.
   -s  share the app bundle through Google Play's internal app sharing and print
       the install link (Play-signed, so it installs over a Play build and back)
   -i  install the release APK on the connected device
-  -g  copy the release APK to C:\DEV\Cloud\Apk (keeps the newest 3 there)
+  -g  copy the release APK to C:\DEV\Cloud\Apk (keeps the newest 3 there); with -b,
+      the app bundle too (also the newest 3)
 
   -d  debug: stream every command and its full output (otherwise each step
       shows one progress line, and the output goes to .expo/build.log)
 
 Flags combine (-wa, -ai, -ag, -aig, -ab, -bs, -waid, ...). Each step runs at most once,
 in the order web -> APK -> bundle -> share -> install -> copy. -s, -i or -g on their own
-use the bundle or APK from the last build.
+use the bundle or APK from the last build. -g copies what this run built: the APK with
+-a, the bundle with -b, both with -ab, and the last APK when it builds neither.
 
 A local APK (-a, -i) is signed with the upload key, and a Play install with Google's
 app signing key, so neither can update the other; use -bs to test on a phone that
@@ -442,24 +444,24 @@ def install_apk() -> None:
     run([adb, "shell", "monkey", "-p", APP_ID, "-c", "android.intent.category.LAUNCHER", "1"], env=env)
 
 
-def copy_apk() -> None:
-    step(f"Copying APK to {APK_COPY_DIR}")
-    if not APK_PATH.is_file():
-        raise BuildError(f"no APK at {APK_PATH} -- build one with -a")
-    # Version + the APK's own build time, so each build gets its own file and an
+def copy_build(source: Path, extension: str, build_flag: str) -> None:
+    step(f"Copying {source.name} to {APK_COPY_DIR}")
+    if not source.is_file():
+        raise BuildError(f"no {extension.upper()} at {source} -- build one with {build_flag}")
+    # Version + the file's own build time, so each build gets its own file and an
     # older copy is never overwritten (copying the same build twice reuses the name).
     version = json.loads((ROOT / "app.json").read_text(encoding="utf-8"))["expo"]["version"]
-    built_at = time.strftime("%Y%m%d-%H%M", time.localtime(APK_PATH.stat().st_mtime))
-    target = APK_COPY_DIR / f"turkic-circles-{version}-{built_at}.apk"
+    built_at = time.strftime("%Y%m%d-%H%M", time.localtime(source.stat().st_mtime))
+    target = APK_COPY_DIR / f"turkic-circles-{version}-{built_at}.{extension}"
     APK_COPY_DIR.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(APK_PATH, target)
+    shutil.copy2(source, target)
     note(f"Copied to {target}")
 
-    # Each APK is ~110 MB and the folder syncs to the cloud, so keep only the newest
-    # few. Sorted by modification time (copy2 keeps the APK's build time), not by
-    # name -- a name sort would put version 1.10.0 before 1.9.0. Only our own
-    # turkic-circles-*.apk files are ever deleted.
-    copies = sorted(APK_COPY_DIR.glob("turkic-circles-*.apk"), key=lambda p: p.stat().st_mtime, reverse=True)
+    # Each build is ~70-120 MB and the folder syncs to the cloud, so keep only the
+    # newest few of each kind. Sorted by modification time (copy2 keeps the build
+    # time), not by name -- a name sort would put version 1.10.0 before 1.9.0. Only
+    # our own turkic-circles-*.<extension> files are ever deleted.
+    copies = sorted(APK_COPY_DIR.glob(f"turkic-circles-*.{extension}"), key=lambda p: p.stat().st_mtime, reverse=True)
     for old in copies[APK_COPIES_TO_KEEP:]:
         old.unlink()
         note(f"Removed old copy {old.name}")
@@ -497,7 +499,7 @@ def main() -> int:
         "-s", "--share", action="store_true", help="share the bundle through Play's internal app sharing"
     )
     parser.add_argument("-i", "--install", action="store_true", help="install the APK on the connected device")
-    parser.add_argument("-g", "--copy", action="store_true", help=f"copy the APK to {APK_COPY_DIR}")
+    parser.add_argument("-g", "--copy", action="store_true", help=f"copy the APK (and, with -b, the bundle) to {APK_COPY_DIR}")
     parser.add_argument("-d", "--debug", action="store_true", help="stream every command's full output")
     parser.add_argument(
         "--skip-anon-check", action="store_true", help="don't check the database for anonymous access first"
@@ -549,9 +551,13 @@ def main() -> int:
         if args.install:
             with Stage("install", "Installing on device"):
                 install_apk()
-        if args.copy:
+        # -g copies what this run built; on its own (or with only -s / -i), the last APK.
+        if args.copy and (args.apk or not args.bundle):
             with Stage("copy", "Copying APK"):
-                copy_apk()
+                copy_build(APK_PATH, "apk", "-a")
+        if args.copy and args.bundle:
+            with Stage("copy", "Copying bundle"):
+                copy_build(AAB_PATH, "aab", "-b")
     except BuildError as error:
         print(f"\nerror: {error}", file=sys.stderr)
         if not DEBUG:
