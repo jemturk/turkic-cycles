@@ -12,7 +12,10 @@ import { useMyProfile } from "@/hooks/useProfile";
 import { useMyVerificationStatus } from "@/hooks/useVerification";
 import {
   useHasPlus,
+  useIsTierTester,
+  useMySubscription,
   usePlusWaitlist,
+  useSetMyTestTier,
 } from "@/hooks/usePlus";
 import {
   useDeleteAccount,
@@ -152,6 +155,10 @@ export default function Settings() {
   const { data: verification } = useMyVerificationStatus(userId);
   const subscribed = useHasPlus(userId);
   const { data: onPlusWaitlist } = usePlusWaitlist(userId);
+  // Testers only (tier_testers, 0056); set_my_test_tier refuses anyone else too.
+  const { data: isTierTester } = useIsTierTester(userId);
+  const { data: subscription } = useMySubscription(userId);
+  const setTestTier = useSetMyTestTier(userId);
   const updateAppLocale = useUpdateAppLocale(userId);
   const updateThemePreference = useUpdateThemePreference(userId);
   const updateTextSize = useUpdateTextSize(userId);
@@ -467,6 +474,31 @@ export default function Settings() {
 
   // Log out and Delete account as rows (Delete in coral); confirming the delete
   // opens under them.
+  // Temporary: named testers switch their own tier to try each one. English only,
+  // like any test tool; removed again once purchases are tested for real.
+  const testSection = isTierTester ? (
+    <Section title="Test (testers only)">
+      <Row
+        icon="flask-outline"
+        label="Subscription tier"
+        right={
+          <View className="flex-row flex-wrap justify-end gap-2">
+            {(["free", "plus", "premium"] as const).map((tier) => (
+              <Chip
+                key={tier}
+                label={tier === "free" ? "Free" : tier === "plus" ? "Plus" : "Premium"}
+                selected={subscription?.tier === tier}
+                onPress={() =>
+                  setTestTier.mutate(tier, { onError: (e) => showAlert("Couldn't switch", e.message) })
+                }
+              />
+            ))}
+          </View>
+        }
+      />
+    </Section>
+  ) : null;
+
   const dangerSection = (
     <>
       <Section>
@@ -526,6 +558,7 @@ export default function Settings() {
             {privacySection}
             {notificationsSection}
             {communitySection}
+            {testSection}
             {dangerSection}
           </View>
         </View>
@@ -544,6 +577,7 @@ export default function Settings() {
         {privacySection}
         {notificationsSection}
         {communitySection}
+        {testSection}
         {dangerSection}
       </ScrollView>
     </SafeAreaView>

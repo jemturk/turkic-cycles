@@ -843,6 +843,21 @@ export type Database = {
         }
         Relationships: []
       }
+      tier_testers: {
+        Row: {
+          added_at: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_connection_types: {
         Row: {
           connection_type: string
@@ -925,6 +940,7 @@ export type Database = {
       is_app_admin: { Args: never; Returns: boolean }
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
       is_test_account: { Args: never; Returns: boolean }
+      is_tier_tester: { Args: never; Returns: boolean }
       is_visible_person: { Args: { target: string }; Returns: boolean }
       list_circle_discover_candidates: {
         Args: { target_circle: string }
@@ -965,6 +981,7 @@ export type Database = {
       }
       remove_connection: { Args: { p_match_id: string }; Returns: boolean }
       sees_mocks: { Args: never; Returns: boolean }
+      set_my_test_tier: { Args: { p_tier: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

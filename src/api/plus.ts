@@ -37,6 +37,18 @@ export async function syncMySubscription() {
   if (error) throw error;
 }
 
+// Named testers (tier_testers, migration 0056) can switch their own tier from Settings.
+export async function isTierTester(): Promise<boolean> {
+  const { data, error } = await supabase.rpc("is_tier_tester");
+  if (error) throw error;
+  return data === true;
+}
+
+export async function setMyTestTier(tier: Tier) {
+  const { error } = await supabase.rpc("set_my_test_tier", { p_tier: tier });
+  if (error) throw error;
+}
+
 export async function isOnPlusWaitlist(userId: string): Promise<boolean> {
   const { data, error } = await supabase.from("plus_waitlist").select("user_id").eq("user_id", userId).maybeSingle();
   if (error) throw error;

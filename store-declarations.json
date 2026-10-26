@@ -303,6 +303,10 @@
       "created_at",
       "user_id"
     ],
+    "tier_testers": [
+      "added_at",
+      "user_id"
+    ],
     "user_connection_types": [
       "connection_type",
       "created_at",

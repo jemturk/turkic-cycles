@@ -5,6 +5,9 @@ import {
   getMySubscription,
   hasPlus,
   isOnPlusWaitlist,
+  isTierTester,
+  setMyTestTier,
+  type Tier,
   joinPlusWaitlist,
   leavePlusWaitlist,
   listIncomingLikes,
@@ -24,6 +27,22 @@ export function useMySubscription(userId: string | undefined) {
 export function useHasPlus(userId: string | undefined): boolean | undefined {
   const { data } = useMySubscription(userId);
   return data ? hasPlus(data) : undefined;
+}
+
+export function useIsTierTester(userId: string | undefined) {
+  return useQuery({
+    queryKey: ["tierTester", userId],
+    queryFn: isTierTester,
+    enabled: !!userId,
+  });
+}
+
+export function useSetMyTestTier(userId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (tier: Tier) => setMyTestTier(tier),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["subscription", userId] }),
+  });
 }
 
 export function usePlusWaitlist(userId: string | undefined) {
