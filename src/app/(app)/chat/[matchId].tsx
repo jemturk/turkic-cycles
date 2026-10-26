@@ -1,9 +1,9 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { AppState, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { KeyboardAvoidingView } from "react-native-keyboard-controller";
-import { router, useLocalSearchParams } from "expo-router";
+import { KeyboardAvoidingView, KeyboardController } from "react-native-keyboard-controller";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -124,6 +124,44 @@ export default function ChatThread() {
   // visibly glides down from older bubbles as it opens.
   const landedForRef = useRef<string | null>(null);
   const settlingRef = useRef(false);
+
+  // KeyboardAvoidingView keeps its own copy of the keyboard's state, updated only by
+  // the keyboard's open/close animation. If the keyboard closes without that reaching
+  // this screen -- the app sent to the background, or another screen on top, while it
+  // was up -- the padding stays at keyboard height and the input floats mid-screen
+  // until the app restarts. So: remember whether the keyboard was open when the
+  // screen lost focus or the app left the foreground, and if it's closed on return,
+  // rebuild the wrapper (it reads the real state again) and jump back to the end.
+  // The draft lives above the wrapper, so it's kept.
+  const [keyboardWrapperKey, setKeyboardWrapperKey] = useState(0);
+  const keyboardOpenWhenLeftRef = useRef(false);
+  const noteKeyboardOnLeave = useCallback(() => {
+    keyboardOpenWhenLeftRef.current = KeyboardController.isVisible();
+  }, []);
+  const resyncKeyboardOnReturn = useCallback(() => {
+    if (!keyboardOpenWhenLeftRef.current) return;
+    keyboardOpenWhenLeftRef.current = false;
+    // A moment for the keyboard's own state to settle after coming back.
+    setTimeout(() => {
+      if (KeyboardController.isVisible()) return;
+      atBottomRef.current = true;
+      landedForRef.current = null;
+      setKeyboardWrapperKey((key) => key + 1);
+    }, 300);
+  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      resyncKeyboardOnReturn();
+      return noteKeyboardOnLeave;
+    }, [resyncKeyboardOnReturn, noteKeyboardOnLeave])
+  );
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") resyncKeyboardOnReturn();
+      else noteKeyboardOnLeave();
+    });
+    return () => subscription.remove();
+  }, [resyncKeyboardOnReturn, noteKeyboardOnLeave]);
 
   // Each thread opens at its end, and never stays hidden if no size change comes
   // after its messages load.
@@ -318,7 +356,7 @@ export default function ChatThread() {
 
       {/* Lifts the message list and the input above the keyboard -- the input
           is pinned to the bottom, so without this the keyboard covers it. */}
-      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <KeyboardAvoidingView key={keyboardWrapperKey} behavior="padding" style={{ flex: 1 }}>
         <ScrollView
           ref={scrollRef}
           // The lighter cream behind the messages (rather than the page's) keeps the
