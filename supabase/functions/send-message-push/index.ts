@@ -9,6 +9,9 @@
 // sent in the last FRESH_MS, so a forged or replayed call can't push made-up text
 // or re-push old messages.
 //
+// Skipped when the recipient has turned push notifications off in Settings
+// (profiles.push_notifications_enabled), like send-match-push.
+//
 // Every failed delivery is logged (Expo's error code, the token's row id), not
 // just unregistered devices, so problems like a missing FCM key show up in the
 // function's logs. Expo's later delivery receipts aren't checked yet (that needs
@@ -57,10 +60,13 @@ Deno.serve(async (req) => {
 
     const recipientId = match.user_a === message.sender_id ? match.user_b : match.user_a;
 
-    const [{ data: tokenRows }, { data: senderProfile }] = await Promise.all([
+    const [{ data: tokenRows }, { data: senderProfile }, { data: recipient }] = await Promise.all([
       supabase.from("push_tokens").select("id, token").eq("user_id", recipientId),
       supabase.from("profiles").select("display_name").eq("id", message.sender_id).single(),
+      supabase.from("profiles").select("push_notifications_enabled").eq("id", recipientId).single(),
     ]);
+    // Settings > Push notifications off: no push (the message still arrives in the app).
+    if (recipient?.push_notifications_enabled === false) return new Response("push off", { status: 200 });
     if (!tokenRows || tokenRows.length === 0) return new Response("no tokens", { status: 200 });
 
     const senderName = senderProfile?.display_name || "Someone";
