@@ -16,6 +16,7 @@ import {
   useMySubscription,
   usePlusWaitlist,
   useSetMyTestTier,
+  useSetMyTestVerified,
 } from "@/hooks/usePlus";
 import {
   useDeleteAccount,
@@ -159,6 +160,7 @@ export default function Settings() {
   const { data: isTierTester } = useIsTierTester(userId);
   const { data: subscription } = useMySubscription(userId);
   const setTestTier = useSetMyTestTier(userId);
+  const setTestVerified = useSetMyTestVerified(userId);
   const updateAppLocale = useUpdateAppLocale(userId);
   const updateThemePreference = useUpdateThemePreference(userId);
   const updateTextSize = useUpdateTextSize(userId);
@@ -474,7 +476,7 @@ export default function Settings() {
 
   // Log out and Delete account as rows (Delete in coral); confirming the delete
   // opens under them.
-  // Temporary: named testers switch their own tier to try each one. English only,
+  // Temporary: named testers switch their own tier and Verified badge to try each state. English only,
   // like any test tool; removed again once purchases are tested for real.
   const testSection = isTierTester ? (
     <Section title="Test (testers only)">
@@ -494,6 +496,19 @@ export default function Settings() {
               />
             ))}
           </View>
+        }
+      />
+      <Row
+        icon="shield-checkmark-outline"
+        label="Verified"
+        right={
+          <Switch
+            value={verification?.status === "verified"}
+            disabled={setTestVerified.isPending}
+            onValueChange={(verified) =>
+              setTestVerified.mutate(verified, { onError: (e) => showAlert("Couldn't switch", e.message) })
+            }
+          />
         }
       />
     </Section>
@@ -548,6 +563,7 @@ export default function Settings() {
         <Text className="font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.settings")}</Text>
         <View className="flex-row items-start gap-6">
           <View className="flex-1 gap-4">
+            {testSection}
             {profileSection}
             {appearanceSection}
             {accountSection}
@@ -558,7 +574,6 @@ export default function Settings() {
             {privacySection}
             {notificationsSection}
             {communitySection}
-            {testSection}
             {dangerSection}
           </View>
         </View>
@@ -569,6 +584,7 @@ export default function Settings() {
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
       <ScrollView className="flex-1 px-6 pt-4" contentContainerClassName="gap-3 pb-10">
+        {testSection}
         {profileSection}
         {appearanceSection}
         {accountSection}
@@ -577,7 +593,6 @@ export default function Settings() {
         {privacySection}
         {notificationsSection}
         {communitySection}
-        {testSection}
         {dangerSection}
       </ScrollView>
     </SafeAreaView>

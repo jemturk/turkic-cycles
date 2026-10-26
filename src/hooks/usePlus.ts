@@ -7,6 +7,7 @@ import {
   isOnPlusWaitlist,
   isTierTester,
   setMyTestTier,
+  setMyTestVerified,
   type Tier,
   joinPlusWaitlist,
   leavePlusWaitlist,
@@ -42,6 +43,14 @@ export function useSetMyTestTier(userId: string | undefined) {
   return useMutation({
     mutationFn: (tier: Tier) => setMyTestTier(tier),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["subscription", userId] }),
+  });
+}
+
+export function useSetMyTestVerified(userId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (verified: boolean) => setMyTestVerified(verified),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["verificationStatus", userId] }),
   });
 }
 

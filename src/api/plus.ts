@@ -49,6 +49,11 @@ export async function setMyTestTier(tier: Tier) {
   if (error) throw error;
 }
 
+export async function setMyTestVerified(verified: boolean) {
+  const { error } = await supabase.rpc("set_my_test_verified", { p_verified: verified });
+  if (error) throw error;
+}
+
 export async function isOnPlusWaitlist(userId: string): Promise<boolean> {
   const { data, error } = await supabase.from("plus_waitlist").select("user_id").eq("user_id", userId).maybeSingle();
   if (error) throw error;

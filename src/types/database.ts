@@ -982,6 +982,10 @@ export type Database = {
       remove_connection: { Args: { p_match_id: string }; Returns: boolean }
       sees_mocks: { Args: never; Returns: boolean }
       set_my_test_tier: { Args: { p_tier: string }; Returns: undefined }
+      set_my_test_verified: {
+        Args: { p_verified: boolean }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
