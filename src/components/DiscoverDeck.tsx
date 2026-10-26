@@ -491,7 +491,9 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
         return isMatch;
       })
       .catch(() => {
-        // Not saved: they come back, and there's nothing to undo either.
+        // Not saved: they come back, there's nothing to undo either, and the member is
+        // told, so a lost like never looks like a sent one.
+        showAlert(t("discover.swipeFailed"));
         setAnswered((current) => {
           const next = new Set(current);
           next.delete(person.userId);

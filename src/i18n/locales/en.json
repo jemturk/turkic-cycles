@@ -180,6 +180,7 @@
     "youPassed": "You passed {{name}}",
     "youSaved": "You saved {{name}}",
     "undoFailed": "That can't be undone any more.",
+    "swipeFailed": "Couldn't save that. Check your connection and try again.",
     "removeConnection": "Remove connection",
     "removeConnectionTitle": "Remove {{name}}?",
     "removeConnectionBody": "Your chat will be deleted for both of you, and you won't see each other in Discover. They won't be told.",

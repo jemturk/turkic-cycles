@@ -180,6 +180,7 @@
     "youPassed": "{{name}} geçildi",
     "youSaved": "{{name}} kaydedildi",
     "undoFailed": "Bu artık geri alınamıyor.",
+    "swipeFailed": "Kaydedilemedi. Bağlantınızı kontrol edip tekrar deneyin.",
     "removeConnection": "Bağlantıyı kaldır",
     "removeConnectionTitle": "{{name}} kaldırılsın mı?",
     "removeConnectionBody": "Sohbetiniz ikiniz için de silinecek ve birbirinizi Keşfet'te görmeyeceksiniz. Karşı tarafa bildirilmez.",

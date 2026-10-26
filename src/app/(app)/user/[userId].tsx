@@ -64,6 +64,7 @@ export default function OtherProfile() {
             router.back();
           }
         },
+        onError: () => showAlert(t("discover.swipeFailed")),
       }
     );
   }

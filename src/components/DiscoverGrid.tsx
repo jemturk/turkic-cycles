@@ -11,6 +11,7 @@ import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { DesktopPersonCard } from "@/components/DesktopPersonCard";
 import { CONNECTION_TYPES, type ConnectionType } from "@/constants/connectionTypes";
 import type { DiscoverCandidate } from "@/api/discover";
+import { showAlert } from "@/lib/alert";
 
 const GAP = 20;
 // Cards are between these widths and there are never more than MAX_COLUMNS, so a
@@ -153,12 +154,14 @@ export function DiscoverGrid({
         onSuccess: (isMatch) => {
           if (isMatch) setMatchedName(person.displayName);
         },
-        onError: () =>
+        onError: () => {
+          showAlert(t("discover.swipeFailed"));
           setAnswered((current) => {
             const next = new Set(current);
             next.delete(person.userId);
             return next;
-          }),
+          });
+        },
       },
     );
   }

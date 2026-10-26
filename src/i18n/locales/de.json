@@ -180,6 +180,7 @@
     "youPassed": "Du hast {{name}} übersprungen",
     "youSaved": "Du hast {{name}} gespeichert",
     "undoFailed": "Das kann nicht mehr rückgängig gemacht werden.",
+    "swipeFailed": "Das konnte nicht gespeichert werden. Prüfe deine Verbindung und versuche es erneut.",
     "removeConnection": "Verbindung entfernen",
     "removeConnectionTitle": "{{name}} entfernen?",
     "removeConnectionBody": "Euer Chat wird für euch beide gelöscht, und ihr seht euch nicht mehr unter Entdecken. Die andere Person wird nicht benachrichtigt.",
