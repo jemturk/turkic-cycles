@@ -45,6 +45,7 @@
     "expo": "Framework",
     "expo-apple-authentication": "Sign in with Apple -> account creation: OAuth",
     "expo-asset": "Bundled assets; UI only, no data collection",
+    "expo-build-properties": "Build settings only (R8 minify and resource shrinking); nothing at runtime, no data collection",
     "expo-constants": "App config; UI only, no data collection",
     "expo-crypto": "Nonce for Apple sign-in; on device",
     "expo-font": "Font loading; UI only, no data collection",
