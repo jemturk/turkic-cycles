@@ -43,6 +43,9 @@ The stores would reject the app, or it would break for real users, without these
   - `eas build -p ios` (registers `com.turek.app`, Sign in with Apple capability).
   - iOS push credentials: `eas credentials` → iOS → push (APNs key).
   - TestFlight testing, including push notifications, Sign in with Apple, purchases.
+  - Supabase → Authentication → Sign In / Providers → Apple → Client IDs: Apple sign-in
+    works in Expo Go, so the list likely includes Expo Go's `host.exp.Exponent` as well as
+    `com.turek.app`. Remove anything not intended before the App Store launch.
   - Store screenshots for Apple: done, `store-assets/appstore-6.9-*.png` (1320 x 2868).
 - [ ] **Google Play closed test** [you] — new personal developer accounts must run a
   closed test with at least 12 testers for 14 days before going public.
