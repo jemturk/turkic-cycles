@@ -8,9 +8,9 @@ import type { Tables } from "@/types/database";
 // Marks messages sent to this user as delivered once they reach the app -- phone or
 // web, whatever screen is open: everything waiting when the app opens or returns to
 // the foreground, then each new one as it arrives over realtime. The sender's chat
-// sees the update live (useMessages listens for UPDATEs). Messages sent while the
-// app is closed stay "sent" until it's opened -- a push alone doesn't count, since
-// the app can't act on it in the background.
+// sees the update live (useMessages listens for UPDATEs). While the app is closed,
+// send-message-push marks a message delivered instead, once the phone's push service
+// accepts its notification -- the app can't act on a push in the background.
 export function useMarkDelivered(userId: string | undefined) {
   useEffect(() => {
     if (!userId) return;

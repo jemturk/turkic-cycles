@@ -9,6 +9,11 @@
 // sent in the last FRESH_MS, so a forged or replayed call can't push made-up text
 // or re-push old messages.
 //
+// Once Apple's or Google's push service accepts the notification for at least one of
+// the recipient's devices, the message is marked delivered (if it wasn't already), so
+// the sender sees it reached their phone even while the app stays closed -- the app
+// itself can't act on a push in the background (see src/hooks/useMarkDelivered.ts).
+//
 // Skipped when the recipient has turned push notifications off in Settings
 // (profiles.push_notifications_enabled), like send-match-push.
 //
@@ -105,6 +110,17 @@ Deno.serve(async (req) => {
     });
     if (staleTokenIds.length > 0) {
       await supabase.from("push_tokens").delete().in("id", staleTokenIds);
+    }
+
+    // Accepted for at least one device: delivered. The service role isn't held to the
+    // recipient-only receipt rule (migration 0046); delivered_at is still set only once.
+    if (tickets?.some((ticket) => ticket?.status === "ok")) {
+      const { error: deliveredError } = await supabase
+        .from("messages")
+        .update({ delivered_at: new Date().toISOString() })
+        .eq("id", message.id)
+        .is("delivered_at", null);
+      if (deliveredError) console.error("send-message-push: couldn't mark delivered", message.id, deliveredError);
     }
 
     return new Response("ok", { status: 200 });
