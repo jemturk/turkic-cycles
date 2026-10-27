@@ -1,5 +1,5 @@
 import { useState, type Ref } from "react";
-import { Platform, Pressable, TextInput, View, type TextInputProps } from "react-native";
+import { Platform, Pressable, TextInput, View, type TextInputInstance, type TextInputProps } from "react-native";
 import { Text } from "@/components/Text";
 import { Ionicons } from "@expo/vector-icons";
 import { usePlaceholderColor } from "@/hooks/usePlaceholderColor";
@@ -9,7 +9,7 @@ type TextFieldProps = TextInputProps & {
   error?: string;
   // Reaches the inner TextInput, e.g. to move focus to it (React 19 passes ref as
   // an ordinary prop to function components).
-  ref?: Ref<TextInput>;
+  ref?: Ref<TextInputInstance>;
 };
 
 // text-base carries a line height, and iOS clips a single-line TextInput's descenders

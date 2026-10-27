@@ -126,7 +126,7 @@ export function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:
                   return (
                     <Pressable
                       key={circle.id}
-                      onPress={() => go(() => router.push(`/(app)/circles/${circle.id}`))}
+                      onPress={() => go(() => router.push(`/(app)/circles/${circle.id}`, { withAnchor: true }))}
                       className="flex-row items-center gap-3 rounded-xl px-2 py-2"
                     >
                       <View

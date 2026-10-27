@@ -23,7 +23,7 @@ export default function OwnProfile() {
   const { data: verification } = useMyVerificationStatus(session?.user.id);
   const coverMissing = useHasCover(session?.user.id) === false;
   const wide = useWideLayout();
-  const editButton = <Button label={t("profile.editProfile")} onPress={() => router.push("/(app)/me/edit")} />;
+  const editButton = <Button label={t("profile.editProfile")} onPress={() => router.push("/(app)/me/edit", { withAnchor: true })} />;
 
   // Without a cover the user stays here until they set one (see (app)/_layout.tsx).
   function goBack() {

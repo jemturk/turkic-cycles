@@ -26,7 +26,7 @@ export default function CircleMembers() {
   // Reachable via a direct URL/refresh on web, which has no in-app history to pop.
   function goBack() {
     if (navigation.canGoBack()) router.back();
-    else router.replace(`/(app)/circles/${circleId}`);
+    else router.replace(`/(app)/circles/${circleId}`, { withAnchor: true });
   }
 
   if (!circle) return null;
@@ -80,7 +80,7 @@ export default function CircleMembers() {
       >
         <Pressable
           accessibilityRole="button"
-          onPress={() => router.push(`/(app)/circles/${circle.id}/discover`)}
+          onPress={() => router.push(`/(app)/circles/${circle.id}/discover`, { withAnchor: true })}
           className={`h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 web:hover:bg-primary-600 ${
             wide ? "w-full max-w-[760px]" : ""
           }`}

@@ -9,7 +9,7 @@ import { ChatThreadList } from "@/components/ChatThreadList";
 // A page reached directly (a link from another tab, a notification, a deep link) still
 // has the chat list under it, so its back button goes up to it rather than to
 // whichever tab came before.
-export const unstable_settings = { initialRouteName: "index" };
+export const unstable_settings = { anchor: "index" };
 
 export default function ChatLayout() {
   const { t } = useTranslation();
@@ -31,7 +31,7 @@ export default function ChatLayout() {
             <Text className="mx-2 mb-1 font-display text-[28px] text-ink-900 dark:text-ink-50">{t("tabs.chat")}</Text>
             <ChatThreadList
               activeMatchId={matchId}
-              onOpen={(id) => router.replace(`/(app)/chat/${id}`)}
+              onOpen={(id) => router.replace(`/(app)/chat/${id}`, { withAnchor: true })}
               compact
               className="flex-1"
             />

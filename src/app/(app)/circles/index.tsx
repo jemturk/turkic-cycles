@@ -61,7 +61,7 @@ function CirclesPhone() {
         {canHost ? (
           <Pressable
             accessibilityRole="button"
-            onPress={() => router.push("/(app)/circles/new")}
+            onPress={() => router.push("/(app)/circles/new", { withAnchor: true })}
             className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-primary-500 px-4 py-3"
           >
             <Ionicons name="add" size={20} color="#127A87" />
@@ -96,7 +96,7 @@ function CirclesPhone() {
           return (
             <Pressable
               key={circle.id}
-              onPress={() => router.push(`/(app)/circles/${circle.id}`)}
+              onPress={() => router.push(`/(app)/circles/${circle.id}`, { withAnchor: true })}
               className="flex-row gap-3 rounded-[18px] bg-white p-4 dark:bg-ink-800"
             >
               <View className={`h-12 w-12 items-center justify-center rounded-[14px] ${CIRCLE_TOPIC_COLORS[topic].bg}`}>

@@ -119,7 +119,7 @@ export default function CircleEvents() {
           {canAddEvent ? (
             <Pressable
               accessibilityRole="button"
-              onPress={() => router.push(`/(app)/circles/${circleId}/events/new`)}
+              onPress={() => router.push(`/(app)/circles/${circleId}/events/new`, { withAnchor: true })}
               className="h-11 flex-row items-center justify-center gap-1.5 rounded-full bg-primary-500 px-5 web:hover:bg-primary-600"
             >
               <Ionicons name="add" size={18} color="#FFFFFF" />
@@ -175,7 +175,7 @@ export default function CircleEvents() {
                 return (
                   <Pressable
                     key={event.id}
-                    onPress={() => router.push(`/(app)/circles/${circleId}/events/${event.id}`)}
+                    onPress={() => router.push(`/(app)/circles/${circleId}/events/${event.id}`, { withAnchor: true })}
                     style={{ width: cardWidth }}
                     className="flex-row gap-4 rounded-[18px] bg-white p-5 web:hover:shadow-md dark:bg-ink-800"
                   >
@@ -242,7 +242,7 @@ export default function CircleEvents() {
         {canAddEvent ? (
           <Pressable
             accessibilityRole="button"
-            onPress={() => router.push(`/(app)/circles/${circleId}/events/new`)}
+            onPress={() => router.push(`/(app)/circles/${circleId}/events/new`, { withAnchor: true })}
             className="h-11 flex-row items-center justify-center gap-1.5 rounded-2xl bg-primary-500"
           >
             <Ionicons name="add" size={18} color="#FFFFFF" />
@@ -290,7 +290,7 @@ export default function CircleEvents() {
           return (
             <Pressable
               key={event.id}
-              onPress={() => router.push(`/(app)/circles/${circleId}/events/${event.id}`)}
+              onPress={() => router.push(`/(app)/circles/${circleId}/events/${event.id}`, { withAnchor: true })}
               className="flex-row items-center gap-4 rounded-[18px] bg-white p-4 dark:bg-ink-800"
             >
               <View className={`h-[60px] w-14 items-center justify-center rounded-xl ${colors.bg}`}>

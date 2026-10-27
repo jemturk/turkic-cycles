@@ -37,6 +37,7 @@ export function usePushNotifications(userId: string | undefined) {
       if (Platform.OS === "android") {
         await Notifications.setNotificationChannelAsync("default", {
           name: "Default",
+          // eslint-disable-next-line import/namespace -- exported at runtime (export * in expo-notifications 58), the import plugin just can't follow it
           importance: Notifications.AndroidImportance.MAX,
         });
       }
@@ -67,7 +68,7 @@ export function usePushNotifications(userId: string | undefined) {
     const responseSubscription = Notifications.addNotificationResponseReceivedListener((response) => {
       const data = response.notification.request.content.data as MessagePushData;
       if (data?.type === "message" && data.matchId) {
-        router.push(`/(app)/chat/${data.matchId}`);
+        router.push(`/(app)/chat/${data.matchId}`, { withAnchor: true });
       }
       // A new match (send-match-push): Connections lists it with the new matches. A
       // like (send-like-push): Connections has Likes you.
@@ -77,7 +78,7 @@ export function usePushNotifications(userId: string | undefined) {
       // A safety-plan check-in reminder (src/lib/safetyAlerts.ts): the Safety Center
       // has the plan's Check in and Alert my contacts buttons.
       if (data?.type === "safety") {
-        router.push("/(app)/settings/safety");
+        router.push("/(app)/settings/safety", { withAnchor: true });
       }
     });
 

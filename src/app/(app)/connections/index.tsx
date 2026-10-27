@@ -446,7 +446,7 @@ export default function Connections() {
                       wide={wide}
                       unreadCount={contentTab === "connected" ? (person as MessageThread).unreadCount : undefined}
                       onPress={() => goToProfile(person.otherUserId, person.matchId)}
-                      onQuickChat={contentTab === "connected" ? () => router.push(`/(app)/chat/${person.matchId}`) : undefined}
+                      onQuickChat={contentTab === "connected" ? () => router.push(`/(app)/chat/${person.matchId}`, { withAnchor: true }) : undefined}
                     />
                   ))}
             </View>

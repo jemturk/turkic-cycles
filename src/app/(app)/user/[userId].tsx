@@ -212,7 +212,7 @@ export default function OtherProfile() {
   const messageRow = matchId ? (
     <Pressable
       accessibilityRole="button"
-      onPress={() => router.push(`/(app)/chat/${matchId}`)}
+      onPress={() => router.push(`/(app)/chat/${matchId}`, { withAnchor: true })}
       className="h-12 flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 web:hover:bg-primary-600"
     >
       <Ionicons name="chatbubble-outline" size={18} color="#FFFFFF" />
@@ -273,7 +273,7 @@ export default function OtherProfile() {
         {!wide && !loading && profile ? (
           <>
             {matchId ? (
-              <Button label={t("profile.message")} onPress={() => router.push(`/(app)/chat/${matchId}`)} />
+              <Button label={t("profile.message")} onPress={() => router.push(`/(app)/chat/${matchId}`, { withAnchor: true })} />
             ) : null}
 
             {reportAndBlock}

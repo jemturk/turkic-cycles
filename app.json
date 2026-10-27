@@ -35,6 +35,7 @@
     },
     "plugins": [
       "./plugins/withQuietLibraryWarnings",
+      "./plugins/withShortNativeBuildPaths",
       "./plugins/withReleaseSigning",
       "expo-router",
       "expo-status-bar",

@@ -113,7 +113,7 @@ export function CirclesDesktop() {
     return (
       <Pressable
         key={circle.id}
-        onPress={() => router.push(`/(app)/circles/${circle.id}`)}
+        onPress={() => router.push(`/(app)/circles/${circle.id}`, { withAnchor: true })}
         style={{ width: cardWidth }}
         className="gap-3 rounded-[18px] bg-white p-5 web:hover:shadow-md dark:bg-ink-800"
       >
@@ -192,7 +192,7 @@ export function CirclesDesktop() {
           {canHost ? (
             <Pressable
               accessibilityRole="button"
-              onPress={() => router.push("/(app)/circles/new")}
+              onPress={() => router.push("/(app)/circles/new", { withAnchor: true })}
               className="h-11 justify-center rounded-full bg-primary-500 px-5"
             >
               <Text className="text-[15px] font-semibold text-white">{t("circles.newCircle")}</Text>

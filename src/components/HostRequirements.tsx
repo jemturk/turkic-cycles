@@ -18,7 +18,7 @@ export function HostRequirements({ hasPlus, verified }: { hasPlus: boolean; veri
       <RequirementRow
         label={t("circles.requireVerified")}
         met={verified}
-        onPress={() => router.push("/(app)/settings/verification")}
+        onPress={() => router.push("/(app)/settings/verification", { withAnchor: true })}
       />
     </View>
   );

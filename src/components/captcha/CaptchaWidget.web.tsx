@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { View } from "react-native";
+import { View, type ViewInstance } from "react-native";
 
 import { TURNSTILE_SCRIPT, type CaptchaWidgetProps } from "./turnstile";
 
@@ -35,7 +35,7 @@ function loadTurnstile(): Promise<Turnstile> {
 
 // Web: rendered straight into the page (WebView doesn't run on web).
 export function CaptchaWidget({ siteKey, theme, onToken }: CaptchaWidgetProps) {
-  const containerRef = useRef<View>(null);
+  const containerRef = useRef<ViewInstance>(null);
   // Latest callback without re-rendering the widget when the parent re-renders.
   const onTokenRef = useRef(onToken);
   useEffect(() => {

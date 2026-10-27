@@ -36,7 +36,7 @@ export function UpcomingEventsRail({
           return (
             <Pressable
               key={event.id}
-              onPress={() => router.push(`/(app)/circles/${event.circle_id}/events/${event.id}`)}
+              onPress={() => router.push(`/(app)/circles/${event.circle_id}/events/${event.id}`, { withAnchor: true })}
               className="flex-row items-center gap-3.5 rounded-[18px] bg-white p-[18px] web:hover:shadow-md dark:bg-ink-800"
             >
               <View className={`h-14 w-[52px] items-center justify-center rounded-xl ${colors.bg}`}>
