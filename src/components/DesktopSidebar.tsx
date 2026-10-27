@@ -17,7 +17,7 @@ import { useOnboardingStore } from "@/stores/onboarding";
 import { supabase } from "@/api/client";
 
 // The tabs that get a sidebar entry, in order -- the others in (app)/_layout.tsx
-// (user, me, plus) are hidden routes with href: null.
+// (user, me, plus, report) are routes with no tab button (NO_TAB_BUTTON in (app)/_layout.tsx).
 const SIDEBAR_TABS = ["circles", "connections", "discover", "chat", "settings"];
 
 export const SIDEBAR_WIDTH = 260;

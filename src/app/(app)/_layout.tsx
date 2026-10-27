@@ -27,6 +27,12 @@ import { DesktopSidebar, useSidebarWidth } from "@/components/DesktopSidebar";
 // where the gallery lives.
 const COVER_SETUP_PATH = "/me";
 
+// Tabs reached only by router.push (your profile, someone else's, Plus, Report): no
+// button in the tab bar. Not href: null -- since Expo Router 58 that marks the tab
+// hidden, and focusing a hidden tab redirects straight to the first visible one, so
+// these screens bounced back the moment they opened.
+const NO_TAB_BUTTON = { tabBarButton: () => null, tabBarItemStyle: { display: "none" as const } };
+
 const TAB_ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
   discover: { active: "sparkles", inactive: "sparkles-outline" },
   connections: { active: "people", inactive: "people-outline" },
@@ -202,24 +208,24 @@ export default function AppTabsLayout() {
             own directory (see user/_layout.tsx) rather than alongside your own profile
             in settings/, so it doesn't push onto that tab's Stack: a route living inside
             another tab's folder stays on that tab's history even after you switch away,
-            leaving THEIR profile showing the next time you opened that tab. href: null
+            leaving THEIR profile showing the next time you opened that tab. NO_TAB_BUTTON
             keeps it reachable via router.push without a tab bar button of its own. */}
         <Tabs.Screen
           name="user"
-          options={{ href: null, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
+          options={{ ...NO_TAB_BUTTON, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
         />
         {/* Your own profile, opened from the header avatar on any tab or from
             Settings -- hidden for the same reason as "user" above. */}
         <Tabs.Screen
           name="me"
-          options={{ href: null, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
+          options={{ ...NO_TAB_BUTTON, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
         />
         {/* Plus (paywall / waitlist), opened from Settings and from Connections'
             Likes you -- hidden for the same reason. */}
-        <Tabs.Screen name="plus" options={{ href: null }} />
+        <Tabs.Screen name="plus" options={NO_TAB_BUTTON} />
         {/* Report (and block), opened from a profile on any tab and from the Safety
             Center -- hidden for the same reason. */}
-        <Tabs.Screen name="report" options={{ href: null, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }} />
+        <Tabs.Screen name="report" options={{ ...NO_TAB_BUTTON, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }} />
       </Tabs>
       <SearchOverlay visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
