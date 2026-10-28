@@ -728,12 +728,11 @@
       "heading": "Matching-Einstellungen",
       "filtersNote": "Alter, Sprachen und Entfernung filtern Entdecken in beide Richtungen: Du siehst Menschen in deinem Bereich, die auch dich sehen würden.",
       "saveFailed": "Deine Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
-      "ageMin": "Alter min.",
-      "ageMax": "Alter max.",
-      "maxDistance": "Max. Entfernung (Meilen)",
       "showMeSpeakersOf": "Zeig mir Sprecher von",
       "save": "Speichern",
-      "maxDistanceKm": "Max. Entfernung (km)"
+      "age": "Alter",
+      "distance": "Entfernung",
+      "anywhere": "Überall"
     },
     "blockedUsersScreen": {
       "heading": "Blockierte Nutzer",

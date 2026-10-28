@@ -728,12 +728,11 @@
       "heading": "Eşleştirme tercihleri",
       "filtersNote": "Yaş, diller ve mesafe Keşfet'i iki yönlü filtreler: aralığınızdaki ve sizi de görecek kişileri görürsünüz.",
       "saveFailed": "Tercihleriniz kaydedilemedi. Lütfen tekrar deneyin.",
-      "ageMin": "En düşük yaş",
-      "ageMax": "En yüksek yaş",
-      "maxDistance": "Maksimum mesafe (mil)",
       "showMeSpeakersOf": "Bana şu dilleri konuşanları göster",
       "save": "Kaydet",
-      "maxDistanceKm": "Maksimum mesafe (km)"
+      "age": "Yaş",
+      "distance": "Mesafe",
+      "anywhere": "Her yer"
     },
     "blockedUsersScreen": {
       "heading": "Engellenen kullanıcılar",

@@ -728,12 +728,11 @@
       "heading": "Matching preferences",
       "filtersNote": "Age, languages and distance filter Discover, both ways: you see people in your range who'd also see you.",
       "saveFailed": "Couldn't save your preferences. Please try again.",
-      "ageMin": "Age min",
-      "ageMax": "Age max",
-      "maxDistance": "Max distance (miles)",
       "showMeSpeakersOf": "Show me speakers of",
       "save": "Save",
-      "maxDistanceKm": "Max distance (km)"
+      "age": "Age",
+      "distance": "Distance",
+      "anywhere": "Anywhere"
     },
     "blockedUsersScreen": {
       "heading": "Blocked users",

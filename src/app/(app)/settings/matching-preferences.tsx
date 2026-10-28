@@ -6,10 +6,19 @@ import { router } from "expo-router";
 import { useSession } from "@/hooks/useSession";
 import { useMatchingPreferences, useUpsertMatchingPreferences } from "@/hooks/useSettings";
 import { useMyProfile } from "@/hooks/useProfile";
-import { distanceUnitFor, fromMiles, toMiles, type DistanceUnit } from "@/lib/distanceUnits";
+import { distanceUnitFor, type DistanceUnit } from "@/lib/distanceUnits";
+import {
+  AGE_MIN,
+  AGE_STOPS,
+  ageToIndex,
+  agesFromIndexes,
+  distanceStops,
+  distanceToIndex,
+  milesFromIndex,
+} from "@/lib/preferenceSliders";
 import { LANGUAGES, LANGUAGE_OTHER } from "@/constants/languages";
 import { Button } from "@/components/Button";
-import { TextField } from "@/components/TextField";
+import { StepSlider } from "@/components/StepSlider";
 import { ChipGroup } from "@/components/ChipGroup";
 import type { Tables } from "@/types/database";
 import { SubPage, Card } from "@/components/SettingsUI";
@@ -28,20 +37,26 @@ type FormProps = {
 function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
   const { t } = useTranslation();
   const upsert = useUpsertMatchingPreferences(userId);
-  const [ageMin, setAgeMin] = useState(preferences?.age_min?.toString() ?? "");
-  const [ageMax, setAgeMax] = useState(preferences?.age_max?.toString() ?? "");
-  const [maxDistance, setMaxDistance] = useState(
-    preferences?.max_distance_miles ? String(fromMiles(preferences.max_distance_miles, unit)) : ""
-  );
+  // Slider positions (stop indexes); the ends mean no limit.
+  const [ages, setAges] = useState(() => [
+    ageToIndex(preferences?.age_min, 0),
+    ageToIndex(preferences?.age_max, AGE_STOPS - 1),
+  ]);
+  const [distance, setDistance] = useState(() => distanceToIndex(preferences?.max_distance_miles, unit));
+  const stops = distanceStops(unit);
+  const ageText = (index: number) => (index === AGE_STOPS - 1 ? `${AGE_MIN + index}+` : String(AGE_MIN + index));
+  const distanceText = (index: number) => {
+    const stop = stops[index];
+    return stop === null ? t("settings.matchingPreferencesScreen.anywhere") : `${stop} ${unit}`;
+  };
   const [languages, setLanguages] = useState<string[]>(preferences?.languages ?? []);
 
   // Back to Settings once saved, like Edit profile: leaving the page is the confirmation.
   function onSave() {
     upsert.mutate(
       {
-        ageMin: ageMin ? Number(ageMin) : undefined,
-        ageMax: ageMax ? Number(ageMax) : undefined,
-        maxDistanceMiles: maxDistance ? toMiles(Number(maxDistance), unit) : undefined,
+        ...agesFromIndexes(ages),
+        maxDistanceMiles: milesFromIndex(distance, unit),
         languages,
       },
       {
@@ -53,30 +68,22 @@ function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
 
   return (
     <>
-      <View className="flex-row gap-3">
-        <View className="flex-1">
-          <TextField
-            label={t("settings.matchingPreferencesScreen.ageMin")}
-            keyboardType="number-pad"
-            value={ageMin}
-            onChangeText={setAgeMin}
-          />
-        </View>
-        <View className="flex-1">
-          <TextField
-            label={t("settings.matchingPreferencesScreen.ageMax")}
-            keyboardType="number-pad"
-            value={ageMax}
-            onChangeText={setAgeMax}
-          />
-        </View>
-      </View>
+      <StepSlider
+        label={t("settings.matchingPreferencesScreen.age")}
+        valueLabel={`${ageText(ages[0])} – ${ageText(ages[1])}`}
+        stops={AGE_STOPS}
+        value={ages}
+        onChange={setAges}
+        describe={ageText}
+      />
 
-      <TextField
-        label={t(unit === "mi" ? "settings.matchingPreferencesScreen.maxDistance" : "settings.matchingPreferencesScreen.maxDistanceKm")}
-        keyboardType="number-pad"
-        value={maxDistance}
-        onChangeText={setMaxDistance}
+      <StepSlider
+        label={t("settings.matchingPreferencesScreen.distance")}
+        valueLabel={distanceText(distance)}
+        stops={stops.length}
+        value={[distance]}
+        onChange={([next]) => setDistance(next)}
+        describe={distanceText}
       />
 
       <ChipGroup
