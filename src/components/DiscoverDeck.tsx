@@ -20,6 +20,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useSession } from "@/hooks/useSession";
 import { useDiscoverCandidates, useRecordSwipe, useUndoSwipe } from "@/hooks/useDiscover";
+import { useMatchingPreferences } from "@/hooks/useSettings";
 import { showAlert } from "@/lib/alert";
 import type { DiscoverCandidate } from "@/api/discover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
@@ -216,7 +217,8 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   const { session } = useSession();
   const userId = session?.user.id;
 
-  const { data: candidates, isLoading } = useDiscoverCandidates(circleId, userId);
+  const { data: candidates, isLoading, dataUpdatedAt } = useDiscoverCandidates(circleId, userId);
+  const { data: preferences, dataUpdatedAt: preferencesUpdatedAt } = useMatchingPreferences(userId);
   const recordSwipe = useRecordSwipe(circleId, userId);
   const undoSwipe = useUndoSwipe(circleId, userId);
   const screenReader = useScreenReaderEnabled();
@@ -239,9 +241,27 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   // from the latest sample hasn't gone -- they just weren't drawn this time. A fetch
   // only adds people; answering is what takes them off.
   const [pool, setPool] = useState<DiscoverCandidate[]>([]);
-  const fetchedKey = (candidates ?? []).map((c) => c.userId).join(",");
+  // Except after Matching preferences change: the server's next list is the new truth,
+  // so it replaces the pool -- people the new filters leave out go straight away
+  // instead of staying until the app restarts. replaceAfter: when the change was seen;
+  // the first list fetched after it does the replacing.
+  const preferencesKey = preferences
+    ? JSON.stringify([preferences.age_min, preferences.age_max, preferences.max_distance_miles, preferences.languages])
+    : null;
+  const [seenPreferencesKey, setSeenPreferencesKey] = useState(preferencesKey);
+  const [replaceAfter, setReplaceAfter] = useState<number | null>(null);
+  if (preferencesKey !== seenPreferencesKey) {
+    setSeenPreferencesKey(preferencesKey);
+    // Not on the first load of the preferences: nothing has changed yet.
+    if (seenPreferencesKey !== null) setReplaceAfter(preferencesUpdatedAt);
+  }
+  const fetchedKey = `${(candidates ?? []).map((c) => c.userId).join(",")}|${dataUpdatedAt}`;
   const [poolKey, setPoolKey] = useState<string | null>(null);
-  if (poolKey !== fetchedKey) {
+  if (poolKey !== fetchedKey && replaceAfter !== null && candidates && dataUpdatedAt > replaceAfter) {
+    setPoolKey(fetchedKey);
+    setReplaceAfter(null);
+    setPool(candidates);
+  } else if (poolKey !== fetchedKey) {
     setPoolKey(fetchedKey);
     const inPool = new Set(pool.map((c) => c.userId));
     const fresh = (candidates ?? []).filter((c) => !inPool.has(c.userId));
