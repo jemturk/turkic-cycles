@@ -196,7 +196,28 @@
     "removeConnectionFailed": "Не удалось удалить контакт. Попробуйте ещё раз.",
     "blockTitle": "Заблокировать {{name}}?",
     "blockBody": "Вы больше не увидите друг друга в приложении, и они не смогут вам писать. Им не сообщат. Разблокировать можно в разделе {{place}}.",
-    "blockFailed": "Не удалось заблокировать. Попробуйте ещё раз."
+    "blockFailed": "Не удалось заблокировать. Попробуйте ещё раз.",
+    "strongMatch": "Сильное совпадение",
+    "reasons": {
+      "interests_one": "{{count}} общий интерес",
+      "interests_few": "{{count}} общих интереса",
+      "interests_many": "{{count}} общих интересов",
+      "interests_other": "{{count}} общих интереса",
+      "circles_one": "{{count}} общий круг",
+      "circles_few": "{{count}} общих круга",
+      "circles_many": "{{count}} общих кругов",
+      "circles_other": "{{count}} общих круга",
+      "goals_one": "{{count}} общая цель",
+      "goals_few": "{{count}} общие цели",
+      "goals_many": "{{count}} общих целей",
+      "goals_other": "{{count}} общей цели",
+      "values": "Похожие ценности",
+      "heritage": "Общее происхождение",
+      "life_stage": "Близкий возраст",
+      "proximity": "Рядом",
+      "format_availability": "Одинаковый формат встреч",
+      "professional": "Совпадение опыта"
+    }
   },
   "connections": {
     "matched": "Совпадения",

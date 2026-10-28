@@ -188,7 +188,22 @@
     "removeConnectionFailed": "Die Verbindung konnte nicht entfernt werden. Bitte versuche es erneut.",
     "blockTitle": "{{name}} blockieren?",
     "blockBody": "Ihr seht euch nirgends mehr in der App, und die Person kann dir keine Nachrichten senden. Sie wird nicht benachrichtigt. Du kannst die Blockierung unter {{place}} aufheben.",
-    "blockFailed": "Blockieren fehlgeschlagen. Bitte versuche es erneut."
+    "blockFailed": "Blockieren fehlgeschlagen. Bitte versuche es erneut.",
+    "strongMatch": "Starkes Match",
+    "reasons": {
+      "interests_one": "{{count}} gemeinsames Interesse",
+      "interests_other": "{{count}} gemeinsame Interessen",
+      "circles_one": "{{count}} gemeinsamer Kreis",
+      "circles_other": "{{count}} gemeinsame Kreise",
+      "goals_one": "{{count}} gemeinsames Ziel",
+      "goals_other": "{{count}} gemeinsame Ziele",
+      "values": "Ähnliche Werte",
+      "heritage": "Gemeinsame Herkunft",
+      "life_stage": "Ähnliches Alter",
+      "proximity": "In der Nähe",
+      "format_availability": "Gleiche Art, sich zu treffen",
+      "professional": "Passende Expertise"
+    }
   },
   "connections": {
     "matched": "Gematcht",

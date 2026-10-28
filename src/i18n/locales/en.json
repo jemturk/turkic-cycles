@@ -188,7 +188,22 @@
     "removeConnectionFailed": "Couldn't remove this connection. Please try again.",
     "blockTitle": "Block {{name}}?",
     "blockBody": "You won't see each other anywhere in the app, and they can't message you. They won't be told. You can unblock them in {{place}}.",
-    "blockFailed": "Couldn't block. Please try again."
+    "blockFailed": "Couldn't block. Please try again.",
+    "strongMatch": "Strong match",
+    "reasons": {
+      "interests_one": "{{count}} shared interest",
+      "interests_other": "{{count}} shared interests",
+      "circles_one": "{{count}} shared circle",
+      "circles_other": "{{count}} shared circles",
+      "goals_one": "{{count}} shared goal",
+      "goals_other": "{{count}} shared goals",
+      "values": "Similar values",
+      "heritage": "Shared heritage",
+      "life_stage": "Similar age",
+      "proximity": "Nearby",
+      "format_availability": "Same way of meeting",
+      "professional": "Expertise match"
+    }
   },
   "connections": {
     "matched": "Matched",

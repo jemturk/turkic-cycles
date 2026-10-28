@@ -3,10 +3,12 @@ import { listDiscoverCandidates, listGlobalDiscoverCandidates, listSavedPeople, 
 
 const mockFrom = jest.fn();
 const mockRpc = jest.fn();
+const mockInvoke = jest.fn();
 jest.mock("@/api/client", () => ({
   supabase: {
     from: (table: string) => mockFrom(table),
     rpc: (...args: unknown[]) => mockRpc(...args),
+    functions: { invoke: (...args: unknown[]) => mockInvoke(...args) },
   },
 }));
 
@@ -118,6 +120,51 @@ describe("checkForMatch", () => {
     const chain = mockFrom.mock.results[0].value;
     expect(chain.is).toHaveBeenCalledWith("circle_id", null);
     expect(chain.eq).not.toHaveBeenCalledWith("circle_id", expect.anything());
+  });
+});
+
+describe("ranked Discover (rank-discover)", () => {
+  function profile(id: string, name: string) {
+    return { id, display_name: name, avatar_url: null, birthdate: null, city: null, state: null, occupation: null };
+  }
+
+  it("keeps the ranking's order and attaches each match", async () => {
+    mockInvoke.mockResolvedValue({
+      data: {
+        candidates: [
+          { userId: "bob", connectionType: "friend", score: 0.81, strong: true, reasons: [{ criterion: "interests", count: 3 }] },
+          { userId: "alice", connectionType: "friend", score: null, strong: false, reasons: [] },
+        ],
+      },
+      error: null,
+    });
+    mockRpc.mockResolvedValue(ok([]));
+    queueResponses({
+      profiles: [ok([profile("alice", "Alice"), profile("bob", "Bob")])],
+      user_connection_types: [ok([])],
+      profile_photos: [ok([])],
+    });
+
+    const result = await listGlobalDiscoverCandidates();
+    expect(mockInvoke).toHaveBeenCalledWith("rank-discover", { body: { circleId: null, maxCount: 20 } });
+    expect(result.map((c) => c.userId)).toEqual(["bob", "alice"]);
+    expect(result[0].match).toEqual({ connectionType: "friend", score: 0.81, strong: true, reasons: [{ criterion: "interests", count: 3 }] });
+  });
+
+  it("falls back to the unranked list when ranking fails", async () => {
+    mockInvoke.mockResolvedValue({ data: null, error: new Error("down") });
+    mockRpc.mockImplementation((fn: string) =>
+      Promise.resolve(fn === "list_global_discover_candidates" ? ok([{ user_id: "alice" }]) : ok([]))
+    );
+    queueResponses({
+      profiles: [ok([profile("alice", "Alice")])],
+      user_connection_types: [ok([])],
+      profile_photos: [ok([])],
+    });
+
+    const result = await listGlobalDiscoverCandidates();
+    expect(result.map((c) => c.userId)).toEqual(["alice"]);
+    expect(result[0].match).toBeUndefined();
   });
 });
 

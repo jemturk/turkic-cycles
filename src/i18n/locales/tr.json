@@ -188,7 +188,22 @@
     "removeConnectionFailed": "Bu bağlantı kaldırılamadı. Lütfen tekrar dene.",
     "blockTitle": "{{name}} engellensin mi?",
     "blockBody": "Uygulamanın hiçbir yerinde birbirinizi görmeyeceksiniz ve sana mesaj gönderemeyecek. Karşı tarafa bildirilmez. Engeli {{place}} bölümünden kaldırabilirsin.",
-    "blockFailed": "Engellenemedi. Lütfen tekrar dene."
+    "blockFailed": "Engellenemedi. Lütfen tekrar dene.",
+    "strongMatch": "Güçlü eşleşme",
+    "reasons": {
+      "interests_one": "{{count}} ortak ilgi alanı",
+      "interests_other": "{{count}} ortak ilgi alanı",
+      "circles_one": "{{count}} ortak çevre",
+      "circles_other": "{{count}} ortak çevre",
+      "goals_one": "{{count}} ortak hedef",
+      "goals_other": "{{count}} ortak hedef",
+      "values": "Benzer değerler",
+      "heritage": "Ortak köken",
+      "life_stage": "Yakın yaş",
+      "proximity": "Yakında",
+      "format_availability": "Aynı buluşma tarzı",
+      "professional": "Uzmanlık uyumu"
+    }
   },
   "connections": {
     "matched": "Eşleşmeler",

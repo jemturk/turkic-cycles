@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Text } from "@/components/Text";
 import { Avatar } from "@/components/Avatar";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { MatchSummary } from "@/components/MatchSummary";
 import { calculateAge } from "@/lib/age";
 import type { DiscoverCardPerson } from "@/components/DiscoverCardView";
 
@@ -47,6 +48,7 @@ export function DesktopPersonCard({
 
       {/* A dark band behind the text keeps it readable on any photo, as on a phone. */}
       <View className={`absolute inset-x-0 bottom-0 gap-2 p-5 ${cover ? "bg-ink-950/55" : ""}`}>
+        <MatchSummary match={person.match} />
         <View className="flex-row items-center gap-2">
           {avatar ??
             (cover ? (
