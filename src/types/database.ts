@@ -531,7 +531,6 @@ export type Database = {
           citizenship_status_detail: string | null
           created_at: string
           origin_countries: string[]
-          religious_affiliation: string | null
           updated_at: string
           user_id: string
         }
@@ -539,7 +538,6 @@ export type Database = {
           citizenship_status_detail?: string | null
           created_at?: string
           origin_countries?: string[]
-          religious_affiliation?: string | null
           updated_at?: string
           user_id: string
         }
@@ -547,7 +545,6 @@ export type Database = {
           citizenship_status_detail?: string | null
           created_at?: string
           origin_countries?: string[]
-          religious_affiliation?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -950,6 +947,15 @@ export type Database = {
           user_id: string
         }[]
       }
+      has_answered: {
+        Args: {
+          every_scope: boolean
+          target: string
+          target_circle: string
+          viewer: string
+        }
+        Returns: boolean
+      }
       has_plus: { Args: { uid: string }; Returns: boolean }
       interest_tag: { Args: { label: string }; Returns: string }
       is_app_admin: { Args: never; Returns: boolean }
@@ -981,6 +987,7 @@ export type Database = {
         Args: { lat1: number; lat2: number; lon1: number; lon2: number }
         Returns: number
       }
+      pass_cooldown_days: { Args: never; Returns: number }
       passes_discover_filters: {
         Args: { target: string; viewer: string }
         Returns: boolean

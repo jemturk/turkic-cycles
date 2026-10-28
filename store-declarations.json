@@ -214,7 +214,6 @@
       "citizenship_status_detail",
       "created_at",
       "origin_countries",
-      "religious_affiliation",
       "updated_at",
       "user_id"
     ],

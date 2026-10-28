@@ -50,7 +50,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | Personal → Address | — not collected | | Only city | A street address field |
 | Personal → Phone number | — not collected | | The member's own number is never asked | A phone sign-in or phone field |
 | Personal → Race and ethnicity | Req. | Functionality, Personalization | Countries of origin, min 1 (`profile_sensitive.origin_countries`) | Origin becomes optional |
-| Personal → Political or religious beliefs | Opt. | Functionality, Personalization | "Importance of shared religion" (romantic questionnaire); `profile_sensitive.religious_affiliation` (no UI yet) | Religion gets a profile field |
+| Personal → Political or religious beliefs | Opt. | Functionality, Personalization | How important faith and religious tradition are (a 1-5 values question, never which faith; `questionnaire_responses.answers.values`) | Religion gets a profile field |
 | Personal → Sexual orientation | — not collected | | | Gender/orientation preferences added |
 | Personal → Other info | Req. | Functionality, Personalization | Date of birth (18+ check); citizenship/residency, occupation, bio, languages, interests; how and when they like to meet; goals per connection type; Business industry and expertise | |
 | Financial → Purchase history | Opt. | Functionality, Account mgmt | Plus subscription (RevenueCat, `subscriptions`) | |
