@@ -22,6 +22,7 @@ import { StepSlider } from "@/components/StepSlider";
 import { ChipGroup } from "@/components/ChipGroup";
 import type { Tables } from "@/types/database";
 import { SubPage, Card } from "@/components/SettingsUI";
+import { TAG_TONES } from "@/constants/tagTones";
 import { showAlert } from "@/lib/alert";
 
 type FormProps = {
@@ -76,6 +77,7 @@ function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
         value={ages}
         onChange={setAges}
         describe={ageText}
+        tone="accent"
       />
 
       <StepSlider
@@ -85,6 +87,7 @@ function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
         value={distance}
         onChange={setDistance}
         describe={distanceText}
+        tone="gold"
       />
 
       <ChipGroup
@@ -94,6 +97,7 @@ function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
         onChange={setLanguages}
         otherOption={{ value: LANGUAGE_OTHER, placeholder: t("fields.typeLanguage") }}
         namespace="languages"
+        tone={TAG_TONES.languages}
       />
 
       <View className="mt-2">

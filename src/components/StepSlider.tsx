@@ -13,6 +13,33 @@ import { Text } from "@/components/Text";
 
 const THUMB = 28;
 
+// One palette hue per slider, so a page of them isn't all one colour. Full class
+// names (not built from parts) so NativeWind finds them.
+const TONES = {
+  primary: {
+    track: "bg-primary-100",
+    fill: "bg-primary-500",
+    thumb: "border-primary-500",
+    pill: "bg-primary-100 dark:bg-primary-500/25",
+    text: "text-primary-600 dark:text-primary-100",
+  },
+  accent: {
+    track: "bg-accent-50",
+    fill: "bg-accent-500",
+    thumb: "border-accent-500",
+    pill: "bg-accent-50 dark:bg-accent-500/25",
+    text: "text-accent-600 dark:text-accent-400",
+  },
+  gold: {
+    track: "bg-gold-100/60",
+    fill: "bg-gold-600",
+    thumb: "border-gold-600",
+    pill: "bg-gold-100 dark:bg-gold-600/30",
+    text: "text-gold-600 dark:text-gold-100",
+  },
+} as const;
+export type SliderTone = keyof typeof TONES;
+
 type Props = {
   label: string;
   // What the current value reads as, shown at the right of the label ("25 – 40").
@@ -26,18 +53,22 @@ type Props = {
   onChange: Dispatch<SetStateAction<number[]>>;
   // Spoken for each thumb's index (screen readers), e.g. "40 years".
   describe: (index: number) => string;
+  tone?: SliderTone;
 };
 
 // A slider that snaps to fixed stops, with one thumb or two (a range: the thumbs can
 // meet but not cross). Built on Gesture Handler + Reanimated like the Discover deck,
 // so it drags smoothly on phones and with a mouse on web.
-export function StepSlider({ label, valueLabel, stops, value, onChange, describe }: Props) {
+export function StepSlider({ label, valueLabel, stops, value, onChange, describe, tone = "primary" }: Props) {
   const width = useSharedValue(0);
+  const colors = TONES[tone];
   return (
     <View className="gap-2">
-      <View className="flex-row items-baseline justify-between">
+      <View className="flex-row items-center justify-between">
         <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">{label}</Text>
-        <Text className="text-base font-semibold text-primary-600 dark:text-primary-300">{valueLabel}</Text>
+        <View className={`rounded-full px-3 py-1 ${colors.pill}`}>
+          <Text className={`text-sm font-semibold ${colors.text}`}>{valueLabel}</Text>
+        </View>
       </View>
       <View
         style={{
@@ -49,8 +80,8 @@ export function StepSlider({ label, valueLabel, stops, value, onChange, describe
           width.set(e.nativeEvent.layout.width);
         }}
       >
-        <View className="h-1.5 rounded-full bg-primary-100 dark:bg-ink-700" />
-        <Fill width={width} stops={stops} value={value} />
+        <View className={`h-1.5 rounded-full dark:bg-ink-700 ${colors.track}`} />
+        <Fill width={width} stops={stops} value={value} className={colors.fill} />
         {value.map((index, i) => (
           <Thumb
             key={i}
@@ -64,6 +95,7 @@ export function StepSlider({ label, valueLabel, stops, value, onChange, describe
             onChange={onChange}
             describe={describe}
             label={label}
+            className={colors.thumb}
           />
         ))}
       </View>
@@ -72,14 +104,24 @@ export function StepSlider({ label, valueLabel, stops, value, onChange, describe
 }
 
 // The coloured part of the track: from the low thumb (or the start) to the high one.
-function Fill({ width, stops, value }: { width: SharedValue<number>; stops: number; value: number[] }) {
+function Fill({
+  width,
+  stops,
+  value,
+  className,
+}: {
+  width: SharedValue<number>;
+  stops: number;
+  value: number[];
+  className: string;
+}) {
   const low = value.length === 2 ? value[0] : 0;
   const high = value[value.length - 1];
   const style = useAnimatedStyle(() => {
     const step = width.value / Math.max(stops - 1, 1);
     return { left: low * step, width: (high - low) * step };
   });
-  return <Animated.View className="absolute h-1.5 rounded-full bg-primary-500" style={style} />;
+  return <Animated.View className={`absolute h-1.5 rounded-full ${className}`} style={style} />;
 }
 
 function Thumb({
@@ -92,6 +134,7 @@ function Thumb({
   onChange,
   describe,
   label,
+  className,
 }: {
   width: SharedValue<number>;
   stops: number;
@@ -102,6 +145,7 @@ function Thumb({
   onChange: Dispatch<SetStateAction<number[]>>;
   describe: (index: number) => string;
   label: string;
+  className: string;
 }) {
   // Where the thumb is while dragging, as a fractional stop; it snaps on release.
   const position = useSharedValue(index);
@@ -177,7 +221,7 @@ function Thumb({
           const next = e.nativeEvent.actionName === "increment" ? index + 1 : index - 1;
           if (next >= minIndex && next <= maxIndex) settle(next);
         }}
-        className="absolute left-0 rounded-full border-2 border-primary-500 bg-white dark:bg-ink-900"
+        className={`absolute left-0 rounded-full border-2 bg-white dark:bg-ink-900 ${className}`}
         style={[
           {
             width: THUMB,
