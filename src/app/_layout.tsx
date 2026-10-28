@@ -3,7 +3,7 @@ import { Sentry, identifySentryUser } from "@/lib/sentry";
 import "@/theme/global.css";
 import "@/theme/icons";
 import { useEffect, useState } from "react";
-import { Platform } from "react-native";
+import { LogBox, Platform } from "react-native";
 import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -28,6 +28,12 @@ import { AppFrame } from "@/components/AppFrame";
 import { DialogHost } from "@/components/DialogHost";
 
 SplashScreen.preventAutoHideAsync();
+
+// NativeWind's runtime (react-native-css-interop 0.2.7, current with nativewind 4.2.7)
+// registers React Native's ImageBackground on start-up, which trips React Native 0.88's
+// deprecation notice although the app never uses ImageBackground. Remove once NativeWind
+// stops touching it.
+LogBox.ignoreLogs(["ImageBackground is deprecated"]);
 
 const queryClient = new QueryClient();
 
