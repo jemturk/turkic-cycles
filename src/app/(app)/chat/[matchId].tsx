@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { AppState, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, type ScrollViewInstance } from "react-native";
 import { Text } from "@/components/Text";
+import { ConnectionFeedbackPrompt } from "@/components/ConnectionFeedbackPrompt";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAvoidingView, KeyboardController } from "react-native-keyboard-controller";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -614,6 +615,15 @@ export default function ChatThread() {
           </Pressable>
         </ScrollView>
 
+        <ConnectionFeedbackPrompt
+          // A fresh prompt per conversation (desktop keeps this screen while switching).
+          key={matchId}
+          matchId={matchId}
+          userId={userId}
+          otherUserId={participant?.profile?.id}
+          matchCreatedAt={participant?.match?.created_at}
+          wide={wide}
+        />
         {showContactTip ? (
           <View
             accessibilityRole="alert"

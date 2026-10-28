@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useState, type ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Pressable, View, type AccessibilityActionEvent, type AccessibilityActionInfo } from "react-native";
 import { Text } from "@/components/Text";
+import { EmptyState } from "@/components/EmptyState";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
@@ -560,9 +561,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   return (
     <>
       {isLoading || recentlySkipped === null ? null : !candidate ? (
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-center text-base text-ink-700 dark:text-ink-200">{emptyLabel}</Text>
-        </View>
+        <EmptyState icon="sparkles" label={emptyLabel} />
       ) : (
         // The cards fill the space above the buttons (flex: 1). Animated views take
         // inline styles, not className: NativeWind classes on Reanimated views don't

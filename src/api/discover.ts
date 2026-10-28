@@ -15,7 +15,35 @@ export type DiscoverCandidate = {
   // The cover photo -- the card's background. Required at onboarding (migrations
   // 0026/0027), but null when an older account has none or the slot is empty.
   coverPhotoUrl: string | null;
+  // The matching model's verdict (rank-discover); absent when ranking was unavailable.
+  match?: MatchInfo;
 };
+
+export type MatchReason = { criterion: string; count?: number; miles?: number };
+export type MatchInfo = { connectionType: ConnectionType; score: number | null; strong: boolean; reasons: MatchReason[] };
+
+// Discover's candidates, best match first (the rank-discover Edge Function, matching
+// model v1): it fetches them as this member, through the same filtered database calls
+// as before, and scores each. null if it can't be reached, so Discover falls back to
+// the unranked list rather than showing nothing.
+async function rankedCandidates(circleId: string | null): Promise<{ userId: string; match: MatchInfo }[] | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke<{
+      candidates: ({ userId: string } & MatchInfo)[];
+    }>("rank-discover", { body: { circleId, maxCount: 20 } });
+    if (error || !data) return null;
+    return data.candidates.map(({ userId, ...match }) => ({ userId, match }));
+  } catch {
+    return null;
+  }
+}
+
+async function hydrateRanked(ranked: { userId: string; match: MatchInfo }[]) {
+  if (ranked.length === 0) return [];
+  const people = await hydrateCandidates(ranked.map((r) => r.userId));
+  const matchById = new Map(ranked.map((r) => [r.userId, r.match]));
+  return people.map((person) => ({ ...person, match: matchById.get(person.userId) }));
+}
 
 export async function getOriginCountriesWithConsent(userIds: string[]): Promise<Map<string, string[]>> {
   if (userIds.length === 0) return new Map();
@@ -76,6 +104,9 @@ async function hydrateCandidates(userIds: string[]): Promise<DiscoverCandidate[]
 // by list_circle_discover_candidates so the Discover filters (0052) apply -- they
 // read other people's matching preferences, which the client can't.
 export async function listDiscoverCandidates(circleId: string): Promise<DiscoverCandidate[]> {
+  const ranked = await rankedCandidates(circleId);
+  if (ranked) return hydrateRanked(ranked);
+
   const { data, error } = await supabase.rpc("list_circle_discover_candidates", { target_circle: circleId });
   if (error) throw error;
   const candidateIds = (data ?? []).map((row) => row.user_id);
@@ -84,9 +115,12 @@ export async function listDiscoverCandidates(circleId: string): Promise<Discover
   return hydrateCandidates(candidateIds);
 }
 
-// The Discover tab: anyone discoverable, picked (and ordered) server-side by
-// list_global_discover_candidates -- random for now, a matching algorithm later.
+// The Discover tab: anyone discoverable, best match first (rankedCandidates), or picked
+// at random by list_global_discover_candidates when ranking is unavailable.
 export async function listGlobalDiscoverCandidates(): Promise<DiscoverCandidate[]> {
+  const ranked = await rankedCandidates(null);
+  if (ranked) return hydrateRanked(ranked);
+
   const { data, error } = await supabase.rpc("list_global_discover_candidates", { max_count: 20 });
   if (error) throw error;
   const candidateIds = (data ?? []).map((row) => row.user_id);

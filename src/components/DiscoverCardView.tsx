@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Text } from "@/components/Text";
 import { Avatar } from "@/components/Avatar";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { MatchSummary } from "@/components/MatchSummary";
 import { calculateAge } from "@/lib/age";
 import type { DiscoverCandidate } from "@/api/discover";
 
@@ -18,7 +19,8 @@ export type DiscoverCardPerson = Pick<
   | "originCountries"
   | "connectionTypes"
   | "coverPhotoUrl"
->;
+> &
+  Partial<Pick<DiscoverCandidate, "match">>;
 
 // What a person's Discover card looks like -- the one place it's drawn, so the
 // deck and the cover-photo preview (CoverPreviewModal) can never drift apart.
@@ -54,6 +56,7 @@ export function DiscoverCardView({
 
       {/* A dark band behind the text keeps it readable on any photo. */}
       <View className={`gap-2 p-6 ${cover ? "bg-ink-950/55" : ""}`}>
+        <MatchSummary match={person.match} />
         <View className="flex-row items-center gap-2">
           {cover ? (
             <Avatar uri={person.avatarUrl} name={person.displayName} size={40} fallbackClassName="bg-white/30" />

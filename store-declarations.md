@@ -23,7 +23,7 @@ changes in a store console, change it here in the same commit as the code.
   `AGENTS.md` covers AI-made changes.
 
 Service providers (Supabase, Sentry, RevenueCat, Expo/Firebase push, Stripe Identity,
-Google Cloud Vision for the photo check)
+Google Cloud Vision for the photo check, Google Geocoding for the typed city's centre point)
 process data for us, so in Google's terms that's **collected, not shared**. A third
 party that uses data for its own purposes (ads, analytics networks) would be
 **shared** — none today.
@@ -42,7 +42,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 
 | Category → type | Req. | Purposes | What it is | Re-check if |
 | --- | --- | --- | --- | --- |
-| Location → Approximate | Req. | Functionality, Personalization | City/state/country typed on the profile (`profiles.city` …; the real city/state in self-only `profile_locations`, others see what `location_visibility` allows) | City becomes optional; anything stores coordinates |
+| Location → Approximate | Req. | Functionality, Personalization | City/state/country typed on the profile (`profiles.city` …; the real city/state in self-only `profile_locations`, others see what `location_visibility` allows). The city's centre point from Google Geocoding (rounded to ~100 m, self-only `profile_locations.latitude/longitude`, used server-side for the distance filter) | City becomes optional; coordinates come from the device's GPS or are shown to other members |
 | Location → Precise | — not collected | | GPS used on the phone only (`src/stores/localFilter.ts`) | Device coordinates are sent or saved anywhere |
 | Personal → Name | Req. | Functionality, Account mgmt | `profiles.display_name` | |
 | Personal → Email | Req. | Functionality, Account mgmt | Account email (Supabase Auth) | |
@@ -50,9 +50,9 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | Personal → Address | — not collected | | Only city | A street address field |
 | Personal → Phone number | — not collected | | The member's own number is never asked | A phone sign-in or phone field |
 | Personal → Race and ethnicity | Req. | Functionality, Personalization | Countries of origin, min 1 (`profile_sensitive.origin_countries`) | Origin becomes optional |
-| Personal → Political or religious beliefs | Opt. | Functionality, Personalization | "Importance of shared religion" (romantic questionnaire); `profile_sensitive.religious_affiliation` (no UI yet) | Religion gets a profile field |
-| Personal → Sexual orientation | — not collected | | | Gender/orientation preferences added |
-| Personal → Other info | Req. | Functionality, Personalization | Date of birth (18+ check); citizenship/residency, occupation, bio, languages, interests | |
+| Personal → Political or religious beliefs | Opt. | Functionality, Personalization | How important faith and religious tradition are (a 1-5 values question, never which faith; `questionnaire_responses.answers.values`). A 1-5 answer needs an explicit consent tick (`values.consentFaith`, logged in `consent_records` as `faith`); "prefer not to say" withdraws it | Religion gets a profile field |
+| Personal → Sexual orientation | Opt. | Functionality, Personalization | Romantic only: gender (woman / man / self-describe, optional description), who they're interested in, and for self-describers who sees them (`questionnaire_responses.answers.romantic`, self-only; used server-side for the Romantic filter, never shown). Needs an explicit consent tick (`romantic.consentSensitive`, logged in `consent_records` as `sexual_orientation`); removing Romantic deletes the answers | Shown to other members, or asked outside Romantic |
+| Personal → Other info | Req. | Functionality, Personalization | Date of birth (18+ check); citizenship/residency, occupation, bio, languages, interests; how and when they like to meet; goals per connection type; Business industry and expertise | |
 | Financial → Purchase history | Opt. | Functionality, Account mgmt | Plus subscription (RevenueCat, `subscriptions`) | |
 | Financial → Payment info | — not collected | | Google Play / App Store handle payment | Direct card payments (e.g. Stripe checkout) |
 | Messages → Other in-app messages | Opt. | Functionality, Fraud prevention/security | Chat, reactions (`messages`, `message_reactions`) | |
@@ -64,7 +64,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | App activity → Search history | — not collected | | Searches and filters aren't saved | Saved or recent searches |
 | App activity → Installed apps | — not collected | | | |
 | App activity → Other UGC | Opt. | Functionality, Fraud prevention/security | Bio, circles/events created, questionnaire answers, reports | |
-| App activity → Other actions | Opt. | Functionality, Personalization | Likes, passes, blocks (`swipes`, `blocked_users`) | |
+| App activity → Other actions | Opt. | Functionality, Personalization, Analytics | Likes, passes, blocks (`swipes`, `blocked_users`); their history and connections made (`interaction_log`, `connection_log`); the match scores behind each suggestion (`suggestion_log`); "did you meet?" and a 1-5 rating (`connection_feedback`); what matters most to you (`matching_preferences.boosts`). The logs and feedback are deleted after 24 months (migration 0063). Analytics = refitting the matching weights from outcomes, in-house only | Logs are shared with a third party, or used for ads |
 | Web browsing | — not collected | | Google sign-in / Stripe open in a browser; nothing recorded | |
 | App info → Crash logs | Req. | Analytics | Sentry | |
 | App info → Diagnostics | Req. | Analytics | Sentry device/OS/app version | |

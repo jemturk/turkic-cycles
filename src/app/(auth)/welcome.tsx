@@ -144,6 +144,7 @@ function CirclesMockup() {
 }
 
 function DiscoverMockup() {
+  const { t } = useTranslation();
   return (
     <View className="w-full overflow-hidden rounded-3xl" style={[CARD_SHADOW, { height: 260 }]}>
       <LinearGradient colors={["#D9A57E", "#9C6B4E", "#5C3D2E"]} style={StyleSheet.absoluteFill} />
@@ -156,8 +157,16 @@ function DiscoverMockup() {
           <Ionicons name="checkmark-circle" size={18} color="white" />
         </View>
         <Text className="text-xs text-white/90">Tampa, FL</Text>
+        <View className="flex-row flex-wrap items-center gap-2">
+          <View className="rounded-full bg-gold-400 px-3 py-1">
+            <Text className="text-xs font-semibold text-ink-900">{t("discover.strongMatch")}</Text>
+          </View>
+          <Text className="text-xs text-white">
+            {t("discover.reasons.interests", { count: 3 })} · {t("discover.reasons.proximity")}
+          </Text>
+        </View>
         <View className="flex-row flex-wrap gap-1.5">
-          {["Architect", "Türkiye", "Friendship"].map((tag) => (
+          {["Architect", "Hiking", "Friendship"].map((tag) => (
             <View key={tag} className="rounded-full bg-white/20 px-2.5 py-1">
               <Text className="text-[11px] font-medium text-white">{tag}</Text>
             </View>
@@ -216,6 +225,7 @@ function SafetyMockup() {
       </View>
       {[
         ["location-outline", "Plans shared with a trusted contact"],
+        ["eye-off-outline", "You choose how much location to show"],
         ["flag-outline", "Block or report in two taps"],
       ].map(([icon, label]) => (
         <View key={label} className="flex-row items-center gap-2.5 rounded-xl bg-teal-50 p-2.5">

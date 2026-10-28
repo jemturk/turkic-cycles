@@ -156,6 +156,42 @@ export async function getOtherParticipant(matchId: string, userId: string) {
   return { match, profile };
 }
 
+// "Did you meet or talk?" and how it was (connection_feedback, matching model stage 6):
+// one answer per member per connection, theirs alone to read and change.
+export type ConnectionFeedback = { met: boolean; metFormat: "in_person" | "virtual" | null; rating: number | null; updatedAt: string };
+
+export async function getMyConnectionFeedback(matchId: string, userId: string): Promise<ConnectionFeedback | null> {
+  const { data, error } = await supabase
+    .from("connection_feedback")
+    .select("met, met_format, rating, updated_at")
+    .eq("match_id", matchId)
+    .eq("rater_id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  return { met: data.met, metFormat: data.met_format as ConnectionFeedback["metFormat"], rating: data.rating, updatedAt: data.updated_at };
+}
+
+export async function saveConnectionFeedback(
+  matchId: string,
+  userId: string,
+  otherUserId: string,
+  answer: { met: boolean; metFormat?: "in_person" | "virtual"; rating?: number }
+) {
+  const { error } = await supabase.from("connection_feedback").upsert(
+    {
+      match_id: matchId,
+      rater_id: userId,
+      other_id: otherUserId,
+      met: answer.met,
+      met_format: answer.metFormat ?? null,
+      rating: answer.rating ?? null,
+    },
+    { onConflict: "match_id,rater_id" }
+  );
+  if (error) throw error;
+}
+
 export async function listMessages(matchId: string) {
   const { data, error } = await supabase
     .from("messages")

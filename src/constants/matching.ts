@@ -165,6 +165,28 @@ export const EXPERTISE = [
   "teaching_training",
 ] as const;
 
+// How and when members like to meet, asked of everyone (profiles.meeting_format,
+// profiles.availability; migration 0059).
+export const MEETING_FORMATS = ["in_person", "virtual", "either"] as const;
+export type MeetingFormat = (typeof MEETING_FORMATS)[number];
+export const AVAILABILITY = ["weekday_daytime", "weekday_evening", "weekend"] as const;
+
+// The values & lifestyle questions (1-5, or 0 = prefer not to say), by key; the
+// matching model numbers them 1-5 in this order. Friend and Romantic answer all five,
+// Mentor and Business only social energy and pace (the personal ones carry little
+// weight there).
+export const VALUES_QUESTIONS = ["family", "faith", "social", "pace", "heritage"] as const;
+export type ValuesQuestion = (typeof VALUES_QUESTIONS)[number];
+export const PROFESSIONAL_VALUES_QUESTIONS: readonly ValuesQuestion[] = ["social", "pace"];
+
+// Romantic: gender, who they want to see, and -- for someone who self-describes -- who
+// they're shown to.
+export const GENDERS = ["woman", "man", "self_describe"] as const;
+export const GENDER_GROUPS = ["women", "men"] as const;
+
+// Where a mentor / mentee or business contact should be (pass-or-fail, no proximity score).
+export const LOCATION_PREFS = ["anywhere", "same_country", "same_state", "nearby"] as const;
+
 export const SELECTION_LIMITS = {
   interests: { min: 3, max: 10 },
   goals: { min: 1, max: 3 },

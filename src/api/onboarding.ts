@@ -1,4 +1,5 @@
 import { supabase } from "@/api/client";
+import type { Json } from "@/types/database";
 import type { ConnectionType } from "@/constants/connectionTypes";
 import type {
   CoreQuestionnaire,
@@ -9,6 +10,7 @@ import type {
 import type { Step4Answers } from "@/schemas/questionnaire/step4";
 import type { ProfileEditValues } from "@/schemas/questionnaire/profileEdit";
 import { completeOnboarding, updateProfileFields } from "@/api/profiles";
+import { sensitiveConsents } from "@/lib/sensitiveConsent";
 
 export async function updateConnectionTypes(userId: string, types: ConnectionType[]) {
   const { error: deleteError } = await supabase
@@ -52,7 +54,8 @@ export async function upsertQuestionnaireCore(userId: string, core: Partial<Core
 export async function upsertQuestionnaireAnswers(userId: string, answers: Partial<Step4Answers>) {
   const { error } = await supabase
     .from("questionnaire_responses")
-    .upsert({ user_id: userId, answers }, { onConflict: "user_id" });
+    // Each type's answers are plain JSON (validated by its schema before saving).
+    .upsert({ user_id: userId, answers: answers as Json }, { onConflict: "user_id" });
   if (error) throw error;
 }
 
@@ -74,6 +77,22 @@ export async function updateOriginCountriesWithConsent(userId: string, originCou
   if (consentError) throw consentError;
 }
 
+// Saves the branching answers and logs the special category consents they carry
+// (consent_records is append-only: a withdrawal is a new granted=false row).
+async function saveAnswersWithConsent(userId: string, answers: Partial<Step4Answers>, connectionTypes: ConnectionType[]) {
+  const { saved, granted, revoked } = sensitiveConsents(answers, connectionTypes);
+  await upsertQuestionnaireAnswers(userId, saved);
+
+  const now = new Date().toISOString();
+  const rows = [
+    ...granted.map((field_key) => ({ user_id: userId, field_key, granted: true, purpose: "matching" })),
+    ...revoked.map((field_key) => ({ user_id: userId, field_key, granted: false, purpose: "matching", revoked_at: now })),
+  ];
+  if (rows.length === 0) return;
+  const { error } = await supabase.from("consent_records").insert(rows);
+  if (error) throw error;
+}
+
 export async function submitOnboardingStep2(
   userId: string,
   values: OnboardingStep2,
@@ -86,6 +105,8 @@ export async function submitOnboardingStep2(
       interests: values.interests,
       hobbies: values.hobbies,
       occupation: values.occupation,
+      meeting_format: values.meetingFormat,
+      availability: values.availability,
       onboarding_step: 3,
     })
     .eq("id", userId);
@@ -116,8 +137,12 @@ export async function submitOnboardingStep3(
   await updateOriginCountriesWithConsent(userId, values.originCountries);
 }
 
-export async function submitOnboardingStep4(userId: string, answers: Partial<Step4Answers>) {
-  await upsertQuestionnaireAnswers(userId, answers);
+export async function submitOnboardingStep4(
+  userId: string,
+  answers: Partial<Step4Answers>,
+  connectionTypes: ConnectionType[]
+) {
+  await saveAnswersWithConsent(userId, answers, connectionTypes);
   await updateProfileFields(userId, { onboarding_step: 5 });
 }
 
@@ -142,6 +167,8 @@ export async function saveProfileEdit(userId: string, values: ProfileEditValues)
     interests: values.interests,
     hobbies: values.hobbies,
     occupation: values.occupation,
+    meeting_format: values.meetingFormat,
+    availability: values.availability,
     travel_frequency: values.travelFrequency,
     travel_style: values.travelStyle,
     us_residency: values.usResidency,
@@ -165,14 +192,12 @@ export async function saveProfileEdit(userId: string, values: ProfileEditValues)
   };
   await upsertQuestionnaireCore(userId, corePayload);
 
-  const { romantic, business, business_mentor, academic_mentor, spiritual_mentor } = values;
-  await upsertQuestionnaireAnswers(userId, {
-    romantic,
-    business,
-    business_mentor,
-    academic_mentor,
-    spiritual_mentor,
-  });
+  const { values: valuesAnswers, friend, romantic, business, business_mentor, academic_mentor, spiritual_mentor } = values;
+  await saveAnswersWithConsent(
+    userId,
+    { values: valuesAnswers, friend, romantic, business, business_mentor, academic_mentor, spiritual_mentor },
+    values.connectionTypes
+  );
 }
 
 export async function getMyConnectionTypes(userId: string): Promise<ConnectionType[]> {

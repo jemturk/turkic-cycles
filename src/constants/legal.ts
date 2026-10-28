@@ -7,7 +7,7 @@
 // doesn't match the app is itself grounds for store rejection. Bump LEGAL_UPDATED
 // on every change.
 
-export const LEGAL_UPDATED = "October 17, 2026";
+export const LEGAL_UPDATED = "October 28, 2026";
 export const LEGAL_OWNER = "Jem Turk";
 export const LEGAL_CONTACT = "unturkk@gmail.com";
 export const APP_NAME = "Turkic Circles";
@@ -23,9 +23,10 @@ export type LegalDocument = { title: string; intro: string; sections: LegalSecti
 export const PRIVACY_POLICY: LegalDocument = {
   title: "Privacy Policy",
   intro:
-    `${APP_NAME} ("the app", "we", "us") is operated by ${LEGAL_OWNER}, based in the United States. ` +
-    "This policy explains what personal information the app collects, why, who it's shared with, and the " +
-    "choices and rights you have. By using the app you agree to this policy.",
+    `${APP_NAME} ("the app", "we", "us") is operated by ${LEGAL_OWNER}, based in the United States, who is ` +
+    "responsible for your personal information (the \"controller\" under European data protection law). This " +
+    "policy explains what the app collects, why, how matching uses it, who it's shared with, how long it's " +
+    "kept, and the choices and rights you have.",
   sections: [
     {
       heading: "Who can use the app",
@@ -41,16 +42,17 @@ export const PRIVACY_POLICY: LegalDocument = {
           "sign in with them (your name and email). Passwords are stored only in hashed form by our " +
           "authentication provider.",
         "- Profile: your display name, date of birth, photos, bio, city, state and country, occupation, " +
-          "languages, interests, hobbies, travel preferences, residency and citizenship information you choose " +
-          "to give, and your answers to the onboarding questionnaire.",
-        "- Sensitive information, only if you choose to share it: your countries of origin, religious " +
-          "affiliation and citizenship-status details. These are optional, stored separately from the rest of " +
-          "your profile, and only used or shown with your explicit consent, which we record and which you can " +
-          "withdraw at any time.",
-        "- Preferences: who you'd like to meet (age range, distance, languages, connection types), and your " +
-          "app settings such as language, theme, text size and notification choices.",
-        "- Activity: the circles you join, events you RSVP to, the people you like or pass on, your matches, " +
-          "the messages, replies and reactions you send, and people you block or report.",
+          "languages, interests, hobbies, how and when you like to meet (in person or online, and your usual " +
+          "availability), travel preferences, and the residency and citizenship information you choose to give.",
+        "- Answers for the kinds of connection you choose: for example your goals, what you're looking for in " +
+          "a relationship, your industry and expertise, or your field and years of experience as a mentor, and " +
+          "your answers to the values and lifestyle questions.",
+        "- Matching choices: who you'd like to meet (age range, distance, languages, connection types), what " +
+          "matters most to you in suggestions, and how much of your location others see.",
+        "- Settings: language, theme, text size and notification choices.",
+        "- Activity: the circles you join, events you RSVP to, the people you like, pass on, save or remove, " +
+          "your connections, the messages, replies and reactions you send, your answers when the app asks " +
+          "whether you met someone you connected with, and people you block or report.",
         "- Safety plans: when you create one, the person you're meeting, the place and time, and the names " +
           "and phone numbers of the trusted contacts you enter. The app writes a text to those contacts and " +
           "opens your phone's Messages app; it's only sent if you send it, from your own phone. Check-in " +
@@ -64,53 +66,107 @@ export const PRIVACY_POLICY: LegalDocument = {
       ],
     },
     {
+      heading: "Sensitive information and your consent",
+      body: [
+        "Three kinds of information are especially protected by law, and the app only uses them if you choose " +
+          "to give them and tick a separate consent box for each:",
+        "- Sexual orientation: if you look for a romantic relationship, your gender and the genders you want " +
+          "to meet (and, if you describe your own gender, who can see you) can show your orientation. They're " +
+          "used only to decide who you're shown to and who you see for romantic connections, and are never " +
+          "shown to other members.",
+        "- Religious belief: one values question asks how important faith is to you, never which faith. It's " +
+          "used only for matching and is never shown to other members. You can always answer \"Prefer not to say\".",
+        "- Ethnic origin: the countries your heritage comes from, if you add them. They're kept separately from " +
+          "the rest of your profile, used for matching, and shown to other members only because you've " +
+          "consented to it.",
+        "We record when you give and withdraw each consent. You can withdraw it at any time in Edit profile: " +
+          "remove the romantic connection type (which deletes those answers), choose \"Prefer not to say\" for " +
+          "faith, or remove your heritage countries. From then on that information isn't used. Withdrawing " +
+          "doesn't affect what was done before, and you can still use everything else in the app.",
+        "We never use this information for advertising and never sell it.",
+      ],
+    },
+    {
       heading: "Information collected automatically",
       body: [
-        "- Location: if you turn on the Local filter, the app asks for your device's approximate location to " +
-          "show circles near you. It's used on your device for that filter and is not stored on our servers.",
-        "- Push notifications: if you allow them, a push token that lets us send notifications to your device.",
+        "- Location from your profile: to measure distance, we look up the approximate centre point of the " +
+          "city you typed, using Google's geocoding service, and store it rounded to about 100 metres. It's " +
+          "used only on our servers for the distance filter and matching, and never shown to anyone.",
+        "- Device location: if you turn on the Local filter, the app asks for your device's approximate " +
+          "location to show circles near you. It's used on your device for that filter and is not stored on " +
+          "our servers.",
+        "- Push notifications: if you allow them, a push token that lets us send notifications to your device, " +
+          "and whether each message notification was delivered, so the sender can see it.",
+        "- Matching records: when the app suggests someone, the scores behind the suggestion; and each like, " +
+          "pass, save, removal and connection as it happens. See \"How matching works\" below.",
         "- Basic technical data our service providers process to run the app securely, such as IP address, " +
           "device and browser type, and request logs.",
         "- Bot protection: when you sign up or sign in, Cloudflare Turnstile checks that you're not an " +
           "automated program.",
-        "We don't use advertising trackers, and we don't sell your personal information or share it for " +
-          "cross-context behavioral advertising.",
+        "We don't use advertising trackers or analytics cookies, and we don't sell your personal information or " +
+          "share it for cross-context behavioral advertising.",
       ],
     },
     {
-      heading: "How we use your information",
+      heading: "How matching works",
       body: [
-        "- To create and run your account and show your profile to other members.",
-        "- To suggest circles, events and people, and to let you match and message.",
-        "- To send you notifications you've allowed, such as new messages and matches, and account emails " +
-          "such as sign-up confirmation and password resets.",
-        "- To keep the community safe: to review reports, prevent abuse, fraud and spam, enforce our Terms, and " +
-          "comply with the law. Photos you add to your profile are checked automatically for nudity, sexual " +
-          "content and graphic violence before other members can see them.",
-        "- To handle Plus subscriptions.",
-        "- To fix problems and improve the app.",
+        "Discover shows members who fit both your preferences and theirs: age, distance, languages, the kinds " +
+          "of connection you both want and, for romantic connections, who you each want to meet. People you've " +
+          "blocked, removed or recently passed on aren't shown.",
+        "The app then orders suggestions by how well you might get on, scoring what you have in common: shared " +
+          "interests, the circles you're both in, values and lifestyle answers, heritage, age, distance, how and " +
+          "when you like to meet, your goals, and for business and mentoring, professional fit. Your choices in " +
+          "\"What matters most to you\" give some of these more or less weight, for the people you see only. A " +
+          "match counts both ways: how well they fit what you want and how well you fit what they want.",
+        "A suggestion can be labelled \"Strong match\" with up to two reasons, such as shared interests. Reasons " +
+          "never mention anyone's heritage, faith or orientation.",
+        "Ranking only decides the order you see people in. It doesn't decide anything with legal or similarly " +
+          "significant effects, no one is excluded from the app by it, and you choose whom to like or message.",
+        "To improve matching, we compare the scores with what happened afterwards (likes, connections and your " +
+          "answers about whether you met), and adjust the weights the app uses. This is done on our servers, " +
+          "and these records are kept for 24 months.",
+      ],
+    },
+    {
+      heading: "How we use your information, and our legal bases",
+      body: [
+        "- To create and run your account, show your profile to other members, suggest circles, events and " +
+          "people, and let you connect and message (needed to provide the service you signed up for).",
+        "- To use your sexual orientation, faith answer and heritage for matching (your explicit consent).",
+        "- To send notifications you've allowed, such as new messages, likes and connections, and account emails " +
+          "such as sign-up confirmation and password resets (providing the service, and your consent for push " +
+          "notifications).",
+        "- To keep the community safe: to review reports, prevent abuse, fraud and spam, and enforce our Terms. " +
+          "Photos you add to your profile are checked automatically for nudity, sexual content and graphic " +
+          "violence before other members can see them (our legitimate interest in a safe community, and legal " +
+          "obligations where reports involve illegal content).",
+        "- To improve matching and fix problems, using matching records and crash reports (our legitimate " +
+          "interest in making the app work well; you can object, see below).",
+        "- To check you're 18 or older (legal obligation), to verify your identity if you ask (your consent), " +
+          "and to handle Plus subscriptions (providing the service).",
       ],
     },
     {
       heading: "What other members can see",
       body: [
-        "Members can see your profile (name, age, photos, bio, city and the other profile details you add) " +
-          "according to your visibility settings, which circles you're in, and, within a circle, whether you're " +
-          "going to or interested in its events. Only the person you're chatting with sees your messages. " +
-          "Sensitive information is only shown if you've consented to it. People you block can't see you, and " +
-          "you can't see them.",
+        "Members can see your profile (name, age, photos, bio and the other profile details you add) according " +
+          "to your visibility settings, your location only as precisely as you choose (city, state or just " +
+          "country), which circles you're in, and, within a circle, whether you're going to or interested in " +
+          "its events. Only the person you're chatting with sees your messages. People you block can't see you, " +
+          "and you can't see them.",
       ],
     },
     {
       heading: "Who we share it with",
       body: [
         "We share personal information only with the service providers that run the app on our behalf, under " +
-          "their own privacy and security commitments:",
-        "- Supabase: database, file storage and sign-in.",
+          "contracts that limit them to doing so:",
+        "- Supabase: database, file storage, sign-in and server functions.",
         "- Expo (650 Industries): app updates, the website, and push notification delivery.",
         "- Google Firebase Cloud Messaging and Apple Push Notification service: delivering notifications.",
-        "- Cloudflare: bot protection (Turnstile).",
+        "- Google Maps Platform (Geocoding): finding the centre point of the city on your profile.",
         "- Google Cloud Vision: the automatic check of profile photos, processed only to run the check.",
+        "- Cloudflare: bot protection (Turnstile).",
         "- Stripe: identity verification (Stripe Identity), if you choose to get verified.",
         "- Sentry (Functional Software): crash and error reports, identified only by your account ID, to " +
           "help us fix problems.",
@@ -123,53 +179,63 @@ export const PRIVACY_POLICY: LegalDocument = {
       ],
     },
     {
-      heading: "Where it's stored",
+      heading: "International transfers",
       body: [
-        "Your information is stored and processed in the United States and other countries where our providers " +
-          "operate. If you live outside the United States, using the app means your information will be " +
-          "transferred there.",
+        "We're based in the United States, and your information is stored and processed there and in other " +
+          "countries where our providers operate. When information about members in the European Economic " +
+          "Area, the United Kingdom or Switzerland is transferred, we rely on our providers' certification under " +
+          "the EU-U.S. Data Privacy Framework (and its UK and Swiss extensions) or on the Standard Contractual " +
+          "Clauses in their data processing agreements. You can ask us for details.",
       ],
     },
     {
       heading: "How long we keep it",
       body: [
-        "We keep your information while your account exists. When you delete your account in Settings, we " +
-          "permanently delete your profile, photos, matches, messages and other account data straight away. " +
-          "Copies may remain in our providers' encrypted backups for a limited time before they're overwritten. " +
-          "We may keep limited records longer where the law requires it or to deal with reports of abuse.",
+        "- Your account, profile, photos, answers and settings: until you delete your account.",
+        "- Messages: until either of you removes the connection or deletes your account.",
+        "- Matching records and your answers about whether you met someone: 24 months, then deleted " +
+          "automatically, or sooner if you delete your account.",
+        "- Sensitive information: until you withdraw consent or delete your account.",
+        "When you delete your account in Settings, we permanently delete your data straight away. Copies may " +
+          "remain in our providers' encrypted backups for a limited time before they're overwritten. We may keep " +
+          "limited records longer where the law requires it or to deal with reports of abuse.",
       ],
     },
     {
       heading: "Your choices and rights",
       body: [
-        "- Edit your profile and settings, and withdraw consent for sensitive information, at any time in the app.",
+        "- Edit your profile, matching choices and settings at any time in the app.",
+        "- Withdraw consent for sensitive information at any time in Edit profile, as described above.",
         "- Delete your account at any time in Settings > Delete account.",
         "- Turn notifications or location access off in the app or your device settings.",
         "- Ask us for a copy of your information, or to correct or delete it, by emailing " + LEGAL_CONTACT + ".",
         "Depending on where you live, you may have further rights:",
-        "- EU, EEA and UK: to access, correct, delete, restrict or object to processing of your information, to " +
-          "data portability, and to complain to your local data protection authority. We process your " +
-          "information to provide the service you signed up for (contract), with your consent (sensitive " +
-          "information, notifications, location), and for our legitimate interests in keeping the app safe.",
+        "- EU, EEA, UK and Switzerland: to access, correct and delete your information, to restrict or object to " +
+          "how we use it (including objecting to uses based on our legitimate interests), to receive it in a " +
+          "portable format, to withdraw consent at any time, and to complain to your local data protection " +
+          "authority.",
         "- California and other US states with privacy laws: to know what we collect, to access and delete it, " +
-          "to correct it, and not to be discriminated against for using these rights. We don't sell or share " +
-          "personal information as those laws define it.",
-        "We'll answer requests within the time the law allows, and may need to confirm your identity first.",
+          "to correct it, to limit the use of sensitive information, and not to be discriminated against for " +
+          "using these rights. We don't sell or share personal information as those laws define it, and we use " +
+          "sensitive information only to provide the service you asked for.",
+        "We'll answer requests within one month (or sooner where the law requires it), and may need to confirm " +
+          "your identity first.",
       ],
     },
     {
       heading: "Security",
       body: [
-        "We use encryption in transit, access controls that limit each member to their own data, and " +
-          "providers with strong security practices. No system is perfectly secure, so please use a strong, " +
-          "unique password and tell us if you notice anything suspicious.",
+        "We use encryption in transit, access controls that limit each member to their own data, sensitive " +
+          "information kept apart from the rest of your profile, and providers with strong security practices. " +
+          "No system is perfectly secure, so please use a strong, unique password and tell us if you notice " +
+          "anything suspicious.",
       ],
     },
     {
       heading: "Changes to this policy",
       body: [
         "We'll update this policy as the app changes and show the new date at the top. For significant changes " +
-          "we'll let you know in the app or by email.",
+          "we'll let you know in the app or by email, and ask for your consent again where the law requires it.",
       ],
     },
     {
@@ -269,7 +335,8 @@ export const TERMS_OF_SERVICE: LegalDocument = {
       body: [
         'The app is provided "as is" and "as available", without warranties of any kind, to the fullest ' +
           "extent the law allows. We don't promise that it will always be available, error-free, or that you'll " +
-          "make any particular connection.",
+          "make any particular connection. Match suggestions, scores and labels such as \"Strong match\" are " +
+          "estimates from what members tell us, not promises about anyone.",
       ],
     },
     {

@@ -87,7 +87,13 @@ export function useSubmitOnboardingStep3(userId: string | undefined) {
 export function useSubmitOnboardingStep4(userId: string | undefined) {
   const invalidate = useInvalidateOnboarding(userId);
   return useMutation({
-    mutationFn: (answers: Parameters<typeof submitOnboardingStep4>[1]) => submitOnboardingStep4(userId as string, answers),
+    mutationFn: ({
+      answers,
+      connectionTypes,
+    }: {
+      answers: Parameters<typeof submitOnboardingStep4>[1];
+      connectionTypes: Parameters<typeof submitOnboardingStep4>[2];
+    }) => submitOnboardingStep4(userId as string, answers, connectionTypes),
     onSuccess: () => invalidate(["questionnaireResponses"]),
   });
 }

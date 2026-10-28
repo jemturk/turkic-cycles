@@ -42,7 +42,7 @@ export default function OnboardingStep4() {
 
   const onSubmit = (values: Step4Answers) => {
     store.setStep4Answers(values);
-    submitStep4.mutate(values, {
+    submitStep4.mutate({ answers: values, connectionTypes }, {
       onSuccess: () => router.push("/(onboarding)/step-5"),
       onError: (error) => showAlert(t("onboarding.saveErrorTitle"), error.message),
     });

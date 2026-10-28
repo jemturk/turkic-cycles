@@ -19,6 +19,10 @@ const baseValues = {
   interests: ["cooking", "soccer", "travel"],
   hobbies: [],
   occupation: "Engineer",
+  meetingFormat: "either",
+  availability: ["weekend"],
+  values: { family: 3, faith: 0, social: 4, pace: 2, heritage: 5 },
+  friend: { goals: ["explore_city"] },
   usResidency: true,
   usCitizenship: false,
   europeanCitizenship: false,
@@ -53,6 +57,10 @@ describe("buildProfileEditSchema", () => {
           wantsKids: "open",
           sharedReligionImportance: "somewhat",
           sharedCultureImportance: "very_important",
+          goals: ["long_term"],
+          gender: "man",
+          interestedIn: ["women"],
+          consentSensitive: true,
         },
       }).success
     ).toBe(true);

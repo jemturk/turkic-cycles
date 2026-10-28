@@ -19,12 +19,12 @@
     "slide1Body": "Meet people from the Turkic world near you, and find where you belong.",
     "slide2Title": "Join Circles",
     "slide2Body": "Groups for your city, culture and interests, with real meetups on the calendar.",
-    "slide3Title": "Discover & Connect",
-    "slide3Body": "Meet people in your circles for friendship, romance, business or mentorship.",
+    "slide3Title": "Matches That Fit",
+    "slide3Body": "Smart matching suggests people who share your interests, values and plans, for friendship, romance, business or mentorship, and shows why you'd click.",
     "slideChatTitle": "Chat & Make Plans",
-    "slideChatBody": "Reply, react and plan your next meetup, all in one place.",
+    "slideChatBody": "Know when someone likes you or you connect, then reply, react and plan your next meetup, all in one place.",
     "slide4Title": "Safe by Design",
-    "slide4Body": "Verified members, plans shared with someone you trust, and block or report anytime."
+    "slide4Body": "Verified members, plans shared with someone you trust, your choice of how much location to show, and block or report anytime."
   },
   "auth": {
     "login": {
@@ -188,7 +188,22 @@
     "removeConnectionFailed": "Couldn't remove this connection. Please try again.",
     "blockTitle": "Block {{name}}?",
     "blockBody": "You won't see each other anywhere in the app, and they can't message you. They won't be told. You can unblock them in {{place}}.",
-    "blockFailed": "Couldn't block. Please try again."
+    "blockFailed": "Couldn't block. Please try again.",
+    "strongMatch": "Strong match",
+    "reasons": {
+      "interests_one": "{{count}} shared interest",
+      "interests_other": "{{count}} shared interests",
+      "circles_one": "{{count}} shared circle",
+      "circles_other": "{{count}} shared circles",
+      "goals_one": "{{count}} shared goal",
+      "goals_other": "{{count}} shared goals",
+      "values": "Similar values",
+      "heritage": "Shared heritage",
+      "life_stage": "Similar age",
+      "proximity": "Nearby",
+      "format_availability": "Same way of meeting",
+      "professional": "Expertise match"
+    }
   },
   "connections": {
     "matched": "Matched",
@@ -350,7 +365,10 @@
     "editProfileHeading": "Edit profile",
     "bioContactHint": "Contact details like phone numbers and emails don't belong in your bio. Share them in chat, with people you trust.",
     "interestsHint": "Pick 3 to 10",
-    "interestsMin": "Pick at least 3 interests"
+    "interestsMin": "Pick at least 3 interests",
+    "meetingFormat": "How do you like to meet?",
+    "meetingFormatRequired": "Choose how you like to meet",
+    "availability": "When are you usually free?"
   },
   "common": {
     "member": "Member",
@@ -599,6 +617,31 @@
       "mid_career": "Mid career",
       "senior": "Senior",
       "executive": "Executive"
+    },
+    "meetingFormats": {
+      "in_person": "In person",
+      "virtual": "Online",
+      "either": "Either"
+    },
+    "availability": {
+      "weekday_daytime": "Weekday daytime",
+      "weekday_evening": "Weekday evenings",
+      "weekend": "Weekends"
+    },
+    "genders": {
+      "woman": "Woman",
+      "man": "Man",
+      "self_describe": "Prefer to self-describe"
+    },
+    "genderGroups": {
+      "women": "Women",
+      "men": "Men"
+    },
+    "locationPrefs": {
+      "anywhere": "Anywhere (remote OK)",
+      "same_country": "Same country",
+      "same_state": "Same state",
+      "nearby": "Nearby (within my max distance)"
     }
   },
   "settings": {
@@ -683,13 +726,14 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Matching preferences",
-      "filtersNote": "Age and languages filter Discover, both ways: you see people in your range who'd also see you. Distance isn't used yet.",
+      "filtersNote": "Age, languages and distance filter Discover, both ways: you see people in your range who'd also see you.",
       "saveFailed": "Couldn't save your preferences. Please try again.",
       "ageMin": "Age min",
       "ageMax": "Age max",
       "maxDistance": "Max distance (miles)",
       "showMeSpeakersOf": "Show me speakers of",
-      "save": "Save"
+      "save": "Save",
+      "maxDistanceKm": "Max distance (km)"
     },
     "blockedUsersScreen": {
       "heading": "Blocked users",
@@ -711,7 +755,7 @@
       },
       "privacy": {
         "title": "Data & privacy",
-        "body": "Your sensitive fields (origin, religion, citizenship detail) are stored separately from the rest of your profile and are only ever shared with your explicit, revocable consent. See the Safety Center for more."
+        "body": "Your heritage, how important faith is to you, and (for romantic connections) your gender and who you want to meet are only used for matching with your explicit consent, which you can withdraw any time in Edit profile. Faith, gender and who you want to meet are never shown to other members. The Privacy Policy has the details."
       }
     },
     "safetyCenterScreen": {
@@ -766,7 +810,8 @@
       "sharePlans": "Share plans"
     },
     "privacyPolicy": "Privacy policy",
-    "termsOfService": "Terms of service"
+    "termsOfService": "Terms of service",
+    "whatMatters": "What matters most to you"
   },
   "branching": {
     "allSet": "Nothing else to answer for the connection types you picked — you're all set.",
@@ -785,7 +830,28 @@
       "business_mentor": "Business mentorship",
       "academic_mentor": "Academic mentorship",
       "spiritual_mentor": "Spiritual mentorship"
-    }
+    },
+    "friendTitle": "Friendship",
+    "goals": "What are you hoping for? (up to 3)",
+    "goalsRequired": "Pick at least one",
+    "industryRequired": "Choose your industry",
+    "expertiseOffered": "Expertise you can offer (up to 5)",
+    "expertiseSought": "Expertise you're looking for (up to 5)",
+    "expertiseRequired": "Pick at least one area you offer or are looking for",
+    "gender": "Gender",
+    "genderRequired": "Choose your gender",
+    "genderDescription": "How you describe yourself (optional)",
+    "shownTo": "Show me to",
+    "interestedIn": "Interested in",
+    "pickOne": "Pick at least one",
+    "yearsExperience": "Years of experience",
+    "yearsRequired": "Enter your years of experience (0-50)",
+    "mentorExpertiseOffered": "Expertise you can offer (up to 5)",
+    "mentorExpertiseSought": "What you'd like help with (up to 5)",
+    "mentorGoalsOffered": "What you can help with (up to 3)",
+    "mentorGoalsSought": "What you're hoping for (up to 3)",
+    "mentorLocationPref": "Where would you like your mentor or mentee to be?",
+    "businessLocationPref": "Where would you like your business contacts to be?"
   },
   "location": {
     "country": "Country",
@@ -855,5 +921,74 @@
     "rejected": "This photo can't be used. Photos can't show nudity, be very revealing, or contain sexual content or graphic violence (see our community rules). Please choose another one.",
     "checkFailed": "We couldn't check this photo just now. Please try again in a moment.",
     "tooManyTries": "You've tried a lot of photos in a short time. Please wait a while before adding another."
+  },
+  "values": {
+    "title": "A bit about you",
+    "required": "Choose an answer",
+    "preferNot": "Prefer not to say",
+    "family": {
+      "question": "How central is family in your everyday life?",
+      "low": "I'm very independent",
+      "mid": "Important, but balanced with my own life",
+      "high": "Family comes first in most decisions"
+    },
+    "faith": {
+      "question": "How important are faith and religious tradition to you?",
+      "low": "Not important to me",
+      "mid": "Meaningful on occasions and holidays",
+      "high": "Central to how I live"
+    },
+    "social": {
+      "question": "What does your ideal free time look like?",
+      "low": "Quiet time at home or with one or two people",
+      "mid": "A mix of both",
+      "high": "Out with a big group whenever possible"
+    },
+    "pace": {
+      "question": "How would you describe your drive?",
+      "low": "Balance and calm matter most",
+      "mid": "Steady, with goals I work toward",
+      "high": "Always pushing toward the next big goal"
+    },
+    "heritage": {
+      "question": "How much is your heritage part of daily life (language, holidays, food)?",
+      "low": "Rarely",
+      "mid": "For special occasions",
+      "high": "Every day"
+    }
+  },
+  "whatMatters": {
+    "title": "What matters most to you?",
+    "subtitle": "Choose what counts most when we suggest people. It changes how you see others, not how they see you.",
+    "very": "Very important",
+    "normal": "Normal",
+    "less": "Less important",
+    "limits": "{{very}} more \"very important\", {{less}} more \"less important\"",
+    "save": "Save",
+    "saveFailed": "Couldn't save. Please try again.",
+    "criteria": {
+      "interests": "Shared interests",
+      "circles": "Being in the same circles",
+      "values": "Values and lifestyle",
+      "heritage": "Heritage and culture",
+      "life_stage": "A similar age",
+      "proximity": "Living nearby",
+      "format_availability": "How and when you meet",
+      "goals": "Shared goals",
+      "professional": "Professional fit (expertise, experience)"
+    }
+  },
+  "feedback": {
+    "metQuestion": "Did you two meet or talk?",
+    "formatQuestion": "How did you meet?",
+    "ratingQuestion": "How was it?",
+    "yes": "Yes",
+    "notYet": "Not yet",
+    "notNow": "Not now"
+  },
+  "consent": {
+    "romantic": "I consent to Turkic Circles using my gender and who I want to meet, which can show my sexual orientation, to suggest romantic matches. I can withdraw this any time by removing \"Romantic relationship\".",
+    "faith": "I consent to Turkic Circles using how important faith is to me to suggest matches. I can withdraw this any time by choosing \"Prefer not to say\".",
+    "required": "Please tick the box to save this answer."
   }
 }

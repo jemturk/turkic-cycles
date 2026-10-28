@@ -10,7 +10,14 @@ const step1 = {
   country: "USA",
   birthdate: "1996-01-01",
 };
-const step2 = { languages: ["English"], interests: ["Travel"], hobbies: [], occupation: "Engineer" };
+const step2 = {
+  languages: ["English"],
+  interests: ["Travel"],
+  hobbies: [],
+  occupation: "Engineer",
+  meetingFormat: "either" as const,
+  availability: [],
+};
 const step3 = {
   usResidency: true,
   usCitizenship: false,
@@ -63,6 +70,8 @@ describe("buildCorePayload", () => {
       interests: ["Travel"],
       hobbies: [],
       occupation: "Engineer",
+      meetingFormat: "either",
+      availability: [],
       usResidency: true,
       usCitizenship: false,
       europeanCitizenship: false,

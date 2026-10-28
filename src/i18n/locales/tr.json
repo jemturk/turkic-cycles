@@ -19,12 +19,12 @@
     "slide1Body": "Yakınındaki Türk dünyasından insanlarla tanış, ait olduğun yeri bul.",
     "slide2Title": "Çemberlere Katıl",
     "slide2Body": "Şehrin, kültürün ve ilgi alanların için gruplar; takvimde gerçek buluşmalar.",
-    "slide3Title": "Keşfet ve Bağlan",
-    "slide3Body": "Çemberlerindeki insanlarla arkadaşlık, romantik ilişki, iş ya da mentorluk için tanış.",
+    "slide3Title": "Sana Uyan Eşleşmeler",
+    "slide3Body": "Akıllı eşleştirme; arkadaşlık, romantik ilişki, iş ya da mentorluk için ilgi alanlarını, değerlerini ve planlarını paylaşan insanları önerir ve neden anlaşacağınızı gösterir.",
     "slideChatTitle": "Sohbet Et, Plan Yap",
-    "slideChatBody": "Yanıtla, tepki ver ve bir sonraki buluşmanı tek yerden planla.",
+    "slideChatBody": "Biri seni beğendiğinde ya da bağlandığınızda haberin olsun; sonra yanıtla, tepki ver ve bir sonraki buluşmanı tek yerden planla.",
     "slide4Title": "Tasarım Gereği Güvenli",
-    "slide4Body": "Doğrulanmış üyeler, güvendiğin biriyle paylaşılan planlar; istediğin an engelle ya da bildir."
+    "slide4Body": "Doğrulanmış üyeler, güvendiğin biriyle paylaşılan planlar, konumunun ne kadarını göstereceğin senin seçimin; istediğin an engelle ya da bildir."
   },
   "auth": {
     "login": {
@@ -188,7 +188,22 @@
     "removeConnectionFailed": "Bu bağlantı kaldırılamadı. Lütfen tekrar dene.",
     "blockTitle": "{{name}} engellensin mi?",
     "blockBody": "Uygulamanın hiçbir yerinde birbirinizi görmeyeceksiniz ve sana mesaj gönderemeyecek. Karşı tarafa bildirilmez. Engeli {{place}} bölümünden kaldırabilirsin.",
-    "blockFailed": "Engellenemedi. Lütfen tekrar dene."
+    "blockFailed": "Engellenemedi. Lütfen tekrar dene.",
+    "strongMatch": "Güçlü eşleşme",
+    "reasons": {
+      "interests_one": "{{count}} ortak ilgi alanı",
+      "interests_other": "{{count}} ortak ilgi alanı",
+      "circles_one": "{{count}} ortak çevre",
+      "circles_other": "{{count}} ortak çevre",
+      "goals_one": "{{count}} ortak hedef",
+      "goals_other": "{{count}} ortak hedef",
+      "values": "Benzer değerler",
+      "heritage": "Ortak köken",
+      "life_stage": "Yakın yaş",
+      "proximity": "Yakında",
+      "format_availability": "Aynı buluşma tarzı",
+      "professional": "Uzmanlık uyumu"
+    }
   },
   "connections": {
     "matched": "Eşleşmeler",
@@ -350,7 +365,10 @@
     "editProfileHeading": "Profili düzenle",
     "bioContactHint": "Telefon numarası ve e-posta gibi iletişim bilgileri biyografine konmaz. Bunları sohbette, güvendiğin kişilerle paylaş.",
     "interestsHint": "3 ile 10 arası seçin",
-    "interestsMin": "En az 3 ilgi alanı seçin"
+    "interestsMin": "En az 3 ilgi alanı seçin",
+    "meetingFormat": "Nasıl buluşmayı seversin?",
+    "meetingFormatRequired": "Nasıl buluşmak istediğini seç",
+    "availability": "Genelde ne zaman müsaitsin?"
   },
   "common": {
     "member": "Üye",
@@ -599,6 +617,31 @@
       "mid_career": "Orta kariyer",
       "senior": "Kıdemli",
       "executive": "Üst düzey yönetici"
+    },
+    "meetingFormats": {
+      "in_person": "Yüz yüze",
+      "virtual": "Çevrim içi",
+      "either": "Fark etmez"
+    },
+    "availability": {
+      "weekday_daytime": "Hafta içi gündüz",
+      "weekday_evening": "Hafta içi akşam",
+      "weekend": "Hafta sonu"
+    },
+    "genders": {
+      "woman": "Kadın",
+      "man": "Erkek",
+      "self_describe": "Kendim tanımlamak isterim"
+    },
+    "genderGroups": {
+      "women": "Kadınlar",
+      "men": "Erkekler"
+    },
+    "locationPrefs": {
+      "anywhere": "Fark etmez, uzaktan da olur",
+      "same_country": "Aynı ülkede",
+      "same_state": "Aynı eyalette",
+      "nearby": "Yakınımda, belirlediğim mesafe içinde"
     }
   },
   "settings": {
@@ -683,13 +726,14 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Eşleştirme tercihleri",
-      "filtersNote": "Yaş ve diller Keşfet'i iki yönlü filtreler: aralığınızdaki ve sizi de görecek kişileri görürsünüz. Mesafe henüz kullanılmıyor.",
+      "filtersNote": "Yaş, diller ve mesafe Keşfet'i iki yönlü filtreler: aralığınızdaki ve sizi de görecek kişileri görürsünüz.",
       "saveFailed": "Tercihleriniz kaydedilemedi. Lütfen tekrar deneyin.",
       "ageMin": "En düşük yaş",
       "ageMax": "En yüksek yaş",
       "maxDistance": "Maksimum mesafe (mil)",
       "showMeSpeakersOf": "Bana şu dilleri konuşanları göster",
-      "save": "Kaydet"
+      "save": "Kaydet",
+      "maxDistanceKm": "Maksimum mesafe (km)"
     },
     "blockedUsersScreen": {
       "heading": "Engellenen kullanıcılar",
@@ -711,7 +755,7 @@
       },
       "privacy": {
         "title": "Veri ve gizlilik",
-        "body": "Hassas alanların (köken, din, vatandaşlık bilgisi) profilinin geri kalanından ayrı olarak saklanır ve yalnızca senin açık, geri alınabilir onayınla paylaşılır. Daha fazlası için Güvenlik Merkezi'ne bak."
+        "body": "Kökenin, inancın senin için ne kadar önemli olduğu ve (romantik bağlantılar için) cinsiyetin ile kiminle tanışmak istediğin yalnızca açık onayınla eşleştirme için kullanılır; bu onayı Profili düzenle'den istediğin zaman geri alabilirsin. İnanç, cinsiyet ve kiminle tanışmak istediğin diğer üyelere asla gösterilmez. Ayrıntılar Gizlilik Politikası'nda."
       }
     },
     "safetyCenterScreen": {
@@ -766,7 +810,8 @@
       "sharePlans": "Planları paylaş"
     },
     "privacyPolicy": "Gizlilik politikası",
-    "termsOfService": "Kullanım koşulları"
+    "termsOfService": "Kullanım koşulları",
+    "whatMatters": "Senin için en önemlisi"
   },
   "branching": {
     "allSet": "Seçtiğin bağlantı türleri için başka cevaplanacak bir şey yok — hazırsın.",
@@ -785,7 +830,28 @@
       "business_mentor": "İş mentorluğu",
       "academic_mentor": "Akademik mentorluk",
       "spiritual_mentor": "Manevi mentorluk"
-    }
+    },
+    "friendTitle": "Arkadaşlık",
+    "goals": "Ne arıyorsun? (en fazla 3)",
+    "goalsRequired": "En az birini seç",
+    "industryRequired": "Sektörünü seç",
+    "expertiseOffered": "Sunabileceğin uzmanlık (en fazla 5)",
+    "expertiseSought": "Aradığın uzmanlık (en fazla 5)",
+    "expertiseRequired": "Sunduğun ya da aradığın en az bir alan seç",
+    "gender": "Cinsiyet",
+    "genderRequired": "Cinsiyetini seç",
+    "genderDescription": "Kendini nasıl tanımlarsın (isteğe bağlı)",
+    "shownTo": "Beni şunlara göster",
+    "interestedIn": "İlgilendiklerim",
+    "pickOne": "En az birini seç",
+    "yearsExperience": "Deneyim yılı",
+    "yearsRequired": "Deneyim yılını gir (0-50)",
+    "mentorExpertiseOffered": "Sunabileceğin uzmanlık (en fazla 5)",
+    "mentorExpertiseSought": "Yardım almak istediğin konular (en fazla 5)",
+    "mentorGoalsOffered": "Yardımcı olabileceğin konular (en fazla 3)",
+    "mentorGoalsSought": "Ne arıyorsun? (en fazla 3)",
+    "mentorLocationPref": "Mentorunun ya da mentinin nerede olmasını istersin?",
+    "businessLocationPref": "İş bağlantılarının nerede olmasını istersin?"
   },
   "location": {
     "country": "Ülke",
@@ -855,5 +921,74 @@
     "rejected": "Bu fotoğraf kullanılamaz. Fotoğraflarda çıplaklık, aşırı açık görüntü, cinsel içerik veya şiddet olamaz (topluluk kurallarımıza bak). Lütfen başka bir fotoğraf seç.",
     "checkFailed": "Bu fotoğrafı şu anda kontrol edemedik. Lütfen birazdan tekrar dene.",
     "tooManyTries": "Kısa sürede çok sayıda fotoğraf denedin. Lütfen yenisini eklemeden önce bir süre bekle."
+  },
+  "values": {
+    "title": "Biraz senden bahset",
+    "required": "Bir cevap seç",
+    "preferNot": "Söylememeyi tercih ederim",
+    "family": {
+      "question": "Aile günlük hayatında ne kadar merkezde?",
+      "low": "Çok bağımsızım",
+      "mid": "Önemli ama kendi hayatımla dengeli",
+      "high": "Çoğu kararda aile önce gelir"
+    },
+    "faith": {
+      "question": "İnanç ve dini gelenek senin için ne kadar önemli?",
+      "low": "Benim için önemli değil",
+      "mid": "Özel günlerde ve bayramlarda anlamlı",
+      "high": "Yaşam biçimimin merkezinde"
+    },
+    "social": {
+      "question": "İdeal boş zamanın nasıl?",
+      "low": "Evde ya da bir iki kişiyle sakin vakit",
+      "mid": "İkisinden de biraz",
+      "high": "Mümkün olduğunca kalabalık bir grupla dışarıda"
+    },
+    "pace": {
+      "question": "Hırsını nasıl tanımlarsın?",
+      "low": "Denge ve huzur her şeyden önemli",
+      "mid": "İstikrarlı, üzerinde çalıştığım hedeflerle",
+      "high": "Hep bir sonraki büyük hedefe doğru"
+    },
+    "heritage": {
+      "question": "Kökenin günlük hayatının ne kadar parçası (dil, bayramlar, yemek)?",
+      "low": "Nadiren",
+      "mid": "Özel günlerde",
+      "high": "Her gün"
+    }
+  },
+  "whatMatters": {
+    "title": "Senin için en önemli olan ne?",
+    "subtitle": "Kişi önerirken en çok neyin önemli olduğunu seç. Bu senin başkalarını nasıl gördüğünü değiştirir, onların seni nasıl gördüğünü değil.",
+    "very": "Çok önemli",
+    "normal": "Normal",
+    "less": "Daha az önemli",
+    "limits": "{{very}} \"çok önemli\", {{less}} \"daha az önemli\" hakkın kaldı",
+    "save": "Kaydet",
+    "saveFailed": "Kaydedilemedi. Lütfen tekrar dene.",
+    "criteria": {
+      "interests": "Ortak ilgi alanları",
+      "circles": "Aynı çevrelerde olmak",
+      "values": "Değerler ve yaşam tarzı",
+      "heritage": "Köken ve kültür",
+      "life_stage": "Yakın yaş",
+      "proximity": "Yakında yaşamak",
+      "format_availability": "Nasıl ve ne zaman buluştuğunuz",
+      "goals": "Ortak hedefler",
+      "professional": "Mesleki uyum (uzmanlık, deneyim)"
+    }
+  },
+  "feedback": {
+    "metQuestion": "İkiniz buluştunuz ya da konuştunuz mu?",
+    "formatQuestion": "Nasıl buluştunuz?",
+    "ratingQuestion": "Nasıldı?",
+    "yes": "Evet",
+    "notYet": "Henüz değil",
+    "notNow": "Şimdi değil"
+  },
+  "consent": {
+    "romantic": "Turkic Circles'ın romantik eşleşme önermek için cinsiyetimi ve kiminle tanışmak istediğimi (cinsel yönelimimi gösterebilir) kullanmasına onay veriyorum. \"Romantik ilişki\"yi kaldırarak bu onayı istediğim zaman geri alabilirim.",
+    "faith": "Turkic Circles'ın eşleşme önermek için inancın benim için ne kadar önemli olduğunu kullanmasına onay veriyorum. \"Söylememeyi tercih ederim\"i seçerek bu onayı istediğim zaman geri alabilirim.",
+    "required": "Bu cevabı kaydetmek için lütfen kutuyu işaretle."
   }
 }

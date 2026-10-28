@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
+import { EmptyState } from "@/components/EmptyState";
 import { useSession } from "@/hooks/useSession";
 import { useDiscoverCandidates, useRecordSwipe } from "@/hooks/useDiscover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
@@ -194,9 +195,7 @@ export function DiscoverGrid({
         ) : null}
 
         {isLoading ? null : visible.length === 0 ? (
-          <View className="items-center justify-center py-24">
-            <Text className="text-center text-base text-ink-700 dark:text-ink-200">{emptyLabel}</Text>
-          </View>
+          <EmptyState icon="sparkles" label={emptyLabel} className="py-24" />
         ) : (
           <View
             onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
