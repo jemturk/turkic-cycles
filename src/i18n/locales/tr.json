@@ -612,6 +612,21 @@
       "weekday_daytime": "Hafta içi gündüz",
       "weekday_evening": "Hafta içi akşam",
       "weekend": "Hafta sonu"
+    },
+    "genders": {
+      "woman": "Kadın",
+      "man": "Erkek",
+      "self_describe": "Kendim tanımlamak isterim"
+    },
+    "genderGroups": {
+      "women": "Kadınlar",
+      "men": "Erkekler"
+    },
+    "locationPrefs": {
+      "anywhere": "Fark etmez, uzaktan da olur",
+      "same_country": "Aynı ülkede",
+      "same_state": "Aynı eyalette",
+      "nearby": "Yakınımda, belirlediğim mesafe içinde"
     }
   },
   "settings": {
@@ -805,7 +820,21 @@
     "industryRequired": "Sektörünü seç",
     "expertiseOffered": "Sunabileceğin uzmanlık (en fazla 5)",
     "expertiseSought": "Aradığın uzmanlık (en fazla 5)",
-    "expertiseRequired": "Sunduğun ya da aradığın en az bir alan seç"
+    "expertiseRequired": "Sunduğun ya da aradığın en az bir alan seç",
+    "gender": "Cinsiyet",
+    "genderRequired": "Cinsiyetini seç",
+    "genderDescription": "Kendini nasıl tanımlarsın (isteğe bağlı)",
+    "shownTo": "Beni şunlara göster",
+    "interestedIn": "İlgilendiklerim",
+    "pickOne": "En az birini seç",
+    "yearsExperience": "Deneyim yılı",
+    "yearsRequired": "Deneyim yılını gir (0-50)",
+    "mentorExpertiseOffered": "Sunabileceğin uzmanlık (en fazla 5)",
+    "mentorExpertiseSought": "Yardım almak istediğin konular (en fazla 5)",
+    "mentorGoalsOffered": "Yardımcı olabileceğin konular (en fazla 3)",
+    "mentorGoalsSought": "Ne arıyorsun? (en fazla 3)",
+    "mentorLocationPref": "Mentorunun ya da mentinin nerede olmasını istersin?",
+    "businessLocationPref": "İş bağlantılarının nerede olmasını istersin?"
   },
   "location": {
     "country": "Ülke",
@@ -875,5 +904,40 @@
     "rejected": "Bu fotoğraf kullanılamaz. Fotoğraflarda çıplaklık, aşırı açık görüntü, cinsel içerik veya şiddet olamaz (topluluk kurallarımıza bak). Lütfen başka bir fotoğraf seç.",
     "checkFailed": "Bu fotoğrafı şu anda kontrol edemedik. Lütfen birazdan tekrar dene.",
     "tooManyTries": "Kısa sürede çok sayıda fotoğraf denedin. Lütfen yenisini eklemeden önce bir süre bekle."
+  },
+  "values": {
+    "title": "Biraz senden bahset",
+    "required": "Bir cevap seç",
+    "preferNot": "Söylememeyi tercih ederim",
+    "family": {
+      "question": "Aile günlük hayatında ne kadar merkezde?",
+      "low": "Çok bağımsızım",
+      "mid": "Önemli ama kendi hayatımla dengeli",
+      "high": "Çoğu kararda aile önce gelir"
+    },
+    "faith": {
+      "question": "İnanç ve dini gelenek senin için ne kadar önemli?",
+      "low": "Benim için önemli değil",
+      "mid": "Özel günlerde ve bayramlarda anlamlı",
+      "high": "Yaşam biçimimin merkezinde"
+    },
+    "social": {
+      "question": "İdeal boş zamanın nasıl?",
+      "low": "Evde ya da bir iki kişiyle sakin vakit",
+      "mid": "İkisinden de biraz",
+      "high": "Mümkün olduğunca kalabalık bir grupla dışarıda"
+    },
+    "pace": {
+      "question": "Hırsını nasıl tanımlarsın?",
+      "low": "Denge ve huzur her şeyden önemli",
+      "mid": "İstikrarlı, üzerinde çalıştığım hedeflerle",
+      "high": "Hep bir sonraki büyük hedefe doğru"
+    },
+    "heritage": {
+      "question": "Kökenin günlük hayatının ne kadar parçası (dil, bayramlar, yemek)?",
+      "low": "Nadiren",
+      "mid": "Özel günlerde",
+      "high": "Her gün"
+    }
   }
 }

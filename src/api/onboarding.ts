@@ -171,8 +171,9 @@ export async function saveProfileEdit(userId: string, values: ProfileEditValues)
   };
   await upsertQuestionnaireCore(userId, corePayload);
 
-  const { friend, romantic, business, business_mentor, academic_mentor, spiritual_mentor } = values;
+  const { values: valuesAnswers, friend, romantic, business, business_mentor, academic_mentor, spiritual_mentor } = values;
   await upsertQuestionnaireAnswers(userId, {
+    values: valuesAnswers,
     friend,
     romantic,
     business,

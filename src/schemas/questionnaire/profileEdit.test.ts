@@ -21,6 +21,7 @@ const baseValues = {
   occupation: "Engineer",
   meetingFormat: "either",
   availability: ["weekend"],
+  values: { family: 3, faith: 0, social: 4, pace: 2, heritage: 5 },
   friend: { goals: ["explore_city"] },
   usResidency: true,
   usCitizenship: false,
@@ -57,6 +58,8 @@ describe("buildProfileEditSchema", () => {
           sharedReligionImportance: "somewhat",
           sharedCultureImportance: "very_important",
           goals: ["long_term"],
+          gender: "man",
+          interestedIn: ["women"],
         },
       }).success
     ).toBe(true);

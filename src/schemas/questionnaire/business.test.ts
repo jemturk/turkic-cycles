@@ -7,6 +7,7 @@ const valid = {
   goals: ["partnerships"],
   expertiseOffered: ["software_dev"],
   expertiseSought: [],
+  locationPref: "anywhere",
 };
 
 describe("businessAnswersSchema", () => {

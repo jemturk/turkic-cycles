@@ -3,7 +3,8 @@ import { z } from "zod";
 import type { ConnectionType } from "@/constants/connectionTypes";
 import { romanticAnswersSchema } from "./romantic";
 import { businessAnswersSchema } from "./business";
-import { mentorAnswersSchema } from "./mentor";
+import { mentorAnswersSchema, spiritualMentorAnswersSchema } from "./mentor";
+import { buildValuesSchema, valuesQuestionsFor } from "./values";
 import { friendAnswersSchema } from "./friend";
 
 // Branching questionnaire: only mounts/validates the question sets for the
@@ -12,6 +13,7 @@ import { friendAnswersSchema } from "./friend";
 // so removing a type never blocks saving.
 export function buildStep4Schema(connectionTypes: ConnectionType[]) {
   return z.object({
+    values: valuesQuestionsFor(connectionTypes).length ? buildValuesSchema(connectionTypes) : z.unknown().optional(),
     friend: connectionTypes.includes("friend") ? friendAnswersSchema : z.unknown().optional(),
     romantic: connectionTypes.includes("romantic")
       ? romanticAnswersSchema
@@ -26,7 +28,7 @@ export function buildStep4Schema(connectionTypes: ConnectionType[]) {
       ? mentorAnswersSchema
       : z.unknown().optional(),
     spiritual_mentor: connectionTypes.includes("spiritual_mentor")
-      ? mentorAnswersSchema
+      ? spiritualMentorAnswersSchema
       : z.unknown().optional(),
   });
 }

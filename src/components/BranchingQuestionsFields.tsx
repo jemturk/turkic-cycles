@@ -1,13 +1,23 @@
 import { View } from "react-native";
 import { Text } from "@/components/Text";
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import type { ConnectionType } from "@/constants/connectionTypes";
 import { RELATIONSHIP_INTENT_LABELS, WANTS_KIDS_LABELS, IMPORTANCE_LABELS } from "@/schemas/questionnaire/romantic";
 import { BUSINESS_ROLES, MENTOR_ROLES } from "@/constants/connectionTypes";
 import { EXPERIENCE_LEVELS } from "@/constants/experience";
-import { EXPERTISE, GOALS, INDUSTRIES, SELECTION_LIMITS, type GoalType } from "@/constants/matching";
+import {
+  EXPERTISE,
+  GENDER_GROUPS,
+  GENDERS,
+  GOALS,
+  INDUSTRIES,
+  LOCATION_PREFS,
+  SELECTION_LIMITS,
+  type GoalType,
+} from "@/constants/matching";
+import { valuesQuestionsFor } from "@/schemas/questionnaire/values";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
@@ -27,6 +37,188 @@ type BranchingQuestionsFieldsProps = {
   errors: any;
   connectionTypes: ConnectionType[];
 };
+
+const card = "gap-4 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4";
+
+// The values & lifestyle questions someone's types call for: 1-5 with the spec's
+// anchors on 1, 3 and 5, or "prefer not to say" (0, skipped in scoring).
+function ValuesCard({ control, errors, connectionTypes }: BranchingQuestionsFieldsProps) {
+  const { t } = useTranslation();
+  const asked = valuesQuestionsFor(connectionTypes);
+  if (asked.length === 0) return null;
+  const optionLabel = (q: string, n: number) => {
+    if (n === 0) return t("values.preferNot");
+    if (n === 1) return `1 · ${t(`values.${q}.low`)}`;
+    if (n === 3) return `3 · ${t(`values.${q}.mid`)}`;
+    if (n === 5) return `5 · ${t(`values.${q}.high`)}`;
+    return String(n);
+  };
+  return (
+    <View className={card}>
+      <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{t("values.title")}</Text>
+      {asked.map((q) => (
+        <Controller
+          key={q}
+          control={control}
+          name={`values.${q}`}
+          render={({ field }) => (
+            <SingleSelectChips
+              label={t(`values.${q}.question`)}
+              options={[1, 2, 3, 4, 5, 0].map((n) => ({ value: String(n), label: optionLabel(q, n) }))}
+              value={field.value === undefined || field.value === null ? undefined : String(field.value)}
+              onChange={(value) => field.onChange(Number(value))}
+              error={errors.values?.[q] ? t("values.required") : undefined}
+            />
+          )}
+        />
+      ))}
+    </View>
+  );
+}
+
+// Romantic: gender, who they want to see, and -- for someone who self-describes --
+// who sees them.
+function RomanticGenderFields({ control, errors }: Pick<BranchingQuestionsFieldsProps, "control" | "errors">) {
+  const { t } = useTranslation();
+  const gender = useWatch({ control, name: "romantic.gender" });
+  const groupOptions = GENDER_GROUPS.map((value) => ({ value, label: t(`constants.genderGroups.${value}`) }));
+  return (
+    <>
+      <Controller
+        control={control}
+        name="romantic.gender"
+        render={({ field }) => (
+          <SingleSelectChips
+            label={t("branching.gender")}
+            options={GENDERS.map((value) => ({ value, label: t(`constants.genders.${value}`) }))}
+            value={field.value}
+            onChange={field.onChange}
+            error={errors.romantic?.gender ? t("branching.genderRequired") : undefined}
+          />
+        )}
+      />
+      {gender === "self_describe" ? (
+        <>
+          <Controller
+            control={control}
+            name="romantic.genderDescription"
+            render={({ field }) => (
+              <TextField
+                label={t("branching.genderDescription")}
+                value={field.value ?? ""}
+                onChangeText={field.onChange}
+                maxLength={40}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="romantic.shownTo"
+            render={({ field }) => (
+              <ChipGroup
+                label={t("branching.shownTo")}
+                options={groupOptions}
+                value={field.value ?? []}
+                onChange={field.onChange}
+                error={errors.romantic?.shownTo ? t("branching.pickOne") : undefined}
+              />
+            )}
+          />
+        </>
+      ) : null}
+      <Controller
+        control={control}
+        name="romantic.interestedIn"
+        render={({ field }) => (
+          <ChipGroup
+            label={t("branching.interestedIn")}
+            options={groupOptions}
+            value={field.value ?? []}
+            onChange={field.onChange}
+            error={errors.romantic?.interestedIn ? t("branching.pickOne") : undefined}
+          />
+        )}
+      />
+    </>
+  );
+}
+
+// Where the other person should be (Mentor and Business): pass-or-fail, no score.
+function LocationPrefField({ control, errors, name, label }: { control: any; errors: any; name: string; label: string }) {
+  const { t } = useTranslation();
+  const [type] = name.split(".");
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <SingleSelectChips
+          label={label}
+          options={LOCATION_PREFS.map((value) => ({ value, label: t(`constants.locationPrefs.${value}`) }))}
+          value={field.value}
+          onChange={field.onChange}
+          error={errors[type]?.locationPref ? t("branching.pickOne") : undefined}
+        />
+      )}
+    />
+  );
+}
+
+// Business and academic mentorship: years, and expertise and goals worded for the role.
+function MentorMatchingFields({ control, errors, type }: { control: any; errors: any; type: "business_mentor" | "academic_mentor" }) {
+  const { t } = useTranslation();
+  const role = useWatch({ control, name: `${type}.role` });
+  const offering = role === "offering";
+  const expertiseOptions = EXPERTISE.map((value) => ({ value, label: t(`constants.expertise.${value}`) }));
+  return (
+    <>
+      <Controller
+        control={control}
+        name={`${type}.yearsExperience`}
+        render={({ field }) => (
+          <TextField
+            label={t("branching.yearsExperience")}
+            keyboardType="number-pad"
+            value={field.value === undefined || field.value === null ? "" : String(field.value)}
+            onChangeText={(text) => {
+              const digits = text.replace(/\D/g, "");
+              field.onChange(digits === "" ? undefined : Number(digits));
+            }}
+            error={errors[type]?.yearsExperience ? t("branching.yearsRequired") : undefined}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name={`${type}.expertise`}
+        render={({ field }) => (
+          <ChipGroup
+            label={t(offering ? "branching.mentorExpertiseOffered" : "branching.mentorExpertiseSought")}
+            options={expertiseOptions}
+            value={field.value ?? []}
+            onChange={field.onChange}
+            max={SELECTION_LIMITS.expertise.max}
+            error={errors[type]?.expertise ? t("branching.pickOne") : undefined}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name={`${type}.goals`}
+        render={({ field }) => (
+          <ChipGroup
+            label={t(offering ? "branching.mentorGoalsOffered" : "branching.mentorGoalsSought")}
+            options={GOALS.mentor.map((value) => ({ value, label: t(`constants.goals.${value}`) }))}
+            value={field.value ?? []}
+            onChange={field.onChange}
+            max={SELECTION_LIMITS.goals.max}
+            error={errors[type]?.goals ? t("branching.goalsRequired") : undefined}
+          />
+        )}
+      />
+    </>
+  );
+}
 
 // The friend/romantic/business/mentor question cards, shared between the onboarding
 // step-4 wizard screen and the profile-edit screen — both need to render the
@@ -88,6 +280,8 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
 
   return (
     <>
+      <ValuesCard control={control} errors={errors} connectionTypes={connectionTypes} />
+
       {showFriend ? (
         <View className="gap-4 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
           <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{t("branching.friendTitle")}</Text>
@@ -124,19 +318,7 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
               />
             )}
           />
-          <Controller
-            control={control}
-            name="romantic.sharedReligionImportance"
-            render={({ field }) => (
-              <SingleSelectChips
-                label={t("branching.religionImportance")}
-                options={importanceOptions}
-                value={field.value}
-                onChange={field.onChange}
-                error={errors.romantic?.sharedReligionImportance?.message}
-              />
-            )}
-          />
+          <RomanticGenderFields control={control} errors={errors} />
           <Controller
             control={control}
             name="romantic.sharedCultureImportance"
@@ -225,6 +407,12 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
               />
             )}
           />
+          <LocationPrefField
+            control={control}
+            errors={errors}
+            name="business.locationPref"
+            label={t("branching.businessLocationPref")}
+          />
         </View>
       ) : null}
 
@@ -258,18 +446,28 @@ export function BranchingQuestionsFields({ control, errors, connectionTypes }: B
               />
             )}
           />
-          <Controller
+          {type === "spiritual_mentor" ? (
+            <Controller
+              control={control}
+              name={`${type}.experienceLevel`}
+              render={({ field }) => (
+                <SingleSelectChips
+                  label={t("branching.experienceLevel")}
+                  options={experienceLevelOptions}
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={errors[type]?.experienceLevel?.message}
+                />
+              )}
+            />
+          ) : (
+            <MentorMatchingFields control={control} errors={errors} type={type} />
+          )}
+          <LocationPrefField
             control={control}
-            name={`${type}.experienceLevel`}
-            render={({ field }) => (
-              <SingleSelectChips
-                label={t("branching.experienceLevel")}
-                options={experienceLevelOptions}
-                value={field.value}
-                onChange={field.onChange}
-                error={errors[type]?.experienceLevel?.message}
-              />
-            )}
+            errors={errors}
+            name={`${type}.locationPref`}
+            label={t("branching.mentorLocationPref")}
           />
         </View>
       ))}

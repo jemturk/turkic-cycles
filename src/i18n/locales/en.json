@@ -612,6 +612,21 @@
       "weekday_daytime": "Weekday daytime",
       "weekday_evening": "Weekday evenings",
       "weekend": "Weekends"
+    },
+    "genders": {
+      "woman": "Woman",
+      "man": "Man",
+      "self_describe": "Prefer to self-describe"
+    },
+    "genderGroups": {
+      "women": "Women",
+      "men": "Men"
+    },
+    "locationPrefs": {
+      "anywhere": "Anywhere (remote OK)",
+      "same_country": "Same country",
+      "same_state": "Same state",
+      "nearby": "Nearby (within my max distance)"
     }
   },
   "settings": {
@@ -805,7 +820,21 @@
     "industryRequired": "Choose your industry",
     "expertiseOffered": "Expertise you can offer (up to 5)",
     "expertiseSought": "Expertise you're looking for (up to 5)",
-    "expertiseRequired": "Pick at least one area you offer or are looking for"
+    "expertiseRequired": "Pick at least one area you offer or are looking for",
+    "gender": "Gender",
+    "genderRequired": "Choose your gender",
+    "genderDescription": "How you describe yourself (optional)",
+    "shownTo": "Show me to",
+    "interestedIn": "Interested in",
+    "pickOne": "Pick at least one",
+    "yearsExperience": "Years of experience",
+    "yearsRequired": "Enter your years of experience (0-50)",
+    "mentorExpertiseOffered": "Expertise you can offer (up to 5)",
+    "mentorExpertiseSought": "What you'd like help with (up to 5)",
+    "mentorGoalsOffered": "What you can help with (up to 3)",
+    "mentorGoalsSought": "What you're hoping for (up to 3)",
+    "mentorLocationPref": "Where would you like your mentor or mentee to be?",
+    "businessLocationPref": "Where would you like your business contacts to be?"
   },
   "location": {
     "country": "Country",
@@ -875,5 +904,40 @@
     "rejected": "This photo can't be used. Photos can't show nudity, be very revealing, or contain sexual content or graphic violence (see our community rules). Please choose another one.",
     "checkFailed": "We couldn't check this photo just now. Please try again in a moment.",
     "tooManyTries": "You've tried a lot of photos in a short time. Please wait a while before adding another."
+  },
+  "values": {
+    "title": "A bit about you",
+    "required": "Choose an answer",
+    "preferNot": "Prefer not to say",
+    "family": {
+      "question": "How central is family in your everyday life?",
+      "low": "I'm very independent",
+      "mid": "Important, but balanced with my own life",
+      "high": "Family comes first in most decisions"
+    },
+    "faith": {
+      "question": "How important are faith and religious tradition to you?",
+      "low": "Not important to me",
+      "mid": "Meaningful on occasions and holidays",
+      "high": "Central to how I live"
+    },
+    "social": {
+      "question": "What does your ideal free time look like?",
+      "low": "Quiet time at home or with one or two people",
+      "mid": "A mix of both",
+      "high": "Out with a big group whenever possible"
+    },
+    "pace": {
+      "question": "How would you describe your drive?",
+      "low": "Balance and calm matter most",
+      "mid": "Steady, with goals I work toward",
+      "high": "Always pushing toward the next big goal"
+    },
+    "heritage": {
+      "question": "How much is your heritage part of daily life (language, holidays, food)?",
+      "low": "Rarely",
+      "mid": "For special occasions",
+      "high": "Every day"
+    }
   }
 }

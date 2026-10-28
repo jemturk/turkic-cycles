@@ -612,6 +612,21 @@
       "weekday_daytime": "Werktags tagsüber",
       "weekday_evening": "Werktags abends",
       "weekend": "Wochenenden"
+    },
+    "genders": {
+      "woman": "Frau",
+      "man": "Mann",
+      "self_describe": "Ich beschreibe mich selbst"
+    },
+    "genderGroups": {
+      "women": "Frauen",
+      "men": "Männer"
+    },
+    "locationPrefs": {
+      "anywhere": "Egal wo (auch remote)",
+      "same_country": "Im selben Land",
+      "same_state": "Im selben Bundesland",
+      "nearby": "In der Nähe (innerhalb meiner max. Entfernung)"
     }
   },
   "settings": {
@@ -805,7 +820,21 @@
     "industryRequired": "Wähle deine Branche",
     "expertiseOffered": "Expertise, die du anbieten kannst (bis zu 5)",
     "expertiseSought": "Expertise, die du suchst (bis zu 5)",
-    "expertiseRequired": "Wähle mindestens einen Bereich, den du anbietest oder suchst"
+    "expertiseRequired": "Wähle mindestens einen Bereich, den du anbietest oder suchst",
+    "gender": "Geschlecht",
+    "genderRequired": "Wähle dein Geschlecht",
+    "genderDescription": "Wie du dich beschreibst (optional)",
+    "shownTo": "Zeig mich",
+    "interestedIn": "Interessiert an",
+    "pickOne": "Wähle mindestens eins",
+    "yearsExperience": "Jahre Erfahrung",
+    "yearsRequired": "Gib deine Jahre Erfahrung ein (0-50)",
+    "mentorExpertiseOffered": "Expertise, die du anbieten kannst (bis zu 5)",
+    "mentorExpertiseSought": "Wobei du Hilfe möchtest (bis zu 5)",
+    "mentorGoalsOffered": "Wobei du helfen kannst (bis zu 3)",
+    "mentorGoalsSought": "Was erhoffst du dir? (bis zu 3)",
+    "mentorLocationPref": "Wo soll dein Mentor oder Mentee sein?",
+    "businessLocationPref": "Wo sollen deine Geschäftskontakte sein?"
   },
   "location": {
     "country": "Land",
@@ -875,5 +904,40 @@
     "rejected": "Dieses Foto kann nicht verwendet werden. Fotos dürfen keine Nacktheit zeigen, nicht zu freizügig sein und keine sexuellen Inhalte oder drastische Gewalt enthalten (siehe unsere Community-Regeln). Bitte wähle ein anderes.",
     "checkFailed": "Wir konnten dieses Foto gerade nicht prüfen. Bitte versuche es gleich noch einmal.",
     "tooManyTries": "Du hast in kurzer Zeit sehr viele Fotos ausprobiert. Bitte warte eine Weile, bevor du ein weiteres hinzufügst."
+  },
+  "values": {
+    "title": "Ein bisschen über dich",
+    "required": "Wähle eine Antwort",
+    "preferNot": "Möchte ich nicht sagen",
+    "family": {
+      "question": "Wie zentral ist Familie in deinem Alltag?",
+      "low": "Ich bin sehr unabhängig",
+      "mid": "Wichtig, aber im Gleichgewicht mit meinem eigenen Leben",
+      "high": "Familie geht bei den meisten Entscheidungen vor"
+    },
+    "faith": {
+      "question": "Wie wichtig sind dir Glaube und religiöse Tradition?",
+      "low": "Nicht wichtig für mich",
+      "mid": "Bedeutsam zu Anlässen und Feiertagen",
+      "high": "Zentral für mein Leben"
+    },
+    "social": {
+      "question": "Wie sieht deine ideale Freizeit aus?",
+      "low": "Ruhige Zeit zu Hause oder mit ein, zwei Leuten",
+      "mid": "Eine Mischung aus beidem",
+      "high": "Wann immer möglich mit einer großen Gruppe unterwegs"
+    },
+    "pace": {
+      "question": "Wie würdest du deinen Antrieb beschreiben?",
+      "low": "Ausgeglichenheit und Ruhe sind mir am wichtigsten",
+      "mid": "Beständig, mit Zielen, an denen ich arbeite",
+      "high": "Immer auf dem Weg zum nächsten großen Ziel"
+    },
+    "heritage": {
+      "question": "Wie sehr ist deine Herkunft Teil deines Alltags (Sprache, Feste, Essen)?",
+      "low": "Selten",
+      "mid": "Zu besonderen Anlässen",
+      "high": "Jeden Tag"
+    }
   }
 }
