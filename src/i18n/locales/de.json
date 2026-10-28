@@ -732,7 +732,8 @@
       "ageMax": "Alter max.",
       "maxDistance": "Max. Entfernung (Meilen)",
       "showMeSpeakersOf": "Zeig mir Sprecher von",
-      "save": "Speichern"
+      "save": "Speichern",
+      "maxDistanceKm": "Max. Entfernung (km)"
     },
     "blockedUsersScreen": {
       "heading": "Blockierte Nutzer",

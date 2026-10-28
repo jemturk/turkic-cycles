@@ -732,7 +732,8 @@
       "ageMax": "En yüksek yaş",
       "maxDistance": "Maksimum mesafe (mil)",
       "showMeSpeakersOf": "Bana şu dilleri konuşanları göster",
-      "save": "Kaydet"
+      "save": "Kaydet",
+      "maxDistanceKm": "Maksimum mesafe (km)"
     },
     "blockedUsersScreen": {
       "heading": "Engellenen kullanıcılar",

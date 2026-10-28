@@ -5,6 +5,8 @@ import { router } from "expo-router";
 
 import { useSession } from "@/hooks/useSession";
 import { useMatchingPreferences, useUpsertMatchingPreferences } from "@/hooks/useSettings";
+import { useMyProfile } from "@/hooks/useProfile";
+import { distanceUnitFor, fromMiles, toMiles, type DistanceUnit } from "@/lib/distanceUnits";
 import { LANGUAGES, LANGUAGE_OTHER } from "@/constants/languages";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
@@ -16,17 +18,21 @@ import { showAlert } from "@/lib/alert";
 type FormProps = {
   preferences: Tables<"matching_preferences"> | null | undefined;
   userId: string | undefined;
+  // km outside the US/UK; stored in miles either way.
+  unit: DistanceUnit;
 };
 
 // Initial state is captured lazily from `preferences` on this component's first (and
 // only relevant) render -- the parent only mounts it once loading is done, so there's
 // no async-data-arrives-later case to handle with an effect.
-function MatchingPreferencesForm({ preferences, userId }: FormProps) {
+function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
   const { t } = useTranslation();
   const upsert = useUpsertMatchingPreferences(userId);
   const [ageMin, setAgeMin] = useState(preferences?.age_min?.toString() ?? "");
   const [ageMax, setAgeMax] = useState(preferences?.age_max?.toString() ?? "");
-  const [maxDistance, setMaxDistance] = useState(preferences?.max_distance_miles?.toString() ?? "");
+  const [maxDistance, setMaxDistance] = useState(
+    preferences?.max_distance_miles ? String(fromMiles(preferences.max_distance_miles, unit)) : ""
+  );
   const [languages, setLanguages] = useState<string[]>(preferences?.languages ?? []);
 
   // Back to Settings once saved, like Edit profile: leaving the page is the confirmation.
@@ -35,7 +41,7 @@ function MatchingPreferencesForm({ preferences, userId }: FormProps) {
       {
         ageMin: ageMin ? Number(ageMin) : undefined,
         ageMax: ageMax ? Number(ageMax) : undefined,
-        maxDistanceMiles: maxDistance ? Number(maxDistance) : undefined,
+        maxDistanceMiles: maxDistance ? toMiles(Number(maxDistance), unit) : undefined,
         languages,
       },
       {
@@ -67,7 +73,7 @@ function MatchingPreferencesForm({ preferences, userId }: FormProps) {
       </View>
 
       <TextField
-        label={t("settings.matchingPreferencesScreen.maxDistance")}
+        label={t(unit === "mi" ? "settings.matchingPreferencesScreen.maxDistance" : "settings.matchingPreferencesScreen.maxDistanceKm")}
         keyboardType="number-pad"
         value={maxDistance}
         onChangeText={setMaxDistance}
@@ -98,6 +104,7 @@ export default function MatchingPreferences() {
   const { session } = useSession();
   const userId = session?.user.id;
   const { data: preferences, isLoading } = useMatchingPreferences(userId);
+  const { data: profile, isLoading: profileLoading } = useMyProfile(userId);
 
   return (
     <SubPage
@@ -105,9 +112,9 @@ export default function MatchingPreferences() {
       subtitle={t("settings.matchingPreferencesScreen.filtersNote")}
       form
     >
-      {isLoading ? null : (
+      {isLoading || profileLoading ? null : (
         <Card>
-          <MatchingPreferencesForm preferences={preferences} userId={userId} />
+          <MatchingPreferencesForm preferences={preferences} userId={userId} unit={distanceUnitFor(profile?.country)} />
         </Card>
       )}
     </SubPage>

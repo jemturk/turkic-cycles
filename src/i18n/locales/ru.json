@@ -748,7 +748,8 @@
       "ageMax": "Возраст до",
       "maxDistance": "Макс. расстояние (мили)",
       "showMeSpeakersOf": "Показывать говорящих на",
-      "save": "Сохранить"
+      "save": "Сохранить",
+      "maxDistanceKm": "Макс. расстояние (км)"
     },
     "blockedUsersScreen": {
       "heading": "Заблокированные пользователи",

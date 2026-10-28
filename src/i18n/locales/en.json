@@ -732,7 +732,8 @@
       "ageMax": "Age max",
       "maxDistance": "Max distance (miles)",
       "showMeSpeakersOf": "Show me speakers of",
-      "save": "Save"
+      "save": "Save",
+      "maxDistanceKm": "Max distance (km)"
     },
     "blockedUsersScreen": {
       "heading": "Blocked users",
