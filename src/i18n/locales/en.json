@@ -810,7 +810,8 @@
       "sharePlans": "Share plans"
     },
     "privacyPolicy": "Privacy policy",
-    "termsOfService": "Terms of service"
+    "termsOfService": "Terms of service",
+    "whatMatters": "What matters most to you"
   },
   "branching": {
     "allSet": "Nothing else to answer for the connection types you picked — you're all set.",
@@ -954,6 +955,27 @@
       "low": "Rarely",
       "mid": "For special occasions",
       "high": "Every day"
+    }
+  },
+  "whatMatters": {
+    "title": "What matters most to you?",
+    "subtitle": "Choose what counts most when we suggest people. It changes how you see others, not how they see you.",
+    "very": "Very important",
+    "normal": "Normal",
+    "less": "Less important",
+    "limits": "{{very}} more \"very important\", {{less}} more \"less important\"",
+    "save": "Save",
+    "saveFailed": "Couldn't save. Please try again.",
+    "criteria": {
+      "interests": "Shared interests",
+      "circles": "Being in the same circles",
+      "values": "Values and lifestyle",
+      "heritage": "Heritage and culture",
+      "life_stage": "A similar age",
+      "proximity": "Living nearby",
+      "format_availability": "How and when you meet",
+      "goals": "Shared goals",
+      "professional": "Professional fit (expertise, experience)"
     }
   }
 }

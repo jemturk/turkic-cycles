@@ -340,6 +340,11 @@ export default function Settings() {
         onPress={() => router.push("/(app)/settings/matching-preferences", { withAnchor: true })}
       />
       <Row
+        icon="star-half-outline"
+        label={t("settings.whatMatters")}
+        onPress={() => router.push("/(app)/settings/what-matters", { withAnchor: true })}
+      />
+      <Row
         icon="sparkles-outline"
         label={t("settings.globalDiscover")}
         hint={t("settings.globalDiscoverHint")}

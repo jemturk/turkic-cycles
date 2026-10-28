@@ -810,7 +810,8 @@
       "sharePlans": "Planları paylaş"
     },
     "privacyPolicy": "Gizlilik politikası",
-    "termsOfService": "Kullanım koşulları"
+    "termsOfService": "Kullanım koşulları",
+    "whatMatters": "Senin için en önemlisi"
   },
   "branching": {
     "allSet": "Seçtiğin bağlantı türleri için başka cevaplanacak bir şey yok — hazırsın.",
@@ -954,6 +955,27 @@
       "low": "Nadiren",
       "mid": "Özel günlerde",
       "high": "Her gün"
+    }
+  },
+  "whatMatters": {
+    "title": "Senin için en önemli olan ne?",
+    "subtitle": "Kişi önerirken en çok neyin önemli olduğunu seç. Bu senin başkalarını nasıl gördüğünü değiştirir, onların seni nasıl gördüğünü değil.",
+    "very": "Çok önemli",
+    "normal": "Normal",
+    "less": "Daha az önemli",
+    "limits": "{{very}} \"çok önemli\", {{less}} \"daha az önemli\" hakkın kaldı",
+    "save": "Kaydet",
+    "saveFailed": "Kaydedilemedi. Lütfen tekrar dene.",
+    "criteria": {
+      "interests": "Ortak ilgi alanları",
+      "circles": "Aynı çevrelerde olmak",
+      "values": "Değerler ve yaşam tarzı",
+      "heritage": "Köken ve kültür",
+      "life_stage": "Yakın yaş",
+      "proximity": "Yakında yaşamak",
+      "format_availability": "Nasıl ve ne zaman buluştuğunuz",
+      "goals": "Ortak hedefler",
+      "professional": "Mesleki uyum (uzmanlık, deneyim)"
     }
   }
 }

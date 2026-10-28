@@ -59,6 +59,16 @@ export function updateProfileVisibility(userId: string, visibility: "visible" | 
   return updateProfile(userId, { profile_visibility: visibility });
 }
 
+// "What matters most to you?" (matching_preferences.boosts): per connection type,
+// criterion -> "very" | "less". Only this column is written, so the other preferences
+// are left as they are.
+export type Boosts = Partial<Record<string, Partial<Record<string, "very" | "less">>>>;
+
+export async function saveBoosts(userId: string, boosts: Boosts) {
+  const { error } = await supabase.from("matching_preferences").upsert({ user_id: userId, boosts }, { onConflict: "user_id" });
+  if (error) throw error;
+}
+
 export type LocationVisibility = "city" | "state" | "country";
 
 // How much of their location others see; the database masks profiles.city / state

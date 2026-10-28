@@ -15,6 +15,8 @@ import {
   updateTextSize,
   updateThemePreference,
   upsertMatchingPreferences,
+  saveBoosts,
+  type Boosts,
 } from "@/api/settings";
 
 export function useMatchingPreferences(userId: string | undefined) {
@@ -73,6 +75,17 @@ export function useUpdateTextSize(userId: string | undefined) {
   return useMutation({
     mutationFn: (textSize: "small" | "default" | "large") => updateTextSize(userId as string, textSize),
     onSuccess: invalidate,
+  });
+}
+
+export function useSaveBoosts(userId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (boosts: Boosts) => saveBoosts(userId as string, boosts),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["matchingPreferences", userId] });
+      queryClient.invalidateQueries({ queryKey: ["discoverCandidates"] });
+    },
   });
 }
 

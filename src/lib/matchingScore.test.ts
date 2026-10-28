@@ -6,6 +6,8 @@ import {
   effectiveWeights,
   matchForType,
   passesTypeFilters,
+  sanitizeBoosts,
+  boostableCriteria,
   type Member,
 } from "../../supabase/functions/_shared/matching";
 
@@ -178,5 +180,43 @@ describe("weights", () => {
     const total = Object.values(w).reduce((s, v) => s + (v ?? 0), 0);
     expect(total).toBeCloseTo(1, 6);
     expect(w.interests).toBeCloseTo(37.5 / 112.5, 6);
+  });
+});
+
+describe("boosts (What matters most to you?)", () => {
+  it("keeps at most 3 'very' and 2 'less' per type", () => {
+    const boosts = sanitizeBoosts(
+      {
+        friend: {
+          interests: "very",
+          circles: "very",
+          values: "very",
+          heritage: "very",
+          life_stage: "less",
+          proximity: "less",
+          goals: "less",
+        },
+      },
+      cfg
+    );
+    const levels = Object.values(boosts.friend ?? {});
+    expect(levels.filter((l) => l === "very")).toHaveLength(3);
+    expect(levels.filter((l) => l === "less")).toHaveLength(2);
+  });
+
+  it("drops criteria the type doesn't weigh, unknown types and values", () => {
+    const boosts = sanitizeBoosts({ friend: { professional: "very", nonsense: "very", interests: "loud" }, dating: { interests: "very" } }, cfg);
+    expect(boosts).toEqual({});
+  });
+
+  it("never boosts Mentor's professional fit up, but allows it down", () => {
+    expect(sanitizeBoosts({ business_mentor: { professional: "very" } }, cfg)).toEqual({});
+    expect(sanitizeBoosts({ business_mentor: { professional: "less" } }, cfg)).toEqual({ business_mentor: { professional: "less" } });
+  });
+
+  it("offers only the criteria each type weighs", () => {
+    expect(boostableCriteria("friend", cfg)).not.toContain("professional");
+    expect(boostableCriteria("business_mentor", cfg)).not.toContain("proximity");
+    expect(boostableCriteria("spiritual_mentor", cfg)).not.toContain("professional");
   });
 });

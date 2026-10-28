@@ -196,6 +196,72 @@ export type Database = {
         }
         Relationships: []
       }
+      connection_feedback: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string
+          met: boolean
+          met_format: string | null
+          other_id: string
+          rater_id: string
+          rating: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id: string
+          met: boolean
+          met_format?: string | null
+          other_id: string
+          rater_id: string
+          rating?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string
+          met?: boolean
+          met_format?: string | null
+          other_id?: string
+          rater_id?: string
+          rating?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      connection_log: {
+        Row: {
+          circle_id: string | null
+          connection_type: string | null
+          created_at: string
+          id: string
+          match_id: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          circle_id?: string | null
+          connection_type?: string | null
+          created_at?: string
+          id?: string
+          match_id: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          circle_id?: string | null
+          connection_type?: string | null
+          created_at?: string
+          id?: string
+          match_id?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: []
+      }
       consent_records: {
         Row: {
           field_key: string
@@ -254,6 +320,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      interaction_log: {
+        Row: {
+          action: string
+          actor_id: string
+          circle_id: string | null
+          created_at: string
+          id: string
+          target_id: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          circle_id?: string | null
+          created_at?: string
+          id?: string
+          target_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          circle_id?: string | null
+          created_at?: string
+          id?: string
+          target_id?: string
+        }
+        Relationships: []
       }
       matches: {
         Row: {
@@ -315,6 +408,7 @@ export type Database = {
         Row: {
           age_max: number | null
           age_min: number | null
+          boosts: Json
           languages: string[]
           max_distance_miles: number | null
           updated_at: string
@@ -323,6 +417,7 @@ export type Database = {
         Insert: {
           age_max?: number | null
           age_min?: number | null
+          boosts?: Json
           languages?: string[]
           max_distance_miles?: number | null
           updated_at?: string
@@ -331,6 +426,7 @@ export type Database = {
         Update: {
           age_max?: number | null
           age_min?: number | null
+          boosts?: Json
           languages?: string[]
           max_distance_miles?: number | null
           updated_at?: string
@@ -802,6 +898,51 @@ export type Database = {
           tier?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      suggestion_log: {
+        Row: {
+          connection_type: string
+          created_at: string
+          criterion_scores: Json
+          id: string
+          match: number | null
+          model_version: string
+          other_id: string
+          other_score: number | null
+          shown_on: string
+          viewer_id: string
+          viewer_score: number | null
+          viewer_weights: Json
+        }
+        Insert: {
+          connection_type: string
+          created_at?: string
+          criterion_scores?: Json
+          id?: string
+          match?: number | null
+          model_version: string
+          other_id: string
+          other_score?: number | null
+          shown_on?: string
+          viewer_id: string
+          viewer_score?: number | null
+          viewer_weights?: Json
+        }
+        Update: {
+          connection_type?: string
+          created_at?: string
+          criterion_scores?: Json
+          id?: string
+          match?: number | null
+          model_version?: string
+          other_id?: string
+          other_score?: number | null
+          shown_on?: string
+          viewer_id?: string
+          viewer_score?: number | null
+          viewer_weights?: Json
         }
         Relationships: []
       }

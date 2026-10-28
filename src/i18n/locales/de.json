@@ -810,7 +810,8 @@
       "sharePlans": "Pläne teilen"
     },
     "privacyPolicy": "Datenschutzerklärung",
-    "termsOfService": "Nutzungsbedingungen"
+    "termsOfService": "Nutzungsbedingungen",
+    "whatMatters": "Was dir am wichtigsten ist"
   },
   "branching": {
     "allSet": "Für die gewählten Verbindungsarten gibt es nichts weiter zu beantworten — du bist startklar.",
@@ -954,6 +955,27 @@
       "low": "Selten",
       "mid": "Zu besonderen Anlässen",
       "high": "Jeden Tag"
+    }
+  },
+  "whatMatters": {
+    "title": "Was ist dir am wichtigsten?",
+    "subtitle": "Wähle, was bei Vorschlägen am meisten zählt. Das ändert, wie du andere siehst, nicht wie sie dich sehen.",
+    "very": "Sehr wichtig",
+    "normal": "Normal",
+    "less": "Weniger wichtig",
+    "limits": "Noch {{very}}× \"sehr wichtig\", {{less}}× \"weniger wichtig\"",
+    "save": "Speichern",
+    "saveFailed": "Konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "criteria": {
+      "interests": "Gemeinsame Interessen",
+      "circles": "In denselben Kreisen sein",
+      "values": "Werte und Lebensstil",
+      "heritage": "Herkunft und Kultur",
+      "life_stage": "Ein ähnliches Alter",
+      "proximity": "In der Nähe wohnen",
+      "format_availability": "Wie und wann ihr euch trefft",
+      "goals": "Gemeinsame Ziele",
+      "professional": "Beruflich passend (Expertise, Erfahrung)"
     }
   }
 }

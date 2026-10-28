@@ -16,6 +16,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import {
   DEFAULT_CONFIG,
   bestMatch,
+  sanitizeBoosts,
   type AppType,
   type MatchingConfig,
   type Member,
@@ -48,7 +49,7 @@ function ageFrom(birthdate: string | null) {
   return age;
 }
 
-function toMember(id: string, rows: Record<string, any>): Member {
+function toMember(id: string, rows: Record<string, any>, cfg: MatchingConfig): Member {
   const profile = rows.profiles.get(id) ?? {};
   const place = rows.locations.get(id) ?? {};
   const answers: Answers = rows.answers.get(id) ?? {};
@@ -95,7 +96,7 @@ function toMember(id: string, rows: Record<string, any>): Member {
         }
       : null,
     mentors,
-    boosts: {},
+    boosts: sanitizeBoosts(rows.boosts.get(id), cfg),
   };
 }
 
@@ -140,7 +141,7 @@ Deno.serve(async (req) => {
       admin.from("user_connection_types").select("user_id, connection_type").in("user_id", ids),
       admin.from("circle_members").select("user_id, circle_id").in("user_id", ids),
       admin.from("profile_sensitive").select("user_id, origin_countries").in("user_id", ids),
-      admin.from("matching_preferences").select("user_id, max_distance_miles").in("user_id", ids),
+      admin.from("matching_preferences").select("user_id, max_distance_miles, boosts").in("user_id", ids),
     ]);
     const cfg: MatchingConfig = (config.data?.config as MatchingConfig) ?? DEFAULT_CONFIG;
 
@@ -156,15 +157,16 @@ Deno.serve(async (req) => {
       circles: group(circles.data, (r) => r.circle_id),
       heritage: new Map((heritage.data ?? []).map((r: any) => [r.user_id, r.origin_countries ?? []])),
       maxDistance: new Map((prefs.data ?? []).map((r: any) => [r.user_id, r.max_distance_miles])),
+      boosts: new Map((prefs.data ?? []).map((r: any) => [r.user_id, r.boosts])),
     };
     const typesBy = group(types.data, (r) => r.connection_type);
-    const viewer = toMember(viewerId, rows);
+    const viewer = toMember(viewerId, rows, cfg);
     const viewerTypes = typesBy.get(viewerId) ?? [];
 
     const ranked: { userId: string; order: number; match: PairMatch }[] = [];
     candidateIds.forEach((id, order) => {
       const sharedTypes = (typesBy.get(id) ?? []).filter((t) => viewerTypes.includes(t)) as AppType[];
-      const match = bestMatch(viewer, toMember(id, rows), sharedTypes, cfg);
+      const match = bestMatch(viewer, toMember(id, rows, cfg), sharedTypes, cfg);
       if (match) ranked.push({ userId: id, order, match });
     });
     // Best score first; unscored after, in the database's (random) order.
@@ -177,9 +179,28 @@ Deno.serve(async (req) => {
       shown = passing.length >= 3 ? passing : [...passing, ...ranked.filter((r) => (r.match.score ?? 0) >= cfg.thresholds.worth_a_look && (r.match.score ?? 0) < cfg.thresholds.min_match).slice(0, 3 - passing.length)];
     }
 
+    const returned = shown.slice(0, Math.min(Math.max(Number(maxCount) || 20, 1), 50));
+
+    // The suggestion log (stage 6): what the model scored, once per pair per day.
+    const { error: logError } = await admin.from("suggestion_log").upsert(
+      returned.map((r) => ({
+        viewer_id: viewerId,
+        other_id: r.userId,
+        connection_type: r.match.appType,
+        model_version: cfg.model_version,
+        match: r.match.score,
+        viewer_score: r.match.detail?.viewerScore ?? null,
+        other_score: r.match.detail?.otherScore ?? null,
+        criterion_scores: r.match.detail?.criteria ?? {},
+        viewer_weights: r.match.detail?.weights ?? {},
+      })),
+      { onConflict: "viewer_id,other_id,shown_on", ignoreDuplicates: true }
+    );
+    if (logError) console.error("rank-discover: suggestion log failed", logError);
+
     return json({
       modelVersion: cfg.model_version,
-      candidates: shown.slice(0, Math.min(Math.max(Number(maxCount) || 20, 1), 50)).map((r) => ({
+      candidates: returned.map((r) => ({
         userId: r.userId,
         connectionType: r.match.appType,
         score: r.match.score === null ? null : Math.round(r.match.score * 1000) / 1000,

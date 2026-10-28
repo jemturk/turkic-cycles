@@ -125,6 +125,26 @@
       "topic",
       "updated_at"
     ],
+    "connection_feedback": [
+      "created_at",
+      "id",
+      "match_id",
+      "met",
+      "met_format",
+      "other_id",
+      "rater_id",
+      "rating",
+      "updated_at"
+    ],
+    "connection_log": [
+      "circle_id",
+      "connection_type",
+      "created_at",
+      "id",
+      "match_id",
+      "user_a",
+      "user_b"
+    ],
     "consent_records": [
       "field_key",
       "granted",
@@ -139,6 +159,14 @@
       "status",
       "updated_at",
       "user_id"
+    ],
+    "interaction_log": [
+      "action",
+      "actor_id",
+      "circle_id",
+      "created_at",
+      "id",
+      "target_id"
     ],
     "matches": [
       "circle_id",
@@ -157,6 +185,7 @@
     "matching_preferences": [
       "age_max",
       "age_min",
+      "boosts",
       "languages",
       "max_distance_miles",
       "updated_at",
@@ -295,6 +324,20 @@
       "tier",
       "updated_at",
       "user_id"
+    ],
+    "suggestion_log": [
+      "connection_type",
+      "created_at",
+      "criterion_scores",
+      "id",
+      "match",
+      "model_version",
+      "other_id",
+      "other_score",
+      "shown_on",
+      "viewer_id",
+      "viewer_score",
+      "viewer_weights"
     ],
     "swipes": [
       "action",

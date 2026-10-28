@@ -64,7 +64,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | App activity → Search history | — not collected | | Searches and filters aren't saved | Saved or recent searches |
 | App activity → Installed apps | — not collected | | | |
 | App activity → Other UGC | Opt. | Functionality, Fraud prevention/security | Bio, circles/events created, questionnaire answers, reports | |
-| App activity → Other actions | Opt. | Functionality, Personalization | Likes, passes, blocks (`swipes`, `blocked_users`) | |
+| App activity → Other actions | Opt. | Functionality, Personalization, Analytics | Likes, passes, blocks (`swipes`, `blocked_users`); their history and connections made (`interaction_log`, `connection_log`); the match scores behind each suggestion (`suggestion_log`); "did you meet?" and a 1-5 rating (`connection_feedback`); what matters most to you (`matching_preferences.boosts`). Analytics = refitting the matching weights from outcomes, in-house only | Logs are shared with a third party, or used for ads |
 | Web browsing | — not collected | | Google sign-in / Stripe open in a browser; nothing recorded | |
 | App info → Crash logs | Req. | Analytics | Sentry | |
 | App info → Diagnostics | Req. | Analytics | Sentry device/OS/app version | |

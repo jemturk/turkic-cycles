@@ -120,7 +120,51 @@ export type PairMatch = {
   score: number | null;
   strong: boolean;
   reasons: Reason[];
+  // What went into the score, for the suggestion log (stage 6).
+  detail?: {
+    viewerScore: number;
+    otherScore: number;
+    criteria: Partial<Record<Criterion, number>>;
+    weights: Partial<Record<Criterion, number>>;
+  };
 };
+
+const APP_TYPES: AppType[] = ["friend", "romantic", "business", "business_mentor", "academic_mentor", "spiritual_mentor"];
+
+// A member's saved boosts (matching_preferences.boosts), kept to what the model allows:
+// known types and criteria that type actually weighs, at most max_very "very" and
+// max_less "less" each, and no "very" on Mentor's professional fit (it already starts at
+// the 40% cap, so it would do nothing).
+export function sanitizeBoosts(raw: unknown, cfg: MatchingConfig): Member["boosts"] {
+  const out: Member["boosts"] = {};
+  if (!raw || typeof raw !== "object") return out;
+  for (const type of APP_TYPES) {
+    const entries = (raw as Record<string, unknown>)[type];
+    if (!entries || typeof entries !== "object") continue;
+    const weights = baseWeights(type, cfg);
+    let very = 0;
+    let less = 0;
+    const kept: Partial<Record<Criterion, "very" | "less">> = {};
+    for (const [criterion, level] of Object.entries(entries as Record<string, unknown>)) {
+      if (!(CRITERIA as readonly string[]).includes(criterion) || !(weights[criterion as Criterion] > 0)) continue;
+      if (level === "very" && very < cfg.boosts.max_very && !(kindOf(type) === "mentor" && criterion === "professional")) {
+        kept[criterion as Criterion] = "very";
+        very += 1;
+      } else if (level === "less" && less < cfg.boosts.max_less) {
+        kept[criterion as Criterion] = "less";
+        less += 1;
+      }
+    }
+    if (Object.keys(kept).length) out[type] = kept;
+  }
+  return out;
+}
+
+// The criteria a member can boost for one type, in display order.
+export function boostableCriteria(type: AppType, cfg: MatchingConfig): Criterion[] {
+  const weights = baseWeights(type, cfg);
+  return CRITERIA.filter((c) => weights[c] > 0);
+}
 
 const kindOf = (type: AppType): Kind =>
   type === "friend" || type === "romantic" || type === "business" ? type : "mentor";
@@ -358,7 +402,7 @@ export function directionalScore(viewer: Member, other: Member, type: AppType, c
     used += weight;
     contributions.push({ criterion, value: weight * s, score: s });
   }
-  return { score: used < cfg.thresholds.min_coverage - 1e-9 ? null : sum / used, contributions, sum, used };
+  return { score: used < cfg.thresholds.min_coverage - 1e-9 ? null : sum / used, contributions, sum, used, weights };
 }
 
 function reasonFor(criterion: Criterion, viewer: Member, other: Member, type: AppType): Reason {
@@ -389,7 +433,18 @@ export function matchForType(a: Member, b: Member, type: AppType, cfg: MatchingC
     .sort((x, y) => y.value - x.value)
     .slice(0, 3)
     .map((c) => reasonFor(c.criterion, a, b, type));
-  return { appType: type, score, strong: score >= cfg.thresholds.strong_match, reasons };
+  return {
+    appType: type,
+    score,
+    strong: score >= cfg.thresholds.strong_match,
+    reasons,
+    detail: {
+      viewerScore: ab.score,
+      otherScore: ba.score,
+      criteria: Object.fromEntries(ab.contributions.map((c) => [c.criterion, c.score])),
+      weights: ab.weights,
+    },
+  };
 }
 
 // The best match over the types both chose; null when every one fails a hard filter.
