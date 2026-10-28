@@ -4,7 +4,7 @@ import { CONNECTION_TYPES } from "@/constants/connectionTypes";
 import { matchRegionOption, regionConfigFor } from "@/constants/countries";
 import { TRAVEL_FREQUENCIES, TRAVEL_STYLES } from "@/constants/interests";
 import { calculateAge } from "@/lib/age";
-import { SELECTION_LIMITS } from "@/constants/matching";
+import { AVAILABILITY, MEETING_FORMATS, SELECTION_LIMITS } from "@/constants/matching";
 
 // Onboarding step 1: what they're looking for + location + real DOB (never a
 // self-reported age bucket — profiles.birthdate is the trusted source; any age
@@ -51,6 +51,9 @@ export const onboardingStep2Schema = z.object({
   interests: z.array(z.string()).min(SELECTION_LIMITS.interests.min).max(SELECTION_LIMITS.interests.max),
   hobbies: z.array(z.string()),
   occupation: z.string().min(1),
+  // How and when they like to meet (matching model: Meeting format & availability).
+  meetingFormat: z.enum(MEETING_FORMATS),
+  availability: z.array(z.enum(AVAILABILITY)),
 });
 export type OnboardingStep2 = z.infer<typeof onboardingStep2Schema>;
 

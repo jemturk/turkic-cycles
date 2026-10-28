@@ -350,7 +350,10 @@
     "editProfileHeading": "Profil bearbeiten",
     "bioContactHint": "Kontaktdaten wie Telefonnummern und E-Mails gehören nicht in deine Bio. Teile sie im Chat mit Menschen, denen du vertraust.",
     "interestsHint": "Wähle 3 bis 10",
-    "interestsMin": "Wähle mindestens 3 Interessen"
+    "interestsMin": "Wähle mindestens 3 Interessen",
+    "meetingFormat": "Wie triffst du dich am liebsten?",
+    "meetingFormatRequired": "Wähle, wie du dich treffen möchtest",
+    "availability": "Wann hast du meistens Zeit?"
   },
   "common": {
     "member": "Mitglied",
@@ -599,6 +602,16 @@
       "mid_career": "Mittlere Karrierestufe",
       "senior": "Senior",
       "executive": "Führungsebene"
+    },
+    "meetingFormats": {
+      "in_person": "Persönlich",
+      "virtual": "Online",
+      "either": "Egal"
+    },
+    "availability": {
+      "weekday_daytime": "Werktags tagsüber",
+      "weekday_evening": "Werktags abends",
+      "weekend": "Wochenenden"
     }
   },
   "settings": {
@@ -683,7 +696,7 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Matching-Einstellungen",
-      "filtersNote": "Alter und Sprachen filtern Entdecken in beide Richtungen: Du siehst Menschen in deinem Bereich, die auch dich sehen würden. Die Entfernung wird noch nicht verwendet.",
+      "filtersNote": "Alter, Sprachen und Entfernung filtern Entdecken in beide Richtungen: Du siehst Menschen in deinem Bereich, die auch dich sehen würden.",
       "saveFailed": "Deine Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
       "ageMin": "Alter min.",
       "ageMax": "Alter max.",
@@ -785,7 +798,14 @@
       "business_mentor": "Business-Mentoring",
       "academic_mentor": "Akademisches Mentoring",
       "spiritual_mentor": "Spirituelles Mentoring"
-    }
+    },
+    "friendTitle": "Freundschaft",
+    "goals": "Was erhoffst du dir? (bis zu 3)",
+    "goalsRequired": "Wähle mindestens eins",
+    "industryRequired": "Wähle deine Branche",
+    "expertiseOffered": "Expertise, die du anbieten kannst (bis zu 5)",
+    "expertiseSought": "Expertise, die du suchst (bis zu 5)",
+    "expertiseRequired": "Wähle mindestens einen Bereich, den du anbietest oder suchst"
   },
   "location": {
     "country": "Land",

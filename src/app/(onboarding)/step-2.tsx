@@ -16,6 +16,7 @@ import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { ChipGroup } from "@/components/ChipGroup";
 import { InterestsPicker } from "@/components/InterestsPicker";
+import { MeetingFields } from "@/components/MeetingFields";
 import { OnboardingProgress } from "@/components/OnboardingProgress";
 import { FormScrollView } from "@/components/FormScrollView";
 import { showAlert } from "@/lib/alert";
@@ -32,7 +33,7 @@ export default function OnboardingStep2Screen() {
     formState: { errors },
   } = useForm<OnboardingStep2>({
     resolver: zodResolver(onboardingStep2Schema),
-    defaultValues: store.step2 ?? { languages: [], interests: [], hobbies: [], occupation: "" },
+    defaultValues: store.step2 ?? { languages: [], interests: [], hobbies: [], occupation: "", availability: [] },
   });
 
   const onSubmit = (values: OnboardingStep2) => {
@@ -99,6 +100,8 @@ export default function OnboardingStep2Screen() {
             />
           )}
         />
+
+        <MeetingFields control={control} errors={errors} />
 
         <View className="mt-4">
           <Button

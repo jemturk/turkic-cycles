@@ -350,7 +350,10 @@
     "editProfileHeading": "Edit profile",
     "bioContactHint": "Contact details like phone numbers and emails don't belong in your bio. Share them in chat, with people you trust.",
     "interestsHint": "Pick 3 to 10",
-    "interestsMin": "Pick at least 3 interests"
+    "interestsMin": "Pick at least 3 interests",
+    "meetingFormat": "How do you like to meet?",
+    "meetingFormatRequired": "Choose how you like to meet",
+    "availability": "When are you usually free?"
   },
   "common": {
     "member": "Member",
@@ -599,6 +602,16 @@
       "mid_career": "Mid career",
       "senior": "Senior",
       "executive": "Executive"
+    },
+    "meetingFormats": {
+      "in_person": "In person",
+      "virtual": "Online",
+      "either": "Either"
+    },
+    "availability": {
+      "weekday_daytime": "Weekday daytime",
+      "weekday_evening": "Weekday evenings",
+      "weekend": "Weekends"
     }
   },
   "settings": {
@@ -683,7 +696,7 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Matching preferences",
-      "filtersNote": "Age and languages filter Discover, both ways: you see people in your range who'd also see you. Distance isn't used yet.",
+      "filtersNote": "Age, languages and distance filter Discover, both ways: you see people in your range who'd also see you.",
       "saveFailed": "Couldn't save your preferences. Please try again.",
       "ageMin": "Age min",
       "ageMax": "Age max",
@@ -785,7 +798,14 @@
       "business_mentor": "Business mentorship",
       "academic_mentor": "Academic mentorship",
       "spiritual_mentor": "Spiritual mentorship"
-    }
+    },
+    "friendTitle": "Friendship",
+    "goals": "What are you hoping for? (up to 3)",
+    "goalsRequired": "Pick at least one",
+    "industryRequired": "Choose your industry",
+    "expertiseOffered": "Expertise you can offer (up to 5)",
+    "expertiseSought": "Expertise you're looking for (up to 5)",
+    "expertiseRequired": "Pick at least one area you offer or are looking for"
   },
   "location": {
     "country": "Country",

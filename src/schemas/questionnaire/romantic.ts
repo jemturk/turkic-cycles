@@ -1,10 +1,13 @@
 import { z } from "zod";
 
+import { GOALS, SELECTION_LIMITS } from "@/constants/matching";
+
 export const romanticAnswersSchema = z.object({
   relationshipIntent: z.enum(["casual", "long_term", "marriage", "not_sure"]),
   wantsKids: z.enum(["yes", "no", "open", "has_kids_already"]),
   sharedReligionImportance: z.enum(["not_important", "somewhat", "very_important"]),
   sharedCultureImportance: z.enum(["not_important", "somewhat", "very_important"]),
+  goals: z.array(z.enum(GOALS.romantic)).min(SELECTION_LIMITS.goals.min).max(SELECTION_LIMITS.goals.max),
 });
 export type RomanticAnswers = z.infer<typeof romanticAnswersSchema>;
 

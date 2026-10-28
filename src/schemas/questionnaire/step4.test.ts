@@ -5,14 +5,27 @@ const romantic = {
   wantsKids: "open",
   sharedReligionImportance: "somewhat",
   sharedCultureImportance: "very_important",
+  goals: ["long_term"],
 };
-const business = { roles: ["networking"], industry: "Tech", experienceLevel: "mid_career" };
+const business = {
+  roles: ["networking"],
+  industry: "technology",
+  experienceLevel: "mid_career",
+  goals: ["partnerships"],
+  expertiseOffered: ["software_dev"],
+  expertiseSought: [],
+};
 const mentor = { role: "seeking", field: "Software", experienceLevel: "early_career" };
 
 describe("buildStep4Schema", () => {
-  it("requires no keys at all for friend-only selections", () => {
+  it("asks friend-only selections for their goals, 1 to 3", () => {
     const schema = buildStep4Schema(["friend"]);
-    expect(schema.safeParse({}).success).toBe(true);
+    expect(schema.safeParse({}).success).toBe(false);
+    expect(schema.safeParse({ friend: { goals: [] } }).success).toBe(false);
+    expect(schema.safeParse({ friend: { goals: ["explore_city"] } }).success).toBe(true);
+    expect(
+      schema.safeParse({ friend: { goals: ["explore_city", "weekend_activities", "cultural_events", "new_to_area"] } }).success
+    ).toBe(false);
   });
 
   it("requires romantic answers when romantic is selected", () => {

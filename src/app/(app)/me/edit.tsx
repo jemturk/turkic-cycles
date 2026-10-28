@@ -21,6 +21,7 @@ import { CONNECTION_TYPES } from "@/constants/connectionTypes";
 import { LANGUAGES, LANGUAGE_OTHER } from "@/constants/languages";
 import { TRAVEL_FREQUENCIES, TRAVEL_STYLES } from "@/constants/interests";
 import { InterestsPicker } from "@/components/InterestsPicker";
+import { MeetingFields } from "@/components/MeetingFields";
 import { ORIGIN_COUNTRIES, ORIGIN_MAX_SELECTIONS, ORIGIN_OTHER } from "@/constants/origins";
 import { canonicalCountry } from "@/constants/countries";
 import { Button } from "@/components/Button";
@@ -75,6 +76,8 @@ export default function ProfileEdit() {
       interests: profile.interests ?? [],
       hobbies: profile.hobbies ?? [],
       occupation: profile.occupation ?? "",
+      meetingFormat: (profile.meeting_format ?? undefined) as ProfileEditValues["meetingFormat"],
+      availability: (profile.availability ?? []) as ProfileEditValues["availability"],
       usResidency: profile.us_residency ?? false,
       usCitizenship: profile.us_citizenship ?? false,
       europeanCitizenship: profile.european_citizenship ?? false,
@@ -243,6 +246,8 @@ export default function ProfileEdit() {
       />
     </>
   );
+
+  const meetingField = <MeetingFields control={control} errors={errors} tone={TAG_TONES.interests} />;
 
   const usResidencyField = (
     <>
@@ -429,6 +434,7 @@ export default function ProfileEdit() {
                 {languagesField}
                 {interestsField}
               </View>
+              <View className={card}>{meetingField}</View>
               <View className={card}>
                 {travelFrequencyField}
                 {travelStyleField}
@@ -479,6 +485,7 @@ export default function ProfileEdit() {
           {languagesField}
           {interestsField}
         </View>
+        <View className={phoneCard}>{meetingField}</View>
         <View className={phoneCard}>
           {travelFrequencyField}
           {travelStyleField}

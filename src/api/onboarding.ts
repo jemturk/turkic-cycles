@@ -1,4 +1,5 @@
 import { supabase } from "@/api/client";
+import type { Json } from "@/types/database";
 import type { ConnectionType } from "@/constants/connectionTypes";
 import type {
   CoreQuestionnaire,
@@ -52,7 +53,8 @@ export async function upsertQuestionnaireCore(userId: string, core: Partial<Core
 export async function upsertQuestionnaireAnswers(userId: string, answers: Partial<Step4Answers>) {
   const { error } = await supabase
     .from("questionnaire_responses")
-    .upsert({ user_id: userId, answers }, { onConflict: "user_id" });
+    // Each type's answers are plain JSON (validated by its schema before saving).
+    .upsert({ user_id: userId, answers: answers as Json }, { onConflict: "user_id" });
   if (error) throw error;
 }
 
@@ -86,6 +88,8 @@ export async function submitOnboardingStep2(
       interests: values.interests,
       hobbies: values.hobbies,
       occupation: values.occupation,
+      meeting_format: values.meetingFormat,
+      availability: values.availability,
       onboarding_step: 3,
     })
     .eq("id", userId);
@@ -142,6 +146,8 @@ export async function saveProfileEdit(userId: string, values: ProfileEditValues)
     interests: values.interests,
     hobbies: values.hobbies,
     occupation: values.occupation,
+    meeting_format: values.meetingFormat,
+    availability: values.availability,
     travel_frequency: values.travelFrequency,
     travel_style: values.travelStyle,
     us_residency: values.usResidency,
@@ -165,8 +171,9 @@ export async function saveProfileEdit(userId: string, values: ProfileEditValues)
   };
   await upsertQuestionnaireCore(userId, corePayload);
 
-  const { romantic, business, business_mentor, academic_mentor, spiritual_mentor } = values;
+  const { friend, romantic, business, business_mentor, academic_mentor, spiritual_mentor } = values;
   await upsertQuestionnaireAnswers(userId, {
+    friend,
     romantic,
     business,
     business_mentor,

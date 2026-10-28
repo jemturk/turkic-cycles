@@ -4,27 +4,30 @@ import type { ConnectionType } from "@/constants/connectionTypes";
 import { romanticAnswersSchema } from "./romantic";
 import { businessAnswersSchema } from "./business";
 import { mentorAnswersSchema } from "./mentor";
+import { friendAnswersSchema } from "./friend";
 
 // Branching questionnaire: only mounts/validates the question sets for the
-// connection types the user actually selected in step 1. `friend` has no
-// question set at all, so a friend-only selection contributes no keys.
+// connection types the user actually selected in step 1. Answers for a type that
+// isn't selected (Edit profile keeps them after the type is removed) pass unchecked,
+// so removing a type never blocks saving.
 export function buildStep4Schema(connectionTypes: ConnectionType[]) {
   return z.object({
+    friend: connectionTypes.includes("friend") ? friendAnswersSchema : z.unknown().optional(),
     romantic: connectionTypes.includes("romantic")
       ? romanticAnswersSchema
-      : z.undefined().optional(),
+      : z.unknown().optional(),
     business: connectionTypes.includes("business")
       ? businessAnswersSchema
-      : z.undefined().optional(),
+      : z.unknown().optional(),
     business_mentor: connectionTypes.includes("business_mentor")
       ? mentorAnswersSchema
-      : z.undefined().optional(),
+      : z.unknown().optional(),
     academic_mentor: connectionTypes.includes("academic_mentor")
       ? mentorAnswersSchema
-      : z.undefined().optional(),
+      : z.unknown().optional(),
     spiritual_mentor: connectionTypes.includes("spiritual_mentor")
       ? mentorAnswersSchema
-      : z.undefined().optional(),
+      : z.unknown().optional(),
   });
 }
 

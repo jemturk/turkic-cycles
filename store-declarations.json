@@ -195,6 +195,10 @@
     ],
     "profile_locations": [
       "city",
+      "geocoded_at",
+      "geocoded_query",
+      "latitude",
+      "longitude",
       "state",
       "updated_at",
       "user_id"
@@ -216,6 +220,7 @@
     ],
     "profiles": [
       "app_locale",
+      "availability",
       "avatar_url",
       "bio",
       "birthdate",
@@ -231,6 +236,7 @@
       "interests",
       "languages",
       "location_visibility",
+      "meeting_format",
       "occupation",
       "onboarding_completed_at",
       "onboarding_step",

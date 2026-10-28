@@ -165,6 +165,12 @@ export const EXPERTISE = [
   "teaching_training",
 ] as const;
 
+// How and when members like to meet, asked of everyone (profiles.meeting_format,
+// profiles.availability; migration 0059).
+export const MEETING_FORMATS = ["in_person", "virtual", "either"] as const;
+export type MeetingFormat = (typeof MEETING_FORMATS)[number];
+export const AVAILABILITY = ["weekday_daytime", "weekday_evening", "weekend"] as const;
+
 export const SELECTION_LIMITS = {
   interests: { min: 3, max: 10 },
   goals: { min: 1, max: 3 },

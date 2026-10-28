@@ -23,7 +23,7 @@ changes in a store console, change it here in the same commit as the code.
   `AGENTS.md` covers AI-made changes.
 
 Service providers (Supabase, Sentry, RevenueCat, Expo/Firebase push, Stripe Identity,
-Google Cloud Vision for the photo check)
+Google Cloud Vision for the photo check, Google Geocoding for the typed city's centre point)
 process data for us, so in Google's terms that's **collected, not shared**. A third
 party that uses data for its own purposes (ads, analytics networks) would be
 **shared** — none today.
@@ -42,7 +42,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 
 | Category → type | Req. | Purposes | What it is | Re-check if |
 | --- | --- | --- | --- | --- |
-| Location → Approximate | Req. | Functionality, Personalization | City/state/country typed on the profile (`profiles.city` …; the real city/state in self-only `profile_locations`, others see what `location_visibility` allows) | City becomes optional; anything stores coordinates |
+| Location → Approximate | Req. | Functionality, Personalization | City/state/country typed on the profile (`profiles.city` …; the real city/state in self-only `profile_locations`, others see what `location_visibility` allows). The city's centre point from Google Geocoding (rounded to ~100 m, self-only `profile_locations.latitude/longitude`, used server-side for the distance filter) | City becomes optional; coordinates come from the device's GPS or are shown to other members |
 | Location → Precise | — not collected | | GPS used on the phone only (`src/stores/localFilter.ts`) | Device coordinates are sent or saved anywhere |
 | Personal → Name | Req. | Functionality, Account mgmt | `profiles.display_name` | |
 | Personal → Email | Req. | Functionality, Account mgmt | Account email (Supabase Auth) | |
@@ -52,7 +52,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | Personal → Race and ethnicity | Req. | Functionality, Personalization | Countries of origin, min 1 (`profile_sensitive.origin_countries`) | Origin becomes optional |
 | Personal → Political or religious beliefs | Opt. | Functionality, Personalization | "Importance of shared religion" (romantic questionnaire); `profile_sensitive.religious_affiliation` (no UI yet) | Religion gets a profile field |
 | Personal → Sexual orientation | — not collected | | | Gender/orientation preferences added |
-| Personal → Other info | Req. | Functionality, Personalization | Date of birth (18+ check); citizenship/residency, occupation, bio, languages, interests | |
+| Personal → Other info | Req. | Functionality, Personalization | Date of birth (18+ check); citizenship/residency, occupation, bio, languages, interests; how and when they like to meet; goals per connection type; Business industry and expertise | |
 | Financial → Purchase history | Opt. | Functionality, Account mgmt | Plus subscription (RevenueCat, `subscriptions`) | |
 | Financial → Payment info | — not collected | | Google Play / App Store handle payment | Direct card payments (e.g. Stripe checkout) |
 | Messages → Other in-app messages | Opt. | Functionality, Fraud prevention/security | Chat, reactions (`messages`, `message_reactions`) | |

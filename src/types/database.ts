@@ -472,18 +472,30 @@ export type Database = {
       profile_locations: {
         Row: {
           city: string | null
+          geocoded_at: string | null
+          geocoded_query: string | null
+          latitude: number | null
+          longitude: number | null
           state: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           city?: string | null
+          geocoded_at?: string | null
+          geocoded_query?: string | null
+          latitude?: number | null
+          longitude?: number | null
           state?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           city?: string | null
+          geocoded_at?: string | null
+          geocoded_query?: string | null
+          latitude?: number | null
+          longitude?: number | null
           state?: string | null
           updated_at?: string
           user_id?: string
@@ -544,6 +556,7 @@ export type Database = {
       profiles: {
         Row: {
           app_locale: string
+          availability: string[]
           avatar_url: string | null
           bio: string | null
           birthdate: string | null
@@ -559,6 +572,7 @@ export type Database = {
           interests: string[]
           languages: string[]
           location_visibility: string
+          meeting_format: string | null
           occupation: string | null
           onboarding_completed_at: string | null
           onboarding_step: number
@@ -575,6 +589,7 @@ export type Database = {
         }
         Insert: {
           app_locale?: string
+          availability?: string[]
           avatar_url?: string | null
           bio?: string | null
           birthdate?: string | null
@@ -590,6 +605,7 @@ export type Database = {
           interests?: string[]
           languages?: string[]
           location_visibility?: string
+          meeting_format?: string | null
           occupation?: string | null
           onboarding_completed_at?: string | null
           onboarding_step?: number
@@ -606,6 +622,7 @@ export type Database = {
         }
         Update: {
           app_locale?: string
+          availability?: string[]
           avatar_url?: string | null
           bio?: string | null
           birthdate?: string | null
@@ -621,6 +638,7 @@ export type Database = {
           interests?: string[]
           languages?: string[]
           location_visibility?: string
+          meeting_format?: string | null
           occupation?: string | null
           onboarding_completed_at?: string | null
           onboarding_step?: number
@@ -958,6 +976,10 @@ export type Database = {
           liked_at: string
           user_id: string
         }[]
+      }
+      miles_between: {
+        Args: { lat1: number; lat2: number; lon1: number; lon2: number }
+        Returns: number
       }
       passes_discover_filters: {
         Args: { target: string; viewer: string }

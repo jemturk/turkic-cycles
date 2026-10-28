@@ -5,6 +5,7 @@ const valid = {
   wantsKids: "open",
   sharedReligionImportance: "somewhat",
   sharedCultureImportance: "very_important",
+  goals: ["long_term"],
 };
 
 describe("romanticAnswersSchema", () => {

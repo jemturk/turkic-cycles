@@ -58,6 +58,8 @@ const validStep2 = {
   interests: ["cooking", "soccer", "travel"],
   hobbies: [],
   occupation: "Engineer",
+  meetingFormat: "in_person",
+  availability: [],
 };
 
 describe("onboardingStep2Schema", () => {

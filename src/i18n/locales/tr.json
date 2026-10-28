@@ -350,7 +350,10 @@
     "editProfileHeading": "Profili düzenle",
     "bioContactHint": "Telefon numarası ve e-posta gibi iletişim bilgileri biyografine konmaz. Bunları sohbette, güvendiğin kişilerle paylaş.",
     "interestsHint": "3 ile 10 arası seçin",
-    "interestsMin": "En az 3 ilgi alanı seçin"
+    "interestsMin": "En az 3 ilgi alanı seçin",
+    "meetingFormat": "Nasıl buluşmayı seversin?",
+    "meetingFormatRequired": "Nasıl buluşmak istediğini seç",
+    "availability": "Genelde ne zaman müsaitsin?"
   },
   "common": {
     "member": "Üye",
@@ -599,6 +602,16 @@
       "mid_career": "Orta kariyer",
       "senior": "Kıdemli",
       "executive": "Üst düzey yönetici"
+    },
+    "meetingFormats": {
+      "in_person": "Yüz yüze",
+      "virtual": "Çevrim içi",
+      "either": "Fark etmez"
+    },
+    "availability": {
+      "weekday_daytime": "Hafta içi gündüz",
+      "weekday_evening": "Hafta içi akşam",
+      "weekend": "Hafta sonu"
     }
   },
   "settings": {
@@ -683,7 +696,7 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Eşleştirme tercihleri",
-      "filtersNote": "Yaş ve diller Keşfet'i iki yönlü filtreler: aralığınızdaki ve sizi de görecek kişileri görürsünüz. Mesafe henüz kullanılmıyor.",
+      "filtersNote": "Yaş, diller ve mesafe Keşfet'i iki yönlü filtreler: aralığınızdaki ve sizi de görecek kişileri görürsünüz.",
       "saveFailed": "Tercihleriniz kaydedilemedi. Lütfen tekrar deneyin.",
       "ageMin": "En düşük yaş",
       "ageMax": "En yüksek yaş",
@@ -785,7 +798,14 @@
       "business_mentor": "İş mentorluğu",
       "academic_mentor": "Akademik mentorluk",
       "spiritual_mentor": "Manevi mentorluk"
-    }
+    },
+    "friendTitle": "Arkadaşlık",
+    "goals": "Ne arıyorsun? (en fazla 3)",
+    "goalsRequired": "En az birini seç",
+    "industryRequired": "Sektörünü seç",
+    "expertiseOffered": "Sunabileceğin uzmanlık (en fazla 5)",
+    "expertiseSought": "Aradığın uzmanlık (en fazla 5)",
+    "expertiseRequired": "Sunduğun ya da aradığın en az bir alan seç"
   },
   "location": {
     "country": "Ülke",
