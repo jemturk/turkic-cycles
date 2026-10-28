@@ -977,5 +977,13 @@
       "goals": "Ortak hedefler",
       "professional": "Mesleki uyum (uzmanlık, deneyim)"
     }
+  },
+  "feedback": {
+    "metQuestion": "İkiniz buluştunuz ya da konuştunuz mu?",
+    "formatQuestion": "Nasıl buluştunuz?",
+    "ratingQuestion": "Nasıldı?",
+    "yes": "Evet",
+    "notYet": "Henüz değil",
+    "notNow": "Şimdi değil"
   }
 }

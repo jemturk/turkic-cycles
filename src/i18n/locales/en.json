@@ -977,5 +977,13 @@
       "goals": "Shared goals",
       "professional": "Professional fit (expertise, experience)"
     }
+  },
+  "feedback": {
+    "metQuestion": "Did you two meet or talk?",
+    "formatQuestion": "How did you meet?",
+    "ratingQuestion": "How was it?",
+    "yes": "Yes",
+    "notYet": "Not yet",
+    "notNow": "Not now"
   }
 }

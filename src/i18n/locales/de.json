@@ -977,5 +977,13 @@
       "goals": "Gemeinsame Ziele",
       "professional": "Beruflich passend (Expertise, Erfahrung)"
     }
+  },
+  "feedback": {
+    "metQuestion": "Habt ihr euch getroffen oder gesprochen?",
+    "formatQuestion": "Wie habt ihr euch getroffen?",
+    "ratingQuestion": "Wie war es?",
+    "yes": "Ja",
+    "notYet": "Noch nicht",
+    "notNow": "Nicht jetzt"
   }
 }

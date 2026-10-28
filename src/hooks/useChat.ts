@@ -14,6 +14,8 @@ import {
   toggleReaction,
   type MessageReaction,
   removeConnection,
+  getMyConnectionFeedback,
+  saveConnectionFeedback,
 } from "@/api/chat";
 import type { Tables } from "@/types/database";
 
@@ -222,5 +224,22 @@ export function useRemoveConnection(userId: string | undefined) {
       queryClient.invalidateQueries({ queryKey: ["newConnections", userId] });
       queryClient.invalidateQueries({ queryKey: ["matchParticipant"] });
     },
+  });
+}
+
+export function useMyConnectionFeedback(matchId: string | undefined, userId: string | undefined) {
+  return useQuery({
+    queryKey: ["connectionFeedback", matchId, userId],
+    queryFn: () => getMyConnectionFeedback(matchId as string, userId as string),
+    enabled: !!matchId && !!userId,
+  });
+}
+
+export function useSaveConnectionFeedback(matchId: string | undefined, userId: string | undefined, otherUserId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (answer: Parameters<typeof saveConnectionFeedback>[3]) =>
+      saveConnectionFeedback(matchId as string, userId as string, otherUserId as string, answer),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["connectionFeedback", matchId, userId] }),
   });
 }
