@@ -42,7 +42,8 @@ function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
     ageToIndex(preferences?.age_min, 0),
     ageToIndex(preferences?.age_max, AGE_STOPS - 1),
   ]);
-  const [distance, setDistance] = useState(() => distanceToIndex(preferences?.max_distance_miles, unit));
+  // One stop, kept as a one-item array like the age range's two.
+  const [distance, setDistance] = useState(() => [distanceToIndex(preferences?.max_distance_miles, unit)]);
   const stops = distanceStops(unit);
   const ageText = (index: number) => (index === AGE_STOPS - 1 ? `${AGE_MIN + index}+` : String(AGE_MIN + index));
   const distanceText = (index: number) => {
@@ -56,7 +57,7 @@ function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
     upsert.mutate(
       {
         ...agesFromIndexes(ages),
-        maxDistanceMiles: milesFromIndex(distance, unit),
+        maxDistanceMiles: milesFromIndex(distance[0], unit),
         languages,
       },
       {
@@ -79,10 +80,10 @@ function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
 
       <StepSlider
         label={t("settings.matchingPreferencesScreen.distance")}
-        valueLabel={distanceText(distance)}
+        valueLabel={distanceText(distance[0])}
         stops={stops.length}
-        value={[distance]}
-        onChange={([next]) => setDistance(next)}
+        value={distance}
+        onChange={setDistance}
         describe={distanceText}
       />
 

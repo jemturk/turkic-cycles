@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import type { Tables } from "@/types/database";
+
 import {
   blockUser,
   getMatchingPreferences,
@@ -32,7 +34,22 @@ export function useUpsertMatchingPreferences(userId: string | undefined) {
   return useMutation({
     mutationFn: (values: Parameters<typeof upsertMatchingPreferences>[1]) =>
       upsertMatchingPreferences(userId as string, values),
-    onSuccess: () => {
+    onSuccess: (_data, values) => {
+      // Put what was saved in the cache straight away: reopening the screen before the
+      // refetch lands otherwise showed the old preferences (the form reads them once).
+      queryClient.setQueryData(
+        ["matchingPreferences", userId],
+        (old: Tables<"matching_preferences"> | null | undefined) =>
+          old
+            ? {
+                ...old,
+                age_min: values.ageMin ?? null,
+                age_max: values.ageMax ?? null,
+                max_distance_miles: values.maxDistanceMiles ?? null,
+                languages: values.languages,
+              }
+            : old
+      );
       queryClient.invalidateQueries({ queryKey: ["matchingPreferences", userId] });
       // Both Discover decks filter on these server-side (0052), so refetch them.
       queryClient.invalidateQueries({ queryKey: ["discoverCandidates"] });

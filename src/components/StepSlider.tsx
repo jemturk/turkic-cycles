@@ -1,7 +1,13 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo, type Dispatch, type SetStateAction } from "react";
 import { View, type LayoutChangeEvent } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from "react-native-reanimated";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  type SharedValue,
+} from "react-native-reanimated";
 
 import { Text } from "@/components/Text";
 
@@ -15,7 +21,9 @@ type Props = {
   stops: number;
   // One index for a single thumb, or [low, high] for a range.
   value: number[];
-  onChange: (value: number[]) => void;
+  // The state setter itself (stable), so each thumb's drag handler can stay the same
+  // for the whole drag.
+  onChange: Dispatch<SetStateAction<number[]>>;
   // Spoken for each thumb's index (screen readers), e.g. "40 years".
   describe: (index: number) => string;
 };
@@ -32,7 +40,11 @@ export function StepSlider({ label, valueLabel, stops, value, onChange, describe
         <Text className="text-base font-semibold text-primary-600 dark:text-primary-300">{valueLabel}</Text>
       </View>
       <View
-        style={{ height: THUMB + 8, justifyContent: "center", marginHorizontal: THUMB / 2 }}
+        style={{
+          height: THUMB + 8,
+          justifyContent: "center",
+          marginHorizontal: THUMB / 2,
+        }}
         onLayout={(e: LayoutChangeEvent) => {
           width.set(e.nativeEvent.layout.width);
         }}
@@ -48,7 +60,8 @@ export function StepSlider({ label, valueLabel, stops, value, onChange, describe
             // A range's thumbs stop at each other.
             minIndex={i === 1 ? value[0] : 0}
             maxIndex={i === 0 && value.length === 2 ? value[1] : stops - 1}
-            onSettle={(next) => onChange(value.map((v, j) => (j === i ? next : v)))}
+            thumb={i}
+            onChange={onChange}
             describe={describe}
             label={label}
           />
@@ -75,7 +88,8 @@ function Thumb({
   index,
   minIndex,
   maxIndex,
-  onSettle,
+  thumb,
+  onChange,
   describe,
   label,
 }: {
@@ -84,7 +98,8 @@ function Thumb({
   index: number;
   minIndex: number;
   maxIndex: number;
-  onSettle: (index: number) => void;
+  thumb: number;
+  onChange: Dispatch<SetStateAction<number[]>>;
   describe: (index: number) => string;
   label: string;
 }) {
@@ -103,35 +118,47 @@ function Thumb({
     }
   }, [index, position, lastIndex, dragging]);
 
-  const pan = Gesture.Pan()
-    .hitSlop(12)
-    // A small sideways move starts the drag, so the page still scrolls under a vertical swipe.
-    .activeOffsetX([-3, 3])
-    .onStart(() => {
-      dragging.set(true);
-      start.set(position.value);
-    })
-    .onUpdate((e) => {
-      const step = width.value / Math.max(stops - 1, 1);
-      if (step <= 0) return;
-      const next = Math.min(Math.max(start.value + e.translationX / step, minIndex), maxIndex);
-      position.set(next);
-      // Update the value label live, once per stop crossed.
-      const rounded = Math.round(next);
-      if (rounded !== lastIndex.value) {
-        lastIndex.set(rounded);
-        runOnJS(onSettle)(rounded);
-      }
-    })
-    .onFinalize(() => {
-      dragging.set(false);
-      const rounded = Math.round(position.value);
-      position.set(withTiming(rounded, { duration: 120 }));
-      if (rounded !== lastIndex.value) {
-        lastIndex.set(rounded);
-        runOnJS(onSettle)(rounded);
-      }
-    });
+  // Kept the same across renders (the setter is stable), and so is the gesture: a new
+  // gesture each render swapped the handler mid-drag, since every stop crossed
+  // re-renders the screen, and the rest of the drag was lost.
+  const settle = useCallback(
+    (next: number) => onChange((current) => current.map((v, j) => (j === thumb ? next : v))),
+    [onChange, thumb]
+  );
+
+  const pan = useMemo(
+    () =>
+      Gesture.Pan()
+        .hitSlop(12)
+        // A small sideways move starts the drag, so the page still scrolls under a vertical swipe.
+        .activeOffsetX([-3, 3])
+        .onStart(() => {
+          dragging.set(true);
+          start.set(position.value);
+        })
+        .onUpdate((e) => {
+          const step = width.value / Math.max(stops - 1, 1);
+          if (step <= 0) return;
+          const next = Math.min(Math.max(start.value + e.translationX / step, minIndex), maxIndex);
+          position.set(next);
+          // Update the value label live, once per stop crossed.
+          const rounded = Math.round(next);
+          if (rounded !== lastIndex.value) {
+            lastIndex.set(rounded);
+            runOnJS(settle)(rounded);
+          }
+        })
+        .onFinalize(() => {
+          dragging.set(false);
+          const rounded = Math.round(position.value);
+          position.set(withTiming(rounded, { duration: 120 }));
+          if (rounded !== lastIndex.value) {
+            lastIndex.set(rounded);
+            runOnJS(settle)(rounded);
+          }
+        }),
+    [width, stops, minIndex, maxIndex, start, position, lastIndex, dragging, settle]
+  );
 
   const style = useAnimatedStyle(() => {
     const step = width.value / Math.max(stops - 1, 1);
@@ -148,10 +175,21 @@ function Thumb({
         accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
         onAccessibilityAction={(e) => {
           const next = e.nativeEvent.actionName === "increment" ? index + 1 : index - 1;
-          if (next >= minIndex && next <= maxIndex) onSettle(next);
+          if (next >= minIndex && next <= maxIndex) settle(next);
         }}
         className="absolute left-0 rounded-full border-2 border-primary-500 bg-white dark:bg-ink-900"
-        style={[{ width: THUMB, height: THUMB, elevation: 2, shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } }, style]}
+        style={[
+          {
+            width: THUMB,
+            height: THUMB,
+            elevation: 2,
+            shadowColor: "#000",
+            shadowOpacity: 0.15,
+            shadowRadius: 3,
+            shadowOffset: { width: 0, height: 1 },
+          },
+          style,
+        ]}
       />
     </GestureDetector>
   );
