@@ -8,6 +8,7 @@ const valid = {
   goals: ["long_term"],
   gender: "woman",
   interestedIn: ["men"],
+  consentSensitive: true,
 };
 
 describe("romanticAnswersSchema gender", () => {
@@ -19,6 +20,11 @@ describe("romanticAnswersSchema gender", () => {
   it("asks someone who self-describes who they're shown to", () => {
     expect(romanticAnswersSchema.safeParse({ ...valid, gender: "self_describe" }).success).toBe(false);
     expect(romanticAnswersSchema.safeParse({ ...valid, gender: "self_describe", shownTo: ["women"] }).success).toBe(true);
+  });
+
+  it("needs explicit consent, since gender and interest show orientation", () => {
+    expect(romanticAnswersSchema.safeParse({ ...valid, consentSensitive: undefined }).success).toBe(false);
+    expect(romanticAnswersSchema.safeParse({ ...valid, consentSensitive: false }).success).toBe(false);
   });
 
   it("no longer requires the shared-religion question", () => {

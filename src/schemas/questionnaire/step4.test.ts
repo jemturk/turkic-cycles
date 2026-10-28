@@ -8,6 +8,7 @@ const romantic = {
   goals: ["long_term"],
   gender: "woman",
   interestedIn: ["men"],
+  consentSensitive: true,
 };
 const business = {
   roles: ["networking"],

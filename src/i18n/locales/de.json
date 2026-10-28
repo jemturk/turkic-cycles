@@ -19,12 +19,12 @@
     "slide1Body": "Lerne Menschen aus der turksprachigen Welt in deiner Nähe kennen und finde deinen Platz.",
     "slide2Title": "Kreisen beitreten",
     "slide2Body": "Gruppen für deine Stadt, Kultur und Interessen, mit echten Treffen im Kalender.",
-    "slide3Title": "Entdecken & Verbinden",
-    "slide3Body": "Lerne Menschen in deinen Kreisen kennen: für Freundschaft, Romantik, Business oder Mentoring.",
+    "slide3Title": "Passende Vorschläge",
+    "slide3Body": "Smartes Matching schlägt Menschen vor, die deine Interessen, Werte und Pläne teilen, für Freundschaft, Romantik, Business oder Mentoring, und zeigt, warum ihr passt.",
     "slideChatTitle": "Chatten & Planen",
-    "slideChatBody": "Antworte, reagiere und plane dein nächstes Treffen, alles an einem Ort.",
+    "slideChatBody": "Erfahre, wenn dich jemand mag oder ihr euch verbindet, und dann antworte, reagiere und plane dein nächstes Treffen, alles an einem Ort.",
     "slide4Title": "Sicher von Anfang an",
-    "slide4Body": "Verifizierte Mitglieder, Pläne mit einer Vertrauensperson geteilt, und jederzeit blockieren oder melden."
+    "slide4Body": "Verifizierte Mitglieder, Pläne mit einer Vertrauensperson geteilt, du entscheidest, wie genau dein Ort angezeigt wird, und jederzeit blockieren oder melden."
   },
   "auth": {
     "login": {
@@ -755,7 +755,7 @@
       },
       "privacy": {
         "title": "Daten & Datenschutz",
-        "body": "Deine sensiblen Angaben (Herkunft, Religion, Staatsbürgerschaftsdetails) werden getrennt vom Rest deines Profils gespeichert und nur mit deiner ausdrücklichen, widerrufbaren Zustimmung weitergegeben. Mehr dazu im Sicherheitscenter."
+        "body": "Deine Herkunft, wie wichtig dir der Glaube ist und (für romantische Verbindungen) dein Geschlecht und wen du kennenlernen möchtest, werden nur mit deiner ausdrücklichen Einwilligung für Vorschläge genutzt. Du kannst sie jederzeit unter Profil bearbeiten widerrufen. Glaube, Geschlecht und wen du kennenlernen möchtest, sehen andere Mitglieder nie. Details stehen in der Datenschutzerklärung."
       }
     },
     "safetyCenterScreen": {
@@ -985,5 +985,10 @@
     "yes": "Ja",
     "notYet": "Noch nicht",
     "notNow": "Nicht jetzt"
+  },
+  "consent": {
+    "romantic": "Ich willige ein, dass Turkic Circles mein Geschlecht und wen ich kennenlernen möchte, was meine sexuelle Orientierung zeigen kann, für romantische Vorschläge nutzt. Ich kann das jederzeit widerrufen, indem ich \"Romantische Beziehung\" entferne.",
+    "faith": "Ich willige ein, dass Turkic Circles für Vorschläge nutzt, wie wichtig mir der Glaube ist. Ich kann das jederzeit widerrufen, indem ich \"Möchte ich nicht sagen\" wähle.",
+    "required": "Bitte setze das Häkchen, um diese Antwort zu speichern."
   }
 }

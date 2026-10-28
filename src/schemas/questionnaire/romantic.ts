@@ -3,7 +3,9 @@ import { z } from "zod";
 import { GENDER_GROUPS, GENDERS, GOALS, SELECTION_LIMITS } from "@/constants/matching";
 
 // Faith is now a values question (how important, never which), so the old "shared
-// religion" question stays optional for answers given before.
+// religion" question stays optional for answers given before. Gender and who someone
+// wants to meet reveal sexual orientation (special category data under GDPR), so
+// Romantic needs explicit consent, recorded in consent_records like origin.
 export const romanticAnswersSchema = z
   .object({
   relationshipIntent: z.enum(["casual", "long_term", "marriage", "not_sure"]),
@@ -16,6 +18,7 @@ export const romanticAnswersSchema = z
   interestedIn: z.array(z.enum(GENDER_GROUPS)).min(1),
   // Only for someone who self-describes: who sees them.
   shownTo: z.array(z.enum(GENDER_GROUPS)).optional(),
+  consentSensitive: z.literal(true, "consentRequired"),
   })
   .refine((a) => a.gender !== "self_describe" || (a.shownTo?.length ?? 0) > 0, {
     path: ["shownTo"],

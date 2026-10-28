@@ -60,6 +60,7 @@ describe("buildProfileEditSchema", () => {
           goals: ["long_term"],
           gender: "man",
           interestedIn: ["women"],
+          consentSensitive: true,
         },
       }).success
     ).toBe(true);

@@ -1,4 +1,6 @@
-import { View } from "react-native";
+import { Fragment } from "react";
+import { Pressable, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { Text } from "@/components/Text";
 import { Controller, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -40,11 +42,39 @@ type BranchingQuestionsFieldsProps = {
 
 const card = "gap-4 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4";
 
+// Explicit consent for special category data (faith, sexual orientation), the same
+// tick box as origin's: saved with the answers and logged in consent_records.
+function ConsentField({ control, errors, name, label }: { control: any; errors: any; name: string; label: string }) {
+  const { t } = useTranslation();
+  const [group, key] = name.split(".");
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <View className="gap-1">
+          <Pressable
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: field.value === true }}
+            className="flex-row items-start gap-2"
+            onPress={() => field.onChange(field.value === true ? undefined : true)}
+          >
+            <Ionicons name={field.value === true ? "checkbox" : "square-outline"} size={22} color="#127A87" />
+            <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">{label}</Text>
+          </Pressable>
+          {errors[group]?.[key] ? <Text className="text-xs text-accent-600">{t("consent.required")}</Text> : null}
+        </View>
+      )}
+    />
+  );
+}
+
 // The values & lifestyle questions someone's types call for: 1-5 with the spec's
 // anchors on 1, 3 and 5, or "prefer not to say" (0, skipped in scoring).
 function ValuesCard({ control, errors, connectionTypes }: BranchingQuestionsFieldsProps) {
   const { t } = useTranslation();
   const asked = valuesQuestionsFor(connectionTypes);
+  const faith = useWatch({ control, name: "values.faith" });
   if (asked.length === 0) return null;
   const optionLabel = (q: string, n: number) => {
     if (n === 0) return t("values.preferNot");
@@ -57,20 +87,24 @@ function ValuesCard({ control, errors, connectionTypes }: BranchingQuestionsFiel
     <View className={card}>
       <Text className="font-display text-xl text-ink-900 dark:text-ink-50">{t("values.title")}</Text>
       {asked.map((q) => (
-        <Controller
-          key={q}
-          control={control}
-          name={`values.${q}`}
-          render={({ field }) => (
-            <SingleSelectChips
-              label={t(`values.${q}.question`)}
-              options={[1, 2, 3, 4, 5, 0].map((n) => ({ value: String(n), label: optionLabel(q, n) }))}
-              value={field.value === undefined || field.value === null ? undefined : String(field.value)}
-              onChange={(value) => field.onChange(Number(value))}
-              error={errors.values?.[q] ? t("values.required") : undefined}
-            />
-          )}
-        />
+        <Fragment key={q}>
+          <Controller
+            control={control}
+            name={`values.${q}`}
+            render={({ field }) => (
+              <SingleSelectChips
+                label={t(`values.${q}.question`)}
+                options={[1, 2, 3, 4, 5, 0].map((n) => ({ value: String(n), label: optionLabel(q, n) }))}
+                value={field.value === undefined || field.value === null ? undefined : String(field.value)}
+                onChange={(value) => field.onChange(Number(value))}
+                error={errors.values?.[q] ? t("values.required") : undefined}
+              />
+            )}
+          />
+          {q === "faith" && faith ? (
+            <ConsentField control={control} errors={errors} name="values.consentFaith" label={t("consent.faith")} />
+          ) : null}
+        </Fragment>
       ))}
     </View>
   );
@@ -139,6 +173,7 @@ function RomanticGenderFields({ control, errors }: Pick<BranchingQuestionsFields
           />
         )}
       />
+      <ConsentField control={control} errors={errors} name="romantic.consentSensitive" label={t("consent.romantic")} />
     </>
   );
 }

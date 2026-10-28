@@ -19,12 +19,12 @@
     "slide1Body": "Yakınındaki Türk dünyasından insanlarla tanış, ait olduğun yeri bul.",
     "slide2Title": "Çemberlere Katıl",
     "slide2Body": "Şehrin, kültürün ve ilgi alanların için gruplar; takvimde gerçek buluşmalar.",
-    "slide3Title": "Keşfet ve Bağlan",
-    "slide3Body": "Çemberlerindeki insanlarla arkadaşlık, romantik ilişki, iş ya da mentorluk için tanış.",
+    "slide3Title": "Sana Uyan Eşleşmeler",
+    "slide3Body": "Akıllı eşleştirme; arkadaşlık, romantik ilişki, iş ya da mentorluk için ilgi alanlarını, değerlerini ve planlarını paylaşan insanları önerir ve neden anlaşacağınızı gösterir.",
     "slideChatTitle": "Sohbet Et, Plan Yap",
-    "slideChatBody": "Yanıtla, tepki ver ve bir sonraki buluşmanı tek yerden planla.",
+    "slideChatBody": "Biri seni beğendiğinde ya da bağlandığınızda haberin olsun; sonra yanıtla, tepki ver ve bir sonraki buluşmanı tek yerden planla.",
     "slide4Title": "Tasarım Gereği Güvenli",
-    "slide4Body": "Doğrulanmış üyeler, güvendiğin biriyle paylaşılan planlar; istediğin an engelle ya da bildir."
+    "slide4Body": "Doğrulanmış üyeler, güvendiğin biriyle paylaşılan planlar, konumunun ne kadarını göstereceğin senin seçimin; istediğin an engelle ya da bildir."
   },
   "auth": {
     "login": {
@@ -755,7 +755,7 @@
       },
       "privacy": {
         "title": "Veri ve gizlilik",
-        "body": "Hassas alanların (köken, din, vatandaşlık bilgisi) profilinin geri kalanından ayrı olarak saklanır ve yalnızca senin açık, geri alınabilir onayınla paylaşılır. Daha fazlası için Güvenlik Merkezi'ne bak."
+        "body": "Kökenin, inancın senin için ne kadar önemli olduğu ve (romantik bağlantılar için) cinsiyetin ile kiminle tanışmak istediğin yalnızca açık onayınla eşleştirme için kullanılır; bu onayı Profili düzenle'den istediğin zaman geri alabilirsin. İnanç, cinsiyet ve kiminle tanışmak istediğin diğer üyelere asla gösterilmez. Ayrıntılar Gizlilik Politikası'nda."
       }
     },
     "safetyCenterScreen": {
@@ -985,5 +985,10 @@
     "yes": "Evet",
     "notYet": "Henüz değil",
     "notNow": "Şimdi değil"
+  },
+  "consent": {
+    "romantic": "Turkic Circles'ın romantik eşleşme önermek için cinsiyetimi ve kiminle tanışmak istediğimi (cinsel yönelimimi gösterebilir) kullanmasına onay veriyorum. \"Romantik ilişki\"yi kaldırarak bu onayı istediğim zaman geri alabilirim.",
+    "faith": "Turkic Circles'ın eşleşme önermek için inancın benim için ne kadar önemli olduğunu kullanmasına onay veriyorum. \"Söylememeyi tercih ederim\"i seçerek bu onayı istediğim zaman geri alabilirim.",
+    "required": "Bu cevabı kaydetmek için lütfen kutuyu işaretle."
   }
 }

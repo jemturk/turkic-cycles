@@ -16,11 +16,16 @@ export function valuesQuestionsFor(connectionTypes: ConnectionType[]): readonly 
 export function buildValuesSchema(connectionTypes: ConnectionType[]) {
   const asked = valuesQuestionsFor(connectionTypes);
   const pick = (q: ValuesQuestion) => (asked.includes(q) ? answer : answer.optional());
-  return z.object({
-    family: pick("family"),
-    faith: pick("faith"),
-    social: pick("social"),
-    pace: pick("pace"),
-    heritage: pick("heritage"),
-  });
+  return z
+    .object({
+      family: pick("family"),
+      faith: pick("faith"),
+      social: pick("social"),
+      pace: pick("pace"),
+      heritage: pick("heritage"),
+      consentFaith: z.boolean().optional(),
+    })
+    // How important faith is counts as religious belief (special category data under
+    // GDPR): answering 1-5 needs explicit consent; "prefer not to say" doesn't.
+    .refine((v) => !v.faith || v.consentFaith === true, { path: ["consentFaith"], message: "consentRequired" });
 }
