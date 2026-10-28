@@ -61,12 +61,11 @@ python build.py -w    # export the web build and deploy it to EAS Hosting (produ
 python build.py -a    # release APK, built locally with Gradle
 python build.py -b    # release app bundle (.aab) for Google Play, signed with the upload key
 python build.py -s    # share the bundle through Play's internal app sharing, print the install link
-python build.py -i    # install the release APK on the connected device
-python build.py -g    # copy the APK to C:\DEV\Cloud\Apk (keeps the newest 3)
+python build.py -i    # install the newest APK from C:\DEV\Cloud\Apk on the connected device
 python build.py -d    # stream full command output instead of progress lines
 ```
 
-Release signing reads `~/.turek/upload-keystore.properties`; `-s` needs `~/.turek/play-service-account.json`. See the docstring at the top of `build.py` for details. Every run also runs `scripts/check_declarations.py` (see Store declarations below).
+Every APK and bundle is copied to `C:\DEV\Cloud\Apk` as soon as it's built (the newest 3 of each are kept); `-i` and `-s` use the newest copy there. Release signing reads `~/.turek/upload-keystore.properties`; `-s` needs `~/.turek/play-service-account.json`. See the docstring at the top of `build.py` for details. Every run also runs `scripts/check_declarations.py` (see Store declarations below).
 
 ## Project structure
 
