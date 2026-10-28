@@ -15,8 +15,10 @@ r"""Build, publish, and install Turkic Circles.
       shows one progress line, and the output goes to .expo/build.log)
 
 Flags combine (-wa, -ai, -ag, -aig, -ab, -bs, -waid, ...). Each step runs at most once,
-in the order web -> APK -> bundle -> share -> install -> copy. -s, -i or -g on their own
-use the bundle or APK from the last build. -g copies what this run built: the APK with
+in the order web -> APK -> install -> bundle -> share -> copy: with -a the install comes
+straight after the APK, so the phone has it while the bundle builds. If the install
+fails and other steps are still to run, it's a warning and they run anyway (the exit
+code is still 1). -s, -i or -g on their own use the bundle or APK from the last build. -g copies what this run built: the APK with
 -a, the bundle with -b, both with -ab, and the last APK when it builds neither.
 
 A local APK (-a, -i) is signed with the upload key, and a Play install with Google's
@@ -90,8 +92,8 @@ DEBUG = False
 
 # ANSI colors for the live progress lines -- only on a terminal, never in the log or
 # when NO_COLOR is set. GREEN/RED for a finished/failed step's mark, BAR for the
-# filled part of the bar (bright cyan, a light blue).
-GREEN, RED, BAR, RESET = "\x1b[32m", "\x1b[31m", "\x1b[96m", "\x1b[0m"
+# filled part of the bar (bright cyan, a light blue), YELLOW for a warning.
+GREEN, RED, YELLOW, BAR, RESET = "\x1b[32m", "\x1b[31m", "\x1b[33m", "\x1b[96m", "\x1b[0m"
 
 
 def use_color() -> bool:
@@ -528,6 +530,21 @@ def main() -> int:
         parser.print_help()
         return 2
 
+    # The install runs right after the APK when this run builds one. A failed install
+    # only stops the run when nothing else is left to do; otherwise it's a warning.
+    install_warning: str | None = None
+
+    def install(more_to_do: bool) -> None:
+        nonlocal install_warning
+        try:
+            with Stage("install", "Installing on device"):
+                install_apk()
+        except BuildError as error:
+            if not more_to_do:
+                raise
+            install_warning = str(error)
+            print(paint(f"warning: install failed, carrying on -- {error}", YELLOW), file=sys.stderr, flush=True)
+
     total_start = time.monotonic()
     try:
         if (args.web or args.apk or args.bundle) and not args.skip_anon_check:
@@ -542,15 +559,16 @@ def main() -> int:
         if args.apk:
             with Stage("apk", "Building release APK"):
                 build_apk()
+            if args.install:
+                install(more_to_do=args.bundle or args.share or args.copy)
         if args.bundle:
             with Stage("bundle", "Building release app bundle"):
                 build_bundle(check_manifest=not args.skip_declarations_check)
         if args.share:
             with Stage("share", "Sharing bundle"):
                 share_bundle()
-        if args.install:
-            with Stage("install", "Installing on device"):
-                install_apk()
+        if args.install and not args.apk:
+            install(more_to_do=args.copy)
         # -g copies what this run built; on its own (or with only -s / -i), the last APK.
         if args.copy and (args.apk or not args.bundle):
             with Stage("copy", "Copying APK"):
@@ -570,6 +588,9 @@ def main() -> int:
         step("Done")
     else:
         print(f"Done in {fmt_time(time.monotonic() - total_start)}")
+    if install_warning:
+        print(paint(f"warning: the APK wasn't installed -- {install_warning}", YELLOW), file=sys.stderr)
+        return 1
     return 0
 
 
