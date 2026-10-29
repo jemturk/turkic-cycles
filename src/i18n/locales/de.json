@@ -245,7 +245,7 @@
     "yesterday": "Gestern",
     "offlineEmpty": "Du bist offline. Deine Chats erscheinen, sobald du wieder verbunden bist.",
     "loadFailed": "Deine Chats konnten nicht geladen werden. Zum Wiederholen nach unten ziehen.",
-    "offlineSaved": "Offline · gespeicherte Nachrichten",
+    "offlineLatest": "Offline · neueste Nachrichten",
     "offlineOlder": "Ältere Nachrichten werden geladen, sobald du wieder online bist.",
     "offlineMessages": "Nachrichten werden geladen, sobald du wieder online bist.",
     "notSent": "Nicht gesendet · Zum Wiederholen tippen"

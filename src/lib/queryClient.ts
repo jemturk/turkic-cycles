@@ -1,3 +1,4 @@
+import { AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient, onlineManager, type Mutation, type Query } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
@@ -72,11 +73,35 @@ export const persistOptions = {
 
 // Online as the device sees it, so queries pause (keeping what's saved on screen)
 // rather than fail, and paused sends go out once it's back.
+// Android reports a reconnect as "connected, internet not yet reachable" first, and the
+// event for it becoming reachable doesn't always arrive -- the app stayed "offline" on
+// a working connection. So while offline it also asks again every few seconds, and
+// whenever the app comes back to the foreground.
+const OFFLINE_RECHECK_MS = 3000;
+
 onlineManager.setEventListener((setOnline) => {
-  const update = (state: Network.NetworkState) => setOnline(state.isConnected !== false && state.isInternetReachable !== false);
-  Network.getNetworkStateAsync().then(update, () => {});
+  let recheck: ReturnType<typeof setInterval> | null = null;
+  const update = (state: Network.NetworkState) => {
+    const online = state.isConnected !== false && state.isInternetReachable !== false;
+    setOnline(online);
+    if (online && recheck) {
+      clearInterval(recheck);
+      recheck = null;
+    } else if (!online && !recheck) {
+      recheck = setInterval(check, OFFLINE_RECHECK_MS);
+    }
+  };
+  const check = () => Network.getNetworkStateAsync().then(update, () => {});
+  check();
   const subscription = Network.addNetworkStateListener(update);
-  return () => subscription.remove();
+  const appState = AppState.addEventListener("change", (state) => {
+    if (state === "active") check();
+  });
+  return () => {
+    subscription.remove();
+    appState.remove();
+    if (recheck) clearInterval(recheck);
+  };
 });
 
 // Signing out (here, or the session ending elsewhere) wipes everything saved, so the

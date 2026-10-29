@@ -245,7 +245,7 @@
     "yesterday": "Dün",
     "offlineEmpty": "Çevrimdışısınız. Sohbetleriniz bağlantı geri geldiğinde görünecek.",
     "loadFailed": "Sohbetleriniz yüklenemedi. Tekrar denemek için aşağı çekin.",
-    "offlineSaved": "Çevrimdışı · kayıtlı mesajlar gösteriliyor",
+    "offlineLatest": "Çevrimdışı · son mesajlar gösteriliyor",
     "offlineOlder": "Eski mesajlar tekrar çevrimiçi olduğunuzda yüklenecek.",
     "offlineMessages": "Mesajlar tekrar çevrimiçi olduğunuzda yüklenecek.",
     "notSent": "Gönderilmedi · Tekrar denemek için dokunun"

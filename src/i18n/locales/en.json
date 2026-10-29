@@ -245,7 +245,7 @@
     "yesterday": "Yesterday",
     "offlineEmpty": "You're offline. Your chats will appear when you reconnect.",
     "loadFailed": "Couldn't load your chats. Pull down to try again.",
-    "offlineSaved": "Offline · showing saved messages",
+    "offlineLatest": "Offline · showing latest messages",
     "offlineOlder": "Older messages will load when you're back online.",
     "offlineMessages": "Messages will load when you're back online.",
     "notSent": "Not sent · Tap to retry"

@@ -382,7 +382,7 @@ export default function ChatThread() {
       {/* Lifts the message list and the input above the keyboard -- the input
           is pinned to the bottom, so without this the keyboard covers it. */}
       <KeyboardAvoidingView key={keyboardWrapperKey} behavior="padding" style={{ flex: 1 }}>
-        <OfflineBanner label={t("chat.offlineSaved")} top={8} />
+        <OfflineBanner label={t("chat.offlineLatest")} top={8} />
         <ScrollView
           ref={scrollRef}
           // The lighter cream behind the messages (rather than the page's) keeps the
