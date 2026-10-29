@@ -265,9 +265,17 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
     setPoolKey(fetchedKey);
     const inPool = new Set(pool.map((c) => c.userId));
     const fresh = (candidates ?? []).filter((c) => !inPool.has(c.userId));
-    // Newer details for people already here (a changed photo, say), newcomers after.
+    // Newer details for people already here (a changed photo, say), newcomers after. A
+    // list fetched while ranking failed has no match info: keep what they had, so their
+    // "Strong match" and reasons don't vanish.
     const latest = new Map((candidates ?? []).map((c) => [c.userId, c]));
-    setPool([...pool.map((c) => latest.get(c.userId) ?? c), ...fresh]);
+    setPool([
+      ...pool.map((c) => {
+        const newer = latest.get(c.userId);
+        return newer ? { ...newer, match: newer.match ?? c.match } : c;
+      }),
+      ...fresh,
+    ]);
   }
   // People just liked / passed / saved here, taken off at once rather than when the
   // server's fresh list arrives -- otherwise a swiped-away card leaves a gap.

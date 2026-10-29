@@ -1,6 +1,7 @@
 import { supabase } from "@/api/client";
 import type { ConnectionType } from "@/constants/connectionTypes";
 import { getCoverPhotoUrls } from "@/api/chat";
+import { Sentry } from "@/lib/sentry";
 
 export type DiscoverCandidate = {
   userId: string;
@@ -31,11 +32,27 @@ async function rankedCandidates(circleId: string | null): Promise<{ userId: stri
     const { data, error } = await supabase.functions.invoke<{
       candidates: ({ userId: string } & MatchInfo)[];
     }>("rank-discover", { body: { circleId, maxCount: 20 } });
-    if (error || !data) return null;
+    if (error || !data) {
+      await reportRankingFailure(error ?? new Error("rank-discover returned no data"));
+      return null;
+    }
     return data.candidates.map(({ userId, ...match }) => ({ userId, match }));
-  } catch {
+  } catch (error) {
+    await reportRankingFailure(error);
     return null;
   }
+}
+
+// Discover still works unranked when ranking fails, so a failure would otherwise go
+// unnoticed: send why to Sentry (an HTTP error's status and body too) and the console.
+async function reportRankingFailure(error: unknown) {
+  let detail = "";
+  const response = (error as { context?: unknown } | null)?.context;
+  if (response instanceof Response) {
+    detail = `${response.status} ${await response.text().catch(() => "")}`.trim();
+  }
+  console.warn("rank-discover failed; showing Discover unranked", detail || error);
+  Sentry.captureException(error, { tags: { feature: "rank-discover" }, extra: { detail } });
 }
 
 async function hydrateRanked(ranked: { userId: string; match: MatchInfo }[]) {
