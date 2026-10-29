@@ -56,7 +56,9 @@ export function DiscoverCardView({
 
       {/* A dark band behind the text keeps it readable on any photo. */}
       <View className={`gap-2 p-6 ${cover ? "bg-ink-950/55" : ""}`}>
-        <MatchSummary match={person.match} />
+        {/* Centred between the band's top edge and the avatar row: 16 above (24 padding
+            less 8) and 16 below (the 8 gap plus 8). */}
+        <MatchSummary match={person.match} className="-mt-2 mb-2" />
         <View className="flex-row items-center gap-2">
           {cover ? (
             <Avatar uri={person.avatarUrl} name={person.displayName} size={40} fallbackClassName="bg-white/30" />

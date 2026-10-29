@@ -8,7 +8,7 @@ import type { MatchInfo } from "@/api/discover";
 // On a Discover card: "Strong match" when the matching model says so, and the top
 // reasons ("3 shared interests · Nearby"). Never a country or an exact distance --
 // heritage is just "Shared heritage", distance just "Nearby".
-export function MatchSummary({ match }: { match: MatchInfo | undefined }) {
+export function MatchSummary({ match, className = "" }: { match: MatchInfo | undefined; className?: string }) {
   const { t } = useTranslation();
   if (!match || match.score === null) return null;
   const reasons = match.reasons
@@ -16,7 +16,7 @@ export function MatchSummary({ match }: { match: MatchInfo | undefined }) {
     .map((reason) => t(`discover.reasons.${reason.criterion}`, { count: reason.count ?? 0 }));
 
   return (
-    <View className="flex-row flex-wrap items-center gap-2">
+    <View className={`flex-row flex-wrap items-center gap-2 ${className}`}>
       {match.strong ? (
         // Solid light gold, so it stands out on the card's dark photo overlay.
         <View className="flex-row items-center gap-1 rounded-full bg-gold-100 px-2.5 py-1">
