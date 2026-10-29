@@ -158,8 +158,9 @@ function DiscoverMockup() {
         </View>
         <Text className="text-xs text-white/90">Tampa, FL</Text>
         <View className="flex-row flex-wrap items-center gap-2">
-          <View className="rounded-full bg-gold-400 px-3 py-1">
-            <Text className="text-xs font-semibold text-ink-900">{t("discover.strongMatch")}</Text>
+          <View className="flex-row items-center gap-1 rounded-full bg-gold-100 px-2.5 py-1">
+            <Ionicons name="sparkles" size={12} color="#9C7A28" />
+            <Text className="text-xs font-bold text-ink-900">{t("discover.strongMatch")}</Text>
           </View>
           <Text className="text-xs text-white">
             {t("discover.reasons.interests", { count: 3 })} · {t("discover.reasons.proximity")}
