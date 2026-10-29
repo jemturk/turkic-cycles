@@ -43,8 +43,8 @@ For every type below: **Linked to the user: Yes**, **Used for tracking: No**.
 | --- | --- | --- |
 | Contact Info → **Name** | Display name; name from Sign in with Apple / Google | App Functionality |
 | Contact Info → **Email Address** | Account email | App Functionality |
-| Location → **Coarse Location** | City, state and country the member enters on their profile | App Functionality |
-| Sensitive Info → **Sensitive Info** | Optional religion, citizenship/residency status, countries of origin (with recorded consent); identity verification (ID photo + selfie, processed by Stripe) | App Functionality |
+| Location → **Coarse Location** | City, state and country the member enters on their profile, and that city's centre point (Google Geocoding, rounded to ~100 m, used for distance; never shown) | App Functionality |
+| Sensitive Info → **Sensitive Info** | With recorded explicit consent: sexual orientation (Romantic only: gender and who they want to meet), how important faith is (never which faith), countries of origin; optional citizenship/residency status; identity verification (ID photo + selfie, processed by Stripe) | App Functionality |
 | Contacts → **Contacts** | Names and phone numbers of trusted contacts entered for safety plans | App Functionality |
 | User Content → **Emails or Text Messages** | In-app chat messages, replies, reactions | App Functionality |
 | User Content → **Photos or Videos** | Profile photos | App Functionality |
@@ -52,7 +52,7 @@ For every type below: **Linked to the user: Yes**, **Used for tracking: No**.
 | Identifiers → **User ID** | Account ID (also attached to crash reports) | App Functionality, Analytics |
 | Identifiers → **Device ID** | Push notification token | App Functionality |
 | Purchases → **Purchase History** | Plus subscription (via App Store / RevenueCat) | App Functionality |
-| Usage Data → **Product Interaction** | Circles joined, RSVPs, likes/passes, matches | App Functionality |
+| Usage Data → **Product Interaction** | Circles joined, RSVPs, likes/passes, matches; match scores behind suggestions and "did you meet?" answers (kept 24 months, to improve matching) | App Functionality, Analytics |
 | Diagnostics → **Crash Data** | Crash reports (Sentry) | App Functionality |
 | Diagnostics → **Other Diagnostic Data** | Error reports (Sentry) | App Functionality |
 | Other Data → **Other Data Types** | Date of birth (age check, shown as age) | App Functionality |
