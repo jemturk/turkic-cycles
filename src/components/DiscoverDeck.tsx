@@ -260,7 +260,9 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   if (poolKey !== fetchedKey && replaceAfter !== null && candidates && dataUpdatedAt > replaceAfter) {
     setPoolKey(fetchedKey);
     setReplaceAfter(null);
-    setPool(candidates);
+    // Keep match info someone already had if this list came back unranked.
+    const known = new Map(pool.map((c) => [c.userId, c.match]));
+    setPool(candidates.map((c) => ({ ...c, match: c.match ?? known.get(c.userId) })));
   } else if (poolKey !== fetchedKey) {
     setPoolKey(fetchedKey);
     const inPool = new Set(pool.map((c) => c.userId));

@@ -28,10 +28,23 @@ export type MatchInfo = { connectionType: ConnectionType; score: number | null; 
 // as before, and scores each. null if it can't be reached, so Discover falls back to
 // the unranked list rather than showing nothing.
 async function rankedCandidates(circleId: string | null): Promise<{ userId: string; match: MatchInfo }[] | null> {
+  // The member's own token, sent explicitly (getSession refreshes an expired one): the
+  // function answered 401 "not signed in" for calls made while the session was being
+  // refreshed. A 401 still gets one retry with a freshly refreshed session.
+  const invoke = async (accessToken: string) =>
+    supabase.functions.invoke<{ candidates: ({ userId: string } & MatchInfo)[] }>("rank-discover", {
+      body: { circleId, maxCount: 20 },
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
   try {
-    const { data, error } = await supabase.functions.invoke<{
-      candidates: ({ userId: string } & MatchInfo)[];
-    }>("rank-discover", { body: { circleId, maxCount: 20 } });
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) return null;
+    let { data, error } = await invoke(sessionData.session.access_token);
+    const status = ((error as { context?: unknown } | null)?.context as Response | undefined)?.status;
+    if (status === 401) {
+      const { data: refreshed } = await supabase.auth.refreshSession();
+      if (refreshed.session) ({ data, error } = await invoke(refreshed.session.access_token));
+    }
     if (error || !data) {
       await reportRankingFailure(error ?? new Error("rank-discover returned no data"));
       return null;

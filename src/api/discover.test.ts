@@ -4,11 +4,16 @@ import { listDiscoverCandidates, listGlobalDiscoverCandidates, listSavedPeople, 
 const mockFrom = jest.fn();
 const mockRpc = jest.fn();
 const mockInvoke = jest.fn();
+const mockRefreshSession = jest.fn();
 jest.mock("@/api/client", () => ({
   supabase: {
     from: (table: string) => mockFrom(table),
     rpc: (...args: unknown[]) => mockRpc(...args),
     functions: { invoke: (...args: unknown[]) => mockInvoke(...args) },
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: { access_token: "token-1" } } }),
+      refreshSession: () => mockRefreshSession(),
+    },
   },
 }));
 
@@ -146,9 +151,34 @@ describe("ranked Discover (rank-discover)", () => {
     });
 
     const result = await listGlobalDiscoverCandidates();
-    expect(mockInvoke).toHaveBeenCalledWith("rank-discover", { body: { circleId: null, maxCount: 20 } });
+    expect(mockInvoke).toHaveBeenCalledWith("rank-discover", {
+      body: { circleId: null, maxCount: 20 },
+      headers: { Authorization: "Bearer token-1" },
+    });
     expect(result.map((c) => c.userId)).toEqual(["bob", "alice"]);
     expect(result[0].match).toEqual({ connectionType: "friend", score: 0.81, strong: true, reasons: [{ criterion: "interests", count: 3 }] });
+  });
+
+  it("retries once with a refreshed session after a 401", async () => {
+    mockInvoke
+      .mockResolvedValueOnce({ data: null, error: { context: new Response("not signed in", { status: 401 }) } })
+      .mockResolvedValueOnce({
+        data: { candidates: [{ userId: "bob", connectionType: "friend", score: 0.9, strong: true, reasons: [] }] },
+        error: null,
+      });
+    mockRefreshSession.mockResolvedValue({ data: { session: { access_token: "token-2" } } });
+    queueResponses({
+      profiles: [ok([profile("bob", "Bob")])],
+      user_connection_types: [ok([])],
+      profile_photos: [ok([])],
+    });
+
+    const result = await listGlobalDiscoverCandidates();
+    expect(mockInvoke).toHaveBeenLastCalledWith("rank-discover", {
+      body: { circleId: null, maxCount: 20 },
+      headers: { Authorization: "Bearer token-2" },
+    });
+    expect(result[0].match?.strong).toBe(true);
   });
 
   it("falls back to the unranked list when ranking fails", async () => {
