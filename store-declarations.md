@@ -55,7 +55,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | Personal → Other info | Req. | Functionality, Personalization | Date of birth (18+ check); citizenship/residency, occupation, bio, languages, interests; how and when they like to meet; goals per connection type; Business industry and expertise | |
 | Financial → Purchase history | Opt. | Functionality, Account mgmt | Plus subscription (RevenueCat, `subscriptions`) | |
 | Financial → Payment info | — not collected | | Google Play / App Store handle payment | Direct card payments (e.g. Stripe checkout) |
-| Messages → Other in-app messages | Opt. | Functionality, Fraud prevention/security | Chat, reactions (`messages`, `message_reactions`) | |
+| Messages → Other in-app messages | Opt. | Functionality, Fraud prevention/security | Chat, reactions (`messages`, `message_reactions`). The latest 50 messages per conversation are also kept on the phone for offline reading (`src/lib/queryClient.ts`, AsyncStorage, wiped on sign-out), which isn't "collection" since it never leaves the device | The on-device copy is backed up, synced or sent anywhere else |
 | Messages → Emails, SMS | — not collected | | Safety texts are sent by the member from Messages (`expo-sms`) | The app reads or sends SMS itself |
 | Photos and videos → Photos | Req. | Functionality, Fraud prevention/security | Profile + cover photos (cover required), checked by Google Cloud Vision before publishing (`moderate-photo`, `photo_moderation`); ID photo + selfie via Stripe Identity | Video uploads (→ Videos); photos in chat |
 | Audio | — not collected | | No microphone (`RECORD_AUDIO` blocked) | Voice messages, video recording |

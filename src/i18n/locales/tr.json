@@ -237,10 +237,18 @@
     "status": {
       "sent": "Gönderildi",
       "delivered": "İletildi",
-      "read": "Okundu"
+      "read": "Okundu",
+      "pending": "Gönderilmeyi bekliyor",
+      "failed": "Gönderilmedi"
     },
     "today": "Bugün",
-    "yesterday": "Dün"
+    "yesterday": "Dün",
+    "offlineEmpty": "Çevrimdışısınız. Sohbetleriniz bağlantı geri geldiğinde görünecek.",
+    "loadFailed": "Sohbetleriniz yüklenemedi. Tekrar denemek için aşağı çekin.",
+    "offlineSaved": "Çevrimdışı · kayıtlı mesajlar gösteriliyor",
+    "offlineOlder": "Eski mesajlar tekrar çevrimiçi olduğunuzda yüklenecek.",
+    "offlineMessages": "Mesajlar tekrar çevrimiçi olduğunuzda yüklenecek.",
+    "notSent": "Gönderilmedi · Tekrar denemek için dokunun"
   },
   "onboarding": {
     "next": "İleri",
@@ -989,5 +997,8 @@
     "romantic": "Turkic Circles'ın romantik eşleşme önermek için cinsiyetimi ve kiminle tanışmak istediğimi (cinsel yönelimimi gösterebilir) kullanmasına onay veriyorum. \"Romantik ilişki\"yi kaldırarak bu onayı istediğim zaman geri alabilirim.",
     "faith": "Turkic Circles'ın eşleşme önermek için inancın benim için ne kadar önemli olduğunu kullanmasına onay veriyorum. \"Söylememeyi tercih ederim\"i seçerek bu onayı istediğim zaman geri alabilirim.",
     "required": "Bu cevabı kaydetmek için lütfen kutuyu işaretle."
+  },
+  "offline": {
+    "banner": "Çevrimdışısınız"
   }
 }

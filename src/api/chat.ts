@@ -204,11 +204,28 @@ export async function listMessages(matchId: string) {
 
 // replyToId: the message this one answers (shown quoted above it); it has to be in
 // the same conversation, which the insert policy enforces (migration 0038).
-export async function sendMessage(matchId: string, senderId: string, body: string, replyToId?: string | null) {
-  const { error } = await supabase
+// id is made on the phone (lib/outbox.ts), so a send retried after its answer was lost
+// can't post the message twice: the second insert hits the primary key, and the row
+// already there is returned instead.
+export async function sendMessage(
+  id: string,
+  matchId: string,
+  senderId: string,
+  body: string,
+  replyToId?: string | null
+): Promise<Tables<"messages">> {
+  const { data, error } = await supabase
     .from("messages")
-    .insert({ match_id: matchId, sender_id: senderId, body, reply_to_id: replyToId ?? null });
+    .insert({ id, match_id: matchId, sender_id: senderId, body, reply_to_id: replyToId ?? null })
+    .select()
+    .single();
+  if (error?.code === "23505") {
+    const { data: existing, error: readError } = await supabase.from("messages").select().eq("id", id).single();
+    if (readError) throw readError;
+    return existing;
+  }
   if (error) throw error;
+  return data;
 }
 
 export type MessageReaction = { messageId: string; userId: string; emoji: string };

@@ -8,7 +8,7 @@ import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
 import i18n from "@/i18n";
@@ -26,6 +26,7 @@ import { TextScaleProvider } from "@/hooks/useTextScale";
 import { AnimatedSplash } from "@/components/AnimatedSplash";
 import { AppFrame } from "@/components/AppFrame";
 import { DialogHost } from "@/components/DialogHost";
+import { persistOptions, queryClient } from "@/lib/queryClient";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,11 +36,9 @@ SplashScreen.preventAutoHideAsync();
 // stops touching it.
 LogBox.ignoreLogs(["ImageBackground is deprecated"]);
 
-const queryClient = new QueryClient();
-
 // Applies the account's saved light/dark preference (Settings > Dark mode) to
 // NativeWind's color scheme, the OS status bar icon color, and (on web) the
-// browser-chrome theme-color meta tag. Lives inside QueryClientProvider since
+// browser-chrome theme-color meta tag. Lives inside PersistQueryClientProvider since
 // useMyProfile needs that context; renders only the StatusBar config, nothing visual.
 function ThemeSync() {
   const { session } = useSession();
@@ -155,7 +154,14 @@ function RootLayout() {
         {/* Powers KeyboardAwareScrollView (FormScrollView) -- keeps the focused
             field above the keyboard, which plain ScrollViews didn't do. */}
         <KeyboardProvider>
-          <QueryClientProvider client={queryClient}>
+          {/* Chats and your profile are saved to the device and shown at once on the
+              next open, even offline (lib/queryClient.ts); sends left waiting there
+              go out once the save is read back. */}
+          <PersistQueryClientProvider
+            client={queryClient}
+            persistOptions={persistOptions}
+            onSuccess={() => queryClient.resumePausedMutations()}
+          >
             <ThemeSync />
             <SentryUserSync />
             <LocaleSync />
@@ -174,7 +180,7 @@ function RootLayout() {
               {/* Alerts and confirms (lib/alert.ts), over everything. */}
               <DialogHost />
             </TextSizeSync>
-          </QueryClientProvider>
+          </PersistQueryClientProvider>
         </KeyboardProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

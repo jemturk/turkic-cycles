@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useFocusEffect } from "expo-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useMutationState, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Crypto from "expo-crypto";
 
 import { supabase } from "@/api/client";
 import {
@@ -10,13 +11,13 @@ import {
   listNewConnections,
   listReactions,
   markThreadRead,
-  sendMessage,
   toggleReaction,
   type MessageReaction,
   removeConnection,
   getMyConnectionFeedback,
   saveConnectionFeedback,
 } from "@/api/chat";
+import { SEND_MESSAGE_KEY, type OutgoingMessage } from "@/lib/outbox";
 import type { Tables } from "@/types/database";
 
 export function useNewConnections(userId: string | undefined) {
@@ -142,17 +143,51 @@ export function useMessages(matchId: string | undefined) {
   return query;
 }
 
+export type OutboxEntry = { message: OutgoingMessage; status: "pending" | "failed" };
+
+// Sending, and this conversation's outbox: messages still on their way (offline, they
+// wait and go out once back online, even after a restart) and ones that failed, to
+// show under the delivered ones until they arrive. The send itself is the client's
+// default for sendMessage (lib/outbox.ts). One scope per conversation, so its messages
+// go out in the order they were written.
 export function useSendMessage(matchId: string | undefined, userId: string | undefined) {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ body, replyToId }: { body: string; replyToId?: string | null }) =>
-      sendMessage(matchId as string, userId as string, body, replyToId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["messages", matchId] });
-      queryClient.invalidateQueries({ queryKey: ["messageThreads", userId] });
-      queryClient.invalidateQueries({ queryKey: ["newConnections", userId] });
-    },
+  const mutationKey = [SEND_MESSAGE_KEY, matchId];
+  const { mutate } = useMutation<Tables<"messages">, Error, OutgoingMessage>({
+    mutationKey,
+    scope: { id: `${SEND_MESSAGE_KEY}:${matchId}` },
   });
+
+  const outbox = useMutationState<OutboxEntry>({
+    filters: {
+      mutationKey,
+      predicate: (mutation) => mutation.state.status === "pending" || mutation.state.status === "error",
+    },
+    select: (mutation) => ({
+      message: mutation.state.variables as OutgoingMessage,
+      status: mutation.state.status === "error" ? "failed" : "pending",
+    }),
+  });
+
+  function send(body: string, replyToId: string | null) {
+    if (!matchId || !userId) return;
+    mutate({ id: Crypto.randomUUID(), matchId, senderId: userId, body, replyToId, createdAt: new Date().toISOString() });
+  }
+
+  // Tapping a failed message: the failed attempt goes and the same message (same id)
+  // is sent again.
+  function retry(messageId: string) {
+    const cache = queryClient.getMutationCache();
+    const failed = cache
+      .findAll({ mutationKey })
+      .find((m) => m.state.status === "error" && (m.state.variables as OutgoingMessage | undefined)?.id === messageId);
+    if (!failed) return;
+    const message = failed.state.variables as OutgoingMessage;
+    cache.remove(failed);
+    mutate(message);
+  }
+
+  return { send, retry, outbox };
 }
 
 export function useMarkThreadRead(matchId: string | undefined, userId: string | undefined) {

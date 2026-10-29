@@ -237,10 +237,18 @@
     "status": {
       "sent": "Sent",
       "delivered": "Delivered",
-      "read": "Read"
+      "read": "Read",
+      "pending": "Waiting to send",
+      "failed": "Not sent"
     },
     "today": "Today",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "offlineEmpty": "You're offline. Your chats will appear when you reconnect.",
+    "loadFailed": "Couldn't load your chats. Pull down to try again.",
+    "offlineSaved": "Offline · showing saved messages",
+    "offlineOlder": "Older messages will load when you're back online.",
+    "offlineMessages": "Messages will load when you're back online.",
+    "notSent": "Not sent · Tap to retry"
   },
   "onboarding": {
     "next": "Next",
@@ -989,5 +997,8 @@
     "romantic": "I consent to Turkic Circles using my gender and who I want to meet, which can show my sexual orientation, to suggest romantic matches. I can withdraw this any time by removing \"Romantic relationship\".",
     "faith": "I consent to Turkic Circles using how important faith is to me to suggest matches. I can withdraw this any time by choosing \"Prefer not to say\".",
     "required": "Please tick the box to save this answer."
+  },
+  "offline": {
+    "banner": "You're offline"
   }
 }

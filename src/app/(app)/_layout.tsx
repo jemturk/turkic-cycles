@@ -16,6 +16,7 @@ import { useSession } from "@/hooks/useSession";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useMarkDelivered } from "@/hooks/useMarkDelivered";
 import { SearchOverlay } from "@/components/SearchOverlay";
+import { OfflineBanner } from "@/components/OfflineBanner";
 import { AppMark } from "@/components/AppMark";
 import { CirclesIcon } from "@/components/CirclesIcon";
 import { useSearchOverlay } from "@/stores/searchOverlay";
@@ -227,6 +228,8 @@ export default function AppTabsLayout() {
             Center -- hidden for the same reason. */}
         <Tabs.Screen name="report" options={{ ...NO_TAB_BUTTON, ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }} />
       </Tabs>
+      {/* A conversation shows its own, under its header (chat/[matchId].tsx). */}
+      {inConversation ? null : <OfflineBanner />}
       <SearchOverlay visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );

@@ -170,12 +170,13 @@ describe("markMessageDelivered", () => {
 
 describe("sendMessage", () => {
   it("sends the message it replies to, or null when it isn't a reply", async () => {
-    queueResponses({ messages: [ok(null), ok(null)] });
+    queueResponses({ messages: [ok({ id: "new-1" }), ok({ id: "new-2" })] });
 
-    await sendMessage("match-a", "me", "Sounds good", "msg-1");
-    await sendMessage("match-a", "me", "Hi");
+    expect(await sendMessage("new-1", "match-a", "me", "Sounds good", "msg-1")).toEqual({ id: "new-1" });
+    await sendMessage("new-2", "match-a", "me", "Hi");
 
     expect(mockFrom.mock.results[0].value.insert).toHaveBeenCalledWith({
+      id: "new-1",
       match_id: "match-a",
       sender_id: "me",
       body: "Sounds good",
@@ -184,6 +185,15 @@ describe("sendMessage", () => {
     expect(mockFrom.mock.results[1].value.insert).toHaveBeenCalledWith(
       expect.objectContaining({ body: "Hi", reply_to_id: null })
     );
+  });
+
+  it("returns the row already there when a retried send hits its own id", async () => {
+    queueResponses({
+      messages: [{ data: null, error: { message: "duplicate key", code: "23505" } as never }, ok({ id: "new-1", body: "Hi" })],
+    });
+
+    expect(await sendMessage("new-1", "match-a", "me", "Hi")).toEqual({ id: "new-1", body: "Hi" });
+    expect(mockFrom.mock.results[1].value.eq).toHaveBeenCalledWith("id", "new-1");
   });
 });
 

@@ -27,6 +27,12 @@ import { MessageStatus, messageStatus } from "@/components/MessageStatus";
 import { ReactionEmoji } from "@/components/ReactionEmoji";
 import { MessageText } from "@/components/MessageText";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { useQueryClient } from "@tanstack/react-query";
+import type { MessageThread } from "@/api/chat";
+import { useIsOnline } from "@/hooks/useIsOnline";
+import { OfflineBanner } from "@/components/OfflineBanner";
+import { outgoingAsRow } from "@/lib/outbox";
+import { SAVED_MESSAGES_PER_THREAD } from "@/lib/queryClient";
 import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
 import { dayLabel } from "@/lib/dayLabel";
 import type { Tables } from "@/types/database";
@@ -87,8 +93,26 @@ export default function ChatThread() {
   const userId = session?.user.id;
 
   const { data: participant } = useMatchParticipant(matchId, userId);
-  const { data: messages } = useMessages(matchId);
-  const sendMessage = useSendMessage(matchId, userId);
+  // Until the participant loads (or offline, if this conversation was never opened
+  // here), the name and picture from the chat list, so the header isn't "Member".
+  const queryClient = useQueryClient();
+  const listed = queryClient
+    .getQueryData<MessageThread[]>(["messageThreads", userId])
+    ?.find((thread) => thread.matchId === matchId);
+  const otherDisplayName = participant?.profile.display_name || listed?.otherDisplayName;
+  const otherAvatarUrl = participant ? participant.profile.avatar_url : listed?.otherAvatarUrl;
+  const { data: savedMessages } = useMessages(matchId);
+  const { send, retry, outbox } = useSendMessage(matchId, userId);
+  const online = useIsOnline();
+  // The conversation, then what's still in the outbox (waiting for the network, or
+  // failed) -- each until the delivered copy turns up in the conversation.
+  const deliveredIds = new Set((savedMessages ?? []).map((m) => m.id));
+  const waiting = outbox.filter((entry) => !deliveredIds.has(entry.message.id));
+  const outboxStatus = new Map(waiting.map((entry) => [entry.message.id, entry.status]));
+  const messages =
+    savedMessages || waiting.length > 0
+      ? [...(savedMessages ?? []), ...waiting.map((entry) => outgoingAsRow(entry.message))]
+      : undefined;
   const markThreadRead = useMarkThreadRead(matchId, userId);
   const { isOtherTyping, notifyTyping, notifyStopped, clearOtherTyping } = useTypingIndicator(matchId, userId);
   const { data: reactions } = useReactions(matchId);
@@ -195,11 +219,11 @@ export default function ChatThread() {
     if (!body) return;
     setDraft("");
     notifyStopped();
-    sendMessage.mutate({ body, replyToId: replyTo?.id });
+    send(body, replyTo?.id ?? null);
     setReplyTo(null);
   }
 
-  const otherName = participant?.profile.display_name || t("common.member");
+  const otherName = otherDisplayName || t("common.member");
   const messagesById = new Map((messages ?? []).map((m) => [m.id, m]));
 
   function startReply(message: Message) {
@@ -329,10 +353,10 @@ export default function ChatThread() {
             if (participant?.profile.id) router.replace(`/(app)/user/${participant.profile.id}?matchId=${matchId}`);
           }}
         >
-          <Avatar uri={participant?.profile.avatar_url} name={participant?.profile.display_name} size={40} />
+          <Avatar uri={otherAvatarUrl} name={otherDisplayName} size={40} />
           <View>
             <Text className="font-display text-lg text-ink-900 dark:text-ink-50">
-              {participant?.profile.display_name || t("common.member")}
+              {otherName}
             </Text>
             {/* Also in the header, so it shows while reading further up the thread. */}
             {isOtherTyping ? (
@@ -358,6 +382,7 @@ export default function ChatThread() {
       {/* Lifts the message list and the input above the keyboard -- the input
           is pinned to the bottom, so without this the keyboard covers it. */}
       <KeyboardAvoidingView key={keyboardWrapperKey} behavior="padding" style={{ flex: 1 }}>
+        <OfflineBanner label={t("chat.offlineSaved")} top={8} />
         <ScrollView
           ref={scrollRef}
           // The lighter cream behind the messages (rather than the page's) keeps the
@@ -422,6 +447,13 @@ export default function ChatThread() {
             className="grow gap-3"
             style={{ cursor: "auto" } as never}
           >
+            {/* Offline: only what's saved on the device (the latest 50 per conversation)
+                is here, so the top of the list says why there's nothing older. */}
+            {!online && (!savedMessages || savedMessages.length >= SAVED_MESSAGES_PER_THREAD) ? (
+              <Text className="text-center text-xs text-ink-400 dark:text-ink-300">
+                {savedMessages ? t("chat.offlineOlder") : t("chat.offlineMessages")}
+              </Text>
+            ) : null}
             {participant?.match ? (
               <Text className="text-center text-xs text-ink-400 dark:text-ink-300">
                 {t("chat.youMatched", { date: format(new Date(participant.match.created_at), "MMM d") })}
@@ -598,12 +630,23 @@ export default function ChatThread() {
                   </View>
                   {/* The time (and your read ticks) only under the last bubble of a run; an
                       earlier one with reactions keeps room for its badge. */}
-                  {continues ? (
+                  {/* A message still in the outbox always shows its status, run or not; a
+                      failed one is tapped to send again. */}
+                  {continues && !outboxStatus.has(message.id) ? (
                     messageReactions.length > 0 ? <View className="h-3" /> : null
+                  ) : outboxStatus.get(message.id) === "failed" ? (
+                    <Pressable
+                      accessibilityRole="button"
+                      onPress={() => retry(message.id)}
+                      className="mt-1 flex-row items-center gap-1"
+                    >
+                      <Text className="text-xs font-medium text-accent-600">{t("chat.notSent")}</Text>
+                      <MessageStatus status="failed" />
+                    </Pressable>
                   ) : (
                     <View className={`flex-row items-center gap-1 ${messageReactions.length > 0 ? "mt-3" : "mt-1"}`}>
                       <Text className="text-xs text-ink-400 dark:text-ink-300">{format(new Date(message.created_at), "h:mm a")}</Text>
-                      {isOwn ? <MessageStatus status={messageStatus(message)} /> : null}
+                      {isOwn ? <MessageStatus status={outboxStatus.get(message.id) ?? messageStatus(message)} /> : null}
                     </View>
                   )}
                 </View>

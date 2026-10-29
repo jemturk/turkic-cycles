@@ -9,6 +9,8 @@ import { useMessageThreads } from "@/hooks/useChat";
 import { useTypingMatches } from "@/hooks/useTypingMatches";
 import { Avatar } from "@/components/Avatar";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
+import { EmptyState } from "@/components/EmptyState";
+import { useIsOnline } from "@/hooks/useIsOnline";
 import type { MessageThread } from "@/api/chat";
 
 // How many messages are waiting, in a small coral pill.
@@ -36,7 +38,8 @@ export function ChatThreadList({
 }) {
   const { t } = useTranslation();
   const { session } = useSession();
-  const { data: threads, refetch, isRefetching } = useMessageThreads(session?.user.id);
+  const { data: threads, refetch, isRefetching, isError } = useMessageThreads(session?.user.id);
+  const online = useIsOnline();
   const matchIds = useMemo(() => (threads ?? []).map((thread) => thread.matchId), [threads]);
   const typing = useTypingMatches(matchIds, session?.user.id);
 
@@ -86,6 +89,24 @@ export function ChatThreadList({
     );
   }
 
+  // Nothing to list: no chats yet, or (with nothing saved on the device) offline or
+  // failed to load -- told apart, so a lost connection never reads as "no chats".
+  // Still loading: nothing yet.
+  function renderEmpty() {
+    const label = !online
+      ? t("chat.offlineEmpty")
+      : isError && !threads
+        ? t("chat.loadFailed")
+        : threads
+          ? t("chat.empty")
+          : null;
+    if (!label) return null;
+    if (compact) return <Text className="px-2 text-base text-ink-700 dark:text-ink-200">{label}</Text>;
+    return (
+      <EmptyState icon={!online || !threads ? "cloud-offline-outline" : "chatbubbles-outline"} label={label} className="py-24" />
+    );
+  }
+
   return (
     <RefreshableScrollView
       refreshing={isRefetching}
@@ -95,7 +116,7 @@ export function ChatThreadList({
       showsVerticalScrollIndicator={!compact}
     >
       {!threads || threads.length === 0 ? (
-        <Text className={`text-base text-ink-700 dark:text-ink-200 ${compact ? "px-2" : ""}`}>{t("chat.empty")}</Text>
+        renderEmpty()
       ) : compact ? (
         threads.map(renderCompactRow)
       ) : (
