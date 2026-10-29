@@ -30,18 +30,33 @@ export function moveTo(roll: Roll, pos: number): Roll {
   return { ids, pos: Math.max(0, Math.min(pos, ids.length - 1)) };
 }
 
+// Best match first (byMatch's order), people without a score after them in the order
+// they came. Stable, so equal scores keep their order too.
+export function byMatch<T extends { match?: { score: number | null } }>(people: T[]): T[] {
+  return [...people].sort((a, b) => (b.match?.score ?? -1) - (a.match?.score ?? -1));
+}
+
 // The roll after the candidate list changed: who left is taken off (keeping the person
-// in front, or the next one if they left), newcomers go on the end.
+// in front, or the next one if they left). Everyone already seen stays where they are;
+// everyone not seen yet -- those ahead and the newcomers -- is put in the candidates'
+// order (the deck passes them best match first), so a strong newcomer comes up next
+// rather than at the end. Skipped people coming round again (a lap) stay after them.
 export function reconcile(current: Roll, candidates: { userId: string }[]): Roll {
   const present = new Set(candidates.map((c) => c.userId));
-  const ids: string[] = [];
+  const kept: string[] = [];
   let pos = current.pos;
   current.ids.forEach((id, i) => {
-    if (present.has(id)) ids.push(id);
+    if (present.has(id)) kept.push(id);
     else if (i < current.pos) pos -= 1;
   });
-  const onRoll = new Set(ids);
-  for (const c of candidates) if (!onRoll.has(c.userId)) ids.push(c.userId);
   const fade = current.ids.length > 0 && !present.has(current.ids[current.pos]);
+  // Seen: everyone up to the person in front, and them too unless they just left (then
+  // whoever comes forward is picked by the new order).
+  const seenCount = kept.length === 0 ? 0 : fade ? pos : pos + 1;
+  const seenIds = kept.slice(0, seenCount);
+  const seen = new Set(seenIds);
+  const lap = kept.slice(seenCount).filter((id) => seen.has(id));
+  const unseen = candidates.map((c) => c.userId).filter((id) => !seen.has(id));
+  const ids = [...seenIds, ...unseen, ...lap];
   return { ...moveTo({ ids, pos }, pos), resync: true, fade };
 }

@@ -28,7 +28,7 @@ import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
 import { DiscoverCardView } from "@/components/DiscoverCardView";
 import { SwipeButton } from "@/components/SwipeButton";
 import { DiscoverGrid } from "@/components/DiscoverGrid";
-import { moveTo, reconcile, type Roll } from "@/lib/discoverRoll";
+import { byMatch, moveTo, reconcile, type Roll } from "@/lib/discoverRoll";
 import { loadRecentlySkipped, rememberSkip, skippedLast } from "@/lib/skipCooldown";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { useScreenReaderEnabled } from "@/hooks/useScreenReaderEnabled";
@@ -299,7 +299,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   }, []);
   const shown = recentlySkipped
     ? skippedLast(
-        pool.filter((c) => !answered.has(c.userId)),
+        byMatch(pool.filter((c) => !answered.has(c.userId))),
         recentlySkipped
       )
     : [];
