@@ -14,7 +14,7 @@ export default function StaticPage() {
         title: t(`settings.staticPages.${topic}.title`),
         body: t(`settings.staticPages.${topic}.body`),
       }
-    : { title: "Turkic Circles", body: "" };
+    : { title: "Halka", body: "" };
 
   return (
     <SubPage title={page.title}>

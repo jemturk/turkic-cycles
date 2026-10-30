@@ -1,4 +1,4 @@
-// The matching model v1 (Turkic Circles Matching Model v1 spec): hard filters per
+// The matching model v1 (Halka Matching Model v1 spec): hard filters per
 // connection type, nine criterion scores, the viewer's weights, and the mutual match
 // (geometric mean of both directions). Plain TypeScript with no Deno or app imports, so
 // both the rank-discover Edge Function and the app's Jest tests can use it; the spec's

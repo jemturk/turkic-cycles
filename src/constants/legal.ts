@@ -7,10 +7,10 @@
 // doesn't match the app is itself grounds for store rejection. Bump LEGAL_UPDATED
 // on every change.
 
-export const LEGAL_UPDATED = "October 28, 2026";
+export const LEGAL_UPDATED = "October 30, 2026";
 export const LEGAL_OWNER = "Jem Turk";
 export const LEGAL_CONTACT = "unturkk@gmail.com";
-export const APP_NAME = "Turkic Circles";
+export const APP_NAME = "Halka";
 
 export type LegalSection = {
   heading: string;

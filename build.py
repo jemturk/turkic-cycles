@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-r"""Build, publish, and install Turkic Circles.
+r"""Build, publish, and install Halka.
 
   -w  export the web build and deploy it to EAS Hosting (production)
   -a  build a release APK locally with Gradle
@@ -453,7 +453,9 @@ def build_copies(extension: str) -> list[Path]:
     """Our copies of one kind in the cloud folder, newest first. Sorted by modification
     time (copy2 keeps the build time), not by name -- a name sort would put version
     1.10.0 before 1.9.0."""
-    return sorted(APK_COPY_DIR.glob(f"turkic-circles-*.{extension}"), key=lambda p: p.stat().st_mtime, reverse=True)
+    # turkic-circles-*: copies from before the app was renamed, cleared out the same way.
+    copies = [*APK_COPY_DIR.glob(f"halka-*.{extension}"), *APK_COPY_DIR.glob(f"turkic-circles-*.{extension}")]
+    return sorted(copies, key=lambda p: p.stat().st_mtime, reverse=True)
 
 
 def newest_copy(extension: str, build_flag: str) -> Path:
@@ -468,13 +470,13 @@ def copy_build(source: Path, extension: str) -> None:
     # older copy is never overwritten (copying the same build twice reuses the name).
     version = json.loads((ROOT / "app.json").read_text(encoding="utf-8"))["expo"]["version"]
     built_at = time.strftime("%Y%m%d-%H%M", time.localtime(source.stat().st_mtime))
-    target = APK_COPY_DIR / f"turkic-circles-{version}-{built_at}.{extension}"
+    target = APK_COPY_DIR / f"halka-{version}-{built_at}.{extension}"
     APK_COPY_DIR.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, target)
     note(f"Copied to {target}")
 
     # Each build is ~70-120 MB and the folder syncs to the cloud, so keep only the
-    # newest few of each kind. Only our own turkic-circles-*.<extension> files are
+    # newest few of each kind. Only our own halka-*.<extension> files are
     # ever deleted.
     for old in build_copies(extension)[APK_COPIES_TO_KEEP:]:
         old.unlink()

@@ -18,7 +18,7 @@ The stores would reject the app, or it would break for real users, without these
   - Sign up at Resend (or similar), verify the domain, create an API key.
   - Supabase → Authentication → Emails → SMTP Settings: host `smtp.resend.com`,
     port `465`, user `resend`, password = API key, sender e.g. `hello@yourdomain.com`,
-    name `Turkic Circles`.
+    name `Halka`.
   - Raise the email rate limit (Authentication → Rate Limits).
   - Then paste the six branded templates from `supabase/templates/` into
     Authentication → Emails → Templates (subjects are in `supabase/config.toml`).

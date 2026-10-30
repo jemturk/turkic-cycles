@@ -15,7 +15,7 @@
     "getStarted": "Loslegen",
     "alreadyHaveAccount": "Du hast bereits ein Konto?",
     "logIn": "Anmelden",
-    "slide1Title": "Turkic Circles",
+    "slide1Title": "Halka",
     "slide1Body": "Lerne Menschen aus der turksprachigen Welt in deiner Nähe kennen und finde deinen Platz.",
     "slide2Title": "Kreisen beitreten",
     "slide2Body": "Gruppen für deine Stadt, Kultur und Interessen, mit echten Treffen im Kalender.",
@@ -136,8 +136,8 @@
     "createCircle": "Kreis erstellen",
     "creating": "Wird erstellt…",
     "createCircleError": "Kreis konnte nicht erstellt werden",
-    "hostRequirements": "Zum Erstellen von Kreisen und Veranstaltungen brauchst du Turkic Circles Plus und eine verifizierte Identität.",
-    "requirePlus": "Turkic Circles Plus",
+    "hostRequirements": "Zum Erstellen von Kreisen und Veranstaltungen brauchst du Halka Plus und eine verifizierte Identität.",
+    "requirePlus": "Halka Plus",
     "requireVerified": "Verifizierte Identität",
     "addEvent": "Veranstaltung hinzufügen",
     "newEventTitle": "Neue Veranstaltung",
@@ -692,7 +692,7 @@
     "pushNotifications": "Push-Benachrichtigungen",
     "emailNotifications": "E-Mail-Benachrichtigungen",
     "community": "Community",
-    "aboutApp": "Über Turkic Circles",
+    "aboutApp": "Über Halka",
     "communityGuidelines": "Community-Richtlinien",
     "helpAndSupport": "Hilfe & Support",
     "logOut": "Abmelden",
@@ -713,7 +713,7 @@
     },
     "verificationScreen": {
       "heading": "Das Verifiziert-Abzeichen erhalten",
-      "subheading": "Verifizierte Mitglieder genießen in jedem Kreis schneller Vertrauen — und das hält jede Unterhaltung auf Turkic Circles echt.",
+      "subheading": "Verifizierte Mitglieder genießen in jedem Kreis schneller Vertrauen — und das hält jede Unterhaltung auf Halka echt.",
       "pendingReview": "Dein Ausweis wird geprüft",
       "pendingBody": "Stripe prüft deinen Ausweis und dein Selfie. Das dauert meist ein, zwei Minuten; dein Abzeichen erscheint, sobald es fertig ist.",
       "verifiedBody": "Du bist verifiziert ✓",
@@ -729,8 +729,8 @@
       "failedBody": "Wir konnten dich beim letzten Mal nicht verifizieren, zum Beispiel weil das Foto unscharf war oder das Selfie nicht zum Ausweis passte. Du kannst es erneut versuchen.",
       "startFailed": "Verifizierung konnte nicht gestartet werden",
       "doneTitle": "Danke, alles erledigt",
-      "doneBody": "Du kannst diese Seite schließen und zu Turkic Circles zurückkehren. Dein Verifiziert-Abzeichen erscheint, sobald Stripe fertig ist.",
-      "doneButton": "Zurück zu Turkic Circles"
+      "doneBody": "Du kannst diese Seite schließen und zu Halka zurückkehren. Dein Verifiziert-Abzeichen erscheint, sobald Stripe fertig ist.",
+      "doneButton": "Zurück zu Halka"
     },
     "matchingPreferencesScreen": {
       "heading": "Matching-Einstellungen",
@@ -749,8 +749,8 @@
     },
     "staticPages": {
       "about": {
-        "title": "Über Turkic Circles",
-        "body": "Turkic Circles ist eine Verbindungs-App für die turksprachige und turknahe Diaspora — Freundschaft, Romantik, Business und Mentoring, alles in einer Community statt in vier getrennten Produkten."
+        "title": "Über Halka",
+        "body": "Halka ist eine Verbindungs-App für die turksprachige und turknahe Diaspora — Freundschaft, Romantik, Business und Mentoring, alles in einer Community statt in vier getrennten Produkten."
       },
       "guidelines": {
         "title": "Community-Richtlinien",
@@ -876,7 +876,7 @@
     "noResults": "Keine Treffer für „{{query}}“"
   },
   "plus": {
-    "title": "Turkic Circles Plus",
+    "title": "Halka Plus",
     "subheading": "Hol mehr aus der Community heraus – und hilf, sie am Laufen zu halten.",
     "seeLikes": "Sieh, wer dich mag",
     "seeLikesBody": "Alle, die dich geliked haben – like zurück und ihr matcht sofort.",
@@ -908,8 +908,8 @@
     "statusWaitlisted": "Auf der Warteliste"
   },
   "safetyAlerts": {
-    "planText": "Hallo, hier ist {{name}}. Ich treffe {{meetingWith}} am {{when}} hier: {{location}}. Ich melde mich spätestens um {{checkIn}}. Wenn du bis dahin nichts von mir hörst, versuch bitte, mich zu erreichen. (Gesendet von Turkic Circles)",
-    "alertText": "Hier ist {{name}}. Ich habe mich nach dem Treffen mit {{meetingWith}} am {{when}} ({{location}}) noch nicht gemeldet. Bitte versuch, mich zu erreichen, und wenn das nicht klappt, ruf den örtlichen Notruf. (Gesendet von Turkic Circles)",
+    "planText": "Hallo, hier ist {{name}}. Ich treffe {{meetingWith}} am {{when}} hier: {{location}}. Ich melde mich spätestens um {{checkIn}}. Wenn du bis dahin nichts von mir hörst, versuch bitte, mich zu erreichen. (Gesendet von Halka)",
+    "alertText": "Hier ist {{name}}. Ich habe mich nach dem Treffen mit {{meetingWith}} am {{when}} ({{location}}) noch nicht gemeldet. Bitte versuch, mich zu erreichen, und wenn das nicht klappt, ruf den örtlichen Notruf. (Gesendet von Halka)",
     "reminderTitle": "Zeit, dich zu melden",
     "reminderBody": "Wie war es mit {{meetingWith}}? Tippe, um dich zu melden.",
     "overdueTitle": "Du hast dich noch nicht gemeldet",
@@ -994,8 +994,8 @@
     "notNow": "Nicht jetzt"
   },
   "consent": {
-    "romantic": "Ich willige ein, dass Turkic Circles mein Geschlecht und wen ich kennenlernen möchte, was meine sexuelle Orientierung zeigen kann, für romantische Vorschläge nutzt. Ich kann das jederzeit widerrufen, indem ich \"Romantische Beziehung\" entferne.",
-    "faith": "Ich willige ein, dass Turkic Circles für Vorschläge nutzt, wie wichtig mir der Glaube ist. Ich kann das jederzeit widerrufen, indem ich \"Möchte ich nicht sagen\" wähle.",
+    "romantic": "Ich willige ein, dass Halka mein Geschlecht und wen ich kennenlernen möchte, was meine sexuelle Orientierung zeigen kann, für romantische Vorschläge nutzt. Ich kann das jederzeit widerrufen, indem ich \"Romantische Beziehung\" entferne.",
+    "faith": "Ich willige ein, dass Halka für Vorschläge nutzt, wie wichtig mir der Glaube ist. Ich kann das jederzeit widerrufen, indem ich \"Möchte ich nicht sagen\" wähle.",
     "required": "Bitte setze das Häkchen, um diese Antwort zu speichern."
   },
   "offline": {

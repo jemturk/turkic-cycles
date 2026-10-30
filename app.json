@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Turkic Circles",
+    "name": "Halka",
     "slug": "turanci",
     "scheme": "turek",
     "version": "1.0.0",
@@ -89,8 +89,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Turkic Circles needs access to your photos so you can set a profile picture.",
-          "cameraPermission": "Turkic Circles needs access to your camera so you can take a profile picture.",
+          "photosPermission": "Halka needs access to your photos so you can set a profile picture.",
+          "cameraPermission": "Halka needs access to your camera so you can take a profile picture.",
           "microphonePermission": false
         }
       ],
@@ -105,7 +105,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Turkic Circles uses your location to show circle events near you."
+          "locationWhenInUsePermission": "Halka uses your location to show circle events near you."
         }
       ],
       "expo-web-browser",

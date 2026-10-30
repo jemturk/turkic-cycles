@@ -1,8 +1,8 @@
-# Turkic Circles
+# Halka
 
 A connections app (friendship, romance, business, mentorship) for the Turkic and Turkic-adjacent diaspora. Expo (React Native) app targeting iOS, Android, and web from one codebase, backed by Supabase.
 
-Names: the display name is **Turkic Circles**, the bundle ID / package is `com.turek.app`, the URL scheme is `turek`, and the web build is hosted at `turek.expo.app`. The Expo slug in `app.json` stays `turanci` — slugs are permanent on expo.dev, and changing it breaks EAS.
+Names: the display name is **Halka** (until October 2026, Turkic Circles), the bundle ID / package is `com.turek.app`, the URL scheme is `turek`, and the web build is hosted at `turek.expo.app`. The Expo slug in `app.json` stays `turanci` — slugs are permanent on expo.dev, and changing it breaks EAS.
 
 ## Setup
 
@@ -117,7 +117,7 @@ All the planned screens are built and working:
 - **Connections and Chat** — realtime messaging with typing indicator, delivered/read status, replies, reactions, push notifications, and Remove connection.
 - **Profile and Settings** — profile with photo gallery and cover, matching preferences, privacy, notifications, theme (light/dark), text size, language (English, Turkish, Russian, German).
 - **Safety** — ID verification (Stripe Identity), report (admins get a push alert) and block, safety plans with trusted-contact check-ins, contact-detail nudges, and photo moderation before photos go public.
-- **Turkic Circles Plus** — premium tier through RevenueCat (shows a waitlist when RevenueCat keys aren't set).
+- **Halka Plus** — premium tier through RevenueCat (shows a waitlist when RevenueCat keys aren't set).
 - **Web** — a desktop layout with a sidebar, alongside the phone layout.
 - **Crash reporting** — Sentry (account ID only).
 

@@ -6,7 +6,7 @@ Store Connect and Play Console. If the app changes what it collects, update this
 and the Privacy Policy (`src/constants/legal.ts`) together — a mismatch between the
 two, or with the app, is a common reason for rejection.
 
-Placeholders: **[NAME]** = the final app name (currently "Turkic Circles").
+Placeholders: **[NAME]** = the final app name (now "Halka"; it was "Turkic Circles").
 
 ---
 
@@ -14,7 +14,7 @@ Placeholders: **[NAME]** = the final app name (currently "Turkic Circles").
 
 | Field | App Store | Google Play |
 | --- | --- | --- |
-| App name (30 chars) | Turkic Circles | Turkic Circles |
+| App name (30 chars) | Halka | Halka |
 | Bundle ID / package | `com.turek.app` | `com.turek.app` |
 | Primary category | Social Networking | Social |
 | Secondary category | Lifestyle | — (tags: Social, Community, Dating) |
@@ -130,7 +130,7 @@ can chat with and meet people they don't know.
 
 **Full description (both stores, up to 4,000 chars):**
 
-> Turkic Circles brings together people from the Turkic world — Turkish, Azerbaijani,
+> Halka brings together people from the Turkic world — Turkish, Azerbaijani,
 > Kazakh, Uzbek, Kyrgyz, Turkmen, Tatar, Uyghur and beyond — wherever they live now.
 >
 > **Join circles**
@@ -153,9 +153,9 @@ can chat with and meet people they don't know.
 > - Get the Verified badge with a quick ID and selfie check.
 > - Share your plans with someone you trust before you meet, with check-in reminders.
 > - Block or report anyone in two taps. We review every report.
-> - Turkic Circles is for adults 18 and over.
+> - Halka is for adults 18 and over.
 >
-> **Turkic Circles Plus** (optional subscription)
+> **Halka Plus** (optional subscription)
 > See everyone who likes you, so you can like them back and match right away (more Plus
 > features are on the way). Plus renews automatically unless you cancel at least 24
 > hours before the end of the period; manage or cancel it in your App Store or Google
@@ -167,7 +167,7 @@ can chat with and meet people they don't know.
 
 *(Today Plus's live feature is "See who likes you"; worldwide Discover, advanced filters and more daily likes show as "coming soon". Update this line as they ship.)*
 
-**What's New (first release):** `Welcome to Turkic Circles! Join circles, go to meetups and meet your people.`
+**What's New (first release):** `Welcome to Halka! Join circles, go to meetups and meet your people.`
 
 ---
 
@@ -185,7 +185,7 @@ were taken with it.
 
 **Notes to paste (Apple → App Review Information → Notes; Google → App access):**
 
-> Turkic Circles is a community app for adults (18+) of Turkic heritage: members join
+> Halka is a community app for adults (18+) of Turkic heritage: members join
 > circles (local groups), RSVP to events, discover and connect with other members, and
 > chat. Please sign in with the account above (email and password); it's already
 > onboarded.
@@ -263,7 +263,7 @@ One-time setup:
 2. **Enable the API** — APIs & Services → Library → **Google Play Android Developer
    API** → Enable.
 3. **Invite it in Play Console** — Users and permissions → Invite new users → the
-   service account's email → App permissions: Turkic Circles → **Release apps to testing
+   service account's email → App permissions: Halka → **Release apps to testing
    tracks** (enough for internal app sharing). It can take up to a day to start working.
 4. **Uploaders and testers** — Play Console → Test and release → **Internal app
    sharing** → Manage uploaders and testers: allow uploads from the service account (or

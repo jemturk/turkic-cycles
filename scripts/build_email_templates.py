@@ -96,7 +96,7 @@ def page(*, preheader: str, title: str, paragraphs: list[str], action: str, note
           </tr>
           <tr>
             <td align="center" style="padding:24px 16px 0;font-family:{SANS};font-size:12px;line-height:18px;color:{MUTED};">
-              Turkic Circles &middot; Find your people, near you<br>
+              Halka &middot; Find your people, near you<br>
               <a href="{{{{ .SiteURL }}}}" style="color:{MUTED};">turek.expo.app</a>
             </td>
           </tr>
@@ -115,12 +115,12 @@ IGNORE = "If you didn&rsquo;t ask for this, you can safely ignore this email. No
 TEMPLATES = {
     # file name: (subject, html)
     "confirmation.html": (
-        "Confirm your email for Turkic Circles",
+        "Confirm your email for Halka",
         page(
             preheader="One tap to confirm your email and start meeting your people.",
             title="Welcome! Let&rsquo;s confirm your email",
             paragraphs=[
-                "Thanks for joining Turkic Circles. Tap the button below to confirm your email "
+                "Thanks for joining Halka. Tap the button below to confirm your email "
                 "and finish setting up your profile.",
             ],
             action=button("Confirm my email", URL) + fallback_link(URL),
@@ -128,7 +128,7 @@ TEMPLATES = {
         ),
     ),
     "recovery.html": (
-        "Reset your Turkic Circles password",
+        "Reset your Halka password",
         page(
             preheader="Choose a new password for your account.",
             title="Reset your password",
@@ -142,17 +142,17 @@ TEMPLATES = {
         ),
     ),
     "magic_link.html": (
-        "Your Turkic Circles sign-in link",
+        "Your Halka sign-in link",
         page(
             preheader="Tap to sign in. No password needed.",
-            title="Sign in to Turkic Circles",
+            title="Sign in to Halka",
             paragraphs=["Tap the button below to sign in. The link works once and expires in an hour."],
             action=button("Sign in", URL) + fallback_link(URL),
             note=IGNORE,
         ),
     ),
     "email_change.html": (
-        "Confirm your new email for Turkic Circles",
+        "Confirm your new email for Halka",
         page(
             preheader="Confirm the change to your account's email address.",
             title="Confirm your new email",
@@ -166,12 +166,12 @@ TEMPLATES = {
         ),
     ),
     "invite.html": (
-        "You're invited to Turkic Circles",
+        "You're invited to Halka",
         page(
             preheader="Join circles, meet people and find where you belong.",
             title="You&rsquo;re invited!",
             paragraphs=[
-                "You&rsquo;ve been invited to join Turkic Circles: circles for your city, culture "
+                "You&rsquo;ve been invited to join Halka: circles for your city, culture "
                 "and interests, with real meetups on the calendar.",
             ],
             action=button("Accept invitation", URL) + fallback_link(URL),
@@ -179,7 +179,7 @@ TEMPLATES = {
         ),
     ),
     "reauthentication.html": (
-        "Your Turkic Circles security code",
+        "Your Halka security code",
         page(
             preheader="Enter this code to confirm it's you.",
             title="Confirm it&rsquo;s you",
@@ -194,7 +194,7 @@ TEMPLATES = {
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, (subject, html) in TEMPLATES.items():
-        (OUT / name).write_text(html, encoding="utf-8")
+        (OUT / name).write_text(html, encoding="utf-8", newline="\n")
         print(f"{name:24} {subject}")
 
 

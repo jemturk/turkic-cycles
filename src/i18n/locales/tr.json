@@ -15,7 +15,7 @@
     "getStarted": "Başlayın",
     "alreadyHaveAccount": "Zaten hesabın var mı?",
     "logIn": "Giriş yap",
-    "slide1Title": "Turkic Circles",
+    "slide1Title": "Halka",
     "slide1Body": "Yakınındaki Türk dünyasından insanlarla tanış, ait olduğun yeri bul.",
     "slide2Title": "Çemberlere Katıl",
     "slide2Body": "Şehrin, kültürün ve ilgi alanların için gruplar; takvimde gerçek buluşmalar.",
@@ -29,7 +29,7 @@
   "auth": {
     "login": {
       "heading": "Tekrar hoş geldin",
-      "subheading": "Turkic Circles hesabına giriş yap.",
+      "subheading": "Halka hesabına giriş yap.",
       "email": "E-posta",
       "password": "Şifre",
       "forgotPassword": "Şifreni mi unuttun?",
@@ -40,7 +40,7 @@
     },
     "signUp": {
       "heading": "Hesabını oluştur",
-      "subheading": "Turkic Circles topluluğuna katıl.",
+      "subheading": "Halka topluluğuna katıl.",
       "email": "E-posta",
       "password": "Şifre",
       "passwordHint": "En az 8 karakter; büyük harf, küçük harf, rakam ve özel karakter içermeli.",
@@ -136,8 +136,8 @@
     "createCircle": "Çemberi oluştur",
     "creating": "Oluşturuluyor…",
     "createCircleError": "Çember oluşturulamadı",
-    "hostRequirements": "Çember ve etkinlik oluşturmak için Turkic Circles Plus ve doğrulanmış kimlik gerekir.",
-    "requirePlus": "Turkic Circles Plus",
+    "hostRequirements": "Çember ve etkinlik oluşturmak için Halka Plus ve doğrulanmış kimlik gerekir.",
+    "requirePlus": "Halka Plus",
     "requireVerified": "Doğrulanmış kimlik",
     "addEvent": "Etkinlik ekle",
     "newEventTitle": "Yeni etkinlik",
@@ -692,7 +692,7 @@
     "pushNotifications": "Anlık bildirimler",
     "emailNotifications": "E-posta bildirimleri",
     "community": "Topluluk",
-    "aboutApp": "Turkic Circles Hakkında",
+    "aboutApp": "Halka Hakkında",
     "communityGuidelines": "Topluluk kuralları",
     "helpAndSupport": "Yardım ve destek",
     "logOut": "Çıkış yap",
@@ -713,7 +713,7 @@
     },
     "verificationScreen": {
       "heading": "Onaylı rozeti al",
-      "subheading": "Onaylı üyeler her çemberde daha hızlı güvenilir — ve Turkic Circles'daki her konuşmanın gerçek olmasına yardımcı olur.",
+      "subheading": "Onaylı üyeler her çemberde daha hızlı güvenilir — ve Halka'daki her konuşmanın gerçek olmasına yardımcı olur.",
       "pendingReview": "Kimliğin kontrol ediliyor",
       "pendingBody": "Stripe kimliğini ve özçekimini kontrol ediyor. Genellikle bir iki dakika sürer; biter bitmez rozetin görünür.",
       "verifiedBody": "Onaylandın ✓",
@@ -729,8 +729,8 @@
       "failedBody": "Geçen sefer seni doğrulayamadık; örneğin fotoğraf net değildi ya da özçekim kimlikle eşleşmedi. Tekrar deneyebilirsin.",
       "startFailed": "Doğrulama başlatılamadı",
       "doneTitle": "Teşekkürler, tamamdır",
-      "doneBody": "Bu sayfayı kapatıp Turkic Circles'a dönebilirsin. Stripe kontrolü bitirir bitirmez Doğrulandı rozetin görünür.",
-      "doneButton": "Turkic Circles'a dön"
+      "doneBody": "Bu sayfayı kapatıp Halka'ya dönebilirsin. Stripe kontrolü bitirir bitirmez Doğrulandı rozetin görünür.",
+      "doneButton": "Halka'ya dön"
     },
     "matchingPreferencesScreen": {
       "heading": "Eşleştirme tercihleri",
@@ -749,8 +749,8 @@
     },
     "staticPages": {
       "about": {
-        "title": "Turkic Circles Hakkında",
-        "body": "Turkic Circles, Türk ve Türk soylu diaspora için bir bağlantı uygulamasıdır — arkadaşlık, romantik ilişki, iş ve mentorluk, dört ayrı ürün yerine tek bir toplulukta bir araya geliyor."
+        "title": "Halka Hakkında",
+        "body": "Halka, Türk ve Türk soylu diaspora için bir bağlantı uygulamasıdır — arkadaşlık, romantik ilişki, iş ve mentorluk, dört ayrı ürün yerine tek bir toplulukta bir araya geliyor."
       },
       "guidelines": {
         "title": "Topluluk kuralları",
@@ -876,7 +876,7 @@
     "noResults": "\"{{query}}\" için sonuç yok"
   },
   "plus": {
-    "title": "Turkic Circles Plus",
+    "title": "Halka Plus",
     "subheading": "Topluluktan daha fazlasını al — ve ayakta kalmasına yardım et.",
     "seeLikes": "Seni kimlerin beğendiğini gör",
     "seeLikesBody": "Seni beğenen herkes; sen de beğen, hemen eşleşin.",
@@ -908,8 +908,8 @@
     "statusWaitlisted": "Bekleme listesinde"
   },
   "safetyAlerts": {
-    "planText": "Merhaba, ben {{name}}. {{when}} tarihinde {{location}} konumunda {{meetingWith}} ile buluşuyorum. En geç {{checkIn}} itibarıyla haber vereceğim. O saate kadar benden haber alamazsan lütfen bana ulaşmaya çalış. (Turkic Circles'tan gönderildi)",
-    "alertText": "Ben {{name}}. {{when}} tarihinde {{location}} konumunda {{meetingWith}} ile buluştuktan sonra henüz haber veremedim. Lütfen bana ulaşmaya çalış; ulaşamazsan yerel acil servisleri aramayı düşün. (Turkic Circles'tan gönderildi)",
+    "planText": "Merhaba, ben {{name}}. {{when}} tarihinde {{location}} konumunda {{meetingWith}} ile buluşuyorum. En geç {{checkIn}} itibarıyla haber vereceğim. O saate kadar benden haber alamazsan lütfen bana ulaşmaya çalış. (Halka'dan gönderildi)",
+    "alertText": "Ben {{name}}. {{when}} tarihinde {{location}} konumunda {{meetingWith}} ile buluştuktan sonra henüz haber veremedim. Lütfen bana ulaşmaya çalış; ulaşamazsan yerel acil servisleri aramayı düşün. (Halka'dan gönderildi)",
     "reminderTitle": "Haber verme zamanı",
     "reminderBody": "{{meetingWith}} ile buluşman nasıl geçti? Haber vermek için dokun.",
     "overdueTitle": "Henüz haber vermedin",
@@ -994,8 +994,8 @@
     "notNow": "Şimdi değil"
   },
   "consent": {
-    "romantic": "Turkic Circles'ın romantik eşleşme önermek için cinsiyetimi ve kiminle tanışmak istediğimi (cinsel yönelimimi gösterebilir) kullanmasına onay veriyorum. \"Romantik ilişki\"yi kaldırarak bu onayı istediğim zaman geri alabilirim.",
-    "faith": "Turkic Circles'ın eşleşme önermek için inancın benim için ne kadar önemli olduğunu kullanmasına onay veriyorum. \"Söylememeyi tercih ederim\"i seçerek bu onayı istediğim zaman geri alabilirim.",
+    "romantic": "Halka'nın romantik eşleşme önermek için cinsiyetimi ve kiminle tanışmak istediğimi (cinsel yönelimimi gösterebilir) kullanmasına onay veriyorum. \"Romantik ilişki\"yi kaldırarak bu onayı istediğim zaman geri alabilirim.",
+    "faith": "Halka'nın eşleşme önermek için inancın benim için ne kadar önemli olduğunu kullanmasına onay veriyorum. \"Söylememeyi tercih ederim\"i seçerek bu onayı istediğim zaman geri alabilirim.",
     "required": "Bu cevabı kaydetmek için lütfen kutuyu işaretle."
   },
   "offline": {

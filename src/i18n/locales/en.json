@@ -15,7 +15,7 @@
     "getStarted": "Get started",
     "alreadyHaveAccount": "Already have an account?",
     "logIn": "Log in",
-    "slide1Title": "Turkic Circles",
+    "slide1Title": "Halka",
     "slide1Body": "Meet people from the Turkic world near you, and find where you belong.",
     "slide2Title": "Join Circles",
     "slide2Body": "Groups for your city, culture and interests, with real meetups on the calendar.",
@@ -29,7 +29,7 @@
   "auth": {
     "login": {
       "heading": "Welcome back",
-      "subheading": "Log in to your Turkic Circles account.",
+      "subheading": "Log in to your Halka account.",
       "email": "Email",
       "password": "Password",
       "forgotPassword": "Forgot password?",
@@ -40,7 +40,7 @@
     },
     "signUp": {
       "heading": "Create your account",
-      "subheading": "Join the Turkic Circles community.",
+      "subheading": "Join the Halka community.",
       "email": "Email",
       "password": "Password",
       "passwordHint": "8+ characters, with uppercase, lowercase, a number, and a special character.",
@@ -136,8 +136,8 @@
     "createCircle": "Create circle",
     "creating": "Creating…",
     "createCircleError": "Couldn't create the circle",
-    "hostRequirements": "Creating circles and events needs Turkic Circles Plus and a verified ID.",
-    "requirePlus": "Turkic Circles Plus",
+    "hostRequirements": "Creating circles and events needs Halka Plus and a verified ID.",
+    "requirePlus": "Halka Plus",
     "requireVerified": "Verified ID",
     "addEvent": "Add event",
     "newEventTitle": "New event",
@@ -692,7 +692,7 @@
     "pushNotifications": "Push notifications",
     "emailNotifications": "Email notifications",
     "community": "Community",
-    "aboutApp": "About Turkic Circles",
+    "aboutApp": "About Halka",
     "communityGuidelines": "Community guidelines",
     "helpAndSupport": "Help & support",
     "logOut": "Log out",
@@ -713,7 +713,7 @@
     },
     "verificationScreen": {
       "heading": "Get the Verified badge",
-      "subheading": "Verified members are trusted faster in every circle — and it helps keep every conversation on Turkic Circles real.",
+      "subheading": "Verified members are trusted faster in every circle — and it helps keep every conversation on Halka real.",
       "pendingReview": "Checking your ID",
       "pendingBody": "Stripe is checking your ID and selfie. This usually takes a minute or two; your badge appears as soon as it's done.",
       "verifiedBody": "You're verified ✓",
@@ -729,8 +729,8 @@
       "failedBody": "We couldn't verify you last time, for example because the photo was unclear or the selfie didn't match the ID. You can try again.",
       "startFailed": "Couldn't start verification",
       "doneTitle": "Thanks, you're all set",
-      "doneBody": "You can close this page and go back to Turkic Circles. Your Verified badge appears as soon as Stripe finishes checking.",
-      "doneButton": "Back to Turkic Circles"
+      "doneBody": "You can close this page and go back to Halka. Your Verified badge appears as soon as Stripe finishes checking.",
+      "doneButton": "Back to Halka"
     },
     "matchingPreferencesScreen": {
       "heading": "Matching preferences",
@@ -749,8 +749,8 @@
     },
     "staticPages": {
       "about": {
-        "title": "About Turkic Circles",
-        "body": "Turkic Circles is a connections app for the Turkic and Turkic-adjacent diaspora — friendship, romance, business, and mentorship, all in one community rather than four separate products."
+        "title": "About Halka",
+        "body": "Halka is a connections app for the Turkic and Turkic-adjacent diaspora — friendship, romance, business, and mentorship, all in one community rather than four separate products."
       },
       "guidelines": {
         "title": "Community guidelines",
@@ -876,7 +876,7 @@
     "noResults": "No matches for \"{{query}}\""
   },
   "plus": {
-    "title": "Turkic Circles Plus",
+    "title": "Halka Plus",
     "subheading": "Get more out of the community — and help keep it running.",
     "seeLikes": "See who likes you",
     "seeLikesBody": "Everyone who's liked you, so you can like them back and match right away.",
@@ -908,8 +908,8 @@
     "statusWaitlisted": "On the waitlist"
   },
   "safetyAlerts": {
-    "planText": "Hi, it's {{name}}. I'm meeting {{meetingWith}} at {{location}} on {{when}}. I'll check in by {{checkIn}}. If you don't hear from me by then, please try to reach me. (Sent from Turkic Circles)",
-    "alertText": "It's {{name}}. I haven't checked in after meeting {{meetingWith}} at {{location}} on {{when}}. Please try to reach me, and if you can't, consider contacting local emergency services. (Sent from Turkic Circles)",
+    "planText": "Hi, it's {{name}}. I'm meeting {{meetingWith}} at {{location}} on {{when}}. I'll check in by {{checkIn}}. If you don't hear from me by then, please try to reach me. (Sent from Halka)",
+    "alertText": "It's {{name}}. I haven't checked in after meeting {{meetingWith}} at {{location}} on {{when}}. Please try to reach me, and if you can't, consider contacting local emergency services. (Sent from Halka)",
     "reminderTitle": "Time to check in",
     "reminderBody": "How did it go with {{meetingWith}}? Tap to check in.",
     "overdueTitle": "You haven't checked in",
@@ -994,8 +994,8 @@
     "notNow": "Not now"
   },
   "consent": {
-    "romantic": "I consent to Turkic Circles using my gender and who I want to meet, which can show my sexual orientation, to suggest romantic matches. I can withdraw this any time by removing \"Romantic relationship\".",
-    "faith": "I consent to Turkic Circles using how important faith is to me to suggest matches. I can withdraw this any time by choosing \"Prefer not to say\".",
+    "romantic": "I consent to Halka using my gender and who I want to meet, which can show my sexual orientation, to suggest romantic matches. I can withdraw this any time by removing \"Romantic relationship\".",
+    "faith": "I consent to Halka using how important faith is to me to suggest matches. I can withdraw this any time by choosing \"Prefer not to say\".",
     "required": "Please tick the box to save this answer."
   },
   "offline": {
