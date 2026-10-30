@@ -15,6 +15,7 @@ import { PlatformPressable } from "expo-router/build/react-navigation/elements/P
 import { useSession } from "@/hooks/useSession";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useMarkDelivered } from "@/hooks/useMarkDelivered";
+import { useUnreadMessageCount } from "@/hooks/useChat";
 import { SearchOverlay } from "@/components/SearchOverlay";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { AppMark } from "@/components/AppMark";
@@ -81,9 +82,12 @@ export default function AppTabsLayout() {
   const { session } = useSession();
   usePushNotifications(session?.user.id);
   useMarkDelivered(session?.user.id);
+  const wide = useWideLayout();
+  // Phone only: on a wide window the sidebar shows (and counts) it itself, and a
+  // second count would open a second realtime channel of the same name.
+  const unread = useUnreadMessageCount(wide ? undefined : session?.user.id);
   const searchOpen = useSearchOverlay((s) => s.open);
   const setSearchOpen = useSearchOverlay((s) => s.setOpen);
-  const wide = useWideLayout();
 
   // No cover photo = no Discover card, so the profile is the only place to be
   // until one is set. Catches every way out at once -- tab bar, deep links, the
@@ -199,7 +203,14 @@ export default function AppTabsLayout() {
         />
         <Tabs.Screen
           name="chat"
-          options={{ title: t("tabs.chat"), ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null) }}
+          options={{
+            title: t("tabs.chat"),
+            ...(wide ? wideScene(WIDE_GRID_SCENE_MAX_WIDTH, "start") : null),
+            // Unread messages across every conversation, in the coral pill the chat
+            // list uses; none when all are read.
+            tabBarBadge: unread > 0 ? (unread > 99 ? "99+" : unread) : undefined,
+            tabBarBadgeStyle: { backgroundColor: "#C1440E", color: "#FFFFFF", fontSize: 11, fontWeight: "700" },
+          }}
         />
         <Tabs.Screen
           name="settings"
