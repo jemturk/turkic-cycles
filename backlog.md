@@ -12,17 +12,11 @@ Legend: **[you]** needs an account, payment, dashboard or decision on your side 
 
 The stores would reject the app, or it would break for real users, without these.
 
-- [ ] **Email sender (SMTP)** [you, then code] — Supabase's built-in sender only
-  allows a few emails an hour and adds a "powered by Supabase" footer, so on launch day
-  most sign-up confirmations wouldn't arrive. Needs your own domain (see §2).
-  - Sign up at Resend (or similar), verify the domain, create an API key.
-  - Supabase → Authentication → Emails → SMTP Settings: host `smtp.resend.com`,
-    port `465`, user `resend`, password = API key, sender e.g. `hello@yourdomain.com`,
-    name `Halka`.
-  - Raise the email rate limit (Authentication → Rate Limits).
-  - Then paste the six branded templates from `supabase/templates/` into
-    Authentication → Emails → Templates (subjects are in `supabase/config.toml`).
-    Deploy the website first so `email/logo.png` is live.
+- [x] **Email sender (SMTP)** — Resend, domain joinhalka.com verified; Supabase SMTP
+  `smtp.resend.com` port `587`, user `resend`, sender `Halka <hello@joinhalka.com>`.
+  The six templates from `supabase/templates/` are pasted in; after changing them, run
+  `python scripts/build_email_templates.py`, deploy the website (`build.py -w`), then
+  paste them again. Their links go to joinhalka.com/confirm and /reset-password.
 - [ ] **Identity verification: finish Stripe setup** [you] — the code is done (Stripe
   Identity: ID photo + live selfie; functions `create-verification-session` and
   `stripe-identity-webhook`; migration 0043). Left:
@@ -50,8 +44,10 @@ The stores would reject the app, or it would break for real users, without these
 - [ ] **Google Play closed test** [you] — new personal developer accounts must run a
   closed test with at least 12 testers for 14 days before going public.
 - [ ] **Store listings and forms** [you, with help from code] — Apple privacy labels,
-  Google Data safety form, age ratings (18+), real screenshots, descriptions,
-  support/privacy URLs (`turek.expo.app/privacy`, `/terms`).
+  Google Data safety form, age ratings (18+), real screenshots, descriptions.
+  Google Play's URLs and support email are set to joinhalka.com. Left: App Store
+  Connect, once it's set up — privacy policy URL (App Privacy), support and marketing
+  URL, description footer and review notes; values in `store-submission.md`.
 - [x] **App Review test account** — "Nurlan H." (`mock003@turek-mock.invalid`, a test
   account); password in `~/.turek/review-account.txt`. Enter it in Play Console → App
   access and App Store Connect → App Review Information.
@@ -73,32 +69,40 @@ The stores would reject the app, or it would break for real users, without these
     `select * from photo_moderation where verdict <> 'approved' order by created_at desc;`
 - [ ] **Photos uploaded before 0044 were never checked** [code] — a one-off script
   running every existing `avatars` file through `moderate-photo`'s check.
+- [ ] **4 mock photos still carry the camera's GPS location** [code, on your go] — new
+  uploads are cleaned (on the phone, and in `moderate-photo` via
+  `_shared/photoLocation.ts`), but 4 existing files in the `avatars` bucket were uploaded
+  before. Re-upload them through `removePhotoLocation` (same paths, so nothing else
+  changes). Held until there are real users.
 - [ ] **CSAM hash matching** [you, then code] — apply for Microsoft PhotoDNA (free for
   qualifying services; approval takes a while) and add it to `moderate-photo`. Backs
   the promises on the child safety page.
 
 ## 2. Setup to finish on your side
 
-- [ ] **Own domain** — for the website (instead of `turek.expo.app`), the email sender,
-  and the privacy/terms links. Then: EAS Hosting custom domain, update
-  `TURNSTILE_HOSTNAME`, Supabase Site URL / Redirect URLs, `LOGO_URL` in
-  `scripts/build_email_templates.py`, and a migration for the mock photo links.
-- [ ] **Supabase URL configuration** — Site URL `https://turek.expo.app`; Redirect URLs
-  `https://turek.expo.app/**`, `turek://**`, `exp://**` (Expo Go), and `turanci://**`
-  until no one uses the old app.
-- [ ] **Cloudflare Turnstile** — add `turek.expo.app` to the site's hostnames, or
-  website sign-ups fail the captcha.
-- [ ] **Google sign-in** — Google Cloud *Web application* OAuth client with the
-  Supabase callback URL as redirect URI; paste Client ID/secret into Supabase →
-  Providers → Google. OAuth consent screen (name, logo, support email).
+- [x] **Own domain** — joinhalka.com (Cloudflare): website on Cloudflare Pages (`build.py -w`),
+  www redirects to it, support@ forwards to Gmail (Email Routing, catch-all on).
+  turek.expo.app stays deployed for installed builds and the mock users' photo links.
+- [x] **Supabase URL configuration** — Site URL `https://joinhalka.com`; Redirect URLs
+  include `https://joinhalka.com/**`, `https://turek.expo.app/**`, `turek://**`.
+- [ ] **DMARC: from watching to enforcing** — `_dmarc` TXT is `p=none` (reports go to
+  support@) since 30 Oct 2026. After a few weeks of reports with only Resend passing,
+  change it to `p=quarantine`.
+- [ ] **Cloudflare Turnstile** — needs a site key (`EXPO_PUBLIC_TURNSTILE_SITE_KEY`).
+  List both `joinhalka.com` and `turek.expo.app` as hostnames, ship a build with the
+  key, and only then turn CAPTCHA on in Supabase (the other order locks out every
+  installed copy).
+- [ ] **Google sign-in shows "Halka"** — the consent screen (name, joinhalka.com links
+  and authorized domain) is done; Google still says "continue to …supabase.co". Needs
+  a Supabase custom domain (§4) and then brand verification (upload the logo; takes
+  days, and "unverified app" shows until it's approved, so do both together).
 - [ ] **Sign in with Apple** — Supabase → Providers → Apple, Client IDs
   `com.turek.app,host.exp.Exponent` (no secret needed for native iPhone sign-in).
 - [ ] **Sentry** — project `turek` in org `turek` exists, DSN is in `.env` and EAS,
   plugin configured in `app.json`. Left: set `SENTRY_AUTH_TOKEN` (shell environment +
   EAS secret) so release builds upload source maps for readable stack traces, and
   confirm a first report arrives from a release build.
-- [ ] **Final app name** — pick it before the first store release while renaming is
-  free (store listing, `app.json` `name`, welcome slides, emails, legal pages).
+- [x] **Final app name** — Halka.
 - [ ] **Legal review** — the Privacy Policy and Terms are written to match the app but
   aren't legal advice; worth a lawyer's look given sensitive data (religion,
   citizenship). Confirm Florida as governing law (or North Carolina).
@@ -106,6 +110,20 @@ The stores would reject the app, or it would break for real users, without these
   from Supabase redirects once nobody uses it.
 - [ ] **Android SDK command-line tools** — update in Android Studio's SDK Manager
   (clears the "SDK XML version 4" build warning).
+
+## 2b. Business and security
+
+- [ ] **LLC** [you, then code] — then move the domain registrant (Cloudflare), the
+  developer accounts and Stripe to it, and change `LEGAL_OWNER` in
+  `src/constants/legal.ts`.
+- [ ] **Data processing agreements** [you] — accept/sign the DPAs of Supabase, Resend,
+  Sentry, RevenueCat, Stripe, Google Cloud, Cloudflare and Expo.
+- [ ] **Two-factor sign-in on every service account** [you] — Supabase, Cloudflare,
+  GitHub, Google, Apple, Expo, Stripe, Resend, RevenueCat, Sentry.
+- [ ] **Delete old data automatically** [code] — retention jobs (pg_cron) for finished
+  safety plans and old logs, like migration 0063 does for the matching logs.
+- [ ] **Breach checklist** [code] — a short page: who to notify and when, how to rotate
+  keys, what to tell members.
 
 ## 3. Verify on real devices
 
@@ -125,7 +143,10 @@ Built and committed but only checked in a browser preview or not at all.
   Check in / Alert my contacts / Cancel.
 - [ ] Apple and Google sign-in, including new accounts going through onboarding and an
   existing email account being linked.
-- [ ] Forgot password: email carried over; reset link opens the right place.
+- [ ] Forgot password: email carried over; reset link opens the right place. From the
+  phone app, the email link shows "Open the Halka app" and lands on the reset screen
+  in the app (needs a real build; Expo Go can't open `turek://`).
+- [ ] Settings/Help shows support@joinhalka.com (needs a new build).
 
 ## 4. Nice-to-haves
 
@@ -140,8 +161,15 @@ Built and committed but only checked in a browser preview or not at all.
   hook could pick the language from the profile.
 - [ ] **Native Google sign-in** — Google's account sheet instead of the browser page
   (needs Android SHA-1 + iOS client IDs and `@react-native-google-signin`).
-- [ ] **Supabase custom domain** — so Google's sign-in screen says your domain instead
-  of `…supabase.co`.
+- [ ] **Supabase custom domain** — e.g. `auth.joinhalka.com` (paid add-on, needs a paid
+  plan), so Google's sign-in screen can say Halka instead of `…supabase.co` (see §2).
+- [ ] **App links for joinhalka.com** [code] — iOS universal links + Android app links
+  (`app.json` associated domains / intent filters, plus `apple-app-site-association`
+  and `assetlinks.json` on the website), so email links open the app directly instead
+  of the "Open the Halka app" step (`src/components/AppHandoff.tsx`).
+- [ ] **Reply as support@joinhalka.com from Gmail** [you] — Gmail → Settings → Accounts
+  → "Send mail as": SMTP `smtp.resend.com`, port 587, user `resend`, a separate Resend
+  API key.
 - [ ] **Sign in with Apple on Android and web** — needs an Apple Services ID and key.
 - [ ] **"Meet people going"** link on an event, opening Discover with its attendees.
 - [ ] **Circle members page at scale** — search and "People you know" grouping once
