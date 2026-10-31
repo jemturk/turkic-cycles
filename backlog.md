@@ -113,8 +113,8 @@ The stores would reject the app, or it would break for real users, without these
 ## 2b. Business and security
 
 - [ ] **LLC** [you, then code] — then move the domain registrant (Cloudflare), the
-  developer accounts and Stripe to it, and change `LEGAL_OWNER` in
-  `src/constants/legal.ts`.
+  developer accounts and Stripe to it, and name it as the operator in
+  `src/constants/legal.ts` (Privacy Policy and Terms intros).
 - [ ] **Data processing agreements** [you] — accept/sign the DPAs of Supabase, Resend,
   Sentry, RevenueCat, Stripe, Google Cloud, Cloudflare and Expo.
 - [ ] **Two-factor sign-in on every service account** [you] — Supabase, Cloudflare,

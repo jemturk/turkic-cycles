@@ -7,8 +7,7 @@
 // doesn't match the app is itself grounds for store rejection. Bump LEGAL_UPDATED
 // on every change.
 
-export const LEGAL_UPDATED = "October 30, 2026";
-export const LEGAL_OWNER = "Jem Turk";
+export const LEGAL_UPDATED = "October 31, 2026";
 export const LEGAL_CONTACT = "support@joinhalka.com";
 export const APP_NAME = "Halka";
 
@@ -23,8 +22,8 @@ export type LegalDocument = { title: string; intro: string; sections: LegalSecti
 export const PRIVACY_POLICY: LegalDocument = {
   title: "Privacy Policy",
   intro:
-    `${APP_NAME} ("the app", "we", "us") is operated by ${LEGAL_OWNER}, based in the United States, who is ` +
-    "responsible for your personal information (the \"controller\" under European data protection law). This " +
+    `${APP_NAME} ("the app", "we", "us") is based in the United States and is responsible for your personal ` +
+    "information (the \"controller\" under European data protection law). This " +
     "policy explains what the app collects, why, how matching uses it, who it's shared with, how long it's " +
     "kept, and the choices and rights you have.",
   sections: [
@@ -241,7 +240,7 @@ export const PRIVACY_POLICY: LegalDocument = {
     },
     {
       heading: "Contact",
-      body: [`Questions or requests about your privacy: ${LEGAL_OWNER}, ${LEGAL_CONTACT}.`],
+      body: [`Questions or requests about your privacy: ${LEGAL_CONTACT}.`],
     },
   ],
 };
@@ -249,7 +248,7 @@ export const PRIVACY_POLICY: LegalDocument = {
 export const TERMS_OF_SERVICE: LegalDocument = {
   title: "Terms of Service",
   intro:
-    `These terms are an agreement between you and ${LEGAL_OWNER}, who operates ${APP_NAME}. By creating an ` +
+    `These terms are an agreement between you and ${APP_NAME} ("we", "us"). By creating an ` +
     "account or using the app, you agree to them and to our Privacy Policy. If you don't agree, please don't " +
     "use the app.",
   sections: [
@@ -381,7 +380,7 @@ export const TERMS_OF_SERVICE: LegalDocument = {
     },
     {
       heading: "Contact",
-      body: [`Questions about these terms: ${LEGAL_OWNER}, ${LEGAL_CONTACT}.`],
+      body: [`Questions about these terms: ${LEGAL_CONTACT}.`],
     },
   ],
 };
@@ -494,8 +493,7 @@ export const CHILD_SAFETY: LegalDocument = {
     {
       heading: "Contact",
       body: [
-        `Our designated contact for child safety, including questions from authorities, is ${LEGAL_OWNER}, ` +
-          `${LEGAL_CONTACT}.`,
+        `Our designated contact for child safety, including questions from authorities, is ${LEGAL_CONTACT}.`,
       ],
     },
   ],

@@ -38,8 +38,8 @@ describe("safetyAlerts", () => {
   });
 
   it("writes who, where, when and the check-in time into the plan text", () => {
-    const text = planMessage(t, plan, "Jem");
-    expect(text).toContain('"name":"Jem"');
+    const text = planMessage(t, plan, "Aylin");
+    expect(text).toContain('"name":"Aylin"');
     expect(text).toContain('"meetingWith":"Aylin"');
     expect(text).toContain('"location":"Salem St Cafe"');
     expect(text).toContain('"checkIn":"8:30 PM"');
