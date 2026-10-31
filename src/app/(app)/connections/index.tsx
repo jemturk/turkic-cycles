@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Image, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
+import { Image } from "expo-image";
 import { Text } from "@/components/Text";
 import { EmptyState } from "@/components/EmptyState";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -141,7 +142,7 @@ function PersonCard({
               moves to a corner. */}
           <Image
             source={{ uri: cover }}
-            resizeMode="cover"
+            contentFit="cover"
             style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
             accessibilityIgnoresInvertColors
           />

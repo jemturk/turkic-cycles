@@ -1,4 +1,5 @@
-import { Image, View } from "react-native";
+import { View } from "react-native";
+import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
@@ -44,7 +45,7 @@ export function DiscoverCardView({
       {cover ? (
         <Image
           source={{ uri: cover }}
-          resizeMode="cover"
+          contentFit="cover"
           style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
           accessibilityIgnoresInvertColors
         />

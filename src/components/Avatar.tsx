@@ -1,4 +1,5 @@
-import { Image, View } from "react-native";
+import { View } from "react-native";
+import { Image } from "expo-image";
 import { Text } from "@/components/Text";
 import { useTranslation } from "react-i18next";
 

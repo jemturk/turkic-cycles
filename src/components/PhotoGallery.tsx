@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Image, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
+import { Image } from "expo-image";
 import { Text } from "@/components/Text";
 import { useTranslation } from "react-i18next";
 

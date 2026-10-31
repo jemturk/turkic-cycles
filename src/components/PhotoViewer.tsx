@@ -1,4 +1,5 @@
-import { Image, Modal, Pressable, View } from "react-native";
+import { Modal, Pressable, View } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -25,7 +26,7 @@ export function PhotoViewer({
   return (
     <Modal visible={index !== null} transparent animationType="fade" onRequestClose={onClose}>
       <View className="flex-1 items-center justify-center bg-black/90" style={{ paddingTop: insets.top }}>
-        {uri ? <Image source={{ uri }} style={{ width: "100%", height: "70%" }} resizeMode="contain" /> : null}
+        {uri ? <Image source={{ uri }} style={{ width: "100%", height: "70%" }} contentFit="contain" /> : null}
 
         <Pressable
           className="absolute right-4 items-center justify-center rounded-full bg-black/50 p-2"
