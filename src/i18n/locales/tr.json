@@ -112,7 +112,6 @@
     "goingCount_other": "{{count}} katılıyor",
     "interestedCount_one": "{{count}} ilgileniyor",
     "interestedCount_other": "{{count}} ilgileniyor",
-    "local": "Yerel",
     "localHint": "Yalnızca 50 mil içindeki çemberler",
     "locationDenied": "Yakınındaki etkinlikleri görmek için konum erişimine izin ver.",
     "locationUnavailable": "Konumun alınamadı. Tekrar dene.",

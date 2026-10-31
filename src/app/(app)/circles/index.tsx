@@ -1,4 +1,4 @@
-import { Pressable, Switch, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -14,6 +14,7 @@ import {
 } from "@/hooks/useCircles";
 import { useCanHost } from "@/hooks/useCanHost";
 import { useIsNearby, useLocalFilter } from "@/stores/localFilter";
+import { ToggleChip } from "@/components/ToggleChip";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
@@ -39,6 +40,7 @@ function CirclesPhone() {
   const localStatus = useLocalFilter((s) => s.status);
   const setLocalEnabled = useLocalFilter((s) => s.setEnabled);
   const isNearby = useIsNearby();
+  const nearMeOn = localEnabled || localStatus === "locating";
 
   const joinedIds = new Set(memberships ?? []);
 
@@ -55,7 +57,16 @@ function CirclesPhone() {
         className="flex-1 px-6 pt-4"
         contentContainerClassName="gap-4 pb-10"
       >
-        <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.subtitle")}</Text>
+        {/* The intro with the Near me filter beside it, as on desktop. */}
+        <View className="flex-row items-start gap-3">
+          <Text className="flex-1 text-base text-ink-700 dark:text-ink-200">{t("circles.subtitle")}</Text>
+          <ToggleChip
+            label={t("circles.nearMe")}
+            on={nearMeOn}
+            onPress={() => setLocalEnabled(!nearMeOn)}
+            accessibilityHint={t("circles.localHint")}
+          />
+        </View>
 
         {/* Plus with a verified ID, admins included (migration 0035); nobody else sees it. */}
         {canHost ? (
@@ -69,17 +80,6 @@ function CirclesPhone() {
           </Pressable>
         ) : null}
 
-        <View className="flex-row items-center justify-between gap-3 rounded-2xl bg-white dark:bg-ink-800 px-4 py-3">
-          <View className="flex-1">
-            <Text className="text-base text-ink-900 dark:text-ink-50">{t("circles.local")}</Text>
-            <Text className="text-xs text-ink-400 dark:text-ink-300">{t("circles.localHint")}</Text>
-          </View>
-          <Switch
-            value={localEnabled || localStatus === "locating"}
-            disabled={localStatus === "locating"}
-            onValueChange={(on) => setLocalEnabled(on)}
-          />
-        </View>
         {localStatus === "denied" || localStatus === "unavailable" ? (
           <Text className="-mt-2 text-xs text-accent-600">
             {localStatus === "denied" ? t("circles.locationDenied") : t("circles.locationUnavailable")}

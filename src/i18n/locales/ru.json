@@ -120,7 +120,6 @@
     "interestedCount_few": "{{count}} интересуются",
     "interestedCount_many": "{{count}} интересуются",
     "interestedCount_other": "{{count}} интересуются",
-    "local": "Рядом",
     "localHint": "Только круги в радиусе 50 миль",
     "locationDenied": "Разрешите доступ к геолокации, чтобы видеть события рядом с вами.",
     "locationUnavailable": "Не удалось определить ваше местоположение. Попробуйте ещё раз.",

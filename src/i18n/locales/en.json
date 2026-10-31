@@ -112,7 +112,6 @@
     "goingCount_other": "{{count}} going",
     "interestedCount_one": "{{count}} interested",
     "interestedCount_other": "{{count}} interested",
-    "local": "Local",
     "localHint": "Only circles within 50 miles of you",
     "locationDenied": "Allow location access to see events near you.",
     "locationUnavailable": "Couldn't get your location. Try again.",

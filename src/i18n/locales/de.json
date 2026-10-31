@@ -112,7 +112,6 @@
     "goingCount_other": "{{count}} nehmen teil",
     "interestedCount_one": "{{count}} interessiert",
     "interestedCount_other": "{{count}} interessiert",
-    "local": "Lokal",
     "localHint": "Nur Kreise im Umkreis von 50 Meilen",
     "locationDenied": "Erlaube den Standortzugriff, um Veranstaltungen in deiner Nähe zu sehen.",
     "locationUnavailable": "Standort konnte nicht ermittelt werden. Versuch es noch einmal.",

@@ -17,6 +17,7 @@ import { useIsNearby, useLocalFilter } from "@/stores/localFilter";
 import { useSearchOverlay } from "@/stores/searchOverlay";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { UpcomingEventsRail } from "@/components/UpcomingEventsRail";
+import { ToggleChip } from "@/components/ToggleChip";
 
 type Circle = NonNullable<ReturnType<typeof useCircles>["data"]>[number];
 
@@ -56,27 +57,6 @@ function Segmented({
 // Near me: an extra filter on top of either, so it looks like a switch, not a third
 // choice -- a pin that fills and a check when it's on, in a pale tint rather than the
 // segmented control's solid teal.
-function ToggleChip({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
-  return (
-    <Pressable
-      accessibilityRole="switch"
-      aria-checked={on}
-      onPress={onPress}
-      className={`h-9 flex-row items-center gap-1.5 rounded-full border px-3.5 ${
-        on
-          ? "border-primary-500 bg-primary-100 dark:border-primary-400 dark:bg-ink-700"
-          : "border-primary-100 bg-white web:hover:bg-primary-100/40 dark:border-ink-700 dark:bg-ink-800"
-      }`}
-    >
-      <Ionicons name={on ? "location" : "location-outline"} size={16} color={on ? "#0E6470" : "#6B5E58"} />
-      <Text className={`text-sm ${on ? "font-semibold text-primary-600 dark:text-primary-400" : "text-ink-900 dark:text-ink-50"}`}>
-        {label}
-      </Text>
-      {on ? <Ionicons name="checkmark" size={16} color="#0E6470" /> : null}
-    </Pressable>
-  );
-}
-
 // The Circles tab on desktop web (circles/index.tsx picks it on a wide window):
 // a large title with search and New circle beside it, filter chips, a grid of
 // same-sized circle cards, and the next events in your circles down the right.
