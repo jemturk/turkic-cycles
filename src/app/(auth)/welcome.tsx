@@ -326,12 +326,9 @@ export default function Welcome() {
                       )}
 
                       <View className="w-full items-center gap-3">
-                        {/* The first slide's title is the app's name, in the brand teal. */}
-                        <Text
-                          className={`w-full text-center font-display text-3xl ${
-                            i === 0 ? "text-primary-500" : "text-ink-900 dark:text-ink-50"
-                          }`}
-                        >
+                        {/* The first slide's title is the app's name, in ink like the others: the logo
+                            above it brings the colour, and the teal Next button stays the one accent. */}
+                        <Text className="w-full text-center font-display text-3xl text-ink-900 dark:text-ink-50">
                           {t(s.titleKey)}
                         </Text>
                         <Text className="w-full max-w-[320px] text-center text-base leading-6 text-ink-700 dark:text-ink-200">
