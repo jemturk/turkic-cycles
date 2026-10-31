@@ -58,8 +58,38 @@ export function useMessageThreads(userId: string | undefined) {
     }, [userId])
   );
 
+  // The latest conversations are fetched ahead, not only once opened, so they're
+  // saved on the device (lib/queryClient.ts) and open offline. Only those with a
+  // message newer than what's saved, so a refetch of the list costs nothing.
+  const queryClient = useQueryClient();
+  const threads = query.data;
+  useEffect(() => {
+    if (!userId || !threads) return;
+    for (const thread of threads.slice(0, PREFETCHED_THREADS)) {
+      const saved = queryClient.getQueryData<Tables<"messages">[]>(["messages", thread.matchId]);
+      const savedUpTo = saved?.[saved.length - 1]?.created_at;
+      if (savedUpTo && savedUpTo >= thread.lastMessageAt) continue;
+      queryClient.prefetchQuery({
+        queryKey: ["messages", thread.matchId],
+        queryFn: () => listMessages(thread.matchId),
+      });
+      queryClient.prefetchQuery({
+        queryKey: ["messageReactions", thread.matchId],
+        queryFn: () => listReactions(thread.matchId),
+      });
+      queryClient.prefetchQuery({
+        queryKey: ["matchParticipant", thread.matchId, userId],
+        queryFn: () => getOtherParticipant(thread.matchId, userId),
+        staleTime: Infinity,
+      });
+    }
+  }, [threads, userId, queryClient]);
+
   return query;
 }
+
+// How many of the most recent conversations useMessageThreads fetches ahead.
+const PREFETCHED_THREADS = 15;
 
 // Total unread messages across every conversation -- the desktop sidebar's Chat
 // badge. Besides the thread list's own refetches, any new message that reaches
