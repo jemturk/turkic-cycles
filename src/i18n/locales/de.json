@@ -382,7 +382,8 @@
     "interestsMin": "Wähle mindestens 3 Interessen",
     "meetingFormat": "Wie triffst du dich am liebsten?",
     "meetingFormatRequired": "Wähle, wie du dich treffen möchtest",
-    "availability": "Wann hast du meistens Zeit?"
+    "availability": "Wann hast du meistens Zeit?",
+    "missingAnswers": "Einige Angaben fehlen. Die betroffenen Bereiche sind rot umrandet."
   },
   "common": {
     "member": "Mitglied",

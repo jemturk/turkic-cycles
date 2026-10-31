@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react";
+import type { ComponentProps, ComponentRef } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { cssInterop } from "nativewind";
 
@@ -9,6 +9,9 @@ cssInterop(KeyboardAwareScrollView, {
   className: "style",
   contentContainerClassName: "contentContainerStyle",
 });
+
+// For scrolling it from the screen (ref={...}; it passes through to the scroll view).
+export type FormScrollViewRef = ComponentRef<typeof KeyboardAwareScrollView>;
 
 type FormScrollViewProps = ComponentProps<typeof KeyboardAwareScrollView> & {
   className?: string;

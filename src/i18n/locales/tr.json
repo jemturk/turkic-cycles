@@ -382,7 +382,8 @@
     "interestsMin": "En az 3 ilgi alanı seçin",
     "meetingFormat": "Nasıl buluşmayı seversin?",
     "meetingFormatRequired": "Nasıl buluşmak istediğini seç",
-    "availability": "Genelde ne zaman müsaitsin?"
+    "availability": "Genelde ne zaman müsaitsin?",
+    "missingAnswers": "Bazı yanıtlar eksik. Eksik olan bölümler kırmızıyla çerçevelendi."
   },
   "common": {
     "member": "Üye",

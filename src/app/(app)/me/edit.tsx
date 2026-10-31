@@ -1,10 +1,10 @@
-import { useMemo } from "react";
-import { ActivityIndicator, Pressable, View } from "react-native";
+import { useMemo, useRef } from "react";
+import { ActivityIndicator, Pressable, View, type LayoutChangeEvent } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useForm, useWatch, useController, Controller, type Resolver } from "react-hook-form";
+import { useForm, useWatch, useController, Controller, type FieldErrors, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 
@@ -30,7 +30,7 @@ import { ChipGroup } from "@/components/ChipGroup";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { SegmentedToggle } from "@/components/SegmentedToggle";
 import { BranchingQuestionsFields } from "@/components/BranchingQuestionsFields";
-import { FormScrollView } from "@/components/FormScrollView";
+import { FormScrollView, type FormScrollViewRef } from "@/components/FormScrollView";
 import { LocationFields } from "@/components/LocationFields";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
@@ -40,6 +40,43 @@ import { TAG_TONES } from "@/constants/tagTones";
 
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
+
+// The white cards the fields are grouped into, so a failed Save can outline the cards
+// with something missing and scroll to the first one -- the field's own error text is
+// often a long way above the Save button.
+type Section = "about" | "lookingFor" | "location" | "languages" | "meeting" | "travel" | "background";
+
+const SECTION_OF_FIELD: Partial<Record<string, Section>> = {
+  displayName: "about",
+  bio: "about",
+  occupation: "about",
+  connectionTypes: "lookingFor",
+  country: "location",
+  city: "location",
+  state: "location",
+  languages: "languages",
+  interests: "languages",
+  hobbies: "languages",
+  meetingFormat: "meeting",
+  availability: "meeting",
+  travelFrequency: "travel",
+  travelStyle: "travel",
+  usResidency: "background",
+  usCitizenship: "background",
+  europeanCitizenship: "background",
+  originCountries: "background",
+  consentOriginCountries: "background",
+};
+
+// Anything else is an answer for a connection type (BranchingQuestionsFields), which
+// sits under "Looking for".
+function sectionsWithErrors(errors: FieldErrors<ProfileEditValues>): Set<Section> {
+  return new Set(
+    Object.keys(errors)
+      .filter((field) => field !== "root")
+      .map((field) => SECTION_OF_FIELD[field] ?? "lookingFor"),
+  );
+}
 
 export default function ProfileEdit() {
   const { t } = useTranslation();
@@ -104,6 +141,31 @@ export default function ProfileEdit() {
   const onSubmit = (formValues: ProfileEditValues) => {
     saveProfileEdit.mutate(formValues, { onSuccess: () => router.back() });
   };
+
+  const scrollRef = useRef<FormScrollViewRef>(null);
+  // Each card's y within its parent; on desktop the cards sit in two columns, so add
+  // the columns' own y.
+  const sectionY = useRef<Partial<Record<Section, number>>>({});
+  const columnsY = useRef(0);
+  const trackSection = (section: Section, event: LayoutChangeEvent) => {
+    sectionY.current[section] = event.nativeEvent.layout.y;
+  };
+
+  const onInvalid = (invalid: FieldErrors<ProfileEditValues>) => {
+    const ys = [...sectionsWithErrors(invalid)]
+      .map((section) => sectionY.current[section])
+      .filter((y): y is number => y !== undefined);
+    if (ys.length === 0) return;
+    const top = Math.min(...ys) + (wide ? columnsY.current : 0);
+    scrollRef.current?.scrollTo({ y: Math.max(0, top - 16), animated: true });
+  };
+
+  // Filled in only after a Save attempt, then kept up to date as answers change, so
+  // the outlines go as each card is completed.
+  const missing = sectionsWithErrors(errors);
+  // The border is always there (transparent when fine) so outlining doesn't shift the layout.
+  const cardClass = (base: string, section: Section) =>
+    `${base} border-2 ${missing.has(section) ? "border-accent-500 dark:border-accent-400" : "border-transparent"}`;
 
   if (isLoading || !values) {
     return (
@@ -383,9 +445,17 @@ export default function ProfileEdit() {
     <Button
       label={saveProfileEdit.isPending ? t("common.saving") : t("common.saveChanges")}
       disabled={saveProfileEdit.isPending}
-      onPress={handleSubmit(onSubmit)}
+      onPress={() => handleSubmit(onSubmit, onInvalid)()}
     />
   );
+
+  const missingNotice =
+    missing.size > 0 ? (
+      <View className="flex-row items-start gap-2">
+        <Ionicons name="alert-circle" size={18} className="text-accent-600 dark:text-accent-400" />
+        <Text className="flex-1 text-sm text-accent-600 dark:text-accent-400">{t("fields.missingAnswers")}</Text>
+      </View>
+    ) : null;
 
   const phoneCard = "gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800";
 
@@ -396,6 +466,7 @@ export default function ProfileEdit() {
     return (
       <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
         <FormScrollView
+          ref={scrollRef}
           className="flex-1"
           contentContainerClassName="gap-6 px-20 pb-12 pt-9"
           showsVerticalScrollIndicator={false}
@@ -414,32 +485,42 @@ export default function ProfileEdit() {
             </Text>
             <View className="w-48">{saveButton}</View>
           </View>
+          {missingNotice}
 
-          <View className="flex-row items-start gap-6">
+          <View
+            className="flex-row items-start gap-6"
+            onLayout={(event) => {
+              columnsY.current = event.nativeEvent.layout.y;
+            }}
+          >
             <View className="flex-1 gap-4">
-              <View className={card}>
+              <View className={cardClass(card, "about")} onLayout={(event) => trackSection("about", event)}>
                 {nameField}
                 {bioField}
                 {occupationField}
               </View>
-              <View className={card}>{locationField}</View>
-              <View className={card}>
+              <View className={cardClass(card, "location")} onLayout={(event) => trackSection("location", event)}>
+                {locationField}
+              </View>
+              <View className={cardClass(card, "lookingFor")} onLayout={(event) => trackSection("lookingFor", event)}>
                 {lookingForField}
                 {branchingField}
               </View>
             </View>
             <View className="flex-1 gap-4">
               <View className={card}>{photosField}</View>
-              <View className={card}>
+              <View className={cardClass(card, "languages")} onLayout={(event) => trackSection("languages", event)}>
                 {languagesField}
                 {interestsField}
               </View>
-              <View className={card}>{meetingField}</View>
-              <View className={card}>
+              <View className={cardClass(card, "meeting")} onLayout={(event) => trackSection("meeting", event)}>
+                {meetingField}
+              </View>
+              <View className={cardClass(card, "travel")} onLayout={(event) => trackSection("travel", event)}>
                 {travelFrequencyField}
                 {travelStyleField}
               </View>
-              <View className={card}>
+              <View className={cardClass(card, "background")} onLayout={(event) => trackSection("background", event)}>
                 {usResidencyField}
                 {usCitizenshipField}
                 {europeanCitizenshipField}
@@ -457,7 +538,7 @@ export default function ProfileEdit() {
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
       {/* The desktop layout's cards, stacked in one column. */}
-      <FormScrollView className="flex-1 px-4 pt-4" contentContainerClassName="gap-4 pb-10">
+      <FormScrollView ref={scrollRef} className="flex-1 px-4 pt-4" contentContainerClassName="gap-4 pb-10">
         <View className="gap-2">
           <Pressable
             accessibilityLabel={t("common.back")}
@@ -470,27 +551,31 @@ export default function ProfileEdit() {
           <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("fields.editProfileHeading")}</Text>
         </View>
 
-        <View className={phoneCard}>
+        <View className={cardClass(phoneCard, "about")} onLayout={(event) => trackSection("about", event)}>
           {nameField}
           {bioField}
           {occupationField}
         </View>
         <View className={phoneCard}>{photosField}</View>
-        <View className={phoneCard}>
+        <View className={cardClass(phoneCard, "lookingFor")} onLayout={(event) => trackSection("lookingFor", event)}>
           {lookingForField}
           {branchingField}
         </View>
-        <View className={phoneCard}>{locationField}</View>
-        <View className={phoneCard}>
+        <View className={cardClass(phoneCard, "location")} onLayout={(event) => trackSection("location", event)}>
+          {locationField}
+        </View>
+        <View className={cardClass(phoneCard, "languages")} onLayout={(event) => trackSection("languages", event)}>
           {languagesField}
           {interestsField}
         </View>
-        <View className={phoneCard}>{meetingField}</View>
-        <View className={phoneCard}>
+        <View className={cardClass(phoneCard, "meeting")} onLayout={(event) => trackSection("meeting", event)}>
+          {meetingField}
+        </View>
+        <View className={cardClass(phoneCard, "travel")} onLayout={(event) => trackSection("travel", event)}>
           {travelFrequencyField}
           {travelStyleField}
         </View>
-        <View className={phoneCard}>
+        <View className={cardClass(phoneCard, "background")} onLayout={(event) => trackSection("background", event)}>
           {usResidencyField}
           {usCitizenshipField}
           {europeanCitizenshipField}
@@ -498,7 +583,10 @@ export default function ProfileEdit() {
           {consentField}
           {consentErrorField}
         </View>
-        <View className="mt-2">{saveButton}</View>
+        <View className="mt-2 gap-3">
+          {missingNotice}
+          {saveButton}
+        </View>
       </FormScrollView>
     </SafeAreaView>
   );

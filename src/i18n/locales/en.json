@@ -382,7 +382,8 @@
     "interestsMin": "Pick at least 3 interests",
     "meetingFormat": "How do you like to meet?",
     "meetingFormatRequired": "Choose how you like to meet",
-    "availability": "When are you usually free?"
+    "availability": "When are you usually free?",
+    "missingAnswers": "Some answers are missing. The sections that need them are outlined in red."
   },
   "common": {
     "member": "Member",
