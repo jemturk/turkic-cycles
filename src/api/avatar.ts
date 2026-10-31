@@ -8,8 +8,8 @@ const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
   "image/webp": "webp",
 };
 
-export async function uploadAvatar(userId: string, pickedUri: string, pickedMimeType: string) {
-  const { uri, mimeType } = await toUploadableImage(pickedUri, pickedMimeType);
+export async function uploadAvatar(userId: string, pickedUri: string) {
+  const { uri, mimeType } = await toUploadableImage(pickedUri);
   const extension = EXTENSION_BY_MIME_TYPE[mimeType] ?? "jpg";
   const path = `${userId}/avatar.${extension}`;
 

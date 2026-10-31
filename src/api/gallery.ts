@@ -50,10 +50,9 @@ export async function listProfilePhotos(userId: string): Promise<ProfilePhoto[]>
 export async function addProfilePhoto(
   userId: string,
   pickedUri: string,
-  pickedMimeType: string,
   position: number
 ): Promise<ProfilePhoto> {
-  const { uri, mimeType } = await toUploadableImage(pickedUri, pickedMimeType);
+  const { uri, mimeType } = await toUploadableImage(pickedUri);
   const extension = EXTENSION_BY_MIME_TYPE[mimeType] ?? "jpg";
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
   const path = `${userId}/gallery/${filename}`;

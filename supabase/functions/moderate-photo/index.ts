@@ -21,6 +21,8 @@
 // stops a script running up Vision charges; MAX_REJECTIONS_PER_DAY stops someone
 // probing the filter. Members who keep getting rejected: photo_moderation_offenders.
 //
+// The published copy has the camera's location taken out (_shared/photoLocation.ts).
+//
 // Published files get a short cache (PUBLIC_CACHE_SECONDS) instead of Storage's
 // default hour, so a photo the member deletes stops loading from caches quickly.
 //
@@ -29,6 +31,7 @@
 // Deploy with: supabase functions deploy moderate-photo  (JWT verification on)
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { encodeBase64 } from "jsr:@std/encoding@1/base64";
+import { removePhotoLocation } from "../_shared/photoLocation.ts";
 
 const UPLOAD_BUCKET = "photo-uploads";
 const PUBLIC_BUCKET = "avatars";
@@ -118,7 +121,7 @@ Deno.serve(async (req) => {
 
   const { data: file, error: downloadError } = await admin.storage.from(UPLOAD_BUCKET).download(path);
   if (downloadError || !file) return json({ error: "upload not found" }, 404);
-  const image = new Uint8Array(await file.arrayBuffer());
+  const image = removePhotoLocation(new Uint8Array(await file.arrayBuffer()));
 
   let scores: SafeSearch;
   try {

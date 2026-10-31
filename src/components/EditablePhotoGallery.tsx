@@ -19,7 +19,7 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
 const COLUMNS = 3;
 const GAP = 8;
 
-type NewPhoto = { uri: string; mimeType: string };
+type NewPhoto = { uri: string };
 
 // A cover change waiting on the preview: a new upload, or the photos in the order
 // they'll take if confirmed (the first one becoming the cover).
@@ -283,7 +283,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
     });
     if (result.canceled || result.assets.length === 0) return;
     const asset = result.assets[0];
-    setPendingCover({ kind: "upload", asset: { uri: asset.uri, mimeType: asset.mimeType ?? "image/jpeg" } });
+    setPendingCover({ kind: "upload", asset: { uri: asset.uri } });
   }
 
   // The regular "+": any number of non-cover photos at once (cropping and
@@ -303,7 +303,7 @@ export function EditablePhotoGallery({ userId, photos }: { userId: string; photo
     });
     if (result.canceled || result.assets.length === 0) return;
     addPhotos.mutate(
-      { photos: result.assets.map((asset) => ({ uri: asset.uri, mimeType: asset.mimeType ?? "image/jpeg" })) },
+      { photos: result.assets.map((asset) => ({ uri: asset.uri })) },
       { onError: (error) => showAlert(t("gallery.uploadErrorTitle"), photoUploadErrorMessage(error, t)) }
     );
   }

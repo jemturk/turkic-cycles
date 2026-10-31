@@ -19,7 +19,7 @@ export function useProfilePhotos(userId: string | undefined) {
   });
 }
 
-type NewPhoto = { uri: string; mimeType: string };
+type NewPhoto = { uri: string };
 
 export function useAddProfilePhotos(userId: string | undefined) {
   const queryClient = useQueryClient();
@@ -38,7 +38,7 @@ export function useAddProfilePhotos(userId: string | undefined) {
       let nextPosition = asCover ? COVER_POSITION : highest + 1;
       const uploaded: ProfilePhoto[] = [];
       for (const photo of photos) {
-        uploaded.push(await addProfilePhoto(userId as string, photo.uri, photo.mimeType, nextPosition));
+        uploaded.push(await addProfilePhoto(userId as string, photo.uri, nextPosition));
         nextPosition = asCover ? highest + 1 : nextPosition + 1;
       }
       return uploaded;

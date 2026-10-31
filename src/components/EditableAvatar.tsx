@@ -71,7 +71,7 @@ export function EditableAvatar({ userId, uri, name, size }: EditableAvatarProps)
 
     const asset = result.assets[0];
     uploadAvatar.mutate(
-      { uri: asset.uri, mimeType: asset.mimeType ?? "image/jpeg" },
+      { uri: asset.uri },
       { onError: (error) => showAlert(t("avatar.uploadErrorTitle"), photoUploadErrorMessage(error, t)) },
     );
   }
