@@ -30,6 +30,7 @@ import { useWideLayout } from "@/hooks/useWideLayout";
 import { useQueryClient } from "@tanstack/react-query";
 import type { MessageThread } from "@/api/chat";
 import { useIsOnline } from "@/hooks/useIsOnline";
+import { EmptyState } from "@/components/EmptyState";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { outgoingAsRow } from "@/lib/outbox";
 import { SAVED_MESSAGES_PER_THREAD } from "@/lib/queryClient";
@@ -382,7 +383,8 @@ export default function ChatThread() {
       {/* Lifts the message list and the input above the keyboard -- the input
           is pinned to the bottom, so without this the keyboard covers it. */}
       <KeyboardAvoidingView key={keyboardWrapperKey} behavior="padding" style={{ flex: 1 }}>
-        <OfflineBanner label={t("chat.offlineLatest")} top={8} />
+        {/* "Showing latest messages" only when some are saved on the device. */}
+        <OfflineBanner label={savedMessages ? t("chat.offlineLatest") : undefined} top={8} />
         <ScrollView
           ref={scrollRef}
           // The lighter cream behind the messages (rather than the page's) keeps the
@@ -390,7 +392,8 @@ export default function ChatThread() {
           className={
             wide ? "flex-1 bg-[#FFFAF4] px-6 pt-5 dark:bg-ink-900" : "flex-1 bg-[#FFFAF4] px-4 pt-4 dark:bg-ink-900"
           }
-          contentContainerClassName="grow pb-4"
+          // Offline, room at the top for the floating offline pill.
+          contentContainerClassName={online ? "grow pb-4" : "grow pb-4 pt-9"}
           // After the new content has laid out, not when the state changes: scrolling
           // from an effect ran before a new message or the typing bubble had any
           // height, stopping short and leaving it half behind the input bar.
@@ -448,11 +451,14 @@ export default function ChatThread() {
             style={{ cursor: "auto" } as never}
           >
             {/* Offline: only what's saved on the device (the latest 50 per conversation)
-                is here, so the top of the list says why there's nothing older. */}
-            {!online && (!savedMessages || savedMessages.length >= SAVED_MESSAGES_PER_THREAD) ? (
-              <Text className="text-center text-xs text-ink-400 dark:text-ink-300">
-                {savedMessages ? t("chat.offlineOlder") : t("chat.offlineMessages")}
-              </Text>
+                is here, so the top of the list says why there's nothing older -- below
+                the floating offline pill, not under it. Nothing saved at all (never
+                opened on this device): an empty state in the middle instead. */}
+            {!online && !messages ? (
+              <EmptyState icon="cloud-offline-outline" label={t("chat.offlineMessages")} />
+            ) : null}
+            {!online && savedMessages && savedMessages.length >= SAVED_MESSAGES_PER_THREAD ? (
+              <Text className="text-center text-xs text-ink-400 dark:text-ink-300">{t("chat.offlineOlder")}</Text>
             ) : null}
             {participant?.match ? (
               <Text className="text-center text-xs text-ink-400 dark:text-ink-300">
