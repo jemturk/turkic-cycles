@@ -179,7 +179,11 @@ Built and committed but only checked in a browser preview or not at all.
 - [ ] **Reply as support@joinhalka.com from Gmail** [you] — Gmail → Settings → Accounts
   → "Send mail as": SMTP `smtp.resend.com`, port 587, user `resend`, a separate Resend
   API key.
-- [ ] **Sign in with Apple on Android and web** — needs an Apple Services ID and key.
+- [ ] **Sign in with Apple on Android and web** — needs an Apple Services ID and key
+  (Supabase's secret made from the key expires every 6 months). Do it with the iPhone
+  setup: someone who signs up on iPhone with Apple (often "Hide my email") has no
+  password, so without it they can only get into the website or Android through
+  Forgot password.
 - [ ] **"Meet people going"** link on an event, opening Discover with its attendees.
 - [ ] **Circle members page at scale** — search and "People you know" grouping once
   circles get big (the list-style option A from the mockups).
