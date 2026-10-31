@@ -80,6 +80,12 @@
       "invalidLink": "Dieser Bestätigungslink ist ungültig oder abgelaufen.",
       "backToLogin": "Zurück zur Anmeldung"
     },
+    "appHandoff": {
+      "title": "Halka öffnen",
+      "body": "Du hast diesen Link in der Halka-App angefordert. Öffne die App, um weiterzumachen, oder fahre hier im Browser fort.",
+      "open": "Halka-App öffnen",
+      "browser": "Im Browser fortfahren"
+    },
     "social": {
       "or": "oder",
       "google": "Weiter mit Google",
@@ -758,7 +764,7 @@
       },
       "help": {
         "title": "Hilfe & Support",
-        "body": "Fragen, Probleme oder Feedback? Schreib uns an unturkk@gmail.com, wir melden uns so schnell wie möglich. Um jemanden zu melden, öffne das Profil oder das Sicherheitscenter."
+        "body": "Fragen, Probleme oder Feedback? Schreib uns an support@joinhalka.com, wir melden uns so schnell wie möglich. Um jemanden zu melden, öffne das Profil oder das Sicherheitscenter."
       },
       "privacy": {
         "title": "Daten & Datenschutz",

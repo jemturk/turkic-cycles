@@ -18,10 +18,10 @@ Placeholders: **[NAME]** = the final app name (now "Halka"; it was "Turkic Circl
 | Bundle ID / package | `com.turek.app` | `com.turek.app` |
 | Primary category | Social Networking | Social |
 | Secondary category | Lifestyle | — (tags: Social, Community, Dating) |
-| Privacy Policy URL | https://turek.expo.app/privacy | https://turek.expo.app/privacy |
-| Terms (EULA) URL | https://turek.expo.app/terms | (in description / website) |
-| Support URL | https://turek.expo.app (or your domain) | — |
-| Support email | unturkk@gmail.com | unturkk@gmail.com |
+| Privacy Policy URL | https://joinhalka.com/privacy | https://joinhalka.com/privacy |
+| Terms (EULA) URL | https://joinhalka.com/terms | (in description / website) |
+| Support URL | https://joinhalka.com (or your domain) | — |
+| Support email | support@joinhalka.com | support@joinhalka.com |
 | Price | Free (with in-app purchases) | Free (contains in-app purchases) |
 | Contains ads | No | No |
 
@@ -76,7 +76,7 @@ Play Console → App content → Data safety.
   in the app (Settings → Delete account) and on the web (see *Account deletion URL*).
 - Account creation: **Username/email and password**, plus **OAuth** (Google, Apple).
 
-**Account deletion URL (required by Google):** https://turek.expo.app/delete-account —
+**Account deletion URL (required by Google):** https://joinhalka.com/delete-account —
 explains deleting in the app, on the website, or by email, what gets deleted, and that
 Plus must be cancelled separately.
 
@@ -163,7 +163,7 @@ can chat with and meet people they don't know.
 >
 > Available in English, Turkish, German and Russian.
 >
-> Terms: https://turek.expo.app/terms · Privacy: https://turek.expo.app/privacy
+> Terms: https://joinhalka.com/terms · Privacy: https://joinhalka.com/privacy
 
 *(Today Plus's live feature is "See who likes you"; worldwide Discover, advanced filters and more daily likes show as "coming soon". Update this line as they ship.)*
 
@@ -202,7 +202,7 @@ were taken with it.
 > - Identity verification uses Stripe Identity (ID + selfie) and is optional.
 > - Sign in with Apple and Google are offered on the Log in screen.
 >
-> Contact: unturkk@gmail.com
+> Contact: support@joinhalka.com
 
 
 ---

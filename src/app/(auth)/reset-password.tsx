@@ -10,10 +10,13 @@ import { passwordComplexitySchema } from "@/schemas/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { FormScrollView } from "@/components/FormScrollView";
+import { AppHandoff, isFromApp } from "@/components/AppHandoff";
 
 export default function ResetPassword() {
   const { t } = useTranslation();
-  const params = useLocalSearchParams<{ token_hash?: string; type?: string }>();
+  const params = useLocalSearchParams<{ token_hash?: string; type?: string; redirect_to?: string }>();
+  const [inBrowser, setInBrowser] = useState(false);
+  const handOff = !!params.token_hash && !!params.type && isFromApp(params.redirect_to) && !inBrowser;
   const [isVerifying, setIsVerifying] = useState(true);
   const [verifyError, setVerifyError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
@@ -33,10 +36,14 @@ export default function ResetPassword() {
       // recovery link for one account while still signed into a different account
       // would leave that other, unrelated session in place, and the password change
       // below would silently apply to the wrong account.
+      //
+      // Not while offering to open the app instead (AppHandoff): that would use up the
+      // code before the app gets it.
+      if (handOff) return;
       if (params.token_hash && params.type) {
         const { error } = await supabase.auth.verifyOtp({
           token_hash: params.token_hash,
-          type: params.type as "recovery",
+          type: params.type as "recovery" | "invite",
         });
         setVerifyError(error?.message ?? null);
         setIsVerifying(false);
@@ -53,7 +60,7 @@ export default function ResetPassword() {
       setIsVerifying(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.token_hash, params.type]);
+  }, [params.token_hash, params.type, handOff]);
 
   async function onSubmit() {
     const result = passwordComplexitySchema.safeParse(password);
@@ -72,6 +79,19 @@ export default function ResetPassword() {
     }
 
     router.replace("/");
+  }
+
+  if (handOff) {
+    return (
+      <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+        <AppHandoff
+          path="reset-password"
+          tokenHash={params.token_hash!}
+          type={params.type!}
+          onContinueInBrowser={() => setInBrowser(true)}
+        />
+      </SafeAreaView>
+    );
   }
 
   return (

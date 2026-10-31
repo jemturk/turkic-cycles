@@ -1,5 +1,5 @@
 // The Privacy Policy and Terms of Service, shown in the app (Settings) and at
-// turek.expo.app/privacy and /terms -- the public addresses given to the App Store
+// joinhalka.com/privacy and /terms -- the public addresses given to the App Store
 // and Google Play. In English only, as legal documents usually are.
 //
 // Written against what the app actually stores and does (see the tables in
@@ -9,7 +9,7 @@
 
 export const LEGAL_UPDATED = "October 30, 2026";
 export const LEGAL_OWNER = "Jem Turk";
-export const LEGAL_CONTACT = "unturkk@gmail.com";
+export const LEGAL_CONTACT = "support@joinhalka.com";
 export const APP_NAME = "Halka";
 
 export type LegalSection = {
@@ -166,7 +166,8 @@ export const PRIVACY_POLICY: LegalDocument = {
         "- Google Firebase Cloud Messaging and Apple Push Notification service: delivering notifications.",
         "- Google Maps Platform (Geocoding): finding the centre point of the city on your profile.",
         "- Google Cloud Vision: the automatic check of profile photos, processed only to run the check.",
-        "- Cloudflare: bot protection (Turnstile).",
+        "- Cloudflare: the website and bot protection (Turnstile).",
+        "- Resend: sending account emails, such as sign-up confirmations and password resets.",
         "- Stripe: identity verification (Stripe Identity), if you choose to get verified.",
         "- Sentry (Functional Software): crash and error reports, identified only by your account ID, to " +
           "help us fix problems.",
@@ -385,7 +386,7 @@ export const TERMS_OF_SERVICE: LegalDocument = {
   ],
 };
 
-// turek.expo.app/delete-account: how to delete an account, for people who no longer
+// joinhalka.com/delete-account: how to delete an account, for people who no longer
 // have the app. Google Play requires a public page like this (Data safety).
 export const DELETE_ACCOUNT: LegalDocument = {
   title: "Delete your account",
@@ -404,7 +405,7 @@ export const DELETE_ACCOUNT: LegalDocument = {
     {
       heading: "On the website (no app needed)",
       body: [
-        "- Go to https://turek.expo.app and sign in with the same email and password, or Google account. " +
+        "- Go to https://joinhalka.com and sign in with the same email and password, or Google account. " +
           "(Sign in with Apple works in the iPhone app only; if that's how you signed up, use the app or email us.)",
         "- Open Settings and choose Delete account, then confirm.",
       ],
@@ -437,7 +438,7 @@ export const DELETE_ACCOUNT: LegalDocument = {
   ],
 };
 
-// turek.expo.app/child-safety: published standards against child sexual abuse and
+// joinhalka.com/child-safety: published standards against child sexual abuse and
 // exploitation (CSAE). Google Play requires a public page like this for social apps.
 export const CHILD_SAFETY: LegalDocument = {
   title: "Child safety standards",

@@ -7,10 +7,13 @@ import { useTranslation } from "react-i18next";
 
 import { supabase } from "@/api/client";
 import { Button } from "@/components/Button";
+import { AppHandoff, isFromApp } from "@/components/AppHandoff";
 
 export default function ConfirmEmail() {
   const { t } = useTranslation();
-  const params = useLocalSearchParams<{ token_hash?: string; type?: string }>();
+  const params = useLocalSearchParams<{ token_hash?: string; type?: string; redirect_to?: string }>();
+  const [inBrowser, setInBrowser] = useState(false);
+  const handOff = !!params.token_hash && !!params.type && isFromApp(params.redirect_to) && !inBrowser;
   const [status, setStatus] = useState<"verifying" | "done" | "error">("verifying");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -27,10 +30,14 @@ export default function ConfirmEmail() {
       // treat that leftover session as proof this link's confirmation succeeded,
       // silently leaving the wrong account signed in instead of the one the link was
       // actually sent to.
+      //
+      // Not while offering to open the app instead (AppHandoff): that would use up the
+      // code before the app gets it.
+      if (handOff) return;
       if (params.token_hash && params.type) {
         const { error } = await supabase.auth.verifyOtp({
           token_hash: params.token_hash,
-          type: params.type as "signup" | "email",
+          type: params.type as "signup" | "email" | "magiclink" | "email_change",
         });
         if (error) {
           setErrorMessage(error.message);
@@ -51,7 +58,7 @@ export default function ConfirmEmail() {
       setStatus("error");
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.token_hash, params.type]);
+  }, [params.token_hash, params.type, handOff]);
 
   useEffect(() => {
     if (status !== "done") return;
@@ -60,6 +67,19 @@ export default function ConfirmEmail() {
     const timeout = setTimeout(() => router.replace("/"), 800);
     return () => clearTimeout(timeout);
   }, [status]);
+
+  if (handOff) {
+    return (
+      <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+        <AppHandoff
+          path="confirm"
+          tokenHash={params.token_hash!}
+          type={params.type!}
+          onContinueInBrowser={() => setInBrowser(true)}
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">

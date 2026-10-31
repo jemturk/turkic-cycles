@@ -7,7 +7,7 @@ import { Text } from "@/components/Text";
 import { Button } from "@/components/Button";
 
 // Where Stripe Identity sends a member from the phone app when they finish:
-// turek.expo.app/verification-done, the website, shown in the app's in-app browser.
+// joinhalka.com/verification-done, the website, shown in the app's in-app browser.
 // It tells them to close it; the button opens the app's Verification screen through
 // the app's link prefix, where the result shows.
 export default function VerificationDone() {

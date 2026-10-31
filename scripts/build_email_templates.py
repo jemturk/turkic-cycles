@@ -16,7 +16,7 @@ for the app's Fraunces), and the logo as a PNG served by the website.
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "supabase" / "templates"
-LOGO_URL = "https://turek.expo.app/email/logo.png"
+LOGO_URL = "https://joinhalka.com/email/logo.png"
 
 INK = "#2B2320"
 BODY = "#4A3F3A"
@@ -83,7 +83,7 @@ def page(*, preheader: str, title: str, paragraphs: list[str], action: str, note
             <td align="center" style="padding:0 0 24px;">
               <img src="{LOGO_URL}" width="48" height="48" alt="" style="display:block;border:0;">
               <div style="margin-top:10px;font-family:{SERIF};font-size:22px;font-weight:bold;color:{INK};">
-                Turkic <span style="color:{TEAL};">Circles</span>
+                Halka
               </div>
             </td>
           </tr>
@@ -97,7 +97,7 @@ def page(*, preheader: str, title: str, paragraphs: list[str], action: str, note
           <tr>
             <td align="center" style="padding:24px 16px 0;font-family:{SANS};font-size:12px;line-height:18px;color:{MUTED};">
               Halka &middot; Find your people, near you<br>
-              <a href="{{{{ .SiteURL }}}}" style="color:{MUTED};">turek.expo.app</a>
+              <a href="{{{{ .SiteURL }}}}" style="color:{MUTED};">joinhalka.com</a>
             </td>
           </tr>
         </table>
@@ -109,7 +109,16 @@ def page(*, preheader: str, title: str, paragraphs: list[str], action: str, note
 """
 
 
-URL = "{{ .ConfirmationURL }}"
+def link(page_path: str, otp_type: str) -> str:
+    # Straight to the website with the one-time code, not Supabase's
+    # {{ .ConfirmationURL }}: that one is used up by any GET, so mail scanners that
+    # open links to check them ("link expired" for the member), and it shows the
+    # supabase.co address. The page uses the code with verifyOtp, or hands it to the
+    # app when the email was asked for from there (redirect_to, src/components/AppHandoff.tsx).
+    return (f"{{{{ .SiteURL }}}}/{page_path}?token_hash={{{{ .TokenHash }}}}&amp;type={otp_type}"
+            "&amp;redirect_to={{ .RedirectTo }}")
+
+
 IGNORE = "If you didn&rsquo;t ask for this, you can safely ignore this email. Nothing will change."
 
 TEMPLATES = {
@@ -123,7 +132,7 @@ TEMPLATES = {
                 "Thanks for joining Halka. Tap the button below to confirm your email "
                 "and finish setting up your profile.",
             ],
-            action=button("Confirm my email", URL) + fallback_link(URL),
+            action=button("Confirm my email", link("confirm", "email")) + fallback_link(link("confirm", "email")),
             note="If you didn&rsquo;t create an account, you can safely ignore this email.",
         ),
     ),
@@ -137,7 +146,7 @@ TEMPLATES = {
                 "Tap the button below to choose a new one.",
                 "The link works once and expires in an hour.",
             ],
-            action=button("Choose a new password", URL) + fallback_link(URL),
+            action=button("Choose a new password", link("reset-password", "recovery")) + fallback_link(link("reset-password", "recovery")),
             note=IGNORE,
         ),
     ),
@@ -147,7 +156,7 @@ TEMPLATES = {
             preheader="Tap to sign in. No password needed.",
             title="Sign in to Halka",
             paragraphs=["Tap the button below to sign in. The link works once and expires in an hour."],
-            action=button("Sign in", URL) + fallback_link(URL),
+            action=button("Sign in", link("confirm", "magiclink")) + fallback_link(link("confirm", "magiclink")),
             note=IGNORE,
         ),
     ),
@@ -160,7 +169,7 @@ TEMPLATES = {
                 "You asked to change your account&rsquo;s email from <strong>{{ .Email }}</strong> "
                 "to <strong>{{ .NewEmail }}</strong>. Tap the button below to confirm.",
             ],
-            action=button("Confirm new email", URL) + fallback_link(URL),
+            action=button("Confirm new email", link("confirm", "email_change")) + fallback_link(link("confirm", "email_change")),
             note="If you didn&rsquo;t ask for this, please reset your password; someone else may "
             "have access to your account.",
         ),
@@ -174,7 +183,7 @@ TEMPLATES = {
                 "You&rsquo;ve been invited to join Halka: circles for your city, culture "
                 "and interests, with real meetups on the calendar.",
             ],
-            action=button("Accept invitation", URL) + fallback_link(URL),
+            action=button("Accept invitation", link("reset-password", "invite")) + fallback_link(link("reset-password", "invite")),
             note="Not expecting this? You can safely ignore this email.",
         ),
     ),

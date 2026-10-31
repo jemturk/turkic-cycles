@@ -23,7 +23,8 @@ changes in a store console, change it here in the same commit as the code.
   `AGENTS.md` covers AI-made changes.
 
 Service providers (Supabase, Sentry, RevenueCat, Expo/Firebase push, Stripe Identity,
-Google Cloud Vision for the photo check, Google Geocoding for the typed city's centre point)
+Google Cloud Vision for the photo check, Google Geocoding for the typed city's centre point,
+Resend for account emails, Cloudflare for the website)
 process data for us, so in Google's terms that's **collected, not shared**. A third
 party that uses data for its own purposes (ads, analytics networks) would be
 **shared** — none today.
@@ -36,7 +37,7 @@ party that uses data for its own purposes (ads, analytics networks) would be
 
 Overview: collects data **Yes** · encrypted in transit **Yes** (everything is HTTPS) ·
 account creation **Username and password** + **OAuth** (Google, Apple) · deletion URL
-**https://turek.expo.app/delete-account**.
+**https://joinhalka.com/delete-account**.
 
 For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 
@@ -45,7 +46,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | Location → Approximate | Req. | Functionality, Personalization | City/state/country typed on the profile (`profiles.city` …; the real city/state in self-only `profile_locations`, others see what `location_visibility` allows). The city's centre point from Google Geocoding (rounded to ~100 m, self-only `profile_locations.latitude/longitude`, used server-side for the distance filter) | City becomes optional; coordinates come from the device's GPS or are shown to other members |
 | Location → Precise | — not collected | | GPS used on the phone only (`src/stores/localFilter.ts`) | Device coordinates are sent or saved anywhere |
 | Personal → Name | Req. | Functionality, Account mgmt | `profiles.display_name` | |
-| Personal → Email | Req. | Functionality, Account mgmt | Account email (Supabase Auth) | |
+| Personal → Email | Req. | Functionality, Account mgmt | Account email (Supabase Auth); account emails are sent through Resend (Supabase's SMTP), a service provider | Email used for marketing or newsletters |
 | Personal → User IDs | Req. | Functionality, Account mgmt, Analytics | Account ID; Sentry `setUser({ id })` | |
 | Personal → Address | — not collected | | Only city | A street address field |
 | Personal → Phone number | — not collected | | The member's own number is never asked | A phone sign-in or phone field |
@@ -57,7 +58,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | Financial → Payment info | — not collected | | Google Play / App Store handle payment | Direct card payments (e.g. Stripe checkout) |
 | Messages → Other in-app messages | Opt. | Functionality, Fraud prevention/security | Chat, reactions (`messages`, `message_reactions`). The latest 50 messages per conversation are also kept on the phone for offline reading (`src/lib/queryClient.ts`, AsyncStorage, wiped on sign-out), which isn't "collection" since it never leaves the device | The on-device copy is backed up, synced or sent anywhere else |
 | Messages → Emails, SMS | — not collected | | Safety texts are sent by the member from Messages (`expo-sms`) | The app reads or sends SMS itself |
-| Photos and videos → Photos | Req. | Functionality, Fraud prevention/security | Profile + cover photos (cover required), checked by Google Cloud Vision before publishing (`moderate-photo`, `photo_moderation`); ID photo + selfie via Stripe Identity | Video uploads (→ Videos); photos in chat |
+| Photos and videos → Photos | Req. | Functionality, Fraud prevention/security | Profile + cover photos (cover required), checked by Google Cloud Vision before publishing (`moderate-photo`, `photo_moderation`), with the camera's GPS location removed (re-encoded on the device; `_shared/photoLocation.ts` on the server); ID photo + selfie via Stripe Identity | Video uploads (→ Videos); photos in chat |
 | Audio | — not collected | | No microphone (`RECORD_AUDIO` blocked) | Voice messages, video recording |
 | Contacts → Contacts | Opt. | Functionality | Trusted contacts' names and phone numbers in safety plans (`safety_plans.trusted_contacts`) | Reading the phone's address book |
 | App activity → App interactions | Req. | Functionality, Analytics | Circles joined, RSVPs; Sentry breadcrumbs | |
@@ -81,7 +82,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | App access | Login required → review account (store-submission.md §6) | | The review account changes |
 | Target audience | **18+ only** | Database rejects birthdates under 18 (migration 0028) | |
 | Content rating (IARC) | Users interact: Yes · Share location: No · Digital purchases: Yes · UGC: Yes | store-submission.md §4 | Location sharing between users |
-| Child safety standards | URL **https://turek.expo.app/child-safety** · contact unturkk@gmail.com · in-app reporting ✅ · complies with laws ✅ | `CHILD_SAFETY` in `src/constants/legal.ts`; Report → "Child safety" | The report form or the page's promises |
+| Child safety standards | URL **https://joinhalka.com/child-safety** · contact support@joinhalka.com · in-app reporting ✅ · complies with laws ✅ | `CHILD_SAFETY` in `src/constants/legal.ts`; Report → "Child safety" | The report form or the page's promises |
 | Government / financial features / health / news / COVID | **No** | | |
 | Countries | United States (closed test) | Policy written for US law | Before adding the EU/UK, Türkiye, Central Asia (legal review) |
 

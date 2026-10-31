@@ -80,6 +80,12 @@
       "invalidLink": "This confirmation link is invalid or has expired.",
       "backToLogin": "Back to log in"
     },
+    "appHandoff": {
+      "title": "Open Halka",
+      "body": "You asked for this link from the Halka app. Open the app to carry on, or continue here in the browser.",
+      "open": "Open the Halka app",
+      "browser": "Continue in the browser"
+    },
     "social": {
       "or": "or",
       "google": "Continue with Google",
@@ -758,7 +764,7 @@
       },
       "help": {
         "title": "Help & support",
-        "body": "Questions, problems or feedback? Email us at unturkk@gmail.com and we'll get back to you as soon as we can. To report someone, open their profile or the Safety Center."
+        "body": "Questions, problems or feedback? Email us at support@joinhalka.com and we'll get back to you as soon as we can. To report someone, open their profile or the Safety Center."
       },
       "privacy": {
         "title": "Data & privacy",

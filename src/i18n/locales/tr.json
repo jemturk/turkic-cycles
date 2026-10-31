@@ -80,6 +80,12 @@
       "invalidLink": "Bu onay bağlantısı geçersiz veya süresi dolmuş.",
       "backToLogin": "Girişe dön"
     },
+    "appHandoff": {
+      "title": "Halka'yı açın",
+      "body": "Bu bağlantıyı Halka uygulamasından istediniz. Devam etmek için uygulamayı açın ya da burada, tarayıcıda devam edin.",
+      "open": "Halka uygulamasını aç",
+      "browser": "Tarayıcıda devam et"
+    },
     "social": {
       "or": "veya",
       "google": "Google ile devam et",
@@ -758,7 +764,7 @@
       },
       "help": {
         "title": "Yardım ve destek",
-        "body": "Sorun, soru ya da önerin mi var? unturkk@gmail.com adresine yaz, en kısa sürede dönüş yapalım. Birini bildirmek için profilini ya da Güvenlik Merkezi'ni aç."
+        "body": "Sorun, soru ya da önerin mi var? support@joinhalka.com adresine yaz, en kısa sürede dönüş yapalım. Birini bildirmek için profilini ya da Güvenlik Merkezi'ni aç."
       },
       "privacy": {
         "title": "Veri ve gizlilik",

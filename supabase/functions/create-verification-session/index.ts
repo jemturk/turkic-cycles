@@ -28,7 +28,7 @@ function json(body: unknown, status: number) {
 // Where Stripe sends the member when they finish: back into the website's
 // Verification screen, or (from the phone app's in-app browser) a page that says
 // they can close it and return to the app.
-const SITE = Deno.env.get("SITE_URL") ?? "https://turek.expo.app";
+const SITE = Deno.env.get("SITE_URL") ?? "https://joinhalka.com";
 const RETURN_URLS: Record<string, string> = {
   web: `${SITE}/settings/verification`,
   app: `${SITE}/verification-done`,

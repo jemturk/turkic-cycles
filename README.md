@@ -2,7 +2,7 @@
 
 A connections app (friendship, romance, business, mentorship) for the Turkic and Turkic-adjacent diaspora. Expo (React Native) app targeting iOS, Android, and web from one codebase, backed by Supabase.
 
-Names: the display name is **Halka** (until October 2026, Turkic Circles), the bundle ID / package is `com.turek.app`, the URL scheme is `turek`, and the web build is hosted at `turek.expo.app`. The Expo slug in `app.json` stays `turanci` — slugs are permanent on expo.dev, and changing it breaks EAS.
+Names: the display name is **Halka** (until October 2026, Turkic Circles), the bundle ID / package is `com.turek.app`, the URL scheme is `turek`, and the web build is at `joinhalka.com` (Cloudflare Pages; `turek.expo.app` on EAS Hosting still serves the same build for older links and the mock users' photos). The Expo slug in `app.json` stays `turanci` — slugs are permanent on expo.dev, and changing it breaks EAS.
 
 ## Setup
 

@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 r"""Build, publish, and install Halka.
 
-  -w  export the web build and deploy it to EAS Hosting (production)
+  -w  export the web build and deploy it to Cloudflare Pages (joinhalka.com) and
+      EAS Hosting (turek.expo.app, kept for older links and the mock users' photos).
+      One-time setup: npx wrangler login, then
+      npx wrangler pages project create halka --production-branch main
   -a  build a release APK locally with Gradle
   -b  build a release app bundle (.aab) for Google Play, signed with the upload
       key and with a new version code
@@ -494,10 +497,32 @@ def check_declarations(manifest: Path | None = None) -> None:
     run([sys.executable, str(ROOT / "scripts" / "check_declarations.py"), *(["--manifest", str(manifest)] if manifest else [])])
 
 
+def move_web_assets_out_of_node_modules(dist: Path) -> None:
+    # The export puts fonts and icons from packages under dist/assets/node_modules/, and
+    # `wrangler pages deploy` skips any folder named node_modules -- the font requests
+    # then get index.html back and the app never gets past its splash background.
+    # Rename the folder and rewrite the paths the bundles load them by.
+    source = dist / "assets" / "node_modules"
+    if not source.is_dir():
+        return
+    source.rename(dist / "assets" / "vendor")
+    for path in dist.rglob("*"):
+        if path.suffix in {".js", ".css", ".html", ".json"}:
+            text = path.read_text(encoding="utf-8")
+            if "/assets/node_modules/" in text:
+                path.write_text(text.replace("/assets/node_modules/", "/assets/vendor/"),
+                                encoding="utf-8", newline="\n")
+
+
 def publish_web() -> None:
     step("Exporting and deploying web build")
     require_env_file()
     run(npx("expo", "export", "-p", "web"))
+    move_web_assets_out_of_node_modules(ROOT / "dist")
+    # A single-page app: with no 404.html in dist, Pages serves index.html for every
+    # path (/privacy, /delete-account, ...) and the router takes it from there.
+    run(npx("wrangler@4", "pages", "deploy", "dist", "--project-name", "halka", "--branch", "main",
+            "--commit-dirty=true"))
     run(npx("eas-cli@latest", "deploy", "--prod", "--non-interactive"))
 
 
