@@ -402,7 +402,8 @@
     "yearPlaceholder": "YYYY",
     "hourPlaceholder": "SS",
     "minutePlaceholder": "DD",
-    "ok": "Tamam"
+    "ok": "Tamam",
+    "moreInfo": "Daha fazla bilgi"
   },
   "constants": {
     "connectionTypes": {

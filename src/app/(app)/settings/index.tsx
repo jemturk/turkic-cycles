@@ -60,7 +60,7 @@ const ROW_CLASS =
 const SECTION_ROW_CLASS = "flex-row items-center justify-between gap-3 px-4 py-3";
 const WIDE_ROW_CLASS = "flex-row items-center justify-between gap-3 px-5 py-3.5";
 
-// One setting: icon, label (and an optional hint under it), then either a value
+// One setting: icon, label (and an optional hint behind an (i) beside it), then either a value
 // and a › for rows that open a page (onPress), or a control (`right`). `iconOnly`
 // keeps just the icon on a phone, for rows whose controls need the width (the
 // label still reaches screen readers).
@@ -85,6 +85,7 @@ function Row({
   solid?: boolean;
   iconOnly?: boolean;
 }) {
+  const { t } = useTranslation();
   const wide = useWideLayout();
   const showLabel = wide || !iconOnly;
   const className = `${wide ? WIDE_ROW_CLASS : SECTION_ROW_CLASS} ${onPress ? "web:hover:bg-primary-100/40 dark:web:hover:bg-ink-700" : ""}`;
@@ -98,8 +99,21 @@ function Row({
         <RowIcon icon={icon} danger={danger} solid={solid} />
         {showLabel ? (
           <View className="flex-1">
-            <Text className={`text-base ${danger ? "text-accent-600" : "text-ink-900 dark:text-ink-50"}`}>{label}</Text>
-            {hint ? <Text className="text-sm text-ink-400 dark:text-ink-300">{hint}</Text> : null}
+            <View className="flex-row flex-wrap items-center gap-1.5">
+              <Text className={`text-base ${danger ? "text-accent-600" : "text-ink-900 dark:text-ink-50"}`}>{label}</Text>
+              {/* The explanation behind an (i), so the row stays one line next to its control. */}
+              {hint ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t("common.moreInfo")}
+                  accessibilityHint={hint}
+                  hitSlop={10}
+                  onPress={() => showAlert(label, hint)}
+                >
+                  <Ionicons name="information-circle-outline" size={18} color="#A99C95" />
+                </Pressable>
+              ) : null}
+            </View>
           </View>
         ) : null}
       </View>

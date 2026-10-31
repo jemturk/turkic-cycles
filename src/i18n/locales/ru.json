@@ -418,7 +418,8 @@
     "yearPlaceholder": "ГГГГ",
     "hourPlaceholder": "ЧЧ",
     "minutePlaceholder": "ММ",
-    "ok": "ОК"
+    "ok": "ОК",
+    "moreInfo": "Подробнее"
   },
   "constants": {
     "connectionTypes": {

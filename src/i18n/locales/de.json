@@ -402,7 +402,8 @@
     "yearPlaceholder": "JJJJ",
     "hourPlaceholder": "HH",
     "minutePlaceholder": "MM",
-    "ok": "OK"
+    "ok": "OK",
+    "moreInfo": "Mehr Infos"
   },
   "constants": {
     "connectionTypes": {
