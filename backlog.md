@@ -41,8 +41,7 @@ The stores would reject the app, or it would break for real users, without these
     works in Expo Go, so the list likely includes Expo Go's `host.exp.Exponent` as well as
     `com.turek.app`. Remove anything not intended before the App Store launch.
   - Store screenshots for Apple: done, `store-assets/appstore-6.9-*.png` (1320 x 2868).
-- [ ] **Google Play closed test** [you] — new personal developer accounts must run a
-  closed test with at least 12 testers for 14 days before going public.
+- [x] **Google Play closed test** — done; the app is in production on Google Play.
 - [ ] **Store listings and forms** [you, with help from code] — Apple privacy labels,
   Google Data safety form, age ratings (18+), real screenshots, descriptions.
   Google Play's URLs and support email are set to joinhalka.com. Left: App Store
@@ -120,8 +119,18 @@ The stores would reject the app, or it would break for real users, without these
   Sentry, RevenueCat, Stripe, Google Cloud, Cloudflare and Expo.
 - [ ] **Two-factor sign-in on every service account** [you] — Supabase, Cloudflare,
   GitHub, Google, Apple, Expo, Stripe, Resend, RevenueCat, Sentry.
-- [ ] **Delete old data automatically** [code] — retention jobs (pg_cron) for finished
-  safety plans and old logs, like migration 0063 does for the matching logs.
+- [ ] **Delete old data automatically** [code] — one migration with a daily pg_cron
+  job, like 0063 (matching logs, 24 months), plus the privacy policy's "How long we
+  keep it" section (`src/constants/legal.ts`) updated to match. Proposed periods, not
+  yet confirmed:
+  - `safety_plans`: 30 days after `meeting_at` when checked in or cancelled; 90 days
+    when overdue (in case something happened). They hold trusted contacts' names and
+    phone numbers -- people who never signed up.
+  - `photo_moderation`: approved rows after 90 days; flagged/rejected after 12 months.
+  - `reports`: reviewed or dismissed after 24 months; open ones never automatically.
+  - Kept on purpose: `consent_records` (proof of consent, until account deletion);
+    messages already go with the connection or account. Push tokens and
+    `plus_waitlist`: later, low value.
 - [ ] **Breach checklist** [code] — a short page: who to notify and when, how to rotate
   keys, what to tell members.
 
