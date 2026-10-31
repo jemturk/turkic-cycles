@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { router } from "expo-router";
 
 import { Text } from "@/components/Text";
 import { Chip } from "@/components/Chip";
@@ -13,6 +12,7 @@ import { useMyConnectionTypes } from "@/hooks/useOnboarding";
 import { DEFAULT_CONFIG, boostableCriteria, sanitizeBoosts, type AppType, type Criterion } from "@/lib/matchingModel";
 import type { Boosts } from "@/api/settings";
 import { showAlert } from "@/lib/alert";
+import { goUp } from "@/lib/goUp";
 
 type Level = "very" | "less";
 const { max_very: MAX_VERY, max_less: MAX_LESS } = DEFAULT_CONFIG.boosts;
@@ -38,7 +38,7 @@ function WhatMattersForm({ types, initial, userId }: { types: AppType[]; initial
 
   function onSave() {
     save.mutate(sanitizeBoosts(boosts, DEFAULT_CONFIG), {
-      onSuccess: () => router.back(),
+      onSuccess: () => goUp("/(app)/settings"),
       onError: () => showAlert(t("whatMatters.saveFailed")),
     });
   }

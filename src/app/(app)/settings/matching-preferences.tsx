@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { router } from "expo-router";
 
 import { useSession } from "@/hooks/useSession";
 import { useMatchingPreferences, useUpsertMatchingPreferences } from "@/hooks/useSettings";
@@ -24,6 +23,7 @@ import type { Tables } from "@/types/database";
 import { SubPage, Card } from "@/components/SettingsUI";
 import { TAG_TONES } from "@/constants/tagTones";
 import { showAlert } from "@/lib/alert";
+import { goUp } from "@/lib/goUp";
 
 type FormProps = {
   preferences: Tables<"matching_preferences"> | null | undefined;
@@ -62,7 +62,7 @@ function MatchingPreferencesForm({ preferences, userId, unit }: FormProps) {
         languages,
       },
       {
-        onSuccess: () => router.back(),
+        onSuccess: () => goUp("/(app)/settings"),
         onError: () => showAlert(t("settings.matchingPreferencesScreen.saveFailed")),
       }
     );

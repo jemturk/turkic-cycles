@@ -21,6 +21,7 @@ import { LocationFields } from "@/components/LocationFields";
 import { FormScrollView } from "@/components/FormScrollView";
 import { HostRequirements } from "@/components/HostRequirements";
 import { showAlert } from "@/lib/alert";
+import { goUp } from "@/lib/goUp";
 
 // Plus with a verified ID, admins included (migration 0035 enforces it). The button
 // that leads here only shows for them; anyone reaching it by URL sees what they're
@@ -70,7 +71,7 @@ export default function NewCircle() {
           size={24}
           className="text-ink-900 dark:text-ink-50"
           accessibilityLabel={t("common.back")}
-          onPress={() => router.back()}
+          onPress={() => goUp("/(app)/circles")}
         />
         <Text className="mt-2 font-display text-3xl text-ink-900 dark:text-ink-50">{t("circles.newCircleTitle")}</Text>
 

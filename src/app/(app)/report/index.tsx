@@ -32,7 +32,7 @@ export default function Report() {
   }
 
   return (
-    <SubPage title={t("settings.reportScreen.heading")} form>
+    <SubPage parent={null} title={t("settings.reportScreen.heading")} form>
       <Card>
         {!userId ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">{t("settings.reportScreen.openFromProfile")}</Text>

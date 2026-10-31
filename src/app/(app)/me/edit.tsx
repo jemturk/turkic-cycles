@@ -2,7 +2,6 @@ import { useMemo, useRef } from "react";
 import { ActivityIndicator, Pressable, View, type LayoutChangeEvent } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm, useWatch, useController, Controller, type FieldErrors, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,6 +36,7 @@ import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
 import { useProfilePhotos } from "@/hooks/useGallery";
 import { OwnPhotos } from "@/components/OwnPhotos";
 import { TAG_TONES } from "@/constants/tagTones";
+import { goUp } from "@/lib/goUp";
 
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
@@ -139,7 +139,7 @@ export default function ProfileEdit() {
   const state = useController({ control, name: "state" });
 
   const onSubmit = (formValues: ProfileEditValues) => {
-    saveProfileEdit.mutate(formValues, { onSuccess: () => router.back() });
+    saveProfileEdit.mutate(formValues, { onSuccess: () => goUp("/(app)/me") });
   };
 
   const scrollRef = useRef<FormScrollViewRef>(null);
@@ -475,7 +475,7 @@ export default function ProfileEdit() {
             <Pressable
               accessibilityLabel={t("common.back")}
               hitSlop={8}
-              onPress={() => router.back()}
+              onPress={() => goUp("/(app)/me")}
               className="h-10 w-10 items-center justify-center rounded-full web:hover:bg-white dark:web:hover:bg-ink-800"
             >
               <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
@@ -543,7 +543,7 @@ export default function ProfileEdit() {
           <Pressable
             accessibilityLabel={t("common.back")}
             hitSlop={8}
-            onPress={() => router.back()}
+            onPress={() => goUp("/(app)/me")}
             className="-ml-2 h-10 w-10 items-center justify-center rounded-full"
           >
             <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />

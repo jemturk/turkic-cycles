@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { router, useLocalSearchParams, useRouter } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
@@ -10,6 +10,7 @@ import { Avatar } from "@/components/Avatar";
 import { CircleHeader } from "@/components/CircleHeader";
 import type { CircleTopic } from "@/constants/circles";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { goUp } from "@/lib/goUp";
 
 // Everyone in a circle: under the circle's own header, a white card of photos in
 // even columns (three on phones, five on desktop) with each member's city under
@@ -17,16 +18,14 @@ import { useWideLayout } from "@/hooks/useWideLayout";
 export default function CircleMembers() {
   const { t } = useTranslation();
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
-  const navigation = useRouter();
   const insets = useSafeAreaInsets();
   const wide = useWideLayout();
   const { data: circle } = useCircle(circleId);
   const { data: members } = useCircleMembers(circleId);
 
-  // Reachable via a direct URL/refresh on web, which has no in-app history to pop.
+  // Up to the circle (goUp), however the members page was opened.
   function goBack() {
-    if (navigation.canGoBack()) router.back();
-    else router.replace(`/(app)/circles/${circleId}`, { withAnchor: true });
+    goUp(`/(app)/circles/${circleId}`);
   }
 
   if (!circle) return null;

@@ -8,6 +8,7 @@ import { AppMark } from "@/components/AppMark";
 import { Text } from "@/components/Text";
 import { APP_NAME, LEGAL_CONTACT, LEGAL_UPDATED, type LegalDocument } from "@/constants/legal";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { goUp } from "@/lib/goUp";
 
 // The Privacy Policy or Terms of Service as a readable page: a back button, the
 // title and date, an intro, then one white card per section. Used both for the
@@ -20,10 +21,12 @@ export function LegalPage({ document }: { document: LegalDocument }) {
   // logo and name; in Settings the sidebar already shows them.
   const publicPage = useSegments()[0] === "(auth)";
 
-  // Opened straight from a link (a store listing, an email), there's no history to
-  // go back through -- go to the start instead.
+  // In Settings: up to Settings (goUp). The public pages are opened from the
+  // welcome screens or straight from a link (a store listing, an email); with no
+  // history to go back through, go to the start instead.
   function goBack() {
-    if (navigation.canGoBack()) router.back();
+    if (!publicPage) goUp("/(app)/settings");
+    else if (navigation.canGoBack()) router.back();
     else router.replace("/");
   }
 

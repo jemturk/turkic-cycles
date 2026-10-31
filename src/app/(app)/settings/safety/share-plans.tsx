@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { Text } from "@/components/Text";
-import { router } from "expo-router";
 import { addMinutes, format, isValid, parse } from "date-fns";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +13,7 @@ import { TextField } from "@/components/TextField";
 import { Chip } from "@/components/Chip";
 import type { TrustedContact } from "@/api/safety";
 import { SubPage, Card } from "@/components/SettingsUI";
+import { goUp } from "@/lib/goUp";
 
 export default function SharePlans() {
   const { t } = useTranslation();
@@ -58,14 +58,14 @@ export default function SharePlans() {
         onSuccess: async (plan) => {
           await scheduleCheckInReminders(t, plan).catch(() => {});
           await textContacts(contacts, planMessage(t, plan, profile?.display_name || "")).catch(() => {});
-          router.back();
+          goUp("/(app)/settings/safety");
         },
       },
     );
   }
 
   return (
-    <SubPage title={t("settings.sharePlansScreen.heading")} subtitle={t("settings.sharePlansScreen.subheading")} form>
+    <SubPage parent="/(app)/settings/safety" title={t("settings.sharePlansScreen.heading")} subtitle={t("settings.sharePlansScreen.subheading")} form>
       <Card>
         <TextField
           label={t("settings.sharePlansScreen.whoMeeting")}

@@ -1,6 +1,6 @@
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,7 @@ import { TimeField } from "@/components/TimeField";
 import { FormScrollView } from "@/components/FormScrollView";
 import { HostRequirements } from "@/components/HostRequirements";
 import { showAlert } from "@/lib/alert";
+import { goUp } from "@/lib/goUp";
 
 // A circle's owners and moderators who have Plus and a verified ID can add events (migration 0035 enforces it; the "Add event" button only shows for
 // them). Owners and moderators reaching this by URL without Plus or a verified ID
@@ -48,7 +49,7 @@ export default function NewCircleEvent() {
     createEvent.mutate(
       { circleId, title: values.title, description: values.description, location: values.location, startsAt: startsAt.toISOString() },
       {
-        onSuccess: () => router.back(),
+        onSuccess: () => goUp(`/(app)/circles/${circleId}`),
         onError: (error) => showAlert(t("circles.createEventError"), error.message),
       }
     );
@@ -62,7 +63,7 @@ export default function NewCircleEvent() {
           size={24}
           className="text-ink-900 dark:text-ink-50"
           accessibilityLabel={t("common.back")}
-          onPress={() => router.back()}
+          onPress={() => goUp(`/(app)/circles/${circleId}`)}
         />
         <View className="mt-2 gap-1">
           <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("circles.newEventTitle")}</Text>

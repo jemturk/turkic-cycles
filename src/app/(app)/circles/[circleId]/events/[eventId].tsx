@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams, useRouter } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -27,20 +27,17 @@ import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { Avatar } from "@/components/Avatar";
 import { CircleHeader } from "@/components/CircleHeader";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { goUp } from "@/lib/goUp";
 
 export default function CircleEventDetail() {
   const { t } = useTranslation();
   const { circleId, eventId } = useLocalSearchParams<{ circleId: string; eventId: string }>();
   const { session } = useSession();
   const userId = session?.user.id;
-  const navigation = useRouter();
 
-  // Reachable via a direct URL/refresh on web (e.g. a shared link), which has no
-  // in-app history to pop -- router.back() would then silently no-op. Fall back to
-  // the circle's events list instead of assuming a push always happened first.
+  // Up to the event's circle (goUp), however the event was opened.
   function goBack() {
-    if (navigation.canGoBack()) router.back();
-    else router.replace(`/(app)/circles/${circleId}`, { withAnchor: true });
+    goUp(`/(app)/circles/${circleId}`);
   }
 
   const { data: circle } = useCircle(circleId);

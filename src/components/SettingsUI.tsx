@@ -1,13 +1,14 @@
 import { Children, type ReactNode } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, type Href } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
 import { FormScrollView } from "@/components/FormScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { goUp } from "@/lib/goUp";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -17,16 +18,19 @@ type IconName = keyof typeof Ionicons.glyphMap;
 
 // A whole sub-page. `form` uses FormScrollView, which keeps the focused field above
 // the keyboard. On desktop web the content keeps to a readable width, left-aligned
-// with the other screens.
+// with the other screens. The back button goes up to `parent` (goUp), Settings by
+// default; null goes back to the previous screen instead (Report).
 export function SubPage({
   title,
   subtitle,
   form = false,
+  parent = "/(app)/settings",
   children,
 }: {
   title: string;
   subtitle?: string;
   form?: boolean;
+  parent?: Href | null;
   children: ReactNode;
 }) {
   const { t } = useTranslation();
@@ -44,7 +48,7 @@ export function SubPage({
             <Pressable
               accessibilityLabel={t("common.back")}
               hitSlop={8}
-              onPress={() => router.back()}
+              onPress={() => (parent ? goUp(parent) : router.back())}
               className="-ml-2 h-10 w-10 items-center justify-center rounded-full web:hover:bg-white dark:web:hover:bg-ink-800"
             >
               <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />

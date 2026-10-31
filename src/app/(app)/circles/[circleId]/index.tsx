@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams, useRouter } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -22,6 +22,7 @@ import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/con
 import { CircleHeader } from "@/components/CircleHeader";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { goUp } from "@/lib/goUp";
 
 type Tab = "upcoming" | "past";
 
@@ -33,7 +34,6 @@ const WIDE_MAX_COLUMNS = 3;
 export default function CircleEvents() {
   const { t } = useTranslation();
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
-  const navigation = useRouter();
   const { data: circle } = useCircle(circleId);
   const { data: events, refetch, isRefetching } = useCircleEvents(circleId);
   const [tab, setTab] = useState<Tab>("upcoming");
@@ -60,10 +60,9 @@ export default function CircleEvents() {
   const wide = useWideLayout();
   const [gridWidth, setGridWidth] = useState(0);
 
-  // Reachable via a direct URL/refresh on web, which has no in-app history to pop.
+  // Up to the Circles list (goUp), however the circle was opened.
   function goBack() {
-    if (navigation.canGoBack()) router.back();
-    else router.replace("/(app)/circles");
+    goUp("/(app)/circles");
   }
 
   if (!circle) return null;
