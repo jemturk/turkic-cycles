@@ -234,7 +234,9 @@ before).
 | 6 | Safety Center with a plan | Safety built in |
 | 7 | A member's profile | Know who you meet |
 
-Uploads: App Store → `appstore-6.9-*` (all 7) under App Previews and Screenshots, and
+Uploads: App Store → App Previews and Screenshots: `appstore-6.3-*` (1206 × 2622, the
+6.9" set scaled down; the form asks for iPhone 6.1"/6.3") and, where a 6.9" size is
+asked, `appstore-6.9-*`. Also
 `appstore-header-3840x1646.png` under Header and `appstore-search-3840x2560.png` under
 Search Results (`search.html`) (optional; made from
 `scripts/store_screenshots/header.html` at 2x in Edge, no text so Apple's title can sit
