@@ -18,6 +18,8 @@ export default function SettingsLayout() {
       <Stack.Screen name="matching-preferences" />
       <Stack.Screen name="blocked-users" />
       <Stack.Screen name="static-page" />
+      <Stack.Screen name="guidelines" />
+      <Stack.Screen name="help" />
       <Stack.Screen name="legal" />
       <Stack.Screen name="verification" />
       <Stack.Screen name="safety" />

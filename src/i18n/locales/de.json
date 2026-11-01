@@ -699,7 +699,6 @@
     "pushNotifications": "Push-Benachrichtigungen",
     "emailNotifications": "E-Mail-Benachrichtigungen",
     "community": "Community",
-    "aboutApp": "Über Halka",
     "communityGuidelines": "Community-Richtlinien",
     "helpAndSupport": "Hilfe & Support",
     "logOut": "Abmelden",
@@ -755,22 +754,111 @@
       "unblock": "Blockierung aufheben"
     },
     "staticPages": {
-      "about": {
-        "title": "Über Halka",
-        "body": "Halka ist eine Verbindungs-App für die turksprachige und turknahe Diaspora — Freundschaft, Romantik, Business und Mentoring, alles in einer Community statt in vier getrennten Produkten."
-      },
-      "guidelines": {
-        "title": "Community-Richtlinien",
-        "body": "Sei respektvoll, sei ehrlich darüber, wer du bist, und behandle jede Unterhaltung so, wie du selbst behandelt werden möchtest. Belästigung, Hassrede und Identitätsvortäuschung sind niemals erlaubt und führen zu Konsequenzen für dein Konto."
-      },
-      "help": {
-        "title": "Hilfe & Support",
-        "body": "Fragen, Probleme oder Feedback? Schreib uns an support@joinhalka.com, wir melden uns so schnell wie möglich. Um jemanden zu melden, öffne das Profil oder das Sicherheitscenter."
-      },
       "privacy": {
         "title": "Daten & Datenschutz",
         "body": "Deine Herkunft, wie wichtig dir der Glaube ist und (für romantische Verbindungen) dein Geschlecht und wen du kennenlernen möchtest, werden nur mit deiner ausdrücklichen Einwilligung für Vorschläge genutzt. Du kannst sie jederzeit unter Profil bearbeiten widerrufen. Glaube, Geschlecht und wen du kennenlernen möchtest, sehen andere Mitglieder nie. Details stehen in der Datenschutzerklärung."
       }
+    },
+    "guidelinesScreen": {
+      "title": "Community-Richtlinien",
+      "intro": "Halka funktioniert, weil Menschen sich so zeigen, wie sie sind, und gut miteinander umgehen. Das sind die Regeln, denen alle zustimmen, in einfachen Worten.",
+      "sections": {
+        "yourself": {
+          "heading": "Sei du selbst",
+          "points": [
+            "Nutze aktuelle Fotos, die dich deutlich zeigen, und deinen echten Namen oder den Namen, mit dem man dich anspricht.",
+            "Gib dein echtes Alter an. Halka ist nur für Erwachsene ab 18.",
+            "Ein Konto pro Person. Gib dich nicht als jemand anderes aus."
+          ]
+        },
+        "respect": {
+          "heading": "Sei respektvoll",
+          "points": [
+            "Keine Belästigung, Drohungen, Mobbing oder Hass, auch nicht wegen Herkunft, Nationalität, Religion, Geschlecht oder Orientierung.",
+            "Unsere Communitys sind vielfältig: verschiedene Länder, Sprachen, Glaubensrichtungen und Lebensweisen. Sei neugierig, nicht abwertend.",
+            "Nein heißt nein. Wenn jemand nicht antwortet, weiterwischt oder ein Gespräch beendet, akzeptiere das.",
+            "Dränge niemanden zu Fotos, persönlichen Angaben oder einem Treffen."
+          ]
+        },
+        "profile": {
+          "heading": "Halte dein Profil sauber",
+          "points": [
+            "Keine Nacktheit, sexuellen oder gewalttätigen Inhalte. Fotos werden automatisch geprüft, bevor andere sie sehen.",
+            "Keine Telefonnummern, E-Mail-Adressen oder Social-Media-Namen im Profil. Teile sie im Chat, mit Menschen deiner Wahl.",
+            "Keine Werbung, kein Verkauf, kein Anwerben und keine Bitten um Geld."
+          ]
+        },
+        "meeting": {
+          "heading": "Triff dich sicher",
+          "points": [
+            "Chatte zuerst in der App und überlege dir einen Videoanruf vor dem Treffen.",
+            "Triff dich an einem belebten öffentlichen Ort und komm selbst hin und zurück.",
+            "Sag einer Vertrauensperson, wohin du gehst. „Deine Pläne teilen“ im Sicherheitscenter erledigt das für dich.",
+            "Schick niemandem von hier Geld oder Bankdaten, egal welche Geschichte erzählt wird.",
+            "Vertrau deinem Gefühl. Du kannst jederzeit gehen, und im Notfall ruf den örtlichen Notruf an."
+          ]
+        },
+        "reporting": {
+          "heading": "Melden und blockieren",
+          "points": [
+            "Melde alle, die gegen diese Regeln verstoßen: Öffne das Profil und wähle Melden. Niemand erfährt, wer gemeldet hat.",
+            "Blockieren verbirgt euch überall in der App voreinander. Aufheben kannst du das unter Einstellungen > Blockierte Nutzer.",
+            "Wir prüfen Meldungen innerhalb von 24 Stunden, Meldungen zum Kinderschutz zuerst."
+          ]
+        },
+        "consequences": {
+          "heading": "Was bei Verstößen passiert",
+          "points": [
+            "Je nach Fall entfernen wir Inhalte, schränken Funktionen ein oder sperren das Konto vorübergehend oder dauerhaft.",
+            "Schwere Fälle wie Drohungen, Ausbeutung oder alles, was Minderjährige betrifft, führen zur dauerhaften Sperre und, wo vorgeschrieben, zu einer Meldung an die Behörden.",
+            "Die vollständigen Regeln stehen in den Nutzungsbedingungen."
+          ]
+        }
+      }
+    },
+    "helpScreen": {
+      "title": "Hilfe & Support",
+      "about": "Halka ist eine App für Verbindungen in der turksprachigen Diaspora und für alle, die ihr nahestehen: Freundschaft, Romantik, Business und Mentoring in einer Community. Tritt Kreisen rund um deinen Wohnort und deine Interessen bei, geh zu ihren Events und lerne Menschen kennen, die deine Wurzeln teilen.",
+      "version": "Version {{version}}",
+      "faqTitle": "Häufige Fragen",
+      "faq": {
+        "discover": {
+          "q": "Warum sehe ich niemanden in Entdecken?",
+          "a": "Entdecken zeigt nur Menschen, die zu dem passen, was du suchst, und zu deren eigenen Wünschen du passt: Alter, Entfernung, Sprachen und die Arten von Verbindung, die ihr beide wollt. Ist die Liste leer, erweitere deine Auswahl unter Einstellungen > Matching-Einstellungen oder tritt weiteren Kreisen bei; jeder Kreis hat sein eigenes Entdecken. Menschen, die du übersprungen hast, erscheinen nach 30 Tagen wieder."
+        },
+        "matching": {
+          "q": "Wie werden Vorschläge sortiert?",
+          "a": "Danach, wie gut ihr zueinander passen könntet: gemeinsame Interessen und Kreise, Werte, wie und wann ihr euch gern trefft, eure Ziele und mehr. Ein Match zählt in beide Richtungen: wie gut die Person zu dir passt und du zu ihr. Unter Einstellungen > Was dir am wichtigsten ist kannst du einiges davon stärker gewichten."
+        },
+        "location": {
+          "q": "Was sehen andere von meinem Standort?",
+          "a": "Nur das, was du unter Einstellungen > Angezeigter Ort wählst: deine Stadt, dein Bundesland oder nur dein Land. Die Entfernung wird vom Mittelpunkt der Stadt in deinem Profil berechnet, nie von deiner genauen Position. Deine Stadt änderst du unter Profil bearbeiten."
+        },
+        "verify": {
+          "q": "Wie bekomme ich das Verifiziert-Abzeichen?",
+          "a": "Geh zu Einstellungen > Verifizieren lassen. Du fotografierst einen amtlichen Ausweis und machst ein Live-Selfie, und Stripe Identity prüft, ob beides übereinstimmt. Das dauert meist ein bis zwei Minuten. Ausweis und Selfie gehen an Stripe, nicht an uns."
+        },
+        "report": {
+          "q": "Wie melde oder blockiere ich jemanden?",
+          "a": "Öffne das Profil (aus Entdecken, einem Kreis oder eurem Chat) und wähle Melden oder Blockieren. Die Person erfährt es nicht. Wir prüfen Meldungen innerhalb von 24 Stunden. Blockierungen hebst du unter Einstellungen > Blockierte Nutzer auf."
+        },
+        "plus": {
+          "q": "Wie kündige ich Plus?",
+          "a": "Plus wird über Apple oder Google abgerechnet, also kündigst du es in deinem Store-Konto: auf Android unter Google Play > Zahlungen & Abos > Abos, auf dem iPhone unter Einstellungen > dein Name > Abonnements. Die App oder dein Konto zu löschen, kündigt es nicht."
+        },
+        "email": {
+          "q": "Ich habe keine Bestätigungs- oder Zurücksetzen-E-Mail bekommen",
+          "a": "Sie kommt von hello@joinhalka.com und kann ein bis zwei Minuten dauern. Sieh in deinem Spam- und Werbeordner nach. Jeder Link funktioniert nur einmal und läuft nach einer Weile ab; wenn er nicht geht, fordere einen neuen an. Mit Google oder Apple registriert? Dann brauchst du keine Bestätigungs-E-Mail."
+        },
+        "delete": {
+          "q": "Wie lösche ich mein Konto?",
+          "a": "Einstellungen > Konto löschen, ganz unten. Alles wird sofort gelöscht und lässt sich nicht wiederherstellen. Wenn du Plus hast, kündige es vorher in deinem Store-Konto. Ohne App geht es unter joinhalka.com/delete-account."
+        }
+      },
+      "contactTitle": "Brauchst du noch Hilfe?",
+      "contactBody": "Fragen, Probleme oder Feedback: Schreib uns an {{email}}, wir melden uns so schnell wie möglich.",
+      "emailButton": "Support kontaktieren",
+      "emailSubject": "{{app}}-Support"
     },
     "safetyCenterScreen": {
       "heading": "Sicherheitscenter",

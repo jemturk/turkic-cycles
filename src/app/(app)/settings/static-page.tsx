@@ -3,7 +3,8 @@ import { SubPage, Card } from "@/components/SettingsUI";
 import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 
-const TOPICS = ["about", "guidelines", "help", "privacy"] as const;
+// Community guidelines and Help have their own screens (guidelines.tsx, help.tsx).
+const TOPICS = ["privacy"] as const;
 
 export default function StaticPage() {
   const { t } = useTranslation();

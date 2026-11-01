@@ -699,7 +699,6 @@
     "pushNotifications": "Anlık bildirimler",
     "emailNotifications": "E-posta bildirimleri",
     "community": "Topluluk",
-    "aboutApp": "Halka Hakkında",
     "communityGuidelines": "Topluluk kuralları",
     "helpAndSupport": "Yardım ve destek",
     "logOut": "Çıkış yap",
@@ -755,22 +754,111 @@
       "unblock": "Engeli kaldır"
     },
     "staticPages": {
-      "about": {
-        "title": "Halka Hakkında",
-        "body": "Halka, Türk ve Türk soylu diaspora için bir bağlantı uygulamasıdır — arkadaşlık, romantik ilişki, iş ve mentorluk, dört ayrı ürün yerine tek bir toplulukta bir araya geliyor."
-      },
-      "guidelines": {
-        "title": "Topluluk kuralları",
-        "body": "Saygılı ol, kim olduğun konusunda dürüst ol ve her konuşmaya kendine davranılmasını istediğin şekilde davran. Taciz, nefret söylemi ve kimliğe bürünme asla kabul edilmez ve hesabına işlem yapılmasına neden olur."
-      },
-      "help": {
-        "title": "Yardım ve destek",
-        "body": "Sorun, soru ya da önerin mi var? support@joinhalka.com adresine yaz, en kısa sürede dönüş yapalım. Birini bildirmek için profilini ya da Güvenlik Merkezi'ni aç."
-      },
       "privacy": {
         "title": "Veri ve gizlilik",
         "body": "Kökenin, inancın senin için ne kadar önemli olduğu ve (romantik bağlantılar için) cinsiyetin ile kiminle tanışmak istediğin yalnızca açık onayınla eşleştirme için kullanılır; bu onayı Profili düzenle'den istediğin zaman geri alabilirsin. İnanç, cinsiyet ve kiminle tanışmak istediğin diğer üyelere asla gösterilmez. Ayrıntılar Gizlilik Politikası'nda."
       }
+    },
+    "guidelinesScreen": {
+      "title": "Topluluk kuralları",
+      "intro": "Halka, insanlar kendileri gibi davrandığı ve birbirlerine iyi davrandığı için işe yarıyor. Herkesin kabul ettiği kurallar, sade bir dille:",
+      "sections": {
+        "yourself": {
+          "heading": "Kendin ol",
+          "points": [
+            "Seni net gösteren güncel fotoğraflar ve gerçek adını ya da sana hitap edilen adı kullan.",
+            "Gerçek yaşını yaz. Halka yalnızca 18 yaş ve üzeri yetişkinler içindir.",
+            "Kişi başına bir hesap. Başkası gibi davranma."
+          ]
+        },
+        "respect": {
+          "heading": "Saygılı ol",
+          "points": [
+            "Taciz, tehdit, zorbalık ya da nefret yok; birinin kökeni, milliyeti, dini, cinsiyeti veya yönelimi hakkında da.",
+            "Topluluklarımız çeşitli: farklı ülkeler, diller, inançlar ve yaşam tarzları. Küçümseme, merak et.",
+            "Hayır, hayır demektir. Biri yanıt vermiyorsa, seni geçtiyse ya da sohbeti bitirdiyse üstelemene gerek yok.",
+            "Kimseyi fotoğraf, kişisel bilgi ya da buluşma için zorlama."
+          ]
+        },
+        "profile": {
+          "heading": "Profilini temiz tut",
+          "points": [
+            "Çıplaklık, cinsel veya şiddet içeren içerik yok. Fotoğraflar başkaları görmeden önce otomatik olarak kontrol edilir.",
+            "Profilinde telefon numarası, e-posta ya da sosyal medya hesabı olmasın. Bunları sohbette, seçtiğin kişilerle paylaş.",
+            "Reklam, satış, eleman arama ya da para isteme yok."
+          ]
+        },
+        "meeting": {
+          "heading": "Güvenle buluş",
+          "points": [
+            "Önce uygulamada sohbet et, buluşmadan önce görüntülü görüşmeyi düşün.",
+            "Kalabalık, herkese açık bir yerde buluş; gidiş dönüşünü kendin ayarla.",
+            "Güvendiğin birine nereye gittiğini söyle. Güvenlik Merkezi'ndeki \"Planlarını paylaş\" bunu senin için yapar.",
+            "Burada tanıştığın kimseye, hikâye ne olursa olsun, para ya da banka bilgisi gönderme.",
+            "İçgüdülerine güven. İstediğin an ayrılabilirsin; acil durumda yerel acil servisi ara."
+          ]
+        },
+        "reporting": {
+          "heading": "Şikâyet et ve engelle",
+          "points": [
+            "Bu kuralları çiğneyen herkesi şikâyet et: profilini aç ve Bildir'i seç. Kimin şikâyet ettiği söylenmez.",
+            "Engellemek sizi uygulamanın her yerinde birbirinizden gizler. Engeli Ayarlar > Engellenen kullanıcılar'dan kaldırabilirsin.",
+            "Şikâyetleri 24 saat içinde inceleriz, çocuk güvenliği şikâyetlerini önce."
+          ]
+        },
+        "consequences": {
+          "heading": "Kurallar çiğnenirse ne olur",
+          "points": [
+            "Duruma göre içeriği kaldırır, özellikleri kısıtlar ya da hesabı geçici veya kalıcı olarak kapatırız.",
+            "Tehdit, istismar ya da reşit olmayanları içeren her şey gibi ciddi zararlar kalıcı yasakla ve gerektiğinde yetkililere bildirimle sonuçlanır.",
+            "Kuralların tamamı Kullanım Koşulları'nda."
+          ]
+        }
+      }
+    },
+    "helpScreen": {
+      "title": "Yardım ve destek",
+      "about": "Halka, Türk dünyası diasporası ve ona yakın olanlar için bir tanışma uygulaması: arkadaşlık, romantizm, iş ve mentorluk tek bir toplulukta. Yaşadığın yer ve sevdiğin şeyler etrafındaki çemberlere katıl, etkinliklerine git ve köklerini paylaşan insanlarla tanış.",
+      "version": "Sürüm {{version}}",
+      "faqTitle": "Sık sorulan sorular",
+      "faq": {
+        "discover": {
+          "q": "Keşfet'te neden kimseyi göremiyorum?",
+          "a": "Keşfet yalnızca aradığına uyan ve kendi tercihlerine senin uyduğun kişileri gösterir: yaş, mesafe, diller ve ikinizin de istediği bağlantı türleri. Boşsa Ayarlar > Eşleştirme tercihleri'nden aralığını genişlet ya da daha fazla çembere katıl; her çemberin kendi Keşfet'i var. Geçtiğin kişiler 30 gün sonra yeniden görünür."
+        },
+        "matching": {
+          "q": "Öneriler nasıl sıralanıyor?",
+          "a": "Ne kadar iyi anlaşabileceğinize göre: ortak ilgi alanları ve çemberler, değerler, nasıl ve ne zaman buluşmayı sevdiğiniz, hedefleriniz ve daha fazlası. Eşleşme iki yönlü sayılır: o kişinin sana ve senin ona ne kadar uyduğun. Ayarlar > Senin için en önemlisi'dan bazılarına daha fazla ağırlık verebilirsin."
+        },
+        "location": {
+          "q": "Başkaları konumum hakkında ne görüyor?",
+          "a": "Yalnızca Ayarlar > Gösterilen konum'da seçtiğini: şehrini, eyaletini/bölgeni ya da sadece ülkeni. Mesafe, profilindeki şehrin merkezine göre hesaplanır, asla tam konumuna göre değil. Şehrini değiştirmek için Profili düzenle'yi kullan."
+        },
+        "verify": {
+          "q": "Onaylı rozetini nasıl alırım?",
+          "a": "Ayarlar > Onaylan'a git. Resmi bir kimlik belgesinin fotoğrafını ve canlı bir selfie çekersin, Stripe Identity ikisinin eşleştiğini kontrol eder. Genellikle bir iki dakika sürer. Kimliğin ve selfien bize değil, Stripe'a gider."
+        },
+        "report": {
+          "q": "Birini nasıl şikâyet eder veya engellerim?",
+          "a": "Profilini aç (Keşfet'ten, bir çemberden ya da sohbetinizden) ve Bildir veya Engelle'yi seç. Karşı tarafa söylenmez. Şikâyetleri 24 saat içinde inceleriz. Engelleri Ayarlar > Engellenen kullanıcılar'dan kaldırabilirsin."
+        },
+        "plus": {
+          "q": "Plus'ı nasıl iptal ederim?",
+          "a": "Plus, Apple veya Google üzerinden faturalandırılır; bu yüzden mağaza hesabından iptal edilir: Android'de Google Play > Ödemeler ve abonelikler > Abonelikler, iPhone'da Ayarlar > adın > Abonelikler. Uygulamayı ya da hesabını silmek aboneliği iptal etmez."
+        },
+        "email": {
+          "q": "Doğrulama veya şifre sıfırlama e-postası gelmedi",
+          "a": "hello@joinhalka.com adresinden gelir ve bir iki dakika sürebilir. Spam ve promosyonlar klasörlerine bak. Her bağlantı yalnızca bir kez çalışır ve bir süre sonra geçersiz olur; çalışmazsa yenisini iste. Google veya Apple ile mi kaydoldun? O zaman doğrulama e-postasına gerek yok."
+        },
+        "delete": {
+          "q": "Hesabımı nasıl silerim?",
+          "a": "Ayarlar > Hesabı sil, en altta. Her şey hemen silinir ve geri alınamaz. Plus'ın varsa önce mağaza hesabından iptal et. Uygulama olmadan joinhalka.com/delete-account adresinden silebilirsin."
+        }
+      },
+      "contactTitle": "Hâlâ yardım mı lazım?",
+      "contactBody": "Soru, sorun ya da geri bildirim için bize {{email}} adresinden yaz, en kısa sürede dönüş yapalım.",
+      "emailButton": "Destekle iletişime geç",
+      "emailSubject": "{{app}} destek"
     },
     "safetyCenterScreen": {
       "heading": "Güvenlik Merkezi",

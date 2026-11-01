@@ -699,7 +699,6 @@
     "pushNotifications": "Push notifications",
     "emailNotifications": "Email notifications",
     "community": "Community",
-    "aboutApp": "About Halka",
     "communityGuidelines": "Community guidelines",
     "helpAndSupport": "Help & support",
     "logOut": "Log out",
@@ -755,22 +754,111 @@
       "unblock": "Unblock"
     },
     "staticPages": {
-      "about": {
-        "title": "About Halka",
-        "body": "Halka is a connections app for the Turkic and Turkic-adjacent diaspora — friendship, romance, business, and mentorship, all in one community rather than four separate products."
-      },
-      "guidelines": {
-        "title": "Community guidelines",
-        "body": "Be respectful, be honest about who you are, and treat every conversation the way you'd want to be treated. Harassment, hate speech, and impersonation are never allowed and will result in account action."
-      },
-      "help": {
-        "title": "Help & support",
-        "body": "Questions, problems or feedback? Email us at support@joinhalka.com and we'll get back to you as soon as we can. To report someone, open their profile or the Safety Center."
-      },
       "privacy": {
         "title": "Data & privacy",
         "body": "Your heritage, how important faith is to you, and (for romantic connections) your gender and who you want to meet are only used for matching with your explicit consent, which you can withdraw any time in Edit profile. Faith, gender and who you want to meet are never shown to other members. The Privacy Policy has the details."
       }
+    },
+    "guidelinesScreen": {
+      "title": "Community guidelines",
+      "intro": "Halka works because people show up as themselves and treat each other well. These are the rules everyone agrees to, in plain words.",
+      "sections": {
+        "yourself": {
+          "heading": "Be yourself",
+          "points": [
+            "Use recent photos that clearly show you, and your real name or the name you go by.",
+            "Give your real age. Halka is for adults 18 and over only.",
+            "One account per person. Don't pretend to be someone else."
+          ]
+        },
+        "respect": {
+          "heading": "Be respectful",
+          "points": [
+            "No harassment, threats, bullying or hate, including about someone's ethnicity, nationality, religion, gender or orientation.",
+            "Our communities are diverse: different countries, languages, faiths and ways of life. Be curious, not dismissive.",
+            "No means no. If someone doesn't reply, passes or ends a conversation, let it go.",
+            "Don't pressure anyone for photos, personal details or a meeting."
+          ]
+        },
+        "profile": {
+          "heading": "Keep your profile clean",
+          "points": [
+            "No nudity, sexual or violent content. Photos are checked automatically before others see them.",
+            "No phone numbers, emails or social media handles in your profile. Share them in chat, with people you choose.",
+            "No ads, selling, recruiting or asking for money."
+          ]
+        },
+        "meeting": {
+          "heading": "Meet safely",
+          "points": [
+            "Chat in the app first, and consider a video call before you meet.",
+            "Meet in a busy public place and get there and back on your own.",
+            "Tell someone you trust where you're going. \"Share your plans\" in the Safety Center does this for you.",
+            "Never send money or financial details to someone you've met here, whatever the story.",
+            "Trust your instincts. You can leave at any time, and in an emergency call local emergency services."
+          ]
+        },
+        "reporting": {
+          "heading": "Report and block",
+          "points": [
+            "Report anyone who breaks these rules: open their profile and choose Report. They won't be told who reported them.",
+            "Blocking hides you from each other everywhere in the app. You can unblock in Settings > Blocked users.",
+            "We review reports within 24 hours, and child safety reports first."
+          ]
+        },
+        "consequences": {
+          "heading": "What happens if rules are broken",
+          "points": [
+            "Depending on what happened, we remove content, limit features, or suspend or permanently remove the account.",
+            "Serious harm, such as threats, exploitation or anything involving minors, means a permanent ban and, where required, a report to the authorities.",
+            "The full rules are in the Terms of Service."
+          ]
+        }
+      }
+    },
+    "helpScreen": {
+      "title": "Help & support",
+      "about": "Halka is a connections app for the Turkic diaspora and the people close to it: friendship, romance, business and mentorship in one community. Join circles around where you live and what you love, go to their events, and meet people who share your roots.",
+      "version": "Version {{version}}",
+      "faqTitle": "Common questions",
+      "faq": {
+        "discover": {
+          "q": "Why don't I see anyone in Discover?",
+          "a": "Discover only shows people who fit what you're looking for and whose own preferences fit you: age, distance, languages and the kinds of connection you both want. If it's empty, try widening your range in Settings > Matching preferences, or join more circles; each circle has its own Discover. People you've passed on come back after 30 days."
+        },
+        "matching": {
+          "q": "How are suggestions ordered?",
+          "a": "By how well you might get on: shared interests and circles, values, how and when you like to meet, your goals, and more. A match counts both ways, how well they fit you and how well you fit them. You can give some of these more weight in Settings > What matters most to you."
+        },
+        "location": {
+          "q": "What do others see about my location?",
+          "a": "Only what you choose in Settings > Location shown: your city, your state or just your country. Distance is worked out from the centre of the city on your profile, never your exact position. To change your city, use Edit profile."
+        },
+        "verify": {
+          "q": "How do I get the Verified badge?",
+          "a": "Go to Settings > Get verified. You take a photo of a government ID and a live selfie, and Stripe Identity checks that they match. It usually takes a minute or two. Your ID and selfie go to Stripe, not to us."
+        },
+        "report": {
+          "q": "How do I report or block someone?",
+          "a": "Open their profile (from Discover, a circle or your conversation) and choose Report or Block. They aren't told. We review reports within 24 hours. You can unblock people in Settings > Blocked users."
+        },
+        "plus": {
+          "q": "How do I cancel Plus?",
+          "a": "Plus is billed by Apple or Google, so you cancel it in your store account: on Android, Google Play > Payments & subscriptions > Subscriptions; on iPhone, Settings > your name > Subscriptions. Deleting the app or your account doesn't cancel it."
+        },
+        "email": {
+          "q": "I didn't get the confirmation or reset email",
+          "a": "It comes from hello@joinhalka.com and can take a minute or two. Check your spam and promotions folders. Each link works only once and expires after a while, so if it doesn't work, ask for a new one. Signed up with Google or Apple? Then you don't need a confirmation email."
+        },
+        "delete": {
+          "q": "How do I delete my account?",
+          "a": "Settings > Delete account, at the bottom. Everything is deleted straight away and can't be undone. If you have Plus, cancel it first in your store account. Without the app, go to joinhalka.com/delete-account."
+        }
+      },
+      "contactTitle": "Still need help?",
+      "contactBody": "Questions, problems or feedback: write to us at {{email}} and we'll get back to you as soon as we can.",
+      "emailButton": "Email support",
+      "emailSubject": "{{app}} support"
     },
     "safetyCenterScreen": {
       "heading": "Safety Center",

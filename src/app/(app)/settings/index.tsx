@@ -466,19 +466,14 @@ export default function Settings() {
   const communitySection = (
     <Section title={t("settings.community")}>
       <Row
-        icon="information-circle-outline"
-        label={t("settings.aboutApp")}
-        onPress={() => router.push("/(app)/settings/static-page?topic=about", { withAnchor: true })}
-      />
-      <Row
         icon="book-outline"
         label={t("settings.communityGuidelines")}
-        onPress={() => router.push("/(app)/settings/static-page?topic=guidelines", { withAnchor: true })}
+        onPress={() => router.push("/(app)/settings/guidelines", { withAnchor: true })}
       />
       <Row
         icon="help-buoy-outline"
         label={t("settings.helpAndSupport")}
-        onPress={() => router.push("/(app)/settings/static-page?topic=help", { withAnchor: true })}
+        onPress={() => router.push("/(app)/settings/help", { withAnchor: true })}
       />
       <Row
         icon="document-text-outline"

@@ -148,19 +148,19 @@ export default function SafetyCenter() {
       icon: "information-circle-outline",
       title: t("settings.safetyCenterScreen.meetingTipsTitle"),
       subtitle: t("settings.safetyCenterScreen.meetingTipsSubtitle"),
-      onPress: () => router.push("/(app)/settings/static-page?topic=guidelines", { withAnchor: true }),
+      onPress: () => router.push("/(app)/settings/guidelines", { withAnchor: true }),
     },
     {
       icon: "document-text-outline",
       title: t("settings.safetyCenterScreen.communityGuidelinesTitle"),
       subtitle: "",
-      onPress: () => router.push("/(app)/settings/static-page?topic=guidelines", { withAnchor: true }),
+      onPress: () => router.push("/(app)/settings/guidelines", { withAnchor: true }),
     },
     {
       icon: "headset-outline",
       title: t("settings.safetyCenterScreen.contactSupportTitle"),
       subtitle: "",
-      onPress: () => router.push("/(app)/settings/static-page?topic=help", { withAnchor: true }),
+      onPress: () => router.push("/(app)/settings/help", { withAnchor: true }),
     },
   ];
 
