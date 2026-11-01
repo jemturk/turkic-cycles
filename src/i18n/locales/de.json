@@ -1097,5 +1097,10 @@
   },
   "offline": {
     "banner": "Du bist offline"
+  },
+  "appUpdate": {
+    "requiredTitle": "Update erforderlich",
+    "requiredBody": "Diese Version von Halka wird nicht mehr unterstützt. Aktualisiere sie, um Halka weiter zu nutzen – es dauert nur einen Moment.",
+    "update": "Aktualisieren"
   }
 }

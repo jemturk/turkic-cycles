@@ -1097,5 +1097,10 @@
   },
   "offline": {
     "banner": "Çevrimdışısınız"
+  },
+  "appUpdate": {
+    "requiredTitle": "Güncelleme gerekli",
+    "requiredBody": "Halka'nın bu sürümü artık desteklenmiyor. Kullanmaya devam etmek için güncelle, bir dakika sürer.",
+    "update": "Güncelle"
   }
 }

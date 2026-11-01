@@ -118,6 +118,7 @@ All the planned screens are built and working:
 - **Profile and Settings** — profile with photo gallery and cover, matching preferences, privacy, notifications, theme (light/dark), text size, language (English, Turkish, Russian, German).
 - **Safety** — ID verification (Stripe Identity), report (admins get a push alert) and block, safety plans with trusted-contact check-ins, contact-detail nudges, and photo moderation before photos go public.
 - **Halka Plus** — premium tier through RevenueCat (shows a waitlist when RevenueCat keys aren't set). Until it's on sale, "See who likes you" is free for everyone: `likes_are_free()` (migration 0067) returns true; redefine it to return false at launch.
+- **App updates** — below the minimum build in `app_min_builds` (migration 0068), the phone app shows "Update required"; to force one, raise `min_build` for `ios` (CFBundleVersion, the EAS build number) or `android` (versionCode). On Android, Play's own update prompt also offers each new version once (`expo-in-app-updates`).
 - **Web** — a desktop layout with a sidebar, alongside the phone layout.
 - **Crash reporting** — Sentry (account ID only).
 

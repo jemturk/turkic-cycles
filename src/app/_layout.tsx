@@ -25,6 +25,7 @@ import { useMyProfile } from "@/hooks/useProfile";
 import { TextScaleProvider } from "@/hooks/useTextScale";
 import { AnimatedSplash } from "@/components/AnimatedSplash";
 import { AppFrame } from "@/components/AppFrame";
+import { AppUpdates } from "@/components/AppUpdates";
 import { DialogHost } from "@/components/DialogHost";
 import { persistOptions, queryClient } from "@/lib/queryClient";
 
@@ -170,6 +171,9 @@ function RootLayout() {
                   the full screen on native. */}
               <AppFrame>
                 <Slot />
+                {/* "Update required" over everything below the minimum build, and
+                    Play's update prompt on Android. */}
+                <AppUpdates />
                 {/* Plays once the native (static-image) splash hands off to JS --
                     gives the logo mark its own animated "assembly" moment instead
                     of cutting straight to the app. */}

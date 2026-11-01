@@ -54,6 +54,24 @@ export type Database = {
         }
         Relationships: []
       }
+      app_min_builds: {
+        Row: {
+          min_build: number
+          platform: string
+          updated_at: string
+        }
+        Insert: {
+          min_build?: number
+          platform: string
+          updated_at?: string
+        }
+        Update: {
+          min_build?: number
+          platform?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blocked_users: {
         Row: {
           blocked_id: string

@@ -1097,5 +1097,10 @@
   },
   "offline": {
     "banner": "You're offline"
+  },
+  "appUpdate": {
+    "requiredTitle": "Update required",
+    "requiredBody": "This version of Halka is no longer supported. Update to keep using it — it only takes a moment.",
+    "update": "Update"
   }
 }

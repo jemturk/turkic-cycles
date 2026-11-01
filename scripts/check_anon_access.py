@@ -32,7 +32,9 @@ TYPES_PATH = ROOT / "src" / "types" / "database.ts"
 
 # Tables anyone may read without logging in, on purpose. Keep this list short and
 # explain each entry.
-PUBLIC_TABLES: dict[str, str] = {}
+PUBLIC_TABLES: dict[str, str] = {
+    "app_min_builds": "oldest supported build per platform; checked before sign-in (0068), nothing personal",
+}
 
 DUMMY_UUID = "00000000-0000-0000-0000-000000000000"
 DUMMY_TIMESTAMP = "2000-01-01T00:00:00Z"

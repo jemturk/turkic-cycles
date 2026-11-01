@@ -45,6 +45,9 @@
             ]
           }
         ]
+      },
+      "infoPlist": {
+        "AppStoreID": "6828226383"
       }
     },
     "android": {

@@ -46,6 +46,7 @@
     "date-fns": "Date formatting; UI only, no data collection",
     "expo": "Framework",
     "expo-apple-authentication": "Sign in with Apple -> account creation: OAuth",
+    "expo-application": "Reads the app's own build number for the minimum-version check (0068); no data leaves the device",
     "expo-asset": "Bundled assets; UI only, no data collection",
     "expo-build-properties": "Build settings only (R8 minify and resource shrinking); nothing at runtime, no data collection",
     "expo-constants": "App config; UI only, no data collection",
@@ -54,6 +55,7 @@
     "expo-image": "Shows photos (decoded at display size, cached on the device); loads them from our storage only, sends nothing elsewhere -> no Data safety change",
     "expo-image-manipulator": "Re-encodes photos on device before upload: shrinks them and drops their metadata (GPS)",
     "expo-image-picker": "Profile photos (images only; microphonePermission false) -> Data safety: Photos. CAMERA permission",
+    "expo-in-app-updates": "Asks Google Play (Play Core) or the App Store whether a newer version exists, and shows the store's update prompt; sends no user data of ours",
     "expo-linear-gradient": "UI only, no data collection",
     "expo-linking": "Deep links; UI only, no data collection",
     "expo-localization": "Device language for the UI; not sent",
@@ -90,6 +92,11 @@
     "app_admins": [
       "created_at",
       "user_id"
+    ],
+    "app_min_builds": [
+      "min_build",
+      "platform",
+      "updated_at"
     ],
     "blocked_users": [
       "blocked_id",
