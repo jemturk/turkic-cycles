@@ -234,7 +234,10 @@ before).
 | 6 | Safety Center with a plan | Safety built in |
 | 7 | A member's profile | Know who you meet |
 
-Uploads: App Store → `appstore-6.9-*` (all 7). Play → phone `play-screenshot-*`,
+Uploads: App Store → `appstore-6.9-*` (all 7) under App Previews and Screenshots, and
+`appstore-header-3840x1646.png` under Header (optional; made from
+`scripts/store_screenshots/header.html` at 2x in Edge, no text so Apple's title can sit
+over it). Play → phone `play-screenshot-*`,
 7-inch `play-tablet7-*`, 10-inch `play-tablet10-*`, feature graphic
 `play-feature-1024x500.png`, icon `play-icon-512.png`.
 
