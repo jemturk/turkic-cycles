@@ -31,7 +31,8 @@ function Render($url, $w, $h, $scale, $file, $profile) {
   & $edge --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=$scale "--window-size=$($w + 40),$($h + 40)" --virtual-time-budget=20000 "--user-data-dir=$env:TEMP\halka-edge-$profile" "--screenshot=$raw" $url 2>$null | Out-Null
   $W = $w * $scale; $H = $h * $scale
   $img = [System.Drawing.Image]::FromFile($raw)
-  $bmp = New-Object System.Drawing.Bitmap $W, $H
+  # 24-bit, no alpha channel: App Store Connect rejects screenshots that have one.
+  $bmp = New-Object System.Drawing.Bitmap $W, $H, ([System.Drawing.Imaging.PixelFormat]::Format24bppRgb)
   $g = [System.Drawing.Graphics]::FromImage($bmp)
   $g.DrawImage($img, (New-Object System.Drawing.Rectangle 0, 0, $W, $H), (New-Object System.Drawing.Rectangle 0, 0, $W, $H), [System.Drawing.GraphicsUnit]::Pixel)
   $g.Dispose(); $img.Dispose()
