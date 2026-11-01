@@ -209,16 +209,34 @@ were taken with it.
 
 ## 7. Screenshots
 
-Take them on the review account (with the sample members visible), in light mode,
-with real-looking content. Suggested order — the first two matter most:
+All in `store-assets/`, captioned (headline and subline above the screen in a device
+frame), taken from the live app signed in as the review account, so the sample world
+(migration 0065) supplies the people, events and chat. To retake them after a design
+change:
 
-1. **Circles** list (cards with topic tiles, member and event counts)
-2. **A circle's page** with upcoming events
-3. **An event** with Going / Interested faces
-4. **Discover** card
-5. **Chat** conversation (grouped bubbles, a reaction)
-6. **Safety Center** (Your plans, Report/Block, Verified)
-7. **Profile** with the Verified badge
+```
+python scripts/store_screenshots/prepare.py      # builds, signs in, serves; leave it running
+powershell scripts/store_screenshots/shoot.ps1   # second terminal; writes store-assets/
+```
+
+`shoot.ps1 -Only 3-event` retakes one screen, `-Sets ios` one set. Captions and screen
+paths are at the top of `shoot.ps1`. If a shot looks wrong, check the review account
+first: language English, light theme, its photo (testing on it has changed these
+before).
+
+| # | Screen | Headline |
+| --- | --- | --- |
+| 1 | Circles list | Find your people |
+| 2 | A circle's page (Tampa Türkiye) | Meetups near you |
+| 3 | An event (Sketch Walk) with Going / Interested | See who's going |
+| 4 | Discover card | People who get you |
+| 5 | Chat with Aigerim | Chat and make plans |
+| 6 | Safety Center with a plan | Safety built in |
+| 7 | A member's profile | Know who you meet |
+
+Uploads: App Store → `appstore-6.9-*` (all 7). Play → phone `play-screenshot-*`,
+7-inch `play-tablet7-*`, 10-inch `play-tablet10-*`, feature graphic
+`play-feature-1024x500.png`, icon `play-icon-512.png`.
 
 **Sizes**
 - **Apple:** 6.9" iPhone, 1320 × 2868 px (portrait) — required; Apple scales it for
@@ -226,9 +244,6 @@ with real-looking content. Suggested order — the first two matter most:
 - **Google:** phone screenshots, 2–8, 16:9 or 9:16, each side 320–3840 px
   (e.g. 1080 × 1920). Plus a **feature graphic** 1024 × 500 px and an **app icon**
   512 × 512 px (PNG, 32-bit).
-
-Optional: add a short caption over each screenshot ("Join circles near you", "See who's
-going", "Chat and make plans", "Safe by design").
 
 ---
 

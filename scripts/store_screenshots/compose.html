@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Fraunces"; font-weight: 600; src: url(/shotfonts/fraunces-latin-600.woff2); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212; }
+  @font-face { font-family: "Fraunces"; font-weight: 600; src: url(/shotfonts/fraunces-latin-ext-600.woff2); unicode-range: U+0100-02AF,U+1E00-1EFF,U+20A0-20C0,U+2C60-2C7F,U+A720-A7FF; }
+  html, body { margin: 0; overflow: hidden; }
+  body { background: linear-gradient(170deg, #FEF6EC 0%, #FDEFE4 55%, #F9E3D8 100%); position: relative; }
+  .dot { position: absolute; border-radius: 50%; }
+  .caption { position: absolute; left: 0; right: 0; text-align: center; color: #2B2320; }
+  .caption h1 { font-family: "Fraunces", serif; font-weight: 600; margin: 0; letter-spacing: -0.01em; line-height: 1.08; }
+  .caption p { font-family: "Segoe UI", sans-serif; margin: 0 auto; color: #4A3F3A; line-height: 1.35; }
+  .device { position: absolute; background: #1E1A18; box-shadow: 0 30px 60px rgba(74, 40, 20, 0.22), 0 8px 18px rgba(74, 40, 20, 0.12); }
+  .screen { position: absolute; overflow: hidden; background: #FEF6EC; }
+  .bar { position: absolute; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; font-family: "Segoe UI", sans-serif; font-weight: 600; color: #171310; box-sizing: border-box; }
+  .bottom { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; }
+  iframe { position: absolute; left: 0; border: 0; transform-origin: 0 0; }
+</style>
+</head>
+<body>
+<div class="dot" id="d1"></div><div class="dot" id="d2"></div>
+<div class="caption" id="cap"><h1 id="h1"></h1><p id="h2"></p></div>
+<div class="device" id="dev"><div class="screen" id="scr">
+  <div class="bar" id="bar"></div>
+  <iframe id="app"></iframe>
+  <div class="bottom" id="bot"><div id="pill"></div></div>
+</div></div>
+<script>
+// Presets: canvas size in CSS px (the screenshot is this times the device scale factor),
+// the device's screen in CSS px, its status bar and bottom (home indicator / gesture
+// bar) heights, and how wide the device is drawn relative to the canvas.
+var PRESETS = {
+  ios:   { W: 440, H: 956,  sw: 402, sh: 874,  top: 54, bottom: 30, kind: "ios",     width: 0.80 },
+  play:  { W: 360, H: 640,  sw: 412, sh: 915,  top: 32, bottom: 22, kind: "android", width: 0.66 },
+  tab7:  { W: 612, H: 1088, sw: 600, sh: 960,  top: 26, bottom: 22, kind: "tablet",  width: 0.90 },
+  tab10: { W: 810, H: 1440, sw: 800, sh: 1280, top: 26, bottom: 22, kind: "tablet",  width: 0.90 }
+};
+var q = new URLSearchParams(location.search);
+var P = PRESETS[q.get("c")];
+document.body.style.width = P.W + "px";
+document.body.style.height = P.H + "px";
+
+// Decorative circles from the logo: coral and turquoise, very faint.
+function dot(id, x, y, r, color) {
+  var d = document.getElementById(id);
+  Object.assign(d.style, { left: (x - r) + "px", top: (y - r) + "px", width: 2 * r + "px", height: 2 * r + "px", background: color });
+}
+dot("d1", P.W * 0.06, P.H * 0.10, P.W * 0.22, "rgba(193, 68, 14, 0.07)");
+dot("d2", P.W * 0.96, P.H * 0.17, P.W * 0.26, "rgba(18, 122, 135, 0.08)");
+
+var u = P.W / 100;
+var cap = document.getElementById("cap");
+cap.style.top = (P.kind === "tablet" ? 6 : 7) * u + "px";
+cap.style.padding = "0 " + 6 * u + "px";
+var h1 = document.getElementById("h1"), h2 = document.getElementById("h2");
+h1.textContent = q.get("h1");
+h2.textContent = q.get("h2");
+h1.style.fontSize = (P.kind === "tablet" ? 6.6 : 8.8) * u + "px";
+h2.style.fontSize = (P.kind === "tablet" ? 3.3 : 4.3) * u + "px";
+h2.style.marginTop = 2.2 * u + "px";
+h1.style.whiteSpace = "nowrap";
+h2.style.maxWidth = (P.kind === "tablet" ? 70 : 84) * u + "px";
+
+// The device.
+var dw = P.W * P.width;
+var bezel = P.kind === "tablet" ? dw * 0.028 : dw * 0.032;
+var s = (dw - 2 * bezel) / P.sw;
+var capBottom = cap.offsetTop + h1.offsetHeight * 0 + parseFloat(h1.style.fontSize) * 1.08 + 2.2 * u + parseFloat(h2.style.fontSize) * 1.35 * 2;
+var dev = document.getElementById("dev"), scr = document.getElementById("scr");
+var dh = P.sh * s + 2 * bezel;
+var radius = P.kind === "tablet" ? dw * 0.05 : dw * 0.15;
+Object.assign(dev.style, { width: dw + "px", height: dh + "px", left: (P.W - dw) / 2 + "px", top: capBottom + 5.5 * u + "px", borderRadius: radius + "px" });
+Object.assign(scr.style, { left: bezel + "px", top: bezel + "px", width: P.sw + "px", height: P.sh + "px", transform: "scale(" + s + ")", transformOrigin: "0 0", borderRadius: (radius - bezel) / s + "px" });
+
+// Status bar.
+var bar = document.getElementById("bar");
+bar.style.height = P.top + "px";
+var icons =
+  '<svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#171310"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#171310"/><rect x="10" y="3" width="3" height="9" rx="1" fill="#171310"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#171310"/></svg>' +
+  '<svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 11.5 5.6 9.1a3.4 3.4 0 0 1 4.8 0z M3.5 7a6.4 6.4 0 0 1 9 0l1.5-1.5a8.5 8.5 0 0 0-12 0z M0.6 4.1a10.6 10.6 0 0 1 14.8 0L16 3.4 15.4 2.6a12.2 12.2 0 0 0-14.8 0L0 3.4z" fill="#171310"/></svg>' +
+  '<svg width="27" height="13" viewBox="0 0 27 13"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="#171310" stroke-opacity="0.4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#171310"/><path d="M25 4.5v4a2 2 0 0 0 0-4z" fill="#171310" fill-opacity="0.45"/></svg>';
+if (P.kind === "ios") {
+  bar.style.padding = "8px 30px 0 46px";
+  bar.style.fontSize = "17px";
+  bar.innerHTML = '<span>9:41</span><div style="position:absolute;left:50%;top:11px;width:124px;height:36px;margin-left:-62px;border-radius:18px;background:#000"></div><span style="display:flex;gap:6px;align-items:center">' + icons + '</span>';
+} else {
+  bar.style.padding = "0 20px 0 22px";
+  bar.style.fontSize = "14px";
+  bar.style.fontWeight = "500";
+  bar.innerHTML = '<span>9:41</span>' + (P.kind === "android" ? '<div style="position:absolute;left:50%;top:9px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#111"></div>' : '') + '<span style="display:flex;gap:6px;align-items:center;transform:scale(0.85);transform-origin:right center">' + icons + '</span>';
+}
+
+// The app, below the status bar and above the home indicator.
+var app = document.getElementById("app");
+app.style.top = P.top + "px";
+app.style.width = P.sw + "px";
+app.style.height = (P.sh - P.top - P.bottom) + "px";
+var bot = document.getElementById("bot");
+bot.style.height = P.bottom + "px";
+var pill = document.getElementById("pill");
+Object.assign(pill.style, P.kind === "ios"
+  ? { width: "140px", height: "5px", borderRadius: "3px", background: "#171310", marginTop: "6px" }
+  : { width: "108px", height: "4px", borderRadius: "2px", background: "#4A3F3A" });
+app.src = q.get("p");
+
+// Status bar and bottom strip take the colour of the app's edge beneath them, so they
+// read as part of the screen (white headers, mint circle headers, the cream page).
+function bgAt(doc, x, y) {
+  var el = doc.elementFromPoint(x, y);
+  while (el) {
+    var c = getComputedStyle(el).backgroundColor;
+    if (c && c !== "transparent" && !/rgba\(.*, 0\)$/.test(c)) return c;
+    el = el.parentElement;
+  }
+  return "#FEF6EC";
+}
+function paint() {
+  try {
+    var doc = app.contentDocument;
+    bar.style.background = bgAt(doc, 30, 2);
+    bot.style.background = bgAt(doc, P.sw / 2, P.sh - P.top - P.bottom - 12);
+  } catch (e) {}
+}
+setInterval(paint, 300);
+</script>
+</body>
+</html>
