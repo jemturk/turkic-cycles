@@ -11,6 +11,7 @@ import {
   type Tier,
   joinPlusWaitlist,
   leavePlusWaitlist,
+  likesAreFree,
   listIncomingLikes,
   syncMySubscription,
 } from "@/api/plus";
@@ -28,6 +29,24 @@ export function useMySubscription(userId: string | undefined) {
 export function useHasPlus(userId: string | undefined): boolean | undefined {
   const { data } = useMySubscription(userId);
   return data ? hasPlus(data) : undefined;
+}
+
+export function useLikesAreFree(userId: string | undefined) {
+  return useQuery({
+    queryKey: ["likesAreFree"],
+    queryFn: likesAreFree,
+    enabled: !!userId,
+    staleTime: 60 * 60 * 1000,
+  });
+}
+
+// Whether the Likes tab lists people rather than the teaser: Plus, or everyone while
+// likes are free. undefined while either is loading.
+export function useCanSeeLikes(userId: string | undefined): boolean | undefined {
+  const subscribed = useHasPlus(userId);
+  const { data: free } = useLikesAreFree(userId);
+  if (subscribed || free) return true;
+  return subscribed === undefined || free === undefined ? undefined : false;
 }
 
 export function useIsTierTester(userId: string | undefined) {
@@ -123,7 +142,7 @@ export function useIncomingLikesCount(userId: string | undefined) {
   });
 }
 
-// Only runs for subscribers -- the server would refuse anyone else.
+// Only runs when useCanSeeLikes says so -- the server would refuse anyone else.
 export function useIncomingLikes(userId: string | undefined, enabled: boolean) {
   return useQuery({
     queryKey: ["incomingLikes", userId],

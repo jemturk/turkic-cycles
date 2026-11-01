@@ -80,7 +80,15 @@ export async function countIncomingLikes(): Promise<number> {
   return data ?? 0;
 }
 
-// Plus only -- the server refuses otherwise. Newest first; each person's circleId is
+// Whether "See who likes you" is open to everyone for now (migration 0067: until Plus
+// can be bought).
+export async function likesAreFree(): Promise<boolean> {
+  const { data, error } = await supabase.rpc("likes_are_free");
+  if (error) throw error;
+  return !!data;
+}
+
+// Plus, or everyone while likesAreFree -- the server refuses otherwise. Newest first; each person's circleId is
 // the deck they liked you in, so liking them back from their profile makes the match.
 export async function listIncomingLikes(): Promise<SavedPerson[]> {
   const { data, error } = await supabase.rpc("list_incoming_likes");

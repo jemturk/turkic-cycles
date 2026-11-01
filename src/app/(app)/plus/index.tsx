@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/hooks/useSession";
 import {
   useHasPlus,
+  useLikesAreFree,
   useMySubscription,
   usePlusPackages,
   usePlusWaitlist,
@@ -45,6 +46,7 @@ export default function Plus() {
   const userId = session?.user.id;
   const { data: subscription } = useMySubscription(userId);
   const subscribed = useHasPlus(userId);
+  const { data: likesFree } = useLikesAreFree(userId);
   const { data: onWaitlist } = usePlusWaitlist(userId);
   const setWaitlist = useSetPlusWaitlist(userId);
   const { data: packages, isLoading: packagesLoading } = usePlusPackages(userId);
@@ -106,7 +108,11 @@ export default function Plus() {
         </View>
 
         <View className="gap-4 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
-          <Benefit icon="heart" title={t("plus.seeLikes")} body={t("plus.seeLikesBody")} />
+          <Benefit
+            icon="heart"
+            title={t("plus.seeLikes")}
+            body={likesFree ? t("plus.seeLikesFree") : t("plus.seeLikesBody")}
+          />
           <Text className="mt-1 text-xs font-medium uppercase text-ink-400 dark:text-ink-300">{t("plus.comingSoon")}</Text>
           <Benefit icon="globe-outline" title={t("plus.worldwide")} />
           <Benefit icon="options-outline" title={t("plus.filters")} />

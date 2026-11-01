@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/hooks/useSession";
 import { useMessageThreads, useNewConnections } from "@/hooks/useChat";
 import { useSavedPeople } from "@/hooks/useDiscover";
-import { useHasPlus, useIncomingLikes, useIncomingLikesCount } from "@/hooks/usePlus";
+import { useCanSeeLikes, useIncomingLikes, useIncomingLikesCount } from "@/hooks/usePlus";
 import { calculateAge } from "@/lib/age";
 import { Avatar } from "@/components/Avatar";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
@@ -258,12 +258,12 @@ export default function Connections() {
   const { data: matched, refetch: refetchMatched, isRefetching: isRefetchingMatched } = useNewConnections(userId);
   const { data: connected, refetch: refetchConnected, isRefetching: isRefetchingConnected } = useMessageThreads(userId);
   const { data: saved, refetch: refetchSaved, isRefetching: isRefetchingSaved } = useSavedPeople(userId);
-  const subscribed = useHasPlus(userId);
+  const canSeeLikes = useCanSeeLikes(userId);
   const { data: likesCount, refetch: refetchLikesCount, isRefetching: isRefetchingLikesCount } =
     useIncomingLikesCount(userId);
   const { data: likes, refetch: refetchLikes, isRefetching: isRefetchingLikes } = useIncomingLikes(
     userId,
-    subscribed === true
+    canSeeLikes === true
   );
   // tab drives the pill; contentTab, what's shown below it, catches up once the pill
   // has finished moving. Building a long grid of photo cards (Saved) in the same
@@ -306,7 +306,7 @@ export default function Connections() {
     refetchConnected();
     refetchSaved();
     refetchLikesCount();
-    if (subscribed) refetchLikes();
+    if (canSeeLikes) refetchLikes();
   }
 
   // replace, not push: "user" is its own hidden tab (see (app)/_layout.tsx), and
@@ -347,8 +347,8 @@ export default function Connections() {
           ? "connections.emptySaved"
           : "connections.emptyLikes"
   );
-  // Free users with likes waiting get the teaser instead of a list.
-  const showLikesTeaser = contentTab === "likes" && subscribed === false && (likesCount ?? 0) > 0;
+  // Without Plus (and while likes aren't free), likes waiting get the teaser instead of a list.
+  const showLikesTeaser = contentTab === "likes" && canSeeLikes === false && (likesCount ?? 0) > 0;
   const isEmpty = !showLikesTeaser && (!people || people.length === 0);
   const tabItems = TABS.map(({ value, icon }) => ({ value, icon, label: t(`connections.${value}`), count: counts[value] }));
 

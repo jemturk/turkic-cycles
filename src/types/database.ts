@@ -1125,6 +1125,7 @@ export type Database = {
       is_tier_tester: { Args: never; Returns: boolean }
       is_visible_circle: { Args: { target: string }; Returns: boolean }
       is_visible_person: { Args: { target: string }; Returns: boolean }
+      likes_are_free: { Args: never; Returns: boolean }
       list_circle_discover_candidates: {
         Args: { target_circle: string }
         Returns: {
