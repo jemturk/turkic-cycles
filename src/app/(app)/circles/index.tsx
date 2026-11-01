@@ -86,8 +86,10 @@ function CirclesPhone() {
           </Text>
         ) : null}
 
-        {localEnabled && circles && shownCircles.length === 0 ? (
-          <Text className="text-base text-ink-700 dark:text-ink-200">{t("circles.noLocalCircles")}</Text>
+        {circles && shownCircles.length === 0 ? (
+          <Text className="text-base text-ink-700 dark:text-ink-200">
+            {localEnabled ? t("circles.noLocalCircles") : t("circles.noCircles")}
+          </Text>
         ) : null}
 
         {shownCircles.map((circle) => {

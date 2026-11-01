@@ -35,6 +35,7 @@ TYPES_PATH = ROOT / "src" / "types" / "database.ts"
 PUBLIC_TABLES: dict[str, str] = {}
 
 DUMMY_UUID = "00000000-0000-0000-0000-000000000000"
+DUMMY_TIMESTAMP = "2000-01-01T00:00:00Z"
 
 
 def load_env() -> tuple[str, str]:
@@ -142,6 +143,12 @@ def main() -> int:
         query = urllib.parse.urlencode({arg: dummy_value(ts_type) for arg, ts_type in args.items()})
         status, body = request(f"{base}/rest/v1/rpc/{name}" + (f"?{query}" if query else ""), key)
         code = body.get("code") if isinstance(body, dict) else None
+        if code in ("22007", "22P02"):
+            # A timestamptz is a "string" in the types too: retry with a timestamp in
+            # place of the uuid placeholder.
+            query = query.replace(DUMMY_UUID, DUMMY_TIMESTAMP)
+            status, body = request(f"{base}/rest/v1/rpc/{name}?{query}", key)
+            code = body.get("code") if isinstance(body, dict) else None
         if code == "42501":
             verdict = "ok    (permission denied)"
         elif code == "PGRST202" and not body.get("hint"):

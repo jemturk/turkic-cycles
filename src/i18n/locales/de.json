@@ -116,6 +116,7 @@
     "locationDenied": "Erlaube den Standortzugriff, um Veranstaltungen in deiner Nähe zu sehen.",
     "locationUnavailable": "Standort konnte nicht ermittelt werden. Versuch es noch einmal.",
     "noLocalCircles": "Noch keine Kreise im Umkreis von 50 Meilen.",
+    "noCircles": "Hier gibt es noch keine Kreise. Neue entstehen, wenn Mitglieder sie gründen – schau bald wieder vorbei.",
     "filterAll": "Alle",
     "filterJoined": "Beigetreten",
     "nearMe": "In der Nähe",

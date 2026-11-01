@@ -116,6 +116,7 @@
     "locationDenied": "Allow location access to see events near you.",
     "locationUnavailable": "Couldn't get your location. Try again.",
     "noLocalCircles": "No circles within 50 miles of you yet.",
+    "noCircles": "No circles here yet. New ones open as members start them, so check back soon.",
     "filterAll": "All",
     "filterJoined": "Joined",
     "nearMe": "Near me",

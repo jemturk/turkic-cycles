@@ -198,7 +198,7 @@ export function CirclesDesktop() {
 
         {circles && shownCircles.length === 0 ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">
-            {joinedOnly ? t("circles.noJoinedCircles") : localEnabled ? t("circles.noLocalCircles") : null}
+            {joinedOnly ? t("circles.noJoinedCircles") : localEnabled ? t("circles.noLocalCircles") : t("circles.noCircles")}
           </Text>
         ) : null}
 

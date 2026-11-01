@@ -868,6 +868,26 @@ export type Database = {
         }
         Relationships: []
       }
+      sample_circles: {
+        Row: {
+          circle_id: string
+        }
+        Insert: {
+          circle_id: string
+        }
+        Update: {
+          circle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sample_circles_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: true
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           current_period_end: string | null
@@ -1103,6 +1123,7 @@ export type Database = {
       is_blocked: { Args: { a: string; b: string }; Returns: boolean }
       is_test_account: { Args: never; Returns: boolean }
       is_tier_tester: { Args: never; Returns: boolean }
+      is_visible_circle: { Args: { target: string }; Returns: boolean }
       is_visible_person: { Args: { target: string }; Returns: boolean }
       list_circle_discover_candidates: {
         Args: { target_circle: string }
@@ -1142,11 +1163,14 @@ export type Database = {
         }[]
       }
       process_overdue_safety_checkins: { Args: never; Returns: undefined }
+      purge_old_matching_logs: { Args: never; Returns: undefined }
+      refresh_sample_world: { Args: never; Returns: undefined }
       register_push_token: {
         Args: { p_platform: string; p_token: string }
         Returns: undefined
       }
       remove_connection: { Args: { p_match_id: string }; Returns: boolean }
+      sample_shift: { Args: { n: number; t: string }; Returns: string }
       sees_mocks: { Args: never; Returns: boolean }
       set_my_test_tier: { Args: { p_tier: string }; Returns: undefined }
       set_my_test_verified: {

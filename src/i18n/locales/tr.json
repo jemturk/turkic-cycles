@@ -116,6 +116,7 @@
     "locationDenied": "Yakınındaki etkinlikleri görmek için konum erişimine izin ver.",
     "locationUnavailable": "Konumun alınamadı. Tekrar dene.",
     "noLocalCircles": "50 mil içinde henüz çember yok.",
+    "noCircles": "Burada henüz çember yok. Üyeler yenilerini açtıkça burada görünecek, yakında tekrar bak.",
     "filterAll": "Tümü",
     "filterJoined": "Katıldıklarım",
     "nearMe": "Yakınımda",

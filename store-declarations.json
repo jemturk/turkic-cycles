@@ -319,6 +319,9 @@
       "trusted_contacts",
       "user_id"
     ],
+    "sample_circles": [
+      "circle_id"
+    ],
     "subscriptions": [
       "current_period_end",
       "product_id",
