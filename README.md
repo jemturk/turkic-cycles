@@ -117,7 +117,7 @@ All the planned screens are built and working:
 - **Connections and Chat** — realtime messaging with typing indicator, delivered/read status, replies, reactions, push notifications, and Remove connection.
 - **Profile and Settings** — profile with photo gallery and cover, matching preferences, privacy, notifications, theme (light/dark), text size, language (English, Turkish, Russian, German).
 - **Safety** — ID verification (Stripe Identity), report (admins get a push alert) and block, safety plans with trusted-contact check-ins, contact-detail nudges, and photo moderation before photos go public.
-- **Halka Plus** — premium tier through RevenueCat (shows a waitlist when RevenueCat keys aren't set).
+- **Halka Plus** — premium tier through RevenueCat (shows a waitlist when RevenueCat keys aren't set). Until it's on sale, "See who likes you" is free for everyone: `likes_are_free()` (migration 0067) returns true; redefine it to return false at launch.
 - **Web** — a desktop layout with a sidebar, alongside the phone layout.
 - **Crash reporting** — Sentry (account ID only).
 

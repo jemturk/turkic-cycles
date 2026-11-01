@@ -22,7 +22,7 @@ Placeholders: **[NAME]** = the final app name (now "Halka"; it was "Turkic Circl
 | Terms (EULA) URL | https://joinhalka.com/terms | (in description / website) |
 | Support URL | https://joinhalka.com (or your domain) | — |
 | Support email | support@joinhalka.com | support@joinhalka.com |
-| Price | Free (with in-app purchases) | Free (contains in-app purchases) |
+| Price | Free (Plus in-app purchases come later, see §5) | Free (contains in-app purchases) |
 | Contains ads | No | No |
 
 **iPad:** not supported (`"supportsTablet": false` in `app.json`), so no iPad
@@ -105,7 +105,7 @@ can chat with and meet people they don't know.
 - Category: **Social / Communication** (with dating features).
 - Users can interact or exchange information: **Yes**
 - Users can share their location with others: **No** (only a city they type)
-- Allows users to purchase digital goods: **Yes** (Plus)
+- Allows users to purchase digital goods: **Yes** (Plus, once it's on sale)
 - Unrestricted internet / user-generated content: **Yes**, moderated with reporting
   and blocking.
 - **Target audience and content** (App content → Target audience): **18 and over only**.
@@ -155,17 +155,20 @@ can chat with and meet people they don't know.
 > - Block or report anyone in two taps. We review every report.
 > - Halka is for adults 18 and over.
 >
+> Available in English, Turkish, German and Russian.
+>
+> Terms: https://joinhalka.com/terms · Privacy: https://joinhalka.com/privacy
+
+**Plus isn't on sale yet**, so the description doesn't mention it: describing a
+subscription that can't be bought gets apps rejected. Until then "See who likes you" is
+free for everyone (migration 0067, `likes_are_free()`) and the Plus screen offers a
+waitlist. When Plus goes on sale (backlog §1), add this back above "Available in…":
+
 > **Halka Plus** (optional subscription)
 > See everyone who likes you, so you can like them back and match right away (more Plus
 > features are on the way). Plus renews automatically unless you cancel at least 24
 > hours before the end of the period; manage or cancel it in your App Store or Google
 > Play account settings.
->
-> Available in English, Turkish, German and Russian.
->
-> Terms: https://joinhalka.com/terms · Privacy: https://joinhalka.com/privacy
-
-*(Today Plus's live feature is "See who likes you"; worldwide Discover, advanced filters and more daily likes show as "coming soon". Update this line as they ship.)*
 
 **What's New (first release):** `Welcome to Halka! Join circles, go to meetups and meet your people.`
 
@@ -183,7 +186,9 @@ circles, with a chat, RSVPs, a safety plan, **Premium** (all paid features) and 
 `~/.turek/review-account.txt` (outside the repo). The screenshots in `store-assets/`
 were taken with it.
 
-**Notes to paste (Apple → App Review Information → Notes; Google → App access):**
+**Notes to paste (Apple → App Review Information → Notes; Google → App access).** Once
+Plus is on sale, change the Plus line to: "Halka Plus: Settings → Plus; the subscription
+can be bought with a sandbox account."
 
 > Halka is a community app for adults (18+) of Turkic heritage: members join
 > circles (local groups), RSVP to events, discover and connect with other members, and
@@ -197,8 +202,8 @@ were taken with it.
 >   menu once you're connected). Settings → Safety Center has Report, Share your plans
 >   (a safety plan with trusted contacts and check-in reminders) and Get verified.
 > - Delete account: Settings → Delete account.
-> - Plus (in-app subscription): Settings → Plus. Sandbox purchases work with a sandbox
->   tester.
+> - Halka Plus: in-app purchases aren't enabled in this version; the Plus screen offers a
+>   waitlist, and "See who likes you" (Connections → Likes) is free for everyone for now.
 > - Identity verification uses Stripe Identity (ID + selfie) and is optional.
 > - Sign in with Apple and Google are offered on the Log in screen.
 >

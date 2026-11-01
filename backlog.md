@@ -50,9 +50,19 @@ The stores would reject the app, or it would break for real users, without these
 - [x] **App Review test account** — "Nurlan H." (`mock003@turek-mock.invalid`, a test
   account); password in `~/.turek/review-account.txt`. Enter it in Play Console → App
   access and App Store Connect → App Review Information.
-- [ ] **Plus purchases end to end** [you] — create the subscription products in App
+- [ ] **Plus purchases end to end** [you, then code] — sign Apple's Paid Applications
+  agreement (banking, tax), create the subscription products in App
   Store Connect and Play Console, set up RevenueCat for `com.turek.app` (both
-  platforms), then test a sandbox purchase and Restore.
+  platforms), then test a sandbox purchase and Restore. Then [code]: RevenueCat keys
+  (`EXPO_PUBLIC_REVENUECAT_IOS_KEY` / `_ANDROID_KEY`) into `.env` and the EAS production
+  environment, new builds; on Apple the first subscription goes in for review with that
+  new version. At launch: redefine `likes_are_free()` (0067) to return false, and put
+  the Plus paragraph and review-note line back (store-submission.md §5 and §6).
+- [ ] **Who can start a circle** [you, decision] — the seeded circles are testers-only now
+  (0065), so real members see only circles real people made, and starting one needs Plus
+  and a verified ID (0035). Until Plus is on sale nobody real can. Options: let verified
+  members host without Plus for now, or create a few real circles yourself in launch
+  cities.
 
 - [ ] **Photo check (Google Cloud Vision): finish setup** [you] — code done (migration
   0044, function `moderate-photo`). In this order, so uploads never break:
