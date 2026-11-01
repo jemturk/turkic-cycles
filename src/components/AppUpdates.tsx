@@ -3,8 +3,8 @@ import { Linking, Platform, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { requireOptionalNativeModule } from "expo";
 import * as Application from "expo-application";
-import * as InAppUpdates from "expo-in-app-updates";
 import { useTranslation } from "react-i18next";
 
 import { Text } from "@/components/Text";
@@ -19,6 +19,12 @@ import { getMinBuild } from "@/api/appVersion";
 //   per version; it downloads in the background and restarts into the new one.
 
 const NATIVE = Platform.OS === "ios" || Platform.OS === "android";
+// Expo Go doesn't include the native module, and importing the library there throws;
+// load it only when present (the "Update required" screen then opens the store itself).
+const InAppUpdates: typeof import("expo-in-app-updates") | null = requireOptionalNativeModule("ExpoInAppUpdates")
+  ? // eslint-disable-next-line @typescript-eslint/no-require-imports -- conditional: a static import throws in Expo Go
+    require("expo-in-app-updates")
+  : null;
 const BUILD = Number(Application.nativeBuildVersion ?? 0);
 const STORE_URL = Platform.select({
   ios: "itms-apps://apps.apple.com/app/id6828226383",
@@ -30,7 +36,7 @@ const OFFERED_KEY = "appUpdate.offeredVersion";
 async function openStore() {
   try {
     // Android: Play's immediate update, inside the app. iOS: the App Store sheet.
-    if (await InAppUpdates.startUpdate(true)) return;
+    if (InAppUpdates && (await InAppUpdates.startUpdate(true))) return;
   } catch {
     // Fall through to the store app.
   }
@@ -66,13 +72,14 @@ function RequiredUpdate() {
 
 function useFlexibleUpdate() {
   useEffect(() => {
-    if (Platform.OS !== "android" || __DEV__) return;
+    if (Platform.OS !== "android" || __DEV__ || !InAppUpdates) return;
+    const updates = InAppUpdates;
     (async () => {
-      const info = await InAppUpdates.checkForUpdate();
+      const info = await updates.checkForUpdate();
       if (!info.updateAvailable || !info.flexibleAllowed || !info.storeVersion) return;
       if ((await AsyncStorage.getItem(OFFERED_KEY)) === info.storeVersion) return;
       await AsyncStorage.setItem(OFFERED_KEY, info.storeVersion);
-      await InAppUpdates.startUpdate(false);
+      await updates.startUpdate(false);
     })().catch(() => {});
   }, []);
 }
