@@ -19,6 +19,7 @@ import { TAG_TONES, type TagToneName } from "@/constants/tagTones";
 import { OwnPhotos } from "@/components/OwnPhotos";
 import { DesktopPersonCard } from "@/components/DesktopPersonCard";
 import { CARD_SHADOW } from "@/theme/surfaces";
+import { MyDiscoverCardModal } from "@/components/MyDiscoverCardModal";
 
 // `namespace` looks up each value's display label under constants.<namespace>.<value>;
 // values without a translation (freeform "Other" text a user typed in) just fall back
@@ -88,6 +89,7 @@ export function ProfileView({
   const photosUserId = ownUserId ?? profile?.id;
   const { data: photos } = useProfilePhotos(photosUserId);
   const [avatarOpen, setAvatarOpen] = useState(false);
+  const [discoverCardOpen, setDiscoverCardOpen] = useState(false);
   const avatarUrl = profile?.avatar_url;
   const wide = useWideLayout();
   const cover = photos?.[0]?.position === COVER_POSITION ? photos[0].url : null;
@@ -205,6 +207,7 @@ export function ProfileView({
                 birthdate: profile?.birthdate ?? null,
                 city: profile?.city ?? null,
                 state: profile?.state ?? null,
+                country: profile?.country ?? null,
                 occupation: profile?.occupation ?? null,
                 connectionTypes: connectionTypes ?? [],
                 coverPhotoUrl: cover,
@@ -255,15 +258,39 @@ export function ProfileView({
     );
   }
 
+  const topCard = (
+    <Card>
+      <View className="items-center gap-3">
+        {avatar}
+        {identity}
+      </View>
+      {about}
+    </Card>
+  );
+
   return (
     <View className="gap-4">
-      <Card>
-        <View className="items-center gap-3">
-          {avatar}
-          {identity}
-        </View>
-        {about}
-      </Card>
+      {/* Your own: tapping the card shows your Discover card as others see it. The
+          avatar inside stays its own button (change your profile picture). */}
+      {ownUserId ? (
+        <>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("profile.seeDiscoverCard")}
+            onPress={() => setDiscoverCardOpen(true)}
+          >
+            {topCard}
+          </Pressable>
+          <MyDiscoverCardModal
+            userId={ownUserId}
+            coverUri={cover}
+            visible={discoverCardOpen}
+            onClose={() => setDiscoverCardOpen(false)}
+          />
+        </>
+      ) : (
+        topCard
+      )}
       {gallery}
       {details}
     </View>

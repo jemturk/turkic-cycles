@@ -9,6 +9,8 @@ export type DiscoverCandidate = {
   avatarUrl: string | null;
   birthdate: string | null;
   city: string | null;
+  // Shown only when city and state are hidden (Location shown: Country).
+  country: string | null;
   state: string | null;
   occupation: string | null;
   connectionTypes: ConnectionType[];
@@ -93,7 +95,7 @@ async function hydrateCandidates(userIds: string[]): Promise<DiscoverCandidate[]
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, display_name, avatar_url, birthdate, city, state, occupation")
+      .select("id, display_name, avatar_url, birthdate, city, state, country, occupation")
       .in("id", userIds),
     supabase.from("user_connection_types").select("user_id, connection_type").in("user_id", userIds),
     getCoverPhotoUrls(userIds),
@@ -121,6 +123,7 @@ async function hydrateCandidates(userIds: string[]): Promise<DiscoverCandidate[]
         birthdate: profile.birthdate,
         city: profile.city,
         state: profile.state,
+        country: profile.country,
         occupation: profile.occupation,
         connectionTypes: connectionTypesById.get(profile.id) ?? [],
         originCountries: originCountriesById.get(profile.id) ?? [],

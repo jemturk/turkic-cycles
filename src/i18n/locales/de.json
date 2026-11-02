@@ -354,7 +354,10 @@
     "originCountries": "Herkunftsländer",
     "editProfile": "Profil bearbeiten",
     "message": "Nachricht",
-    "myProfile": "Mein Profil"
+    "myProfile": "Mein Profil",
+    "discoverCardTitle": "Deine Entdecken-Karte",
+    "discoverCardBody": "So sehen dich andere Mitglieder in Entdecken. Dein Ort erscheint so, wie du es unter Einstellungen → Angezeigter Ort gewählt hast.",
+    "seeDiscoverCard": "Deine Entdecken-Karte ansehen"
   },
   "fields": {
     "yourName": "Dein Name",

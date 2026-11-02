@@ -354,7 +354,10 @@
     "originCountries": "Origin countries",
     "editProfile": "Edit profile",
     "message": "Message",
-    "myProfile": "My profile"
+    "myProfile": "My profile",
+    "discoverCardTitle": "Your Discover card",
+    "discoverCardBody": "This is how other members see you in Discover. Your place shows as you chose in Settings → Location shown.",
+    "seeDiscoverCard": "See your Discover card"
   },
   "fields": {
     "yourName": "Your name",

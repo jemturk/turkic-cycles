@@ -8,7 +8,7 @@ import { Avatar } from "@/components/Avatar";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { MatchSummary } from "@/components/MatchSummary";
 import { calculateAge } from "@/lib/age";
-import type { DiscoverCardPerson } from "@/components/DiscoverCardView";
+import { cardLocation, type DiscoverCardPerson } from "@/components/DiscoverCardView";
 
 export type DesktopPersonCardPerson = Omit<DiscoverCardPerson, "originCountries">;
 
@@ -29,7 +29,7 @@ export function DesktopPersonCard({
 }) {
   const { t } = useTranslation();
   const age = person.birthdate ? calculateAge(person.birthdate) : null;
-  const meta = [[person.city, person.state].filter(Boolean).join(", "), person.occupation].filter(Boolean).join(" · ");
+  const meta = [cardLocation(person), person.occupation].filter(Boolean).join(" · ");
   const cover = person.coverPhotoUrl;
 
   return (

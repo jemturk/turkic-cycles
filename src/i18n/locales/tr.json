@@ -354,7 +354,10 @@
     "originCountries": "Köken ülkeler",
     "editProfile": "Profili düzenle",
     "message": "Mesaj",
-    "myProfile": "Profilim"
+    "myProfile": "Profilim",
+    "discoverCardTitle": "Keşfet kartın",
+    "discoverCardBody": "Diğer üyeler seni Keşfet'te böyle görüyor. Konumun, Ayarlar → Gösterilen konum'da seçtiğin gibi görünür.",
+    "seeDiscoverCard": "Keşfet kartını gör"
   },
   "fields": {
     "yourName": "Adın",

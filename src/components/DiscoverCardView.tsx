@@ -21,7 +21,13 @@ export type DiscoverCardPerson = Pick<
   | "connectionTypes"
   | "coverPhotoUrl"
 > &
-  Partial<Pick<DiscoverCandidate, "match">>;
+  Partial<Pick<DiscoverCandidate, "match" | "country">>;
+
+// The card's place line: "city, state" as far as the person shows them (the
+// database blanks what Location shown hides), or their country when both are hidden.
+export function cardLocation(person: Pick<DiscoverCardPerson, "city" | "state" | "country">): string {
+  return [person.city, person.state].filter(Boolean).join(", ") || person.country || "";
+}
 
 // What a person's Discover card looks like -- the one place it's drawn, so the
 // deck and the cover-photo preview (CoverPreviewModal) can never drift apart.
@@ -70,7 +76,7 @@ export function DiscoverCardView({
           </Text>
           <VerifiedBadge status={verificationStatus} color="white" />
         </View>
-        <Text className="text-sm text-white/90">{[person.city, person.state].filter(Boolean).join(", ")}</Text>
+        <Text className="text-sm text-white/90">{cardLocation(person)}</Text>
         <View className="flex-row flex-wrap gap-2">
           {person.occupation ? (
             <View className="rounded-full bg-white/20 px-3 py-1">
