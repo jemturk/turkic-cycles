@@ -24,7 +24,7 @@ const TEXT: Record<string, { title: string; body: string }> = {
   en: { title: "Someone liked you", body: "Like them back in Discover to make it a match." },
   tr: { title: "Biri seni beğendi", body: "Keşfet'te sen de beğenirsen eşleşirsiniz." },
   de: { title: "Jemand mag dich", body: "Like zurück in Entdecken, dann ist es ein Match." },
-  ru: { title: "Вы кому-то понравились", body: "Ответьте взаимностью в «Обзоре», чтобы получился мэтч." },
+  ru: { title: "Вы кому-то понравились", body: "Ответьте взаимностью в «Знакомствах», чтобы получился мэтч." },
 };
 
 type ExpoPushTicket = {
