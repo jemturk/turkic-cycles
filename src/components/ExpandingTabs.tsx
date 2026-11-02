@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 
 import { Text } from "@/components/Text";
+import { FLOATING_SHADOW } from "@/theme/surfaces";
 
 export type ExpandingTab<T extends string> = {
   value: T;
@@ -58,8 +59,11 @@ export function ExpandingTabs<T extends string>({ tabs, value, onChange }: Expan
     <View
       accessibilityRole="tablist"
       onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}
-      style={{ height: TRACK_HEIGHT, padding: TRACK_PADDING, borderWidth: TRACK_BORDER, alignItems: "center" }}
-      className="flex-row rounded-full border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800"
+      // Floats over the list, like the chat message box: a shadow in light mode, the
+      // outline only in dark mode (where a shadow wouldn't show). The border stays 1px
+      // wide either way, so the tab widths below don't change.
+      style={[{ height: TRACK_HEIGHT, padding: TRACK_PADDING, borderWidth: TRACK_BORDER, alignItems: "center" }, FLOATING_SHADOW]}
+      className="flex-row rounded-full border-transparent dark:border-ink-700 bg-white dark:bg-ink-800"
     >
       {trackWidth > 0
         ? tabs.map((tab) => (
