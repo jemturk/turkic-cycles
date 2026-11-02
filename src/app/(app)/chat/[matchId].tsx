@@ -747,14 +747,10 @@ export default function ChatThread() {
           <View className="px-4 pb-4 pt-2">
             <View
               className="flex-row items-center gap-2 rounded-full bg-white dark:bg-ink-800 py-2 pl-4 pr-2"
-              style={{
-                shadowColor: "#000000",
-                // iOS (and web) draw the shadow from these; tuned to match Android's elevation 3.
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.16,
-                shadowRadius: 5,
-                elevation: 3,
-              }}
+              // One soft, even shadow on every platform (iOS's old shadowRadius 5 = a
+              // 10px blur). Android's elevation drew Material's dark band under the
+              // bottom edge instead.
+              style={{ boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.16)" }}
             >
               <TextInput
                 className="flex-1 text-base text-ink-900 dark:text-ink-50"
