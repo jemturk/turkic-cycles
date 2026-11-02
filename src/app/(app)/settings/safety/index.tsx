@@ -13,6 +13,7 @@ import { useCancelSafetyPlan, useCheckInSafetyPlan, useMySafetyPlans } from "@/h
 import { alertMessage, cancelCheckInReminders, checkInTime, planContacts, textContacts } from "@/lib/safetyAlerts";
 import type { Tables } from "@/types/database";
 import { showAlert } from "@/lib/alert";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 type SafetyItem = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -72,7 +73,7 @@ function YourPlans() {
         const due = checkInTime(plan);
         const overdue = plan.status === "overdue" || due.getTime() < now;
         return (
-          <View key={plan.id} className="gap-3 rounded-2xl bg-white p-4 dark:bg-ink-800">
+          <View key={plan.id} className="gap-3 rounded-[22px] bg-white p-4 dark:bg-ink-800" style={CARD_SHADOW}>
             <View className="flex-row items-start gap-3">
               <View
                 className={`h-9 w-9 items-center justify-center rounded-lg ${overdue ? "bg-accent-600" : "bg-accent-100/60 dark:bg-ink-700"}`}

@@ -23,6 +23,7 @@ import { CircleHeader } from "@/components/CircleHeader";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 type Tab = "upcoming" | "past";
 
@@ -175,8 +176,8 @@ export default function CircleEvents() {
                   <Pressable
                     key={event.id}
                     onPress={() => router.push(`/(app)/circles/${circleId}/events/${event.id}`, { withAnchor: true })}
-                    style={{ width: cardWidth }}
-                    className="flex-row gap-4 rounded-[18px] bg-white p-5 web:hover:shadow-md dark:bg-ink-800"
+                    style={[{ width: cardWidth }, CARD_SHADOW]}
+                    className="flex-row gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800"
                   >
                     <View
                       className={`h-16 w-[60px] items-center justify-center rounded-xl ${CIRCLE_TOPIC_COLORS[topic].bg}`}
@@ -290,7 +291,8 @@ export default function CircleEvents() {
             <Pressable
               key={event.id}
               onPress={() => router.push(`/(app)/circles/${circleId}/events/${event.id}`, { withAnchor: true })}
-              className="flex-row items-center gap-4 rounded-[18px] bg-white p-4 dark:bg-ink-800"
+              className="flex-row items-center gap-4 rounded-[22px] bg-white p-4 dark:bg-ink-800"
+              style={CARD_SHADOW}
             >
               <View className={`h-[60px] w-14 items-center justify-center rounded-xl ${colors.bg}`}>
                 <Text className="text-[11px] font-bold uppercase tracking-wider" style={{ color: colors.fg }}>

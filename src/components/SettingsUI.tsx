@@ -9,6 +9,7 @@ import { Text } from "@/components/Text";
 import { FormScrollView } from "@/components/FormScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -65,7 +66,11 @@ export function SubPage({
 
 // A white card for a form or a block of text.
 export function Card({ children }: { children: ReactNode }) {
-  return <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800">{children}</View>;
+  return (
+    <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
+      {children}
+    </View>
+  );
 }
 
 // A tinted note -- `tone` "info" (teal) or "warning" (coral).
@@ -93,13 +98,16 @@ export function IconTile({ icon, solid = false }: { icon: IconName; solid?: bool
 // One white card of rows with hairlines between them, with an optional small title
 // just above it, as on the Settings screen.
 export function Group({ title, children }: { title?: string; children: ReactNode }) {
+  // The shadow on an outer layer: the card clips its rows to the corners.
   const card = (
-    <View className="overflow-hidden rounded-2xl bg-white dark:bg-ink-800">
-      {Children.toArray(children).map((child, index) => (
-        <View key={index} className={index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : undefined}>
-          {child}
-        </View>
-      ))}
+    <View className="rounded-[22px]" style={CARD_SHADOW}>
+      <View className="overflow-hidden rounded-[22px] bg-white dark:bg-ink-800">
+        {Children.toArray(children).map((child, index) => (
+          <View key={index} className={index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : undefined}>
+            {child}
+          </View>
+        ))}
+      </View>
     </View>
   );
   if (!title) return card;

@@ -18,6 +18,7 @@ import { useSearchOverlay } from "@/stores/searchOverlay";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { UpcomingEventsRail } from "@/components/UpcomingEventsRail";
 import { ToggleChip } from "@/components/ToggleChip";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 type Circle = NonNullable<ReturnType<typeof useCircles>["data"]>[number];
 
@@ -94,8 +95,8 @@ export function CirclesDesktop() {
       <Pressable
         key={circle.id}
         onPress={() => router.push(`/(app)/circles/${circle.id}`, { withAnchor: true })}
-        style={{ width: cardWidth }}
-        className="gap-3 rounded-[18px] bg-white p-5 web:hover:shadow-md dark:bg-ink-800"
+        style={[{ width: cardWidth }, CARD_SHADOW]}
+        className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800"
       >
         <View className="flex-row items-start justify-between">
           <View className={`h-11 w-11 items-center justify-center rounded-[14px] ${CIRCLE_TOPIC_COLORS[topic].bg}`}>

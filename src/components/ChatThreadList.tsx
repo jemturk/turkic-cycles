@@ -12,6 +12,7 @@ import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { EmptyState } from "@/components/EmptyState";
 import { useIsOnline } from "@/hooks/useIsOnline";
 import type { MessageThread } from "@/api/chat";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 // How many messages are waiting, in a small coral pill.
 function UnreadCount({ count }: { count: number }) {
@@ -121,49 +122,52 @@ export function ChatThreadList({
         threads.map(renderCompactRow)
       ) : (
         // Phone: one grouped list with hairlines between conversations, like the
-        // grouped Settings sections -- not a bordered card per conversation.
-        <View className="overflow-hidden rounded-2xl bg-white dark:bg-ink-800">
-          {threads.map((thread, index) => (
-            <Pressable
-              key={thread.matchId}
-              onPress={() => onOpen(thread.matchId)}
-              className={`flex-row items-center gap-3 px-4 py-3 ${
-                index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : ""
-              }`}
-            >
-              <Avatar uri={thread.otherAvatarUrl} name={thread.otherDisplayName} size={52} />
-              <View className="flex-1 gap-0.5">
-                <Text
-                  className={`text-base text-ink-900 dark:text-ink-50 ${thread.unreadCount > 0 ? "font-bold" : "font-semibold"}`}
-                  numberOfLines={1}
-                >
-                  {thread.otherDisplayName}
-                </Text>
-                {typing.has(thread.matchId) ? (
-                  typingLine()
-                ) : (
+        // grouped Settings sections -- not a bordered card per conversation. The
+        // shadow sits on an outer layer, since the card clips its rows to the corners.
+        <View className="rounded-[22px]" style={CARD_SHADOW}>
+          <View className="overflow-hidden rounded-[22px] bg-white dark:bg-ink-800">
+            {threads.map((thread, index) => (
+              <Pressable
+                key={thread.matchId}
+                onPress={() => onOpen(thread.matchId)}
+                className={`flex-row items-center gap-3 px-4 py-3 ${
+                  index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : ""
+                }`}
+              >
+                <Avatar uri={thread.otherAvatarUrl} name={thread.otherDisplayName} size={52} />
+                <View className="flex-1 gap-0.5">
                   <Text
-                    className={`text-sm ${
-                      thread.unreadCount > 0
-                        ? "font-medium text-ink-900 dark:text-ink-50"
-                        : "text-ink-700 dark:text-ink-200"
-                    }`}
+                    className={`text-base text-ink-900 dark:text-ink-50 ${thread.unreadCount > 0 ? "font-bold" : "font-semibold"}`}
                     numberOfLines={1}
                   >
-                    {thread.lastMessageBody}
+                    {thread.otherDisplayName}
                   </Text>
-                )}
-              </View>
-              <View className="items-end gap-1.5">
-                <Text
-                  className={`text-xs ${thread.unreadCount > 0 ? "font-semibold text-accent-600" : "text-ink-400 dark:text-ink-300"}`}
-                >
-                  {formatDistanceToNowStrict(new Date(thread.lastMessageAt), { addSuffix: false })}
-                </Text>
-                {thread.unreadCount > 0 ? <UnreadCount count={thread.unreadCount} /> : <View className="h-5" />}
-              </View>
-            </Pressable>
-          ))}
+                  {typing.has(thread.matchId) ? (
+                    typingLine()
+                  ) : (
+                    <Text
+                      className={`text-sm ${
+                        thread.unreadCount > 0
+                          ? "font-medium text-ink-900 dark:text-ink-50"
+                          : "text-ink-700 dark:text-ink-200"
+                      }`}
+                      numberOfLines={1}
+                    >
+                      {thread.lastMessageBody}
+                    </Text>
+                  )}
+                </View>
+                <View className="items-end gap-1.5">
+                  <Text
+                    className={`text-xs ${thread.unreadCount > 0 ? "font-semibold text-accent-600" : "text-ink-400 dark:text-ink-300"}`}
+                  >
+                    {formatDistanceToNowStrict(new Date(thread.lastMessageAt), { addSuffix: false })}
+                  </Text>
+                  {thread.unreadCount > 0 ? <UnreadCount count={thread.unreadCount} /> : <View className="h-5" />}
+                </View>
+              </Pressable>
+            ))}
+        </View>
         </View>
       )}
     </RefreshableScrollView>

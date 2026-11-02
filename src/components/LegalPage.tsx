@@ -9,6 +9,7 @@ import { Text } from "@/components/Text";
 import { APP_NAME, LEGAL_CONTACT, LEGAL_UPDATED, type LegalDocument } from "@/constants/legal";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 // The Privacy Policy or Terms of Service as a readable page: a back button, the
 // title and date, an intro, then one white card per section. Used both for the
@@ -56,7 +57,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
           <Text className="text-base text-ink-700 dark:text-ink-200">{document.intro}</Text>
 
           {document.sections.map((section) => (
-            <View key={section.heading} className="gap-2.5 rounded-2xl bg-white p-5 dark:bg-ink-800">
+            <View key={section.heading} className="gap-2.5 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
               <Text className="text-lg font-semibold text-ink-900 dark:text-ink-50">{section.heading}</Text>
               {section.body.map((line) =>
                 line.startsWith("- ") ? (

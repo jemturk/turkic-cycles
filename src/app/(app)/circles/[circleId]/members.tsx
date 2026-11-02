@@ -11,6 +11,7 @@ import { CircleHeader } from "@/components/CircleHeader";
 import type { CircleTopic } from "@/constants/circles";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 // Everyone in a circle: under the circle's own header, a white card of photos in
 // even columns (three on phones, five on desktop) with each member's city under
@@ -49,7 +50,8 @@ export default function CircleMembers() {
         contentContainerClassName={wide ? "items-center px-8 pb-28 pt-6" : "px-4 pb-28 pt-4"}
       >
         <View
-          className={`flex-row flex-wrap rounded-2xl bg-white px-2 py-4 dark:bg-ink-800 ${wide ? "w-full max-w-[760px]" : ""}`}
+          className={`flex-row flex-wrap rounded-[22px] bg-white px-2 py-4 dark:bg-ink-800 ${wide ? "w-full max-w-[760px]" : ""}`}
+          style={CARD_SHADOW}
         >
           {(members ?? []).map((member) => (
             <Pressable

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Text } from "@/components/Text";
 import { useUpcomingEventsInCircles } from "@/hooks/useCircles";
 import { CIRCLE_TOPIC_COLORS, type CircleTopic } from "@/constants/circles";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 // Desktop web's Circles screen (CirclesDesktop): the next few events across the
 // circles you've joined, down the right. circleInfo maps circle id -> its name and topic (from
@@ -37,7 +38,8 @@ export function UpcomingEventsRail({
             <Pressable
               key={event.id}
               onPress={() => router.push(`/(app)/circles/${event.circle_id}/events/${event.id}`, { withAnchor: true })}
-              className="flex-row items-center gap-3.5 rounded-[18px] bg-white p-[18px] web:hover:shadow-md dark:bg-ink-800"
+              className="flex-row items-center gap-3.5 rounded-[22px] bg-white p-[18px] dark:bg-ink-800"
+              style={CARD_SHADOW}
             >
               <View className={`h-14 w-[52px] items-center justify-center rounded-xl ${colors.bg}`}>
                 <Text className="text-[11px] font-bold uppercase tracking-wider" style={{ color: colors.fg }}>

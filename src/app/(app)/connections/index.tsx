@@ -22,6 +22,7 @@ import { useSearchOverlay } from "@/stores/searchOverlay";
 import { DesktopPersonCard } from "@/components/DesktopPersonCard";
 import type { MatchWithParticipant, MessageThread } from "@/api/chat";
 import type { SavedPerson } from "@/api/discover";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 type Tab = "matched" | "connected" | "saved" | "likes";
 
@@ -127,84 +128,86 @@ function PersonCard({
   const cover = person.otherCoverPhotoUrl;
 
   return (
-    <Pressable
-      className="items-center justify-center gap-2 overflow-hidden rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-2 web:hover:shadow-md"
-      // An explicit height, not aspectRatio: in the wrapping row, the row's default
-      // stretch alignment overrode aspectRatio, so cards were only as tall as their
-      // text band and came out wide rather than square.
-      style={{ width, height: width }}
-      onPress={onPress}
-    >
-      {cover ? (
-        <>
-          {/* Same idea as the Discover card: their first gallery photo fills the
-              card, a dark band keeps the text readable, and the profile picture
-              moves to a corner. */}
-          <Image
-            source={{ uri: cover }}
-            contentFit="cover"
-            style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-            accessibilityIgnoresInvertColors
-          />
-          <View className="absolute left-2 top-2 rounded-full border-2 border-white">
-            <Avatar uri={person.otherAvatarUrl} name={person.otherDisplayName} size={32} />
-          </View>
-          <View className="absolute bottom-0 left-0 right-0 gap-0.5 bg-ink-950/55 px-2.5 py-2">
-            <Text className="font-display text-sm text-white" numberOfLines={1}>
-              {person.otherDisplayName}
-            </Text>
-            {meta ? (
-              <Text className="text-xs text-white/85" numberOfLines={1}>
-                {meta}
+    // The shadow sits on this outer layer: the card itself clips its photo to the corners.
+    // An explicit height, not aspectRatio: in the wrapping row, the row's default
+    // stretch alignment overrode aspectRatio, so cards were only as tall as their text
+    // band and came out wide rather than square.
+    <View className="rounded-[22px]" style={[{ width, height: width }, CARD_SHADOW]}>
+      <Pressable
+        className="h-full w-full items-center justify-center gap-2 overflow-hidden rounded-[22px] border border-transparent bg-white p-2 dark:border-ink-700 dark:bg-ink-800"
+        onPress={onPress}
+      >
+        {cover ? (
+          <>
+            {/* Same idea as the Discover card: their first gallery photo fills the
+                card, a dark band keeps the text readable, and the profile picture
+                moves to a corner. */}
+            <Image
+              source={{ uri: cover }}
+              contentFit="cover"
+              style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+              accessibilityIgnoresInvertColors
+            />
+            <View className="absolute left-2 top-2 rounded-full border-2 border-white">
+              <Avatar uri={person.otherAvatarUrl} name={person.otherDisplayName} size={32} />
+            </View>
+            <View className="absolute bottom-0 left-0 right-0 gap-0.5 bg-ink-950/55 px-2.5 py-2">
+              <Text className="font-display text-sm text-white" numberOfLines={1}>
+                {person.otherDisplayName}
               </Text>
-            ) : null}
-          </View>
-        </>
-      ) : (
-        <>
-          <Avatar uri={person.otherAvatarUrl} name={person.otherDisplayName} size={56} />
+              {meta ? (
+                <Text className="text-xs text-white/85" numberOfLines={1}>
+                  {meta}
+                </Text>
+              ) : null}
+            </View>
+          </>
+        ) : (
+          <>
+            <Avatar uri={person.otherAvatarUrl} name={person.otherDisplayName} size={56} />
 
-          {/* w-full is load-bearing: with the Pressable's own items-center, a shrink-
-              wrapped child never gets a bounded width to truncate against, so long
-              content (e.g. "Apex, NC, United States") renders past the card's edge
-              instead of ellipsizing. */}
-          <View className="w-full items-center gap-0.5 px-1">
-            <Text className="font-display text-sm text-ink-900 dark:text-ink-50" numberOfLines={1}>
-              {person.otherDisplayName}
-            </Text>
-            {meta ? (
-              <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
-                {meta}
+            {/* w-full is load-bearing: with the Pressable's own items-center, a shrink-
+                wrapped child never gets a bounded width to truncate against, so long
+                content (e.g. "Apex, NC, United States") renders past the card's edge
+                instead of ellipsizing. */}
+            <View className="w-full items-center gap-0.5 px-1">
+              <Text className="font-display text-sm text-ink-900 dark:text-ink-50" numberOfLines={1}>
+                {person.otherDisplayName}
               </Text>
+              {meta ? (
+                <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
+                  {meta}
+                </Text>
+              ) : null}
+            </View>
+          </>
+        )}
+
+        {unreadCount && !onQuickChat ? (
+          <View className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full border border-white bg-accent-500" />
+        ) : null}
+
+        {/* Top corner, not bottom: the square card has spare room above the avatar,
+            while the bottom corner sits on the meta line and covers the location.
+            The unread dot rides on this button so the two don't fight for the corner. */}
+        {onQuickChat ? (
+          <Pressable
+            accessibilityLabel={t("connections.connected")}
+            hitSlop={8}
+            className="absolute right-2 top-2 h-8 w-8 items-center justify-center rounded-full bg-primary-50 dark:bg-ink-700"
+            onPress={(e) => {
+              e.stopPropagation();
+              onQuickChat();
+            }}
+          >
+            <Ionicons name="chatbubble-outline" size={16} className="text-primary-500" />
+            {unreadCount ? (
+              <View className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border border-white bg-accent-500 dark:border-ink-800" />
             ) : null}
-          </View>
-        </>
-      )}
-
-      {unreadCount && !onQuickChat ? (
-        <View className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full border border-white bg-accent-500" />
-      ) : null}
-
-      {/* Top corner, not bottom: the square card has spare room above the avatar,
-          while the bottom corner sits on the meta line and covers the location.
-          The unread dot rides on this button so the two don't fight for the corner. */}
-      {onQuickChat ? (
-        <Pressable
-          accessibilityLabel={t("connections.connected")}
-          hitSlop={8}
-          className="absolute right-2 top-2 h-8 w-8 items-center justify-center rounded-full bg-primary-50 dark:bg-ink-700"
-          onPress={(e) => {
-            e.stopPropagation();
-            onQuickChat();
-          }}
-        >
-          <Ionicons name="chatbubble-outline" size={16} className="text-primary-500" />
-          {unreadCount ? (
-            <View className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border border-white bg-accent-500 dark:border-ink-800" />
-          ) : null}
-        </Pressable>
-      ) : null}
-    </Pressable>
+          </Pressable>
+        ) : null}
+      </Pressable>
+    </View>
   );
 }
 

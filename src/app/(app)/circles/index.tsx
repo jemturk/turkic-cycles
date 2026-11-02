@@ -19,6 +19,7 @@ import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/con
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { CirclesDesktop } from "@/components/CirclesDesktop";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 // Desktop web gets its own layout (CirclesDesktop): a two-column grid with filter
 // chips and an upcoming-events column. This is the phone screen.
@@ -99,7 +100,8 @@ function CirclesPhone() {
             <Pressable
               key={circle.id}
               onPress={() => router.push(`/(app)/circles/${circle.id}`, { withAnchor: true })}
-              className="flex-row gap-3 rounded-[18px] bg-white p-4 dark:bg-ink-800"
+              className="flex-row gap-3 rounded-[22px] bg-white p-4 dark:bg-ink-800"
+              style={CARD_SHADOW}
             >
               <View className={`h-12 w-12 items-center justify-center rounded-[14px] ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
                 <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_COLORS[topic].fg} />

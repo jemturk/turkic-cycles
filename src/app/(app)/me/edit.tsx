@@ -37,6 +37,7 @@ import { useProfilePhotos } from "@/hooks/useGallery";
 import { OwnPhotos } from "@/components/OwnPhotos";
 import { TAG_TONES } from "@/constants/tagTones";
 import { goUp } from "@/lib/goUp";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
@@ -494,33 +495,33 @@ export default function ProfileEdit() {
             }}
           >
             <View className="flex-1 gap-4">
-              <View className={cardClass(card, "about")} onLayout={(event) => trackSection("about", event)}>
+              <View className={cardClass(card, "about")} style={CARD_SHADOW} onLayout={(event) => trackSection("about", event)}>
                 {nameField}
                 {bioField}
                 {occupationField}
               </View>
-              <View className={cardClass(card, "location")} onLayout={(event) => trackSection("location", event)}>
+              <View className={cardClass(card, "location")} style={CARD_SHADOW} onLayout={(event) => trackSection("location", event)}>
                 {locationField}
               </View>
-              <View className={cardClass(card, "lookingFor")} onLayout={(event) => trackSection("lookingFor", event)}>
+              <View className={cardClass(card, "lookingFor")} style={CARD_SHADOW} onLayout={(event) => trackSection("lookingFor", event)}>
                 {lookingForField}
                 {branchingField}
               </View>
             </View>
             <View className="flex-1 gap-4">
-              <View className={card}>{photosField}</View>
-              <View className={cardClass(card, "languages")} onLayout={(event) => trackSection("languages", event)}>
+              <View className={card} style={CARD_SHADOW}>{photosField}</View>
+              <View className={cardClass(card, "languages")} style={CARD_SHADOW} onLayout={(event) => trackSection("languages", event)}>
                 {languagesField}
                 {interestsField}
               </View>
-              <View className={cardClass(card, "meeting")} onLayout={(event) => trackSection("meeting", event)}>
+              <View className={cardClass(card, "meeting")} style={CARD_SHADOW} onLayout={(event) => trackSection("meeting", event)}>
                 {meetingField}
               </View>
-              <View className={cardClass(card, "travel")} onLayout={(event) => trackSection("travel", event)}>
+              <View className={cardClass(card, "travel")} style={CARD_SHADOW} onLayout={(event) => trackSection("travel", event)}>
                 {travelFrequencyField}
                 {travelStyleField}
               </View>
-              <View className={cardClass(card, "background")} onLayout={(event) => trackSection("background", event)}>
+              <View className={cardClass(card, "background")} style={CARD_SHADOW} onLayout={(event) => trackSection("background", event)}>
                 {usResidencyField}
                 {usCitizenshipField}
                 {europeanCitizenshipField}
@@ -551,31 +552,31 @@ export default function ProfileEdit() {
           <Text className="font-display text-3xl text-ink-900 dark:text-ink-50">{t("fields.editProfileHeading")}</Text>
         </View>
 
-        <View className={cardClass(phoneCard, "about")} onLayout={(event) => trackSection("about", event)}>
+        <View className={cardClass(phoneCard, "about")} style={CARD_SHADOW} onLayout={(event) => trackSection("about", event)}>
           {nameField}
           {bioField}
           {occupationField}
         </View>
-        <View className={phoneCard}>{photosField}</View>
-        <View className={cardClass(phoneCard, "lookingFor")} onLayout={(event) => trackSection("lookingFor", event)}>
+        <View className={phoneCard} style={CARD_SHADOW}>{photosField}</View>
+        <View className={cardClass(phoneCard, "lookingFor")} style={CARD_SHADOW} onLayout={(event) => trackSection("lookingFor", event)}>
           {lookingForField}
           {branchingField}
         </View>
-        <View className={cardClass(phoneCard, "location")} onLayout={(event) => trackSection("location", event)}>
+        <View className={cardClass(phoneCard, "location")} style={CARD_SHADOW} onLayout={(event) => trackSection("location", event)}>
           {locationField}
         </View>
-        <View className={cardClass(phoneCard, "languages")} onLayout={(event) => trackSection("languages", event)}>
+        <View className={cardClass(phoneCard, "languages")} style={CARD_SHADOW} onLayout={(event) => trackSection("languages", event)}>
           {languagesField}
           {interestsField}
         </View>
-        <View className={cardClass(phoneCard, "meeting")} onLayout={(event) => trackSection("meeting", event)}>
+        <View className={cardClass(phoneCard, "meeting")} style={CARD_SHADOW} onLayout={(event) => trackSection("meeting", event)}>
           {meetingField}
         </View>
-        <View className={cardClass(phoneCard, "travel")} onLayout={(event) => trackSection("travel", event)}>
+        <View className={cardClass(phoneCard, "travel")} style={CARD_SHADOW} onLayout={(event) => trackSection("travel", event)}>
           {travelFrequencyField}
           {travelStyleField}
         </View>
-        <View className={cardClass(phoneCard, "background")} onLayout={(event) => trackSection("background", event)}>
+        <View className={cardClass(phoneCard, "background")} style={CARD_SHADOW} onLayout={(event) => trackSection("background", event)}>
           {usResidencyField}
           {usCitizenshipField}
           {europeanCitizenshipField}

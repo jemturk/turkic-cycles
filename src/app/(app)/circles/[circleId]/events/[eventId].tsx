@@ -28,6 +28,7 @@ import { Avatar } from "@/components/Avatar";
 import { CircleHeader } from "@/components/CircleHeader";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 export default function CircleEventDetail() {
   const { t } = useTranslation();
@@ -75,13 +76,13 @@ export default function CircleEventDetail() {
   ].filter((group) => group.people.length > 0);
   const attendeeCards =
     !event || !attendees ? null : groups.length === 0 ? (
-      <View className="flex-row items-center gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+      <View className="flex-row items-center gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
         <Ionicons name="people-outline" size={20} color="#A99C95" />
         <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">{t("circles.noRsvpsYet")}</Text>
       </View>
     ) : (
       groups.map((group) => (
-        <View key={group.key} className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+        <View key={group.key} className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
           <Text className="text-sm font-medium text-ink-700 dark:text-ink-200">
             {group.label} · {group.people.length}
           </Text>
@@ -139,7 +140,7 @@ export default function CircleEventDetail() {
         <View className="flex-row items-start gap-6">
           <View className="max-w-[720px] flex-1 gap-4">
             {event && startsAt ? (
-              <View className="gap-5 rounded-[22px] bg-white p-6 dark:bg-ink-800">
+              <View className="gap-5 rounded-[22px] bg-white p-6 dark:bg-ink-800" style={CARD_SHADOW}>
                 <View className="flex-row items-center gap-5">
                   <View className={`h-[76px] w-[72px] items-center justify-center rounded-2xl ${colors.bg}`}>
                     <Text className="text-xs font-bold uppercase tracking-wider" style={{ color: colors.fg }}>
@@ -173,7 +174,7 @@ export default function CircleEventDetail() {
           </View>
 
           <View className="w-[360px] gap-4">
-            <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+            <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
               <View className="flex-row items-center gap-3">
                 <View className={`h-11 w-11 items-center justify-center rounded-[14px] ${colors.bg}`}>
                   <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={20} color={colors.fg} />
@@ -225,7 +226,7 @@ export default function CircleEventDetail() {
           description, RSVP), who is going and interested, then the circle (Join). */}
       <ScrollView className="flex-1" contentContainerClassName="gap-4 px-4 pb-10 pt-4">
         {event ? (
-          <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+          <View className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
             <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">{event.title}</Text>
             <View className="flex-row items-center gap-4">
               <View
@@ -265,7 +266,7 @@ export default function CircleEventDetail() {
 
         {attendeeCards}
 
-        <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800">
+        <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
           <View className="flex-row items-center gap-3">
             <View className="flex-1">
               <Text className="font-display text-lg text-ink-900 dark:text-ink-50" numberOfLines={1}>

@@ -20,6 +20,7 @@ import {
 import { purchasesAvailable, type PlusPackage } from "@/lib/purchases";
 import { Button } from "@/components/Button";
 import { showAlert } from "@/lib/alert";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 const MANAGE_SUBSCRIPTIONS_URL = Platform.select({
   ios: "https://apps.apple.com/account/subscriptions",
@@ -107,7 +108,7 @@ export default function Plus() {
           <Text className="text-center text-sm text-ink-700 dark:text-ink-200">{t("plus.subheading")}</Text>
         </View>
 
-        <View className="gap-4 rounded-2xl border border-primary-100 dark:border-ink-700 bg-white dark:bg-ink-800 p-4">
+        <View className="gap-4 rounded-[22px] border border-transparent bg-white p-4 dark:border-ink-700 dark:bg-ink-800" style={CARD_SHADOW}>
           <Benefit
             icon="heart"
             title={t("plus.seeLikes")}
@@ -120,7 +121,7 @@ export default function Plus() {
         </View>
 
         {subscribed ? (
-          <View className="gap-2 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
+          <View className="gap-2 rounded-[22px] border border-teal-500 bg-white dark:bg-ink-800 p-4" style={CARD_SHADOW}>
             <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{t("plus.active")}</Text>
             {subscription?.status === "past_due" ? (
               <Text className="text-sm text-accent-600">{t("plus.billingIssue")}</Text>
@@ -171,7 +172,7 @@ export default function Plus() {
             <Text className="text-center text-xs text-ink-400 dark:text-ink-300">{t("plus.autoRenewNote")}</Text>
           </>
         ) : onWaitlist ? (
-          <View className="gap-2 rounded-2xl border border-teal-500 bg-white dark:bg-ink-800 p-4">
+          <View className="gap-2 rounded-[22px] border border-teal-500 bg-white dark:bg-ink-800 p-4" style={CARD_SHADOW}>
             <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{t("plus.joined")}</Text>
             <Text className="text-sm text-ink-700 dark:text-ink-200">{t("plus.joinedBody")}</Text>
             <Pressable onPress={() => toggleWaitlist(false)} disabled={setWaitlist.isPending}>

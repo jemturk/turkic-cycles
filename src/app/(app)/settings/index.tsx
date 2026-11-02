@@ -34,6 +34,7 @@ import { Chip } from "@/components/Chip";
 import { Avatar } from "@/components/Avatar";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { showAlert } from "@/lib/alert";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -56,7 +57,7 @@ function RowIcon({ icon, danger = false, solid = false }: { icon: IconName; dang
 // A standalone card row (the phone's profile row). Settings rows instead sit inside
 // their section's card (Section), which draws the dividers, on phones and desktop.
 const ROW_CLASS =
-  "flex-row items-center justify-between gap-3 rounded-2xl bg-white dark:bg-ink-800 px-4 py-3";
+  "flex-row items-center justify-between gap-3 rounded-[22px] bg-white dark:bg-ink-800 px-4 py-3";
 const SECTION_ROW_CLASS = "flex-row items-center justify-between gap-3 px-4 py-3";
 const WIDE_ROW_CLASS = "flex-row items-center justify-between gap-3 px-5 py-3.5";
 
@@ -148,16 +149,21 @@ function Section({ title, children }: { title?: string; children: ReactNode }) {
     return (
       <View className="gap-1.5">
         {title ? <Text className="ml-1 mt-2 text-xs font-medium uppercase text-ink-400 dark:text-ink-300">{title}</Text> : null}
-        <View className="overflow-hidden rounded-2xl bg-white dark:bg-ink-800">{rows}</View>
+        {/* The shadow on an outer layer: the card clips its rows to the corners. */}
+        <View className="rounded-[22px]" style={CARD_SHADOW}>
+          <View className="overflow-hidden rounded-[22px] bg-white dark:bg-ink-800">{rows}</View>
+        </View>
       </View>
     );
   }
   return (
-    <View className="overflow-hidden rounded-[18px] bg-white dark:bg-ink-800">
-      {title ? (
-        <Text className="px-5 pb-1 pt-4 text-xs font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-300">{title}</Text>
-      ) : null}
-      {rows}
+    <View className="rounded-[22px]" style={CARD_SHADOW}>
+      <View className="overflow-hidden rounded-[22px] bg-white dark:bg-ink-800">
+        {title ? (
+          <Text className="px-5 pb-1 pt-4 text-xs font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-300">{title}</Text>
+        ) : null}
+        {rows}
+      </View>
     </View>
   );
 }
@@ -202,7 +208,7 @@ export default function Settings() {
   // Phone: a compact row. Desktop web: your account at a glance -- picture, name,
   // place, Plus / Verified badges, and View profile / Edit.
   const profileSection = wide ? (
-    <View className="flex-row items-center gap-4 rounded-[18px] bg-white p-5 dark:bg-ink-800">
+    <View className="flex-row items-center gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
       <Avatar uri={profile?.avatar_url} name={profile?.display_name} size={64} />
       <View className="flex-1 gap-1.5">
         <Text className="font-display text-2xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
@@ -245,7 +251,7 @@ export default function Settings() {
       </View>
     </View>
   ) : (
-    <Pressable className={ROW_CLASS} onPress={() => router.push("/(app)/me")}>
+    <Pressable className={ROW_CLASS} style={CARD_SHADOW} onPress={() => router.push("/(app)/me")}>
       <View className="flex-row items-center gap-3">
         <Avatar uri={profile?.avatar_url} name={profile?.display_name} size={44} />
         <View>

@@ -10,6 +10,8 @@ import { Button } from "@/components/Button";
 import { AppMark } from "@/components/AppMark";
 import { LinearGradient } from "expo-linear-gradient";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS } from "@/constants/circles";
+// The same raised card as in the app (theme/surfaces.ts).
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 type Slide = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -58,14 +60,6 @@ const TINT_BG: Record<Slide["tint"], string> = {
   teal: "bg-teal-500",
 };
 
-// Soft card shadow shared by the previews, so they lift off the cream page.
-const CARD_SHADOW = {
-  shadowColor: "#2B2320",
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.08,
-  shadowRadius: 12,
-  elevation: 3,
-};
 
 // A small round "photo": warm initials, since the previews use sample people.
 function Face({ letter, color, size = 28 }: { letter: string; color: string; size?: number }) {

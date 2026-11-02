@@ -18,6 +18,7 @@ import { useWideLayout } from "@/hooks/useWideLayout";
 import { TAG_TONES, type TagToneName } from "@/constants/tagTones";
 import { OwnPhotos } from "@/components/OwnPhotos";
 import { DesktopPersonCard } from "@/components/DesktopPersonCard";
+import { CARD_SHADOW } from "@/theme/surfaces";
 
 // `namespace` looks up each value's display label under constants.<namespace>.<value>;
 // values without a translation (freeform "Other" text a user typed in) just fall back
@@ -50,7 +51,11 @@ function TagRow({
 }
 
 function Card({ children }: { children: React.ReactNode }) {
-  return <View className="gap-4 rounded-2xl bg-white dark:bg-ink-800 p-4">{children}</View>;
+  return (
+    <View className="gap-4 rounded-[22px] bg-white dark:bg-ink-800 p-4" style={CARD_SHADOW}>
+      {children}
+    </View>
+  );
 }
 
 type ProfileViewProps = {
