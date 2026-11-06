@@ -182,6 +182,19 @@ export async function getMyCircleRole(circleId: string, userId: string): Promise
   return data?.role ?? null;
 }
 
+// The circle's owner (or an app admin): deletes it with its events, RSVPs and members.
+// Connections made in it stay (migration 0069).
+export async function deleteCircle(circleId: string) {
+  const { error } = await supabase.rpc("delete_circle", { p_circle_id: circleId });
+  if (error) throw error;
+}
+
+// The circle's owner or a moderator (or an app admin): deletes the event and its RSVPs.
+export async function deleteCircleEvent(eventId: string) {
+  const { error } = await supabase.rpc("delete_event", { p_event_id: eventId });
+  if (error) throw error;
+}
+
 export type NewCircle = {
   name: string;
   description: string;

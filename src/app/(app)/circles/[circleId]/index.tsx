@@ -13,6 +13,7 @@ import {
   useJoinCircle,
   useLeaveCircle,
   useMyCircleMemberships,
+  useDeleteCircle,
   useMyCircleRole,
 } from "@/hooks/useCircles";
 import { CircleMenu } from "@/components/CircleMenu";
@@ -24,6 +25,7 @@ import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
 import { CARD_SHADOW } from "@/theme/surfaces";
+import { confirmAlert, showAlert } from "@/lib/alert";
 
 type Tab = "upcoming" | "past";
 
@@ -44,16 +46,34 @@ export default function CircleEvents() {
   const { data: memberships } = useMyCircleMemberships(session?.user.id);
   const joinCircle = useJoinCircle(session?.user.id);
   const leaveCircle = useLeaveCircle(session?.user.id);
+  const deleteCircle = useDeleteCircle(session?.user.id);
   const isJoined = (memberships ?? []).includes(circleId);
+
+  // The owner only (the database checks too, migration 0069). Asks first, then goes back
+  // to the Circles list.
+  async function confirmDelete() {
+    if (!circle) return;
+    const ok = await confirmAlert(t("circles.deleteCircleTitle", { name: circle.name }), t("circles.deleteCircleBody"), {
+      confirmLabel: t("circles.deleteCircle"),
+      cancelLabel: t("common.cancel"),
+      destructive: true,
+    });
+    if (!ok) return;
+    deleteCircle.mutate(circleId, {
+      onSuccess: () => router.replace("/(app)/circles"),
+      onError: (error) => showAlert(t("circles.deleteFailed"), error.message),
+    });
+  }
   // Join circle, or Leave circle behind a confirmation. In the header on a phone (in
   // place of search and your avatar), in the title row on desktop.
   const menu = circle ? (
     <CircleMenu
       circleName={circle.name}
       isJoined={isJoined}
-      busy={joinCircle.isPending || leaveCircle.isPending}
+      busy={joinCircle.isPending || leaveCircle.isPending || deleteCircle.isPending}
       onJoin={() => joinCircle.mutate(circleId)}
       onLeave={() => leaveCircle.mutate(circleId)}
+      onDelete={role === "owner" ? confirmDelete : undefined}
     />
   ) : null;
   // Same rule the database enforces for creating events (migration 0035).

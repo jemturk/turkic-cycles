@@ -1119,6 +1119,8 @@ export type Database = {
         }
         Returns: string
       }
+      delete_circle: { Args: { p_circle_id: string }; Returns: undefined }
+      delete_event: { Args: { p_event_id: string }; Returns: undefined }
       get_origin_countries_with_consent: {
         Args: { target_ids: string[] }
         Returns: {

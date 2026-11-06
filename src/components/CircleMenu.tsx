@@ -7,18 +7,21 @@ import { Text } from "@/components/Text";
 
 // A circle page's ⋯ menu: Join circle if you're not in it, otherwise Leave circle,
 // behind a confirmation shown in the menu itself (Alert.alert does nothing on web).
-// Like the profile's ⋯, it opens under the button.
+// The owner also gets Delete circle (onDelete), which asks in a dialog. Like the
+// profile's ⋯, it opens under the button.
 export function CircleMenu({
   circleName,
   isJoined,
   onJoin,
   onLeave,
+  onDelete,
   busy,
 }: {
   circleName: string;
   isJoined: boolean;
   onJoin: () => void;
   onLeave: () => void;
+  onDelete?: () => void;
   busy: boolean;
 }) {
   const { t } = useTranslation();
@@ -104,6 +107,19 @@ export function CircleMenu({
               <Text className="text-sm text-accent-600">{t("circles.leaveCircle")}</Text>
             </Pressable>
           )}
+          {onDelete && !confirming ? (
+            <Pressable
+              accessibilityRole="menuitem"
+              onPress={() => {
+                close();
+                onDelete();
+              }}
+              className="flex-row items-center gap-3 border-t border-[#F3E3D2] px-4 py-3 web:hover:bg-accent-50 dark:border-ink-700 dark:web:hover:bg-ink-700"
+            >
+              <Ionicons name="trash-outline" size={18} color="#C1440E" />
+              <Text className="text-sm text-accent-600">{t("circles.deleteCircle")}</Text>
+            </Pressable>
+          ) : null}
         </View>
       ) : null}
     </View>

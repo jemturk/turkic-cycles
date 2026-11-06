@@ -155,7 +155,16 @@
     "eventTime": "Beginn (24 Std.)",
     "createEvent": "Veranstaltung erstellen",
     "createEventError": "Veranstaltung konnte nicht erstellt werden",
-    "organizersOnly": "Nur Inhaber und Moderatoren dieses Kreises können Veranstaltungen hinzufügen."
+    "organizersOnly": "Nur Inhaber und Moderatoren dieses Kreises können Veranstaltungen hinzufügen.",
+    "deleteCircle": "Kreis löschen",
+    "deleteCircleTitle": "{{name}} löschen?",
+    "deleteCircleBody": "Der Kreis und alle seine Events werden für alle gelöscht, und die Mitglieder werden entfernt. Verbindungen, die darin entstanden sind, und ihre Chats bleiben. Das lässt sich nicht rückgängig machen.",
+    "deleteEvent": "Event löschen",
+    "deleteEventTitle": "„{{title}}“ löschen?",
+    "deleteEventBody": "Das Event wird für alle gelöscht. Das lässt sich nicht rückgängig machen.",
+    "deleteEventBodyReplies_one": "Das Event wird für alle gelöscht, auch für die {{count}} Person, die geantwortet hat. Das lässt sich nicht rückgängig machen.",
+    "deleteEventBodyReplies_other": "Das Event wird für alle gelöscht, auch für die {{count}} Personen, die geantwortet haben. Das lässt sich nicht rückgängig machen.",
+    "deleteFailed": "Löschen fehlgeschlagen"
   },
   "search": {
     "placeholder": "Kreise und Personen suchen",

@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createCircle,
   createCircleEvent,
+  deleteCircle,
+  deleteCircleEvent,
   getMyCircleRole,
   getCircle,
   getCircleEvent,
@@ -128,6 +130,35 @@ export function useUpsertRsvp(eventId: string | undefined, userId: string | unde
       queryClient.invalidateQueries({ queryKey: ["circleEvents"] });
       queryClient.invalidateQueries({ queryKey: ["circleEvent", eventId] });
       queryClient.invalidateQueries({ queryKey: ["eventAttendees", eventId] });
+    },
+  });
+}
+
+export function useDeleteCircle(userId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (circleId: string) => deleteCircle(circleId),
+    onSuccess: (_, circleId) => {
+      queryClient.removeQueries({ queryKey: ["circle", circleId] });
+      queryClient.invalidateQueries({ queryKey: ["circles"] });
+      queryClient.invalidateQueries({ queryKey: ["myCircleMemberships", userId] });
+      queryClient.invalidateQueries({ queryKey: ["circleEvents"] });
+      queryClient.invalidateQueries({ queryKey: ["upcomingEventCounts"] });
+      queryClient.invalidateQueries({ queryKey: ["upcomingEventsInCircles"] });
+    },
+  });
+}
+
+export function useDeleteCircleEvent(circleId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (eventId: string) => deleteCircleEvent(eventId),
+    onSuccess: (_, eventId) => {
+      queryClient.removeQueries({ queryKey: ["circleEvent", eventId] });
+      queryClient.invalidateQueries({ queryKey: ["circleEvents", circleId] });
+      queryClient.invalidateQueries({ queryKey: ["circleEvents"] });
+      queryClient.invalidateQueries({ queryKey: ["upcomingEventCounts"] });
+      queryClient.invalidateQueries({ queryKey: ["upcomingEventsInCircles"] });
     },
   });
 }

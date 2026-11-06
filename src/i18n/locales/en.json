@@ -155,7 +155,16 @@
     "eventTime": "Start time (24-hour)",
     "createEvent": "Create event",
     "createEventError": "Couldn't create the event",
-    "organizersOnly": "Only this circle's owners and moderators can add events."
+    "organizersOnly": "Only this circle's owners and moderators can add events.",
+    "deleteCircle": "Delete circle",
+    "deleteCircleTitle": "Delete {{name}}?",
+    "deleteCircleBody": "The circle and all its events are deleted for everyone, and members are removed. Connections made in it, and their chats, stay. This can't be undone.",
+    "deleteEvent": "Delete event",
+    "deleteEventTitle": "Delete “{{title}}”?",
+    "deleteEventBody": "The event is deleted for everyone. This can't be undone.",
+    "deleteEventBodyReplies_one": "The event is deleted for everyone, including the {{count}} person who replied. This can't be undone.",
+    "deleteEventBodyReplies_other": "The event is deleted for everyone, including the {{count}} people who replied. This can't be undone.",
+    "deleteFailed": "Couldn't delete"
   },
   "search": {
     "placeholder": "Search circles and people",

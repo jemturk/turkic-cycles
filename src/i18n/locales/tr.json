@@ -155,7 +155,16 @@
     "eventTime": "Başlangıç saati (24 saat)",
     "createEvent": "Etkinliği oluştur",
     "createEventError": "Etkinlik oluşturulamadı",
-    "organizersOnly": "Etkinlikleri yalnızca bu çemberin sahipleri ve moderatörleri ekleyebilir."
+    "organizersOnly": "Etkinlikleri yalnızca bu çemberin sahipleri ve moderatörleri ekleyebilir.",
+    "deleteCircle": "Çemberi sil",
+    "deleteCircleTitle": "{{name}} silinsin mi?",
+    "deleteCircleBody": "Çember ve tüm etkinlikleri herkes için silinir, üyeler çıkarılır. İçinde kurulan bağlantılar ve sohbetleri kalır. Bu geri alınamaz.",
+    "deleteEvent": "Etkinliği sil",
+    "deleteEventTitle": "“{{title}}” silinsin mi?",
+    "deleteEventBody": "Etkinlik herkes için silinir. Bu geri alınamaz.",
+    "deleteEventBodyReplies_one": "Etkinlik, yanıt veren {{count}} kişi dahil herkes için silinir. Bu geri alınamaz.",
+    "deleteEventBodyReplies_other": "Etkinlik, yanıt veren {{count}} kişi dahil herkes için silinir. Bu geri alınamaz.",
+    "deleteFailed": "Silinemedi"
   },
   "search": {
     "placeholder": "Çember ve kişi ara",

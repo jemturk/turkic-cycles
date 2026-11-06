@@ -12,7 +12,9 @@ import {
   useCircleEvent,
   useEventAttendees,
   useJoinCircle,
+  useDeleteCircleEvent,
   useMyCircleMemberships,
+  useMyCircleRole,
   useMyRsvp,
   useUpsertRsvp,
 } from "@/hooks/useCircles";
@@ -29,6 +31,7 @@ import { CircleHeader } from "@/components/CircleHeader";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
 import { CARD_SHADOW } from "@/theme/surfaces";
+import { confirmAlert, showAlert } from "@/lib/alert";
 
 export default function CircleEventDetail() {
   const { t } = useTranslation();
@@ -48,9 +51,40 @@ export default function CircleEventDetail() {
   const { data: attendees } = useEventAttendees(event?.id);
   const joinCircle = useJoinCircle(userId);
   const upsertRsvp = useUpsertRsvp(event?.id, userId);
+  const { data: role } = useMyCircleRole(circleId, userId);
+  const deleteEvent = useDeleteCircleEvent(circleId);
   const wide = useWideLayout();
 
   if (!circle) return null;
+
+  // The circle's owner and moderators (the database checks too, migration 0069). Asks
+  // first, saying how many people replied, then goes up to the circle.
+  const canDelete = !!event && (role === "owner" || role === "moderator");
+  async function confirmDelete() {
+    if (!event) return;
+    const replies = (event.going_count ?? 0) + (event.interested_count ?? 0);
+    const ok = await confirmAlert(
+      t("circles.deleteEventTitle", { title: event.title }),
+      replies > 0 ? t("circles.deleteEventBodyReplies", { count: replies }) : t("circles.deleteEventBody"),
+      { confirmLabel: t("circles.deleteEvent"), cancelLabel: t("common.cancel"), destructive: true }
+    );
+    if (!ok) return;
+    deleteEvent.mutate(event.id, {
+      onSuccess: goBack,
+      onError: (error) => showAlert(t("circles.deleteFailed"), error.message),
+    });
+  }
+  const deleteButton = canDelete ? (
+    <Pressable
+      accessibilityRole="button"
+      disabled={deleteEvent.isPending}
+      onPress={confirmDelete}
+      className="flex-row items-center justify-center gap-2 self-center rounded-full px-4 py-2.5 web:hover:bg-accent-50 dark:web:hover:bg-ink-800"
+    >
+      <Ionicons name="trash-outline" size={18} color="#C1440E" />
+      <Text className="text-sm font-medium text-accent-600">{t("circles.deleteEvent")}</Text>
+    </Pressable>
+  ) : null;
 
   const topic = circle.topic as CircleTopic;
   const isJoined = (memberships ?? []).includes(circle.id);
@@ -212,6 +246,7 @@ export default function CircleEventDetail() {
             </View>
 
             {attendeeCards}
+            {deleteButton}
           </View>
         </View>
       </ScrollView>
@@ -299,6 +334,8 @@ export default function CircleEventDetail() {
             <Text className="text-sm text-ink-700 dark:text-ink-200">{circle.description}</Text>
           ) : null}
         </View>
+
+        {deleteButton}
       </ScrollView>
     </SafeAreaView>
   );
