@@ -24,7 +24,7 @@ changes in a store console, change it here in the same commit as the code.
 
 Service providers (Supabase, Sentry, RevenueCat, Expo/Firebase push, Stripe Identity,
 Google Cloud Vision for the photo check, Google Geocoding for the typed city's centre point,
-Resend for account emails, Cloudflare for the website)
+Resend for account and event-cancellation emails, Cloudflare for the website)
 process data for us, so in Google's terms that's **collected, not shared**. A third
 party that uses data for its own purposes (ads, analytics networks) would be
 **shared** — none today.
@@ -46,7 +46,7 @@ For every row: Collected ✅, Shared ❌, Processed ephemerally **No**.
 | Location → Approximate | Req. | Functionality, Personalization | City/state/country typed on the profile (`profiles.city` …; the real city/state in self-only `profile_locations`, others see what `location_visibility` allows). The city's centre point from Google Geocoding (rounded to ~100 m, self-only `profile_locations.latitude/longitude`, used server-side for the distance filter) | City becomes optional; coordinates come from the device's GPS or are shown to other members |
 | Location → Precise | — not collected | | GPS used on the phone only (`src/stores/localFilter.ts`) | Device coordinates are sent or saved anywhere |
 | Personal → Name | Req. | Functionality, Account mgmt | `profiles.display_name` | |
-| Personal → Email | Req. | Functionality, Account mgmt | Account email (Supabase Auth); account emails are sent through Resend (Supabase's SMTP), a service provider | Email used for marketing or newsletters |
+| Personal → Email | Req. | Functionality, Account mgmt | Account email (Supabase Auth); account emails are sent through Resend (Supabase's SMTP), a service provider; event-cancellation emails, to people a push couldn't reach, go through Resend's API (`send-event-cancelled-push`), a service message, not marketing | Email used for marketing or newsletters |
 | Personal → User IDs | Req. | Functionality, Account mgmt, Analytics | Account ID; Sentry `setUser({ id })` | |
 | Personal → Address | — not collected | | Only city | A street address field |
 | Personal → Phone number | — not collected | | The member's own number is never asked | A phone sign-in or phone field |

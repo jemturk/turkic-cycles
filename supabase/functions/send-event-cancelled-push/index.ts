@@ -8,20 +8,27 @@
 // functions can write. The notice is claimed by deleting it, so each is sent once and
 // the recipient list isn't kept; a notice older than FRESH_MS is dropped unsent.
 //
-// Stays quiet for recipients who turned push notifications off
-// (profiles.push_notifications_enabled). Writes in each recipient's app language
-// (profiles.app_locale), with the date as it reads where the circle is (every circle
-// so far is in US Eastern; events don't store a time zone).
+// Pushes to everyone with push on and a registered phone. Anyone that leaves out --
+// push turned off, no phone registered (the website alone, a reinstall) -- gets the
+// same news by email instead, as a service message like a booking change (email.ts,
+// sent through Resend; needs the RESEND_API_KEY secret, and without it only pushes go
+// out). Never both. Writes in each recipient's app language (profiles.app_locale),
+// with dates as they read where the circle is (every circle so far is in US Eastern;
+// events don't store a time zone).
 //
 // Deploy with: supabase functions deploy send-event-cancelled-push --no-verify-jwt
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { cancellationEmail } from "./email.ts";
 
 const EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send";
 const FRESH_MS = 10 * 60 * 1000;
 const EXPO_BATCH = 100;
+const RESEND_URL = "https://api.resend.com/emails/batch";
+const RESEND_BATCH = 100;
+const EMAIL_FROM = "Halka <hello@joinhalka.com>";
 const EVENT_TIME_ZONE = "America/New_York";
 
-type Kind = "event" | "circle";
+type Kind = "event" | "circle"; // as in email.ts
 const TEXT: Record<string, { title: string; body: Record<Kind, string> }> = {
   en: {
     title: "{event} on {date} is cancelled",
@@ -85,17 +92,22 @@ Deno.serve(async (req) => {
     const kind = notice.kind as Kind;
 
     const sendable = (tokenRows ?? []).filter((row) => profileById.get(row.user_id)?.push_notifications_enabled !== false);
-    if (sendable.length === 0) return new Response("no tokens", { status: 200 });
-
-    const notifications = sendable.map((row) => {
-      const locale = profileById.get(row.user_id)?.app_locale ?? "en";
-      const text = TEXT[locale] ?? TEXT.en;
-      const date = new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? "en-US", {
+    const pushed = new Set(sendable.map((row) => row.user_id));
+    const localeOf = (userId: string) => profileById.get(userId)?.app_locale ?? "en";
+    const dateIn = (locale: string, withTime: boolean) =>
+      new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? "en-US", {
         month: "short",
         day: "numeric",
+        ...(withTime ? { weekday: "long", hour: "numeric", minute: "2-digit" } : {}),
         timeZone: EVENT_TIME_ZONE,
       }).format(new Date(notice.starts_at));
-      const values = { event: notice.event_title, circle: notice.circle_name, date };
+    const titleFor = (locale: string) =>
+      fill((TEXT[locale] ?? TEXT.en).title, { event: notice.event_title, circle: notice.circle_name, date: dateIn(locale, false) });
+
+    const notifications = sendable.map((row) => {
+      const locale = localeOf(row.user_id);
+      const text = TEXT[locale] ?? TEXT.en;
+      const values = { event: notice.event_title, circle: notice.circle_name, date: dateIn(locale, false) };
       return {
         to: row.token,
         title: fill(text.title, values),
@@ -135,6 +147,43 @@ Deno.serve(async (req) => {
     }
     if (staleTokenIds.length > 0) {
       await supabase.from("push_tokens").delete().in("id", staleTokenIds);
+    }
+
+    // Everyone the push left out gets an email instead.
+    const unreached = recipients.filter((id) => !pushed.has(id));
+    const resendKey = Deno.env.get("RESEND_API_KEY");
+    if (unreached.length > 0 && !resendKey) {
+      console.error("send-event-cancelled-push: RESEND_API_KEY isn't set; skipped emails", { count: unreached.length });
+    } else if (unreached.length > 0) {
+      const users = await Promise.all(unreached.map((id) => supabase.auth.admin.getUserById(id)));
+      const emails = users
+        .map(({ data }, i) => ({ id: unreached[i], email: data?.user?.email ?? null }))
+        // Sample members' addresses (…@turek-mock.invalid) can't receive mail.
+        .filter((u): u is { id: string; email: string } => !!u.email && !u.email.endsWith(".invalid"))
+        .map(({ id, email }) => {
+          const locale = localeOf(id);
+          const subject = titleFor(locale);
+          const { html, text } = cancellationEmail({
+            locale,
+            kind,
+            subject,
+            eventTitle: notice.event_title,
+            circleName: notice.circle_name,
+            circleId: notice.circle_id,
+            when: dateIn(locale, true),
+          });
+          return { from: EMAIL_FROM, to: [email], subject, html, text };
+        });
+      for (let start = 0; start < emails.length; start += RESEND_BATCH) {
+        const response = await fetch(RESEND_URL, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify(emails.slice(start, start + RESEND_BATCH)),
+        });
+        if (!response.ok) {
+          console.error("send-event-cancelled-push: Resend rejected the batch", response.status, await response.text());
+        }
+      }
     }
 
     return new Response("ok", { status: 200 });

@@ -7,7 +7,7 @@
 // doesn't match the app is itself grounds for store rejection. Bump LEGAL_UPDATED
 // on every change.
 
-export const LEGAL_UPDATED = "October 31, 2026";
+export const LEGAL_UPDATED = "November 5, 2026";
 export const LEGAL_CONTACT = "support@joinhalka.com";
 export const APP_NAME = "Halka";
 
@@ -134,7 +134,8 @@ export const PRIVACY_POLICY: LegalDocument = {
         "- To use your sexual orientation, faith answer and heritage for matching (your explicit consent).",
         "- To send notifications you've allowed, such as new messages, likes and connections, and account emails " +
           "such as sign-up confirmation and password resets (providing the service, and your consent for push " +
-          "notifications).",
+          "notifications). If an event you replied to is cancelled and a notification can't reach you, we tell you " +
+          "by email instead (providing the service).",
         "- To keep the community safe: to review reports, prevent abuse, fraud and spam, and enforce our Terms. " +
           "Photos you add to your profile are checked automatically for nudity, sexual content and graphic " +
           "violence before other members can see them (our legitimate interest in a safe community, and legal " +
@@ -166,13 +167,13 @@ export const PRIVACY_POLICY: LegalDocument = {
         "- Google Maps Platform (Geocoding): finding the centre point of the city on your profile.",
         "- Google Cloud Vision: the automatic check of profile photos, processed only to run the check.",
         "- Cloudflare: the website and bot protection (Turnstile).",
-        "- Resend: sending account emails, such as sign-up confirmations and password resets.",
+        "- Resend: sending account emails, such as sign-up confirmations and password resets, and event cancellation emails.",
         "- Stripe: identity verification (Stripe Identity), if you choose to get verified.",
         "- Sentry (Functional Software): crash and error reports, identified only by your account ID, to " +
           "help us fix problems.",
         "- Apple and Google: Sign in with Apple and Google sign-in, if you use them, and app-store purchases.",
         "- RevenueCat: managing Plus subscriptions.",
-        "- Our email delivery provider: sending account emails.",
+        "- Our email delivery provider: sending account emails and event cancellation emails.",
         "We may also disclose information if the law requires it, to protect someone's safety, to investigate " +
           "fraud or abuse, or as part of a sale or reorganization of the app, in which case this policy would " +
           "continue to apply.",
