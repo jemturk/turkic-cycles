@@ -1,7 +1,7 @@
 import { Pressable, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { Stack, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +20,7 @@ import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { CirclesDesktop } from "@/components/CirclesDesktop";
 import { CARD_SHADOW } from "@/theme/surfaces";
+import { AppHeader } from "@/components/AppHeader";
 
 // Desktop web gets its own layout (CirclesDesktop): a two-column grid with filter
 // chips and an upcoming-events column. This is the phone screen.
@@ -49,6 +50,30 @@ function CirclesPhone() {
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
+      {/* Hosts (Plus with a verified ID, migration 0035) get "New circle" as a + in the
+          header, beside search: it's something they do rarely, so it doesn't take a row
+          above the list. Nobody else sees it. */}
+      <Stack.Screen
+        options={{
+          header: () => (
+            <AppHeader
+              title={t("tabs.circles")}
+              action={
+                canHost ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t("circles.newCircle")}
+                    hitSlop={8}
+                    onPress={() => router.push("/(app)/circles/new", { withAnchor: true })}
+                  >
+                    <Ionicons name="add" size={28} color="#127A87" />
+                  </Pressable>
+                ) : null
+              }
+            />
+          ),
+        }}
+      />
       <RefreshableScrollView
         refreshing={isRefetching}
         onRefresh={() => {
@@ -69,17 +94,6 @@ function CirclesPhone() {
           />
         </View>
 
-        {/* Plus with a verified ID, admins included (migration 0035); nobody else sees it. */}
-        {canHost ? (
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => router.push("/(app)/circles/new", { withAnchor: true })}
-            className="flex-row items-center justify-center gap-2 rounded-xl border border-dashed border-primary-500 px-4 py-3"
-          >
-            <Ionicons name="add" size={20} color="#127A87" />
-            <Text className="text-base font-medium text-primary-600">{t("circles.newCircle")}</Text>
-          </Pressable>
-        ) : null}
 
         {localStatus === "denied" || localStatus === "unavailable" ? (
           <Text className="-mt-2 text-xs text-accent-600">

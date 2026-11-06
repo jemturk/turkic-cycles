@@ -29,11 +29,14 @@ export function AppHeader({
   title,
   left,
   right,
+  action,
   bgClassName,
   iconColor,
 }: {
   title?: string;
   left?: ReactNode;
+  /** An extra button before the search icon (e.g. Circles' "New circle" for hosts). */
+  action?: ReactNode;
   /** Replaces the search icon and your avatar (e.g. a circle's ⋯ menu). */
   right?: ReactNode;
   bgClassName?: string;
@@ -74,6 +77,7 @@ export function AppHeader({
         )}
         {right ?? (
           <View className="flex-row items-center gap-4">
+            {action}
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t("tabs.search")}
