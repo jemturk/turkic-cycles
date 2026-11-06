@@ -102,7 +102,8 @@ export default function WhatMatters() {
 
   return (
     <SubPage title={t("whatMatters.title")} subtitle={t("whatMatters.subtitle")} form>
-      {isLoading || typesLoading ? null : (
+      {/* Wait for the session too: its disabled queries don't count as loading. */}
+      {!userId || isLoading || typesLoading ? null : (
         <WhatMattersForm
           types={(connectionTypes ?? []) as AppType[]}
           initial={sanitizeBoosts(preferences?.boosts, DEFAULT_CONFIG)}

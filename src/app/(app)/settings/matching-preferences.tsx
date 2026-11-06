@@ -124,7 +124,9 @@ export default function MatchingPreferences() {
       subtitle={t("settings.matchingPreferencesScreen.filtersNote")}
       form
     >
-      {isLoading || profileLoading ? null : (
+      {/* Until the session loads the queries are disabled, which v5 doesn't count as
+          loading; the form would start (and save) from the defaults. */}
+      {!userId || isLoading || profileLoading ? null : (
         <Card>
           <MatchingPreferencesForm preferences={preferences} userId={userId} unit={distanceUnitFor(profile?.country)} />
         </Card>
