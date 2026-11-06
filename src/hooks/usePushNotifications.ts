@@ -20,7 +20,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-type MessagePushData = { type?: string; matchId?: string; messageId?: string };
+type MessagePushData = { type?: string; matchId?: string; messageId?: string; circleId?: string | null };
 
 // Web has no Expo push support at all (Expo's push service targets native APNs/
 // FCM, not the separate Web Push API) and Expo Go can't register for push either
@@ -79,6 +79,12 @@ export function usePushNotifications(userId: string | undefined) {
       // has the plan's Check in and Alert my contacts buttons.
       if (data?.type === "safety") {
         router.push("/(app)/settings/safety", { withAnchor: true });
+      }
+      // A cancelled event (send-event-cancelled-push): its circle, or the Circles list
+      // when the whole circle was deleted.
+      if (data?.type === "event_cancelled") {
+        if (data.circleId) router.push(`/(app)/circles/${data.circleId}`, { withAnchor: true });
+        else router.push("/(app)/circles");
       }
     });
 

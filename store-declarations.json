@@ -165,6 +165,16 @@
       "revoked_at",
       "user_id"
     ],
+    "event_cancellation_notices": [
+      "circle_id",
+      "circle_name",
+      "created_at",
+      "event_title",
+      "id",
+      "kind",
+      "recipients",
+      "starts_at"
+    ],
     "event_rsvps": [
       "event_id",
       "status",

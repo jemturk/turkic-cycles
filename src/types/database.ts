@@ -310,6 +310,39 @@ export type Database = {
         }
         Relationships: []
       }
+      event_cancellation_notices: {
+        Row: {
+          circle_id: string | null
+          circle_name: string
+          created_at: string
+          event_title: string
+          id: string
+          kind: string
+          recipients: string[]
+          starts_at: string
+        }
+        Insert: {
+          circle_id?: string | null
+          circle_name: string
+          created_at?: string
+          event_title: string
+          id?: string
+          kind: string
+          recipients: string[]
+          starts_at: string
+        }
+        Update: {
+          circle_id?: string | null
+          circle_name?: string
+          created_at?: string
+          event_title?: string
+          id?: string
+          kind?: string
+          recipients?: string[]
+          starts_at?: string
+        }
+        Relationships: []
+      }
       event_rsvps: {
         Row: {
           event_id: string
@@ -1185,6 +1218,10 @@ export type Database = {
       }
       process_overdue_safety_checkins: { Args: never; Returns: undefined }
       purge_old_matching_logs: { Args: never; Returns: undefined }
+      queue_event_cancellation: {
+        Args: { p_event_id: string; p_kind: string }
+        Returns: undefined
+      }
       refresh_sample_world: { Args: never; Returns: undefined }
       register_push_token: {
         Args: { p_platform: string; p_token: string }
