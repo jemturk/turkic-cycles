@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import type { Href } from "expo-router";
 
@@ -18,6 +18,7 @@ import {
 } from "@/lib/preferenceSliders";
 import { LANGUAGES, LANGUAGE_OTHER } from "@/constants/languages";
 import { Button } from "@/components/Button";
+import { Text } from "@/components/Text";
 import { StepSlider } from "@/components/StepSlider";
 import { ChipGroup } from "@/components/ChipGroup";
 import type { Tables } from "@/types/database";
@@ -54,6 +55,13 @@ function MatchingPreferencesForm({ preferences, userId, unit, parent }: FormProp
     return stop === null ? t("settings.matchingPreferencesScreen.anywhere") : `${stop} ${unit}`;
   };
   const [languages, setLanguages] = useState<string[]>(preferences?.languages ?? []);
+  const noDistance = stops.length - 1;
+  const filtered = ages[0] !== 0 || ages[1] !== AGE_STOPS - 1 || distance[0] !== noDistance || languages.length > 0;
+  function reset() {
+    setAges([0, AGE_STOPS - 1]);
+    setDistance([noDistance]);
+    setLanguages([]);
+  }
 
   // Back to where it was opened from once saved, like Edit profile: leaving the page is
   // the confirmation.
@@ -103,12 +111,22 @@ function MatchingPreferencesForm({ preferences, userId, unit, parent }: FormProp
         tone={TAG_TONES.languages}
       />
 
-      <View className="mt-2">
+      <View className="mt-2 items-center gap-3">
         <Button
           label={upsert.isPending ? t("common.saving") : t("settings.matchingPreferencesScreen.save")}
           disabled={upsert.isPending}
           onPress={onSave}
         />
+        {/* Back to no filters in the form; Save stores it, so it can still be backed out of. */}
+        <Pressable
+          accessibilityRole="button"
+          hitSlop={8}
+          disabled={!filtered}
+          onPress={reset}
+          className={`rounded-full px-4 py-2 web:hover:bg-primary-50 dark:web:hover:bg-ink-800 ${filtered ? "" : "opacity-40"}`}
+        >
+          <Text className="text-sm font-semibold text-primary-500">{t("settings.matchingPreferencesScreen.reset")}</Text>
+        </Pressable>
       </View>
     </>
   );

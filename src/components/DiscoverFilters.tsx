@@ -4,8 +4,8 @@ import { router, type Href } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
 
-import { Button } from "@/components/Button";
 import { EmptyState } from "@/components/EmptyState";
+import { Text } from "@/components/Text";
 import { useSession } from "@/hooks/useSession";
 import { useHasDiscoverFilters } from "@/hooks/useSettings";
 
@@ -59,9 +59,14 @@ export function DiscoverEmpty({
       label={t("discover.emptyWithFilters")}
       className={className}
       action={
-        <View className="w-56">
-          <Button label={t("discover.changeFilters")} variant="secondary" onPress={() => router.push(filtersHref)} />
-        </View>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push(filtersHref)}
+          className="-mt-2 flex-row items-center gap-1.5 rounded-full border border-primary-500 px-4 py-2 web:hover:bg-primary-100 dark:web:hover:bg-ink-800"
+        >
+          <Ionicons name="options-outline" size={16} className="text-primary-500" />
+          <Text className="text-sm font-semibold text-primary-500">{t("discover.changeFilters")}</Text>
+        </Pressable>
       }
     />
   );

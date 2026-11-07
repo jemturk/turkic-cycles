@@ -757,6 +757,7 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Eşleştirme tercihleri",
+      "reset": "Filtreleri sıfırla",
       "filtersNote": "Yaş, diller ve mesafe Keşfet'i iki yönlü filtreler: aralığınızdaki ve sizi de görecek kişileri görürsünüz.",
       "saveFailed": "Tercihleriniz kaydedilemedi. Lütfen tekrar deneyin.",
       "showMeSpeakersOf": "Bana şu dilleri konuşanları göster",

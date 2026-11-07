@@ -757,6 +757,7 @@
     },
     "matchingPreferencesScreen": {
       "heading": "Matching preferences",
+      "reset": "Reset filters",
       "filtersNote": "Age, languages and distance filter Discover, both ways: you see people in your range who'd also see you.",
       "saveFailed": "Couldn't save your preferences. Please try again.",
       "showMeSpeakersOf": "Show me speakers of",
