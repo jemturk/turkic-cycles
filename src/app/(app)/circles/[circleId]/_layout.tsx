@@ -14,6 +14,7 @@ export default function CircleLayout() {
       <Stack.Screen name="events/[eventId]" />
       <Stack.Screen name="members" />
       <Stack.Screen name="discover" />
+      <Stack.Screen name="filters" />
     </Stack>
   );
 }

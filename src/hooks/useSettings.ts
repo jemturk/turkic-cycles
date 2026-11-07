@@ -29,6 +29,19 @@ export function useMatchingPreferences(userId: string | undefined) {
   });
 }
 
+// Whether any matching preference narrows Discover (age, distance or languages), for
+// the filter icon's dot and the empty deck's "Change filters".
+export function useHasDiscoverFilters(userId: string | undefined) {
+  const { data: preferences } = useMatchingPreferences(userId);
+  return !!(
+    preferences &&
+    (preferences.age_min !== null ||
+      preferences.age_max !== null ||
+      preferences.max_distance_miles !== null ||
+      preferences.languages.length > 0)
+  );
+}
+
 export function useUpsertMatchingPreferences(userId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({

@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { DiscoverDeck } from "@/components/DiscoverDeck";
+import { DiscoverFiltersButton } from "@/components/DiscoverFilters";
 import { goUp } from "@/lib/goUp";
 
 export default function Discover() {
@@ -19,11 +20,15 @@ export default function Discover() {
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <Text className="mt-4 font-display text-2xl text-ink-900 dark:text-ink-50">{t("discover.title")}</Text>
+        <View className="mt-4 flex-row items-center justify-between">
+          <Text className="font-display text-2xl text-ink-900 dark:text-ink-50">{t("discover.title")}</Text>
+          <DiscoverFiltersButton filtersHref={`/(app)/circles/${circleId}/filters`} />
+        </View>
 
         <DiscoverDeck
           circleId={circleId}
           emptyLabel={t("discover.empty")}
+          filtersHref={`/(app)/circles/${circleId}/filters`}
           onOpenProfile={(userId) => router.replace(`/(app)/user/${userId}?circleId=${circleId}&fromDiscover=true`)}
         />
       </View>

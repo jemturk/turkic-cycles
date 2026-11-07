@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import type { Href } from "expo-router";
 
 import { Text } from "@/components/Text";
-import { EmptyState } from "@/components/EmptyState";
+import { DiscoverEmpty } from "@/components/DiscoverFilters";
 import { useSession } from "@/hooks/useSession";
 import { useDiscoverCandidates, useRecordSwipe } from "@/hooks/useDiscover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
@@ -119,10 +120,12 @@ function GridCard({
 export function DiscoverGrid({
   circleId,
   emptyLabel,
+  filtersHref,
   onOpenProfile,
 }: {
   circleId: string | null | undefined;
   emptyLabel: string;
+  filtersHref: Href;
   onOpenProfile: (userId: string) => void;
 }) {
   const { t } = useTranslation();
@@ -195,7 +198,7 @@ export function DiscoverGrid({
         ) : null}
 
         {isLoading ? null : visible.length === 0 ? (
-          <EmptyState icon="sparkles" label={emptyLabel} className="py-24" />
+          <DiscoverEmpty label={emptyLabel} filtersHref={filtersHref} className="py-24" />
         ) : (
           <View
             onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}

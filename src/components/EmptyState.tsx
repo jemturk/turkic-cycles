@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -10,10 +11,13 @@ export function EmptyState({
   icon,
   label,
   className = "flex-1 pb-16",
+  action,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
   className?: string;
+  /** A button under the label (e.g. Discover's "Change filters"). */
+  action?: ReactNode;
 }) {
   return (
     <View className={`items-center justify-center gap-6 px-4 ${className}`}>
@@ -28,6 +32,7 @@ export function EmptyState({
         <View className="absolute left-7 top-2 h-1.5 w-1.5 rounded-full bg-accent-500/60" />
       </View>
       <Text className="max-w-xs text-center text-base text-ink-700 dark:text-ink-200">{label}</Text>
+      {action}
     </View>
   );
 }

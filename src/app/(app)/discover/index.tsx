@@ -5,7 +5,10 @@ import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 import { DiscoverDeck } from "@/components/DiscoverDeck";
+import { DiscoverFiltersButton } from "@/components/DiscoverFilters";
 import { useWideLayout } from "@/hooks/useWideLayout";
+
+const FILTERS = "/(app)/discover/filters";
 
 // Global Discover: anyone who's discoverable, not just your circles' members. Who
 // shows up, and in what order, is decided server-side (list_global_discover_candidates).
@@ -19,8 +22,16 @@ export default function GlobalDiscover() {
   if (wide) {
     return (
       <View className="flex-1 gap-5 bg-primary-50 px-20 pt-9 dark:bg-ink-950">
-        <Text className="font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.discover")}</Text>
-        <DiscoverDeck circleId={null} emptyLabel={t("discover.globalEmpty")} onOpenProfile={openProfile} />
+        <View className="flex-row items-center justify-between">
+          <Text className="font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.discover")}</Text>
+          <DiscoverFiltersButton filtersHref={FILTERS} />
+        </View>
+        <DiscoverDeck
+          circleId={null}
+          emptyLabel={t("discover.globalEmpty")}
+          filtersHref={FILTERS}
+          onOpenProfile={openProfile}
+        />
       </View>
     );
   }
@@ -35,6 +46,7 @@ export default function GlobalDiscover() {
         <DiscoverDeck
           circleId={null}
           emptyLabel={t("discover.globalEmpty")}
+          filtersHref={FILTERS}
           onOpenProfile={openProfile}
         />
       </View>

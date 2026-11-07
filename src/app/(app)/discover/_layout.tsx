@@ -1,5 +1,7 @@
 import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { AppHeader } from "@/components/AppHeader";
+import { DiscoverFiltersButton } from "@/components/DiscoverFilters";
 import { useStackScreenOptions } from "@/hooks/useStackScreenOptions";
 import { useWideLayout } from "@/hooks/useWideLayout";
 
@@ -14,7 +16,17 @@ export default function DiscoverLayout() {
   return (
     <Stack screenOptions={useStackScreenOptions()}>
       {/* Desktop web draws its own large title row instead. */}
-      <Stack.Screen name="index" options={{ headerShown: !wide, title: t("tabs.discover") }} />
+      <Stack.Screen
+        name="index"
+        options={{
+          headerShown: !wide,
+          title: t("tabs.discover"),
+          header: () => (
+            <AppHeader title={t("tabs.discover")} action={<DiscoverFiltersButton filtersHref="/(app)/discover/filters" />} />
+          ),
+        }}
+      />
+      <Stack.Screen name="filters" />
     </Stack>
   );
 }

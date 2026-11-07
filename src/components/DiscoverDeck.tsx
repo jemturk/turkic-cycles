@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useState, type ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Pressable, View, type AccessibilityActionEvent, type AccessibilityActionInfo } from "react-native";
 import { Text } from "@/components/Text";
-import { EmptyState } from "@/components/EmptyState";
+import { DiscoverEmpty } from "@/components/DiscoverFilters";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
@@ -16,6 +16,7 @@ import Animated, {
   type SharedValue,
 } from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
+import type { Href } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { useSession } from "@/hooks/useSession";
@@ -73,6 +74,8 @@ export function DiscoverDeck(props: DiscoverDeckProps) {
 type DiscoverDeckProps = {
   circleId: string | null | undefined;
   emptyLabel: string;
+  // This deck's own copy of the matching preferences page (see DiscoverFilters).
+  filtersHref: Href;
   onOpenProfile: (userId: string) => void;
 };
 
@@ -212,7 +215,7 @@ function RollFace({
   );
 }
 
-function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
+function SwipeDeck({ circleId, emptyLabel, filtersHref, onOpenProfile }: DiscoverDeckProps) {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
@@ -591,7 +594,7 @@ function SwipeDeck({ circleId, emptyLabel, onOpenProfile }: DiscoverDeckProps) {
   return (
     <>
       {isLoading || recentlySkipped === null ? null : !candidate ? (
-        <EmptyState icon="sparkles" label={emptyLabel} />
+        <DiscoverEmpty label={emptyLabel} filtersHref={filtersHref} />
       ) : (
         // The cards fill the space above the buttons (flex: 1). Animated views take
         // inline styles, not className: NativeWind classes on Reanimated views don't
