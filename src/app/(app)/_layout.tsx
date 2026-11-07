@@ -79,7 +79,14 @@ export default function AppTabsLayout() {
     };
   }
   const { t } = useTranslation();
-  const { session } = useSession();
+  const { session, isLoading: sessionLoading } = useSession();
+  // Signed out while in here -- in another browser tab, everywhere from another device,
+  // or the session expired: back to the start rather than an empty shell (the saved
+  // data is wiped on sign-out, queryClient.ts).
+  const signedOut = !sessionLoading && !session;
+  useEffect(() => {
+    if (signedOut) router.replace("/");
+  }, [signedOut]);
   usePushNotifications(session?.user.id);
   useMarkDelivered(session?.user.id);
   const wide = useWideLayout();
