@@ -7,11 +7,12 @@ import { useTranslation } from "react-i18next";
 
 import { useCircle, useCircleMembers } from "@/hooks/useCircles";
 import { Avatar } from "@/components/Avatar";
-import { CircleHeader } from "@/components/CircleHeader";
+import { CircleHeader, CirclePageSkeleton } from "@/components/CircleHeader";
 import type { CircleTopic } from "@/constants/circles";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
 import { CARD_SHADOW } from "@/theme/surfaces";
+import { Bone, SkeletonPulse } from "@/components/Skeleton";
 
 // Everyone in a circle: under the circle's own header, a white card of photos in
 // even columns (three on phones, five on desktop) with each member's city under
@@ -21,7 +22,7 @@ export default function CircleMembers() {
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
   const insets = useSafeAreaInsets();
   const wide = useWideLayout();
-  const { data: circle } = useCircle(circleId);
+  const { data: circle, isLoading: circleLoading } = useCircle(circleId);
   const { data: members } = useCircleMembers(circleId);
 
   // Up to the circle (goUp), however the members page was opened.
@@ -29,7 +30,7 @@ export default function CircleMembers() {
     goUp(`/(app)/circles/${circleId}`);
   }
 
-  if (!circle) return null;
+  if (!circle) return circleLoading ? <CirclePageSkeleton onBack={goBack} wide={wide} /> : null;
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
@@ -53,6 +54,17 @@ export default function CircleMembers() {
           className={`flex-row flex-wrap rounded-[22px] bg-white px-2 py-4 dark:bg-ink-800 ${wide ? "w-full max-w-[760px]" : ""}`}
           style={CARD_SHADOW}
         >
+          {members ? null : (
+            // Loading: placeholder people.
+            <SkeletonPulse style={{ width: "100%", flexDirection: "row", flexWrap: "wrap" }}>
+              {Array.from({ length: wide ? 10 : 6 }, (_, index) => (
+                <View key={index} className="items-center gap-2 px-1 py-2" style={{ width: wide ? "20%" : "33.333%" }}>
+                  <Bone className="h-16 w-16 rounded-full" />
+                  <Bone className="h-3 w-16 rounded-full" />
+                </View>
+              ))}
+            </SkeletonPulse>
+          )}
           {(members ?? []).map((member) => (
             <Pressable
               key={member.userId}

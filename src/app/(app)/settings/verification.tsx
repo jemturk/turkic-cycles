@@ -23,7 +23,7 @@ export default function Verification() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
-  const { data: verification, refetch } = useMyVerificationStatus(userId);
+  const { data: verification, refetch, isLoading } = useMyVerificationStatus(userId);
   const start = useStartVerification(userId);
 
   useFocusEffect(
@@ -66,7 +66,12 @@ export default function Verification() {
   );
 
   return (
-    <SubPage title={t("settings.verificationScreen.heading")} subtitle={t("settings.verificationScreen.subheading")}>
+    // Not "unverified" until it's known: a verified member shouldn't see Start first.
+    <SubPage
+      title={t("settings.verificationScreen.heading")}
+      subtitle={t("settings.verificationScreen.subheading")}
+      loading={!userId || isLoading}
+    >
       {status === "verified" ? (
         <Card>
           <View className="flex-row items-center gap-3">

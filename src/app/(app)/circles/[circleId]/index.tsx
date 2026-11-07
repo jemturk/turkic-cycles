@@ -20,12 +20,13 @@ import { CircleMenu } from "@/components/CircleMenu";
 import { useCanHost } from "@/hooks/useCanHost";
 import { useSession } from "@/hooks/useSession";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
-import { CircleHeader } from "@/components/CircleHeader";
+import { CircleHeader, CirclePageSkeleton } from "@/components/CircleHeader";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
 import { CARD_SHADOW } from "@/theme/surfaces";
 import { confirmAlert, showAlert } from "@/lib/alert";
+import { GridSkeleton, RowsSkeleton } from "@/components/Skeleton";
 
 type Tab = "upcoming" | "past";
 
@@ -37,7 +38,7 @@ const WIDE_MAX_COLUMNS = 3;
 export default function CircleEvents() {
   const { t } = useTranslation();
   const { circleId } = useLocalSearchParams<{ circleId: string }>();
-  const { data: circle } = useCircle(circleId);
+  const { data: circle, isLoading: circleLoading } = useCircle(circleId);
   const { data: events, refetch, isRefetching } = useCircleEvents(circleId);
   const [tab, setTab] = useState<Tab>("upcoming");
   const { session } = useSession();
@@ -86,7 +87,7 @@ export default function CircleEvents() {
     goUp("/(app)/circles");
   }
 
-  if (!circle) return null;
+  if (!circle) return circleLoading ? <CirclePageSkeleton onBack={goBack} wide={wide} /> : null;
 
   const shown = events?.[tab] ?? [];
   const topic = circle.topic as CircleTopic;
@@ -177,6 +178,8 @@ export default function CircleEvents() {
             );
           })}
         </View>
+
+        {events ? null : <GridSkeleton count={columns * 2} width={cardWidth} height={110} gap={WIDE_GAP} />}
 
         {events && shown.length === 0 ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">
@@ -295,6 +298,8 @@ export default function CircleEvents() {
             );
           })}
         </View>
+
+        {events ? null : <RowsSkeleton rows={3} avatar={48} />}
 
         {events && shown.length === 0 ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">

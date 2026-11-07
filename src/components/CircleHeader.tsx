@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Text } from "@/components/Text";
 import { AppHeader, HEADER_ICON_HEIGHT } from "@/components/AppHeader";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
+import { Bone, RowsSkeleton, SkeletonPulse } from "@/components/Skeleton";
 
 // AppHeader in the circle's topic color, with a back button, topic badge and the
 // circle's name in place of the logo. The topic colors are light in both themes,
@@ -55,5 +56,54 @@ export function CircleHeader({
         </View>
       }
     />
+  );
+}
+
+// A circle's page (or its members) before the circle has loaded: the header with a
+// working back button and placeholders for the name, then placeholder rows below.
+export function CirclePageSkeleton({ onBack, wide }: { onBack: () => void; wide: boolean }) {
+  const { t } = useTranslation();
+  const back = (
+    <Pressable accessibilityLabel={t("common.back")} hitSlop={8} onPress={onBack}>
+      <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
+    </Pressable>
+  );
+  if (wide) {
+    return (
+      <View className="flex-1 gap-5 bg-primary-50 px-20 pt-9 dark:bg-ink-950">
+        <View className="flex-row items-center gap-4">
+          {back}
+          <SkeletonPulse style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 16 }}>
+            <Bone className="h-14 w-14 rounded-2xl" />
+            <View className="flex-1 gap-2">
+              <Bone className="h-8 w-72 rounded-full" />
+              <Bone className="h-3.5 w-40 rounded-full" />
+            </View>
+          </SkeletonPulse>
+        </View>
+        <RowsSkeleton rows={4} avatar={48} />
+      </View>
+    );
+  }
+  return (
+    <View className="flex-1 bg-primary-50 dark:bg-ink-950">
+      <AppHeader
+        left={
+          <View className="flex-1 flex-row items-center gap-2">
+            {back}
+            <SkeletonPulse style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Bone className="rounded-lg" style={{ width: HEADER_ICON_HEIGHT, height: HEADER_ICON_HEIGHT }} />
+              <View className="flex-1 gap-1.5">
+                <Bone className="h-4 w-40 rounded-full" />
+                <Bone className="h-3 w-28 rounded-full" />
+              </View>
+            </SkeletonPulse>
+          </View>
+        }
+      />
+      <View className="px-4 pt-4">
+        <RowsSkeleton rows={4} avatar={48} />
+      </View>
+    </View>
   );
 }

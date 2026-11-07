@@ -21,6 +21,8 @@ import { purchasesAvailable, type PlusPackage } from "@/lib/purchases";
 import { Button } from "@/components/Button";
 import { showAlert } from "@/lib/alert";
 import { CARD_SHADOW } from "@/theme/surfaces";
+import { CardSkeleton, SkeletonPulse } from "@/components/Skeleton";
+import { FadeIn } from "@/components/FadeIn";
 
 const MANAGE_SUBSCRIPTIONS_URL = Platform.select({
   ios: "https://apps.apple.com/account/subscriptions",
@@ -45,10 +47,10 @@ export default function Plus() {
   const { t, i18n } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
-  const { data: subscription } = useMySubscription(userId);
+  const { data: subscription, isLoading: subscriptionLoading } = useMySubscription(userId);
   const subscribed = useHasPlus(userId);
   const { data: likesFree } = useLikesAreFree(userId);
-  const { data: onWaitlist } = usePlusWaitlist(userId);
+  const { data: onWaitlist, isLoading: waitlistLoading } = usePlusWaitlist(userId);
   const setWaitlist = useSetPlusWaitlist(userId);
   const { data: packages, isLoading: packagesLoading } = usePlusPackages(userId);
   const purchase = usePurchasePlus(userId);
@@ -59,6 +61,9 @@ export default function Plus() {
   const selling = purchasesAvailable && (packagesLoading || (packages?.length ?? 0) > 0);
   const selected = packages?.find((p) => p.id === selectedId) ?? packages?.[0];
   const busy = purchase.isPending || restore.isPending;
+  // The part under the benefits waits until it's known which it is -- active, plans, or
+  // the waitlist -- so a subscriber never sees the offer first.
+  const statusLoading = !userId || subscriptionLoading || (selling ? packagesLoading : waitlistLoading);
 
   function priceLabel(pkg: PlusPackage) {
     if (pkg.period === "monthly") return t("plus.perMonth", { price: pkg.priceString });
@@ -120,74 +125,82 @@ export default function Plus() {
           <Benefit icon="infinite-outline" title={t("plus.moreLikes")} />
         </View>
 
-        {subscribed ? (
-          <View className="gap-2 rounded-[22px] border border-teal-500 bg-white dark:bg-ink-800 p-4" style={CARD_SHADOW}>
-            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{t("plus.active")}</Text>
-            {subscription?.status === "past_due" ? (
-              <Text className="text-sm text-accent-600">{t("plus.billingIssue")}</Text>
-            ) : periodEnd ? (
-              <Text className="text-sm text-ink-700 dark:text-ink-200">{t("plus.renewsOn", { date: periodEnd })}</Text>
-            ) : null}
-            {purchasesAvailable ? (
-              <Pressable onPress={() => Linking.openURL(MANAGE_SUBSCRIPTIONS_URL)}>
-                <Text className="text-sm font-medium text-primary-500">{t("plus.manage")}</Text>
-              </Pressable>
-            ) : null}
-          </View>
-        ) : selling ? (
-          <>
-            <View className="gap-2">
-              {(packages ?? []).map((pkg) => {
-                const isSelected = pkg.id === selected?.id;
-                return (
-                  <Pressable
-                    key={pkg.id}
-                    onPress={() => setSelectedId(pkg.id)}
-                    accessibilityRole="radio"
-                    accessibilityState={{ selected: isSelected }}
-                    className={`flex-row items-center justify-between rounded-xl border bg-white dark:bg-ink-800 px-4 py-3 ${
-                      isSelected ? "border-primary-500" : "border-primary-100 dark:border-ink-700"
-                    }`}
-                  >
-                    <Text className="text-base text-ink-900 dark:text-ink-50">{priceLabel(pkg)}</Text>
-                    <Ionicons
-                      name={isSelected ? "radio-button-on" : "radio-button-off"}
-                      size={20}
-                      color={isSelected ? "#127A87" : "#A99C95"}
-                    />
-                  </Pressable>
-                );
-              })}
-            </View>
-            <Button
-              label={purchase.isPending ? t("common.loading") : t("plus.subscribe")}
-              disabled={busy || !selected}
-              onPress={buy}
-            />
-            <Pressable onPress={restoreAll} disabled={busy}>
-              <Text className="text-center text-sm font-medium text-primary-500">
-                {restore.isPending ? t("common.loading") : t("plus.restore")}
-              </Text>
-            </Pressable>
-            <Text className="text-center text-xs text-ink-400 dark:text-ink-300">{t("plus.autoRenewNote")}</Text>
-          </>
-        ) : onWaitlist ? (
-          <View className="gap-2 rounded-[22px] border border-teal-500 bg-white dark:bg-ink-800 p-4" style={CARD_SHADOW}>
-            <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{t("plus.joined")}</Text>
-            <Text className="text-sm text-ink-700 dark:text-ink-200">{t("plus.joinedBody")}</Text>
-            <Pressable onPress={() => toggleWaitlist(false)} disabled={setWaitlist.isPending}>
-              <Text className="text-sm font-medium text-primary-500">{t("plus.leaveWaitlist")}</Text>
-            </Pressable>
-          </View>
+        {statusLoading ? (
+          <SkeletonPulse>
+            <CardSkeleton lines={2} />
+          </SkeletonPulse>
         ) : (
-          <>
-            <Text className="text-center text-sm text-ink-700 dark:text-ink-200">{t("plus.waitlistBody")}</Text>
-            <Button
-              label={setWaitlist.isPending ? t("common.loading") : t("plus.joinWaitlist")}
-              disabled={setWaitlist.isPending || onWaitlist === undefined}
-              onPress={() => toggleWaitlist(true)}
-            />
-          </>
+          <FadeIn style={{ gap: 16 }}>
+            {subscribed ? (
+              <View className="gap-2 rounded-[22px] border border-teal-500 bg-white dark:bg-ink-800 p-4" style={CARD_SHADOW}>
+                <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{t("plus.active")}</Text>
+                {subscription?.status === "past_due" ? (
+                  <Text className="text-sm text-accent-600">{t("plus.billingIssue")}</Text>
+                ) : periodEnd ? (
+                  <Text className="text-sm text-ink-700 dark:text-ink-200">{t("plus.renewsOn", { date: periodEnd })}</Text>
+                ) : null}
+                {purchasesAvailable ? (
+                  <Pressable onPress={() => Linking.openURL(MANAGE_SUBSCRIPTIONS_URL)}>
+                    <Text className="text-sm font-medium text-primary-500">{t("plus.manage")}</Text>
+                  </Pressable>
+                ) : null}
+              </View>
+            ) : selling ? (
+              <>
+                <View className="gap-2">
+                  {(packages ?? []).map((pkg) => {
+                    const isSelected = pkg.id === selected?.id;
+                    return (
+                      <Pressable
+                        key={pkg.id}
+                        onPress={() => setSelectedId(pkg.id)}
+                        accessibilityRole="radio"
+                        accessibilityState={{ selected: isSelected }}
+                        className={`flex-row items-center justify-between rounded-xl border bg-white dark:bg-ink-800 px-4 py-3 ${
+                          isSelected ? "border-primary-500" : "border-primary-100 dark:border-ink-700"
+                        }`}
+                      >
+                        <Text className="text-base text-ink-900 dark:text-ink-50">{priceLabel(pkg)}</Text>
+                        <Ionicons
+                          name={isSelected ? "radio-button-on" : "radio-button-off"}
+                          size={20}
+                          color={isSelected ? "#127A87" : "#A99C95"}
+                        />
+                      </Pressable>
+                    );
+                  })}
+                </View>
+                <Button
+                  label={purchase.isPending ? t("common.loading") : t("plus.subscribe")}
+                  disabled={busy || !selected}
+                  onPress={buy}
+                />
+                <Pressable onPress={restoreAll} disabled={busy}>
+                  <Text className="text-center text-sm font-medium text-primary-500">
+                    {restore.isPending ? t("common.loading") : t("plus.restore")}
+                  </Text>
+                </Pressable>
+                <Text className="text-center text-xs text-ink-400 dark:text-ink-300">{t("plus.autoRenewNote")}</Text>
+              </>
+            ) : onWaitlist ? (
+              <View className="gap-2 rounded-[22px] border border-teal-500 bg-white dark:bg-ink-800 p-4" style={CARD_SHADOW}>
+                <Text className="font-display text-lg text-ink-900 dark:text-ink-50">{t("plus.joined")}</Text>
+                <Text className="text-sm text-ink-700 dark:text-ink-200">{t("plus.joinedBody")}</Text>
+                <Pressable onPress={() => toggleWaitlist(false)} disabled={setWaitlist.isPending}>
+                  <Text className="text-sm font-medium text-primary-500">{t("plus.leaveWaitlist")}</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <>
+                <Text className="text-center text-sm text-ink-700 dark:text-ink-200">{t("plus.waitlistBody")}</Text>
+                <Button
+                  label={setWaitlist.isPending ? t("common.loading") : t("plus.joinWaitlist")}
+                  disabled={setWaitlist.isPending || onWaitlist === undefined}
+                  onPress={() => toggleWaitlist(true)}
+                />
+              </>
+            )}
+          </FadeIn>
         )}
       </ScrollView>
     </SafeAreaView>

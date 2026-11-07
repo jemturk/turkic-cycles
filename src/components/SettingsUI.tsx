@@ -10,6 +10,8 @@ import { FormScrollView } from "@/components/FormScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
 import { CARD_SHADOW } from "@/theme/surfaces";
+import { SubPageSkeleton } from "@/components/Skeleton";
+import { FadeIn } from "@/components/FadeIn";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -26,12 +28,18 @@ export function SubPage({
   subtitle,
   form = false,
   parent = "/(app)/settings",
+  loading,
+  skeleton,
   children,
 }: {
   title: string;
   subtitle?: string;
   form?: boolean;
   parent?: Href | null;
+  /** While true, placeholder shapes (`skeleton`, else a card and a group) stand in for
+   * the content, which then eases in. Leave unset for a page with nothing to load. */
+  loading?: boolean;
+  skeleton?: ReactNode;
   children: ReactNode;
 }) {
   const { t } = useTranslation();
@@ -57,7 +65,13 @@ export function SubPage({
             <Text className={`font-display text-ink-900 dark:text-ink-50 ${wide ? "text-4xl" : "text-3xl"}`}>{title}</Text>
             {subtitle ? <Text className="text-base text-ink-700 dark:text-ink-200">{subtitle}</Text> : null}
           </View>
-          {children}
+          {loading ? (
+            (skeleton ?? <SubPageSkeleton />)
+          ) : loading === false ? (
+            <FadeIn style={{ gap: wide ? 20 : 16 }}>{children}</FadeIn>
+          ) : (
+            children
+          )}
         </View>
       </Scroll>
     </SafeAreaView>

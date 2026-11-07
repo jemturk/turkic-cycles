@@ -5,16 +5,25 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/hooks/useSession";
 import { useBlockedUsers, useUnblockUser } from "@/hooks/useSettings";
 import { SubPage, Card, Group, Item } from "@/components/SettingsUI";
+import { GroupSkeleton, SkeletonPulse } from "@/components/Skeleton";
 
 export default function BlockedUsers() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
-  const { data: blocked } = useBlockedUsers(userId);
+  const { data: blocked, isLoading } = useBlockedUsers(userId);
   const unblockUser = useUnblockUser(userId);
 
   return (
-    <SubPage title={t("settings.blockedUsersScreen.heading")}>
+    <SubPage
+      title={t("settings.blockedUsersScreen.heading")}
+      loading={!userId || isLoading}
+      skeleton={
+        <SkeletonPulse>
+          <GroupSkeleton rows={2} title={false} />
+        </SkeletonPulse>
+      }
+    >
       {!blocked || blocked.length === 0 ? (
         <Card>
           <Text className="text-base text-ink-700 dark:text-ink-200">{t("settings.blockedUsersScreen.empty")}</Text>

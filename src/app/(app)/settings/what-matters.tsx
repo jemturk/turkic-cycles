@@ -101,7 +101,12 @@ export default function WhatMatters() {
   const { data: connectionTypes, isLoading: typesLoading } = useMyConnectionTypes(userId);
 
   return (
-    <SubPage title={t("whatMatters.title")} subtitle={t("whatMatters.subtitle")} form>
+    <SubPage
+      title={t("whatMatters.title")}
+      subtitle={t("whatMatters.subtitle")}
+      form
+      loading={!userId || isLoading || typesLoading}
+    >
       {/* Wait for the session too: its disabled queries don't count as loading. */}
       {!userId || isLoading || typesLoading ? null : (
         <WhatMattersForm

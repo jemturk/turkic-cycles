@@ -27,11 +27,12 @@ import {
 } from "@/constants/circles";
 import { SingleSelectChips } from "@/components/SingleSelectChips";
 import { Avatar } from "@/components/Avatar";
-import { CircleHeader } from "@/components/CircleHeader";
+import { CircleHeader, CirclePageSkeleton } from "@/components/CircleHeader";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { goUp } from "@/lib/goUp";
 import { CARD_SHADOW } from "@/theme/surfaces";
 import { confirmAlert, showAlert } from "@/lib/alert";
+import { CardSkeleton, SkeletonPulse } from "@/components/Skeleton";
 
 export default function CircleEventDetail() {
   const { t } = useTranslation();
@@ -44,9 +45,9 @@ export default function CircleEventDetail() {
     goUp(`/(app)/circles/${circleId}`);
   }
 
-  const { data: circle } = useCircle(circleId);
+  const { data: circle, isLoading: circleLoading } = useCircle(circleId);
   const { data: memberships } = useMyCircleMemberships(userId);
-  const { data: event } = useCircleEvent(eventId);
+  const { data: event, isLoading: eventLoading } = useCircleEvent(eventId);
   const { data: rsvp } = useMyRsvp(event?.id, userId);
   const { data: attendees } = useEventAttendees(event?.id);
   const joinCircle = useJoinCircle(userId);
@@ -55,7 +56,7 @@ export default function CircleEventDetail() {
   const deleteEvent = useDeleteCircleEvent(circleId);
   const wide = useWideLayout();
 
-  if (!circle) return null;
+  if (!circle) return circleLoading ? <CirclePageSkeleton onBack={goBack} wide={wide} /> : null;
 
   // The circle's owner and moderators (the database checks too, migration 0069). Asks
   // first, saying how many people replied, then goes up to the circle.
@@ -108,8 +109,14 @@ export default function CircleEventDetail() {
     { key: "going", label: t("circles.attendeesGoing"), people: attendees?.going ?? [] },
     { key: "interested", label: t("circles.attendeesInterested"), people: attendees?.interested ?? [] },
   ].filter((group) => group.people.length > 0);
+  // Loading (the event, then who's coming): a placeholder card.
+  const placeholderCard = (lines: number) => (
+    <SkeletonPulse>
+      <CardSkeleton lines={lines} />
+    </SkeletonPulse>
+  );
   const attendeeCards =
-    !event || !attendees ? null : groups.length === 0 ? (
+    eventLoading || (event && !attendees) ? placeholderCard(2) : !event || !attendees ? null : groups.length === 0 ? (
       <View className="flex-row items-center gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
         <Ionicons name="people-outline" size={20} color="#A99C95" />
         <Text className="flex-1 text-sm text-ink-700 dark:text-ink-200">{t("circles.noRsvpsYet")}</Text>
@@ -204,6 +211,8 @@ export default function CircleEventDetail() {
                 ) : null}
                 <View className="border-t border-[#F3E3D2] pt-4 dark:border-ink-700">{rsvpChips}</View>
               </View>
+            ) : eventLoading ? (
+              placeholderCard(4)
             ) : null}
           </View>
 
@@ -297,6 +306,8 @@ export default function CircleEventDetail() {
             ) : null}
             <View className="border-t border-[#F3E3D2] pt-4 dark:border-ink-700">{rsvpChips}</View>
           </View>
+        ) : eventLoading ? (
+          placeholderCard(4)
         ) : null}
 
         {attendeeCards}

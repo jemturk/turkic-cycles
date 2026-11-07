@@ -26,6 +26,7 @@ import { SubPage, Card } from "@/components/SettingsUI";
 import { TAG_TONES } from "@/constants/tagTones";
 import { showAlert } from "@/lib/alert";
 import { goUp } from "@/lib/goUp";
+import { FormSkeleton } from "@/components/Skeleton";
 
 type FormProps = {
   preferences: Tables<"matching_preferences"> | null | undefined;
@@ -147,6 +148,8 @@ export function MatchingPreferencesScreen({ parent }: { parent: Href }) {
       subtitle={t("settings.matchingPreferencesScreen.filtersNote")}
       parent={parent}
       form
+      loading={!userId || isLoading || profileLoading}
+      skeleton={<FormSkeleton cards={[3]} />}
     >
       {/* Until the session loads the queries are disabled, which v5 doesn't count as
           loading; the form would start (and save) from the defaults. */}

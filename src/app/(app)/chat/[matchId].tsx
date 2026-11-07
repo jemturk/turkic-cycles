@@ -40,6 +40,7 @@ import { haptic } from "@/lib/haptics";
 import type { Tables } from "@/types/database";
 import { usePlaceholderColor } from "@/hooks/usePlaceholderColor";
 import { FLOATING_SHADOW } from "@/theme/surfaces";
+import { MessagesSkeleton } from "@/components/Skeleton";
 
 // Message bubbles: pale turquoise for yours, pale coral for theirs (a step past the
 // palette's lightest shades, primary-100 / accent-50), both with dark text.
@@ -666,6 +667,16 @@ export default function ChatThread() {
             {isOtherTyping ? <TypingDots /> : null}
           </Pressable>
         </ScrollView>
+        {/* Loading (the list stays hidden until it has content to land on): placeholder
+            bubbles over the top of it. */}
+        {online && !messages ? (
+          <View
+            pointerEvents="none"
+            className={`absolute inset-x-0 top-0 ${wide ? "px-6 pt-5" : "px-4 pt-4"}`}
+          >
+            <MessagesSkeleton />
+          </View>
+        ) : null}
 
         <ConnectionFeedbackPrompt
           // A fresh prompt per conversation (desktop keeps this screen while switching).

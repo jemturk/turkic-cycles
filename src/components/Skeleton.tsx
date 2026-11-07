@@ -119,7 +119,7 @@ export function GridSkeleton({
 }
 
 // One Settings-style group: an optional small title, then a card of icon-tile rows.
-function GroupSkeleton({ rows, title = true }: { rows: number; title?: boolean }) {
+export function GroupSkeleton({ rows, title = true }: { rows: number; title?: boolean }) {
   return (
     <View className="gap-1.5">
       {title ? <Bone className="ml-1 mt-1 h-3 w-24 rounded-full" /> : null}
@@ -218,6 +218,50 @@ export function ProfileSkeleton() {
           <Bone className="h-8 w-16 rounded-full" />
         </View>
       </View>
+    </SkeletonPulse>
+  );
+}
+
+// A white card of a few text lines.
+export function CardSkeleton({ lines = 3 }: { lines?: number }) {
+  return (
+    <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
+      {Array.from({ length: lines }, (_, index) => (
+        <Bone key={index} className="h-3.5 rounded-full" style={{ width: index === lines - 1 ? "60%" : "100%" }} />
+      ))}
+    </View>
+  );
+}
+
+// A Settings sub-page's content (SubPage's loading): a card, then a group of rows.
+export function SubPageSkeleton() {
+  return (
+    <SkeletonPulse style={{ gap: 16 }}>
+      <CardSkeleton />
+      <GroupSkeleton rows={3} title={false} />
+    </SkeletonPulse>
+  );
+}
+
+// A conversation's messages: bubbles down alternate sides.
+const BUBBLES: { own: boolean; width: string }[] = [
+  { own: false, width: "55%" },
+  { own: false, width: "38%" },
+  { own: true, width: "48%" },
+  { own: false, width: "62%" },
+  { own: true, width: "34%" },
+  { own: true, width: "52%" },
+];
+export function MessagesSkeleton() {
+  return (
+    <SkeletonPulse style={{ gap: 12 }}>
+      {BUBBLES.map((bubble, index) => (
+        <Bone
+          key={index}
+          className={`h-10 rounded-2xl ${bubble.own ? "self-end" : "self-start"}`}
+          style={{ width: bubble.width as `${number}%` }}
+        />
+      ))}
     </SkeletonPulse>
   );
 }
