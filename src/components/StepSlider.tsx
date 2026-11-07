@@ -121,7 +121,13 @@ function Fill({
     const step = width.value / Math.max(stops - 1, 1);
     return { left: low * step, width: (high - low) * step };
   });
-  return <Animated.View className={`absolute h-1.5 rounded-full ${className}`} style={style} />;
+  // Layout inline on the Animated.View, colour on a plain View inside: NativeWind
+  // classes on Reanimated views are dropped on web (as in DiscoverDeck).
+  return (
+    <Animated.View style={[{ position: "absolute", height: 6, borderRadius: 3, overflow: "hidden" }, style]}>
+      <View className={`flex-1 ${className}`} />
+    </Animated.View>
+  );
 }
 
 function Thumb({
@@ -221,11 +227,14 @@ function Thumb({
           const next = e.nativeEvent.actionName === "increment" ? index + 1 : index - 1;
           if (next >= minIndex && next <= maxIndex) settle(next);
         }}
-        className={`absolute left-0 rounded-full border-2 bg-white dark:bg-ink-900 ${className}`}
+        // Layout inline, colours on the plain View inside (see Fill).
         style={[
           {
+            position: "absolute",
+            left: 0,
             width: THUMB,
             height: THUMB,
+            borderRadius: THUMB / 2,
             elevation: 2,
             shadowColor: "#000",
             shadowOpacity: 0.15,
@@ -234,7 +243,9 @@ function Thumb({
           },
           style,
         ]}
-      />
+      >
+        <View className={`flex-1 rounded-full border-2 bg-white dark:bg-ink-900 ${className}`} />
+      </Animated.View>
     </GestureDetector>
   );
 }
