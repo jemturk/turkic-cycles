@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
@@ -22,6 +22,7 @@ import { useRemoveConnection } from "@/hooks/useChat";
 import { confirmAlert, showAlert } from "@/lib/alert";
 import { haptic } from "@/lib/haptics";
 import { BrokenLinkIcon } from "@/components/BrokenLinkIcon";
+import { ProfileSkeleton } from "@/components/Skeleton";
 
 export default function OtherProfile() {
   const { t } = useTranslation();
@@ -257,9 +258,7 @@ export default function OtherProfile() {
             jumped down as the profile filled in above them. */}
         {loading || !profile ? (
           loading ? (
-            <View className="items-center py-16">
-              <ActivityIndicator color="#127A87" />
-            </View>
+            <ProfileSkeleton />
           ) : null
         ) : (
           <>

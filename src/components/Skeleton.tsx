@@ -117,3 +117,107 @@ export function GridSkeleton({
     </SkeletonPulse>
   );
 }
+
+// One Settings-style group: an optional small title, then a card of icon-tile rows.
+function GroupSkeleton({ rows, title = true }: { rows: number; title?: boolean }) {
+  return (
+    <View className="gap-1.5">
+      {title ? <Bone className="ml-1 mt-1 h-3 w-24 rounded-full" /> : null}
+      <View className="rounded-[22px]" style={CARD_SHADOW}>
+        <View className="overflow-hidden rounded-[22px] bg-white dark:bg-ink-800">
+          {Array.from({ length: rows }, (_, index) => (
+            <View
+              key={index}
+              className={`flex-row items-center gap-3 px-4 py-3 ${index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : ""}`}
+            >
+              <Bone className="h-9 w-9 rounded-lg" />
+              <Bone className="h-4 rounded-full" style={{ width: `${45 + ((index * 17) % 30)}%` }} />
+            </View>
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+}
+
+// Settings: your profile row, then groups of rows. columns: desktop's two columns.
+export function SettingsSkeleton({ columns = 1 }: { columns?: 1 | 2 }) {
+  const profile = (
+    <View className="rounded-[22px]" style={CARD_SHADOW}>
+      <View className="flex-row items-center gap-3 rounded-[22px] bg-white px-4 py-3 dark:bg-ink-800">
+        <Bone className="h-11 w-11 rounded-full" />
+        <View className="flex-1 gap-2">
+          <Bone className="h-4 w-1/3 rounded-full" />
+          <Bone className="h-3 w-1/2 rounded-full" />
+        </View>
+      </View>
+    </View>
+  );
+  if (columns === 2) {
+    return (
+      <SkeletonPulse style={{ flexDirection: "row", alignItems: "flex-start", gap: 24 }}>
+        <View className="flex-1 gap-4">
+          {profile}
+          <GroupSkeleton rows={3} />
+          <GroupSkeleton rows={2} />
+        </View>
+        <View className="flex-1 gap-4">
+          <GroupSkeleton rows={3} />
+          <GroupSkeleton rows={4} />
+        </View>
+      </SkeletonPulse>
+    );
+  }
+  return (
+    <SkeletonPulse style={{ gap: 12 }}>
+      {profile}
+      <GroupSkeleton rows={3} />
+      <GroupSkeleton rows={2} />
+      <GroupSkeleton rows={4} />
+    </SkeletonPulse>
+  );
+}
+
+// A form in white cards (Edit profile): each a label over a field, a few to a card.
+export function FormSkeleton({ cards = [3, 1, 2, 2] }: { cards?: number[] }) {
+  return (
+    <SkeletonPulse style={{ gap: 16 }}>
+      {cards.map((fields, card) => (
+        <View key={card} className="gap-4 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
+          {Array.from({ length: fields }, (_, index) => (
+            <View key={index} className="gap-2">
+              <Bone className="h-3.5 w-28 rounded-full" />
+              <Bone className="h-12 w-full rounded-xl" />
+            </View>
+          ))}
+        </View>
+      ))}
+    </SkeletonPulse>
+  );
+}
+
+// A profile (yours or someone's): the picture, name and details, then cards of text.
+export function ProfileSkeleton() {
+  return (
+    <SkeletonPulse style={{ gap: 16 }}>
+      <View className="items-center gap-2">
+        <Bone className="h-[88px] w-[88px] rounded-full" />
+        <Bone className="mt-2 h-6 w-40 rounded-full" />
+        <Bone className="h-3.5 w-28 rounded-full" />
+      </View>
+      <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
+        <Bone className="h-3.5 w-full rounded-full" />
+        <Bone className="h-3.5 w-11/12 rounded-full" />
+        <Bone className="h-3.5 w-2/3 rounded-full" />
+      </View>
+      <View className="gap-3 rounded-[22px] bg-white p-5 dark:bg-ink-800" style={CARD_SHADOW}>
+        <Bone className="h-3.5 w-28 rounded-full" />
+        <View className="flex-row flex-wrap gap-2">
+          <Bone className="h-8 w-20 rounded-full" />
+          <Bone className="h-8 w-24 rounded-full" />
+          <Bone className="h-8 w-16 rounded-full" />
+        </View>
+      </View>
+    </SkeletonPulse>
+  );
+}

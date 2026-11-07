@@ -1,5 +1,5 @@
 import { useMemo, useRef } from "react";
-import { ActivityIndicator, Pressable, View, type LayoutChangeEvent } from "react-native";
+import { Pressable, View, type LayoutChangeEvent } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -38,6 +38,7 @@ import { OwnPhotos } from "@/components/OwnPhotos";
 import { TAG_TONES } from "@/constants/tagTones";
 import { goUp } from "@/lib/goUp";
 import { CARD_SHADOW } from "@/theme/surfaces";
+import { FormSkeleton } from "@/components/Skeleton";
 
 const resolver: Resolver<ProfileEditValues> = (values, context, options) =>
   zodResolver(buildProfileEditSchema(values.connectionTypes ?? []))(values, context, options);
@@ -168,10 +169,26 @@ export default function ProfileEdit() {
   const cardClass = (base: string, section: Section) =>
     `${base} border-2 ${missing.has(section) ? "border-accent-500 dark:border-accent-400" : "border-transparent"}`;
 
+  // Loading: the heading, and placeholder cards where the form will be.
   if (isLoading || !values) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-primary-50 dark:bg-ink-950">
-        <ActivityIndicator color="#127A87" />
+      <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
+        <View className={wide ? "flex-1 gap-6 px-20 pt-9" : "flex-1 gap-4 px-4 pt-4"}>
+          <View className={wide ? "flex-row items-center gap-4" : "gap-2"}>
+            <Pressable
+              accessibilityLabel={t("common.back")}
+              hitSlop={8}
+              onPress={() => goUp("/(app)/me")}
+              className={`h-10 w-10 items-center justify-center rounded-full ${wide ? "" : "-ml-2"}`}
+            >
+              <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
+            </Pressable>
+            <Text className={`font-display text-ink-900 dark:text-ink-50 ${wide ? "text-4xl" : "text-3xl"}`}>
+              {t("fields.editProfileHeading")}
+            </Text>
+          </View>
+          <FormSkeleton />
+        </View>
       </SafeAreaView>
     );
   }

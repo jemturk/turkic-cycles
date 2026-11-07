@@ -13,11 +13,13 @@ import { alertCoverRequired, useHasCover } from "@/hooks/useCoverGuard";
 import { Button } from "@/components/Button";
 import { ProfileView } from "@/components/ProfileView";
 import { useWideLayout } from "@/hooks/useWideLayout";
+import { ProfileSkeleton } from "@/components/Skeleton";
+import { FadeIn } from "@/components/FadeIn";
 
 export default function OwnProfile() {
   const { t } = useTranslation();
   const { session } = useSession();
-  const { data: profile } = useMyProfile(session?.user.id);
+  const { data: profile, isLoading: profileLoading } = useMyProfile(session?.user.id);
   const { data: connectionTypes } = useMyConnectionTypes(session?.user.id);
   const { data: sensitive } = useMyProfileSensitive(session?.user.id);
   const { data: verification } = useMyVerificationStatus(session?.user.id);
@@ -58,18 +60,24 @@ export default function OwnProfile() {
           <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" />
         </Pressable>
 
-        <ProfileView
-          profile={profile}
-          connectionTypes={connectionTypes}
-          originCountries={sensitive?.origin_countries}
-          fallbackName={session?.user.email}
-          verificationStatus={verification?.status}
-          ownUserId={session?.user.id}
-          // Desktop web: under your profile card instead of below everything.
-          sideActions={wide ? editButton : undefined}
-        />
+        {!session || profileLoading ? (
+          <ProfileSkeleton />
+        ) : (
+          <FadeIn style={{ gap: 16 }}>
+            <ProfileView
+              profile={profile}
+              connectionTypes={connectionTypes}
+              originCountries={sensitive?.origin_countries}
+              fallbackName={session?.user.email}
+              verificationStatus={verification?.status}
+              ownUserId={session?.user.id}
+              // Desktop web: under your profile card instead of below everything.
+              sideActions={wide ? editButton : undefined}
+            />
 
-        {wide ? null : <View className="mt-4">{editButton}</View>}
+            {wide ? null : <View className="mt-4">{editButton}</View>}
+          </FadeIn>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

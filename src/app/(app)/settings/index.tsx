@@ -36,6 +36,8 @@ import { useWideLayout } from "@/hooks/useWideLayout";
 import { showAlert } from "@/lib/alert";
 import { CARD_SHADOW } from "@/theme/surfaces";
 import { forgetSignedIn } from "@/lib/returningUser";
+import { SettingsSkeleton } from "@/components/Skeleton";
+import { FadeIn } from "@/components/FadeIn";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -173,7 +175,9 @@ export default function Settings() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
-  const { data: profile } = useMyProfile(userId);
+  const { data: profile, isLoading: profileLoading } = useMyProfile(userId);
+  // Until your profile is in: placeholder rows, not a "?" and "Add your name".
+  const loading = !userId || profileLoading;
   const { data: verification } = useMyVerificationStatus(userId);
   const subscribed = useHasPlus(userId);
   const { data: onPlusWaitlist } = usePlusWaitlist(userId);
@@ -583,39 +587,49 @@ export default function Settings() {
         showsVerticalScrollIndicator={false}
       >
         <Text className="font-display text-4xl text-ink-900 dark:text-ink-50">{t("tabs.settings")}</Text>
-        <View className="flex-row items-start gap-6">
-          <View className="flex-1 gap-4">
-            {testSection}
-            {profileSection}
-            {appearanceSection}
-            {accountSection}
-            {discoverSection}
-            {safetySection}
-          </View>
-          <View className="flex-1 gap-4">
-            {privacySection}
-            {notificationsSection}
-            {communitySection}
-            {dangerSection}
-          </View>
-        </View>
+        {loading ? (
+          <SettingsSkeleton columns={2} />
+        ) : (
+          <FadeIn style={{ flexDirection: "row", alignItems: "flex-start", gap: 24 }}>
+            <View className="flex-1 gap-4">
+              {testSection}
+              {profileSection}
+              {appearanceSection}
+              {accountSection}
+              {discoverSection}
+              {safetySection}
+            </View>
+            <View className="flex-1 gap-4">
+              {privacySection}
+              {notificationsSection}
+              {communitySection}
+              {dangerSection}
+            </View>
+          </FadeIn>
+        )}
       </ScrollView>
     );
   }
 
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950" edges={["left", "right"]}>
-      <ScrollView className="flex-1 px-6 pt-4" contentContainerClassName="gap-3 pb-10">
-        {testSection}
-        {profileSection}
-        {appearanceSection}
-        {accountSection}
-        {discoverSection}
-        {safetySection}
-        {privacySection}
-        {notificationsSection}
-        {communitySection}
-        {dangerSection}
+      <ScrollView className="flex-1 px-6 pt-4" contentContainerClassName="pb-10">
+        {loading ? (
+          <SettingsSkeleton />
+        ) : (
+          <FadeIn style={{ gap: 12 }}>
+            {testSection}
+            {profileSection}
+            {appearanceSection}
+            {accountSection}
+            {discoverSection}
+            {safetySection}
+            {privacySection}
+            {notificationsSection}
+            {communitySection}
+            {dangerSection}
+          </FadeIn>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
