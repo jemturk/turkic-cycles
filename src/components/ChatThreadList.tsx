@@ -10,6 +10,8 @@ import { useTypingMatches } from "@/hooks/useTypingMatches";
 import { Avatar } from "@/components/Avatar";
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { EmptyState } from "@/components/EmptyState";
+import { RowsSkeleton } from "@/components/Skeleton";
+import { FadeIn } from "@/components/FadeIn";
 import { useIsOnline } from "@/hooks/useIsOnline";
 import type { MessageThread } from "@/api/chat";
 import { CARD_SHADOW } from "@/theme/surfaces";
@@ -92,7 +94,7 @@ export function ChatThreadList({
 
   // Nothing to list: no chats yet, or (with nothing saved on the device) offline or
   // failed to load -- told apart, so a lost connection never reads as "no chats".
-  // Still loading: nothing yet.
+  // Still loading: placeholder rows.
   function renderEmpty() {
     const label = !online
       ? t("chat.offlineEmpty")
@@ -101,7 +103,7 @@ export function ChatThreadList({
         : threads
           ? t("chat.empty")
           : null;
-    if (!label) return null;
+    if (!label) return compact ? <RowsSkeleton rows={6} avatar={48} bare /> : <RowsSkeleton />;
     if (compact) return <Text className="px-2 text-base text-ink-700 dark:text-ink-200">{label}</Text>;
     return (
       <EmptyState icon={!online || !threads ? "cloud-offline-outline" : "chatbubbles-outline"} label={label} className="py-24" />
@@ -119,56 +121,58 @@ export function ChatThreadList({
       {!threads || threads.length === 0 ? (
         renderEmpty()
       ) : compact ? (
-        threads.map(renderCompactRow)
+        <FadeIn style={{ gap: 4 }}>{threads.map(renderCompactRow)}</FadeIn>
       ) : (
         // Phone: one grouped list with hairlines between conversations, like the
         // grouped Settings sections -- not a bordered card per conversation. The
         // shadow sits on an outer layer, since the card clips its rows to the corners.
-        <View className="rounded-[22px]" style={CARD_SHADOW}>
-          <View className="overflow-hidden rounded-[22px] bg-white dark:bg-ink-800">
-            {threads.map((thread, index) => (
-              <Pressable
-                key={thread.matchId}
-                onPress={() => onOpen(thread.matchId)}
-                className={`flex-row items-center gap-3 px-4 py-3 ${
-                  index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : ""
-                }`}
-              >
-                <Avatar uri={thread.otherAvatarUrl} name={thread.otherDisplayName} size={52} />
-                <View className="flex-1 gap-0.5">
-                  <Text
-                    className={`text-base text-ink-900 dark:text-ink-50 ${thread.unreadCount > 0 ? "font-bold" : "font-semibold"}`}
-                    numberOfLines={1}
-                  >
-                    {thread.otherDisplayName}
-                  </Text>
-                  {typing.has(thread.matchId) ? (
-                    typingLine()
-                  ) : (
+        <FadeIn>
+          <View className="rounded-[22px]" style={CARD_SHADOW}>
+            <View className="overflow-hidden rounded-[22px] bg-white dark:bg-ink-800">
+              {threads.map((thread, index) => (
+                <Pressable
+                  key={thread.matchId}
+                  onPress={() => onOpen(thread.matchId)}
+                  className={`flex-row items-center gap-3 px-4 py-3 ${
+                    index > 0 ? "border-t border-[#F3E3D2] dark:border-ink-700" : ""
+                  }`}
+                >
+                  <Avatar uri={thread.otherAvatarUrl} name={thread.otherDisplayName} size={52} />
+                  <View className="flex-1 gap-0.5">
                     <Text
-                      className={`text-sm ${
-                        thread.unreadCount > 0
-                          ? "font-medium text-ink-900 dark:text-ink-50"
-                          : "text-ink-700 dark:text-ink-200"
-                      }`}
+                      className={`text-base text-ink-900 dark:text-ink-50 ${thread.unreadCount > 0 ? "font-bold" : "font-semibold"}`}
                       numberOfLines={1}
                     >
-                      {thread.lastMessageBody}
+                      {thread.otherDisplayName}
                     </Text>
-                  )}
-                </View>
-                <View className="items-end gap-1.5">
-                  <Text
-                    className={`text-xs ${thread.unreadCount > 0 ? "font-semibold text-accent-600" : "text-ink-400 dark:text-ink-300"}`}
-                  >
-                    {formatDistanceToNowStrict(new Date(thread.lastMessageAt), { addSuffix: false })}
-                  </Text>
-                  {thread.unreadCount > 0 ? <UnreadCount count={thread.unreadCount} /> : <View className="h-5" />}
-                </View>
-              </Pressable>
-            ))}
-        </View>
-        </View>
+                    {typing.has(thread.matchId) ? (
+                      typingLine()
+                    ) : (
+                      <Text
+                        className={`text-sm ${
+                          thread.unreadCount > 0
+                            ? "font-medium text-ink-900 dark:text-ink-50"
+                            : "text-ink-700 dark:text-ink-200"
+                        }`}
+                        numberOfLines={1}
+                      >
+                        {thread.lastMessageBody}
+                      </Text>
+                    )}
+                  </View>
+                  <View className="items-end gap-1.5">
+                    <Text
+                      className={`text-xs ${thread.unreadCount > 0 ? "font-semibold text-accent-600" : "text-ink-400 dark:text-ink-300"}`}
+                    >
+                      {formatDistanceToNowStrict(new Date(thread.lastMessageAt), { addSuffix: false })}
+                    </Text>
+                    {thread.unreadCount > 0 ? <UnreadCount count={thread.unreadCount} /> : <View className="h-5" />}
+                  </View>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        </FadeIn>
       )}
     </RefreshableScrollView>
   );

@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { Image } from "expo-image";
 import { Text } from "@/components/Text";
 import { useTranslation } from "react-i18next";
+import { PHOTO_FADE_MS, PHOTO_PLACEHOLDER } from "@/theme/surfaces";
 
 type AvatarProps = {
   uri?: string | null;
@@ -35,7 +36,9 @@ export function Avatar({ uri, name, size, fallbackClassName }: AvatarProps) {
     return (
       <Image
         source={{ uri }}
-        style={{ width: size, height: size, borderRadius: size / 2 }}
+        // A faint tint while the photo loads, then a quick fade in rather than a pop.
+        style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: PHOTO_PLACEHOLDER }}
+        transition={PHOTO_FADE_MS}
         accessibilityLabel={name ? t("avatar.namedPhoto", { name }) : t("avatar.profilePhoto")}
       />
     );

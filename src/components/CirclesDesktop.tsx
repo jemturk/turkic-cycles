@@ -18,6 +18,7 @@ import { useSearchOverlay } from "@/stores/searchOverlay";
 import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/constants/circles";
 import { UpcomingEventsRail } from "@/components/UpcomingEventsRail";
 import { ToggleChip } from "@/components/ToggleChip";
+import { GridSkeleton } from "@/components/Skeleton";
 import { CARD_SHADOW } from "@/theme/surfaces";
 
 type Circle = NonNullable<ReturnType<typeof useCircles>["data"]>[number];
@@ -65,7 +66,7 @@ export function CirclesDesktop() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
-  const { data: circles } = useCircles();
+  const { data: circles, isLoading } = useCircles();
   const { data: memberships } = useMyCircleMemberships(userId);
   const { data: eventCounts } = useUpcomingEventCounts();
   const joinCircle = useJoinCircle(userId);
@@ -207,7 +208,11 @@ export function CirclesDesktop() {
           onLayout={(e) => setGridWidth(e.nativeEvent.layout.width)}
           style={{ flexDirection: "row", flexWrap: "wrap", gap: GAP }}
         >
-          {cardWidth > 0 ? shownCircles.map(renderCircle) : null}
+          {isLoading ? (
+            <GridSkeleton count={columns * 2} width={cardWidth} height={150} gap={GAP} />
+          ) : cardWidth > 0 ? (
+            shownCircles.map(renderCircle)
+          ) : null}
         </View>
       </ScrollView>
 

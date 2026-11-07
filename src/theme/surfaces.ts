@@ -8,3 +8,8 @@ export const CARD_SHADOW = { boxShadow: "0px 4px 16px rgba(43, 35, 32, 0.09)" } 
 // A bar floating over content that scrolls beneath it (the chat message box, the
 // Connections tab strip): a little stronger than a card, so it reads as above the list.
 export const FLOATING_SHADOW = { boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.16)" } as const;
+
+// Photos fade in over this faint tint (fine on cream and on the dark page) instead of
+// popping in once they've downloaded.
+export const PHOTO_PLACEHOLDER = "rgba(127, 110, 100, 0.14)";
+export const PHOTO_FADE_MS = 200;

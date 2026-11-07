@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import type { ProfilePhoto } from "@/api/gallery";
 import { PhotoViewer } from "@/components/PhotoViewer";
+import { PHOTO_FADE_MS, PHOTO_PLACEHOLDER } from "@/theme/surfaces";
 
 const THUMB_SIZE = 88;
 // Desktop web: a grid of large tiles instead of the phone's thumbnail strip.
@@ -41,7 +42,11 @@ export function PhotoGallery({ photos, grid = false }: { photos: ProfilePhoto[] 
                   accessibilityRole="imagebutton"
                   className="web:hover:opacity-90"
                 >
-                  <Image source={{ uri: photo.url }} style={{ width: tile, height: tile, borderRadius: 14 }} />
+                  <Image
+                    source={{ uri: photo.url }}
+                    style={{ width: tile, height: tile, borderRadius: 14, backgroundColor: PHOTO_PLACEHOLDER }}
+                    transition={PHOTO_FADE_MS}
+                  />
                 </Pressable>
               ))
             : null}
@@ -50,7 +55,11 @@ export function PhotoGallery({ photos, grid = false }: { photos: ProfilePhoto[] 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
           {photos.map((photo, index) => (
             <Pressable key={photo.id} onPress={() => setOpenIndex(index)} accessibilityRole="imagebutton">
-              <Image source={{ uri: photo.url }} style={{ width: THUMB_SIZE, height: THUMB_SIZE, borderRadius: 12 }} />
+              <Image
+                source={{ uri: photo.url }}
+                style={{ width: THUMB_SIZE, height: THUMB_SIZE, borderRadius: 12, backgroundColor: PHOTO_PLACEHOLDER }}
+                transition={PHOTO_FADE_MS}
+              />
             </Pressable>
           ))}
         </ScrollView>

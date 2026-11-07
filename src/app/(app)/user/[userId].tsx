@@ -14,12 +14,13 @@ import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
 import { useProfilePhotos } from "@/hooks/useGallery";
 import { useBlockUser } from "@/hooks/useSettings";
 import { ProfileView } from "@/components/ProfileView";
-import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
+import { MatchCelebrationModal, type MatchedPerson } from "@/components/MatchCelebrationModal";
 import { Button } from "@/components/Button";
 import { SwipeButton } from "@/components/SwipeButton";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { useRemoveConnection } from "@/hooks/useChat";
 import { confirmAlert, showAlert } from "@/lib/alert";
+import { haptic } from "@/lib/haptics";
 import { BrokenLinkIcon } from "@/components/BrokenLinkIcon";
 
 export default function OtherProfile() {
@@ -47,19 +48,20 @@ export default function OtherProfile() {
   const recordSwipe = useRecordSwipe(circleId ?? null, session?.user.id);
   const blockUser = useBlockUser(session?.user.id);
   const removeConnection = useRemoveConnection(session?.user.id);
-  const [matchedName, setMatchedName] = useState<string | null>(null);
+  const [matched, setMatched] = useState<MatchedPerson | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
 
   const showSwipeActions = fromDiscover === "true";
   const wide = useWideLayout();
 
   function onSwipe(action: "like" | "pass") {
+    haptic(action === "like" ? "medium" : "light");
     recordSwipe.mutate(
       { targetId: userId, action },
       {
         onSuccess: (isMatch) => {
           if (isMatch) {
-            setMatchedName(profile?.display_name ?? t("discover.them"));
+            setMatched({ name: profile?.display_name ?? t("discover.them"), avatarUrl: profile?.avatar_url });
           } else {
             router.back();
           }
@@ -289,9 +291,9 @@ export default function OtherProfile() {
       </ScrollView>
 
       <MatchCelebrationModal
-        matchedName={matchedName}
+        matched={matched}
         onDismiss={() => {
-          setMatchedName(null);
+          setMatched(null);
           router.back();
         }}
       />

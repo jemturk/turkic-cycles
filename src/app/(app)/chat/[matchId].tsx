@@ -36,6 +36,7 @@ import { outgoingAsRow } from "@/lib/outbox";
 import { SAVED_MESSAGES_PER_THREAD } from "@/lib/queryClient";
 import { containsEmail, containsPhoneNumber } from "@/lib/contactInfo";
 import { dayLabel } from "@/lib/dayLabel";
+import { haptic } from "@/lib/haptics";
 import type { Tables } from "@/types/database";
 import { usePlaceholderColor } from "@/hooks/usePlaceholderColor";
 import { FLOATING_SHADOW } from "@/theme/surfaces";
@@ -221,6 +222,7 @@ export default function ChatThread() {
     if (!body) return;
     setDraft("");
     notifyStopped();
+    haptic("light");
     send(body, replyTo?.id ?? null);
     setReplyTo(null);
   }

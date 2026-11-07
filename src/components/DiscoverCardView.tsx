@@ -8,6 +8,7 @@ import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { MatchSummary } from "@/components/MatchSummary";
 import { calculateAge } from "@/lib/age";
 import type { DiscoverCandidate } from "@/api/discover";
+import { PHOTO_FADE_MS } from "@/theme/surfaces";
 
 export type DiscoverCardPerson = Pick<
   DiscoverCandidate,
@@ -52,6 +53,7 @@ export function DiscoverCardView({
         <Image
           source={{ uri: cover }}
           contentFit="cover"
+          transition={PHOTO_FADE_MS}
           style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
           accessibilityIgnoresInvertColors
         />

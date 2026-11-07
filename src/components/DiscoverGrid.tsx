@@ -9,11 +9,14 @@ import { DiscoverEmpty } from "@/components/DiscoverFilters";
 import { useSession } from "@/hooks/useSession";
 import { useDiscoverCandidates, useRecordSwipe } from "@/hooks/useDiscover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
-import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
+import { MatchCelebrationModal, type MatchedPerson } from "@/components/MatchCelebrationModal";
 import { DesktopPersonCard } from "@/components/DesktopPersonCard";
+import { GridSkeleton } from "@/components/Skeleton";
+import { FadeIn } from "@/components/FadeIn";
 import { CONNECTION_TYPES, type ConnectionType } from "@/constants/connectionTypes";
 import type { DiscoverCandidate } from "@/api/discover";
 import { showAlert } from "@/lib/alert";
+import { haptic } from "@/lib/haptics";
 
 const GAP = 20;
 // Cards are between these widths and there are never more than MAX_COLUMNS, so a
@@ -133,7 +136,7 @@ export function DiscoverGrid({
   const userId = session?.user.id;
   const { data: candidates, isLoading } = useDiscoverCandidates(circleId, userId);
   const recordSwipe = useRecordSwipe(circleId, userId);
-  const [matchedName, setMatchedName] = useState<string | null>(null);
+  const [matched, setMatched] = useState<MatchedPerson | null>(null);
   // Hidden right away rather than waiting for the refetch, which would leave the
   // card sitting there looking unanswered; shown again if the swipe fails.
   const [answered, setAnswered] = useState<Set<string>>(new Set());
@@ -151,12 +154,13 @@ export function DiscoverGrid({
     containerWidth > 0 ? Math.min(MAX_CARD_WIDTH, Math.floor((containerWidth - GAP * (columns - 1)) / columns)) : 0;
 
   function onSwipe(person: DiscoverCandidate, action: SwipeAction) {
+    haptic(action === "like" ? "medium" : action === "pass" ? "light" : "selection");
     setAnswered((current) => new Set(current).add(person.userId));
     recordSwipe.mutate(
       { targetId: person.userId, action },
       {
         onSuccess: (isMatch) => {
-          if (isMatch) setMatchedName(person.displayName);
+          if (isMatch) setMatched({ name: person.displayName, avatarUrl: person.avatarUrl });
         },
         onError: () => {
           showAlert(t("discover.swipeFailed"));
@@ -197,29 +201,32 @@ export function DiscoverGrid({
           </View>
         ) : null}
 
-        {isLoading ? null : visible.length === 0 ? (
+        {isLoading ? (
+          <View onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}>
+            <GridSkeleton count={columns * 2} width={cardWidth} height={Math.round(cardWidth * CARD_ASPECT)} gap={GAP} />
+          </View>
+        ) : visible.length === 0 ? (
           <DiscoverEmpty label={emptyLabel} filtersHref={filtersHref} className="py-24" />
         ) : (
-          <View
-            onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
-            style={{ flexDirection: "row", flexWrap: "wrap", gap: GAP }}
-          >
-            {cardWidth > 0
-              ? visible.map((person) => (
-                  <GridCard
-                    key={person.userId}
-                    person={person}
-                    width={cardWidth}
-                    onOpenProfile={onOpenProfile}
-                    onSwipe={onSwipe}
-                  />
-                ))
-              : null}
+          <View onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}>
+            <FadeIn style={{ flexDirection: "row", flexWrap: "wrap", gap: GAP }}>
+              {cardWidth > 0
+                ? visible.map((person) => (
+                    <GridCard
+                      key={person.userId}
+                      person={person}
+                      width={cardWidth}
+                      onOpenProfile={onOpenProfile}
+                      onSwipe={onSwipe}
+                    />
+                  ))
+                : null}
+            </FadeIn>
           </View>
         )}
       </ScrollView>
 
-      <MatchCelebrationModal matchedName={matchedName} onDismiss={() => setMatchedName(null)} />
+      <MatchCelebrationModal matched={matched} onDismiss={() => setMatched(null)} />
     </>
   );
 }

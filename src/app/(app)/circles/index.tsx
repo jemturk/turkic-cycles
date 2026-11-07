@@ -19,6 +19,8 @@ import { CIRCLE_TOPIC_COLORS, CIRCLE_TOPIC_ICONS, type CircleTopic } from "@/con
 import { RefreshableScrollView } from "@/components/RefreshableScrollView";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { CirclesDesktop } from "@/components/CirclesDesktop";
+import { RowsSkeleton } from "@/components/Skeleton";
+import { FadeIn } from "@/components/FadeIn";
 import { CARD_SHADOW } from "@/theme/surfaces";
 import { AppHeader } from "@/components/AppHeader";
 
@@ -33,7 +35,7 @@ function CirclesPhone() {
   const { t } = useTranslation();
   const { session } = useSession();
   const userId = session?.user.id;
-  const { data: circles, refetch, isRefetching } = useCircles();
+  const { data: circles, refetch, isRefetching, isLoading } = useCircles();
   const { data: memberships } = useMyCircleMemberships(userId);
   const { data: eventCounts, refetch: refetchEventCounts } = useUpcomingEventCounts();
   const joinCircle = useJoinCircle(userId);
@@ -101,66 +103,72 @@ function CirclesPhone() {
           </Text>
         ) : null}
 
+        {isLoading ? <RowsSkeleton rows={4} avatar={48} /> : null}
+
         {circles && shownCircles.length === 0 ? (
           <Text className="text-base text-ink-700 dark:text-ink-200">
             {localEnabled ? t("circles.noLocalCircles") : t("circles.noCircles")}
           </Text>
         ) : null}
 
-        {shownCircles.map((circle) => {
-          const topic = circle.topic as CircleTopic;
-          const isJoined = joinedIds.has(circle.id);
-          return (
-            <Pressable
-              key={circle.id}
-              onPress={() => router.push(`/(app)/circles/${circle.id}`, { withAnchor: true })}
-              className="flex-row gap-3 rounded-[22px] bg-white p-4 dark:bg-ink-800"
-              style={CARD_SHADOW}
-            >
-              <View className={`h-12 w-12 items-center justify-center rounded-[14px] ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
-                <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_COLORS[topic].fg} />
-              </View>
+        {shownCircles.length > 0 ? (
+          <FadeIn style={{ gap: 16 }}>
+            {shownCircles.map((circle) => {
+              const topic = circle.topic as CircleTopic;
+              const isJoined = joinedIds.has(circle.id);
+              return (
+                <Pressable
+                  key={circle.id}
+                  onPress={() => router.push(`/(app)/circles/${circle.id}`, { withAnchor: true })}
+                  className="flex-row gap-3 rounded-[22px] bg-white p-4 dark:bg-ink-800"
+                  style={CARD_SHADOW}
+                >
+                  <View className={`h-12 w-12 items-center justify-center rounded-[14px] ${CIRCLE_TOPIC_COLORS[topic].bg}`}>
+                    <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={22} color={CIRCLE_TOPIC_COLORS[topic].fg} />
+                  </View>
 
-              <View className="flex-1 gap-1">
-                <Text className="font-display text-lg text-ink-900 dark:text-ink-50" numberOfLines={1}>
-                  {circle.name}
-                </Text>
-                {circle.description ? (
-                  <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={2}>
-                    {circle.description}
-                  </Text>
-                ) : null}
-                <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
-                  {[
-                    t("circles.membersCount", { count: circle.member_count }),
-                    t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 }),
-                    [circle.city, circle.state].filter(Boolean).join(", "),
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </Text>
-              </View>
+                  <View className="flex-1 gap-1">
+                    <Text className="font-display text-lg text-ink-900 dark:text-ink-50" numberOfLines={1}>
+                      {circle.name}
+                    </Text>
+                    {circle.description ? (
+                      <Text className="text-sm text-ink-700 dark:text-ink-200" numberOfLines={2}>
+                        {circle.description}
+                      </Text>
+                    ) : null}
+                    <Text className="text-xs text-ink-400 dark:text-ink-300" numberOfLines={1}>
+                      {[
+                        t("circles.membersCount", { count: circle.member_count }),
+                        t("circles.upcomingEventsCount", { count: eventCounts?.[circle.id] ?? 0 }),
+                        [circle.city, circle.state].filter(Boolean).join(", "),
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </Text>
+                  </View>
 
-              {/* Only circles you're not in get a button, as on desktop. */}
-              {isJoined ? null : (
-                <View className="justify-center">
-                  <Pressable
-                    accessibilityRole="button"
-                    disabled={joinCircle.isPending}
-                    onPress={(e) => {
-                      // Don't also open the circle underneath.
-                      e.stopPropagation();
-                      joinCircle.mutate(circle.id);
-                    }}
-                    className="h-9 justify-center rounded-full bg-primary-500 px-4"
-                  >
-                    <Text className="text-sm font-semibold text-white">{t("circles.join")}</Text>
-                  </Pressable>
-                </View>
-              )}
-            </Pressable>
-          );
-        })}
+                  {/* Only circles you're not in get a button, as on desktop. */}
+                  {isJoined ? null : (
+                    <View className="justify-center">
+                      <Pressable
+                        accessibilityRole="button"
+                        disabled={joinCircle.isPending}
+                        onPress={(e) => {
+                          // Don't also open the circle underneath.
+                          e.stopPropagation();
+                          joinCircle.mutate(circle.id);
+                        }}
+                        className="h-9 justify-center rounded-full bg-primary-500 px-4"
+                      >
+                        <Text className="text-sm font-semibold text-white">{t("circles.join")}</Text>
+                      </Pressable>
+                    </View>
+                  )}
+                </Pressable>
+              );
+            })}
+          </FadeIn>
+        ) : null}
       </RefreshableScrollView>
     </SafeAreaView>
   );

@@ -52,6 +52,7 @@
     "expo-constants": "App config; UI only, no data collection",
     "expo-crypto": "Nonce for Apple sign-in; on device",
     "expo-font": "Font loading; UI only, no data collection",
+    "expo-haptics": "Vibrates the phone on likes, matches and sending; on-device only, sends and stores nothing; its VIBRATE permission is already declared -> no Data safety change",
     "expo-image": "Shows photos (decoded at display size, cached on the device); loads them from our storage only, sends nothing elsewhere -> no Data safety change",
     "expo-image-manipulator": "Re-encodes photos on device before upload: shrinks them and drops their metadata (GPS)",
     "expo-image-picker": "Profile photos (images only; microphonePermission false) -> Data safety: Photos. CAMERA permission",

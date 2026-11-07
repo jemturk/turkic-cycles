@@ -20,9 +20,11 @@ import { EXPANDING_TABS_DURATION, ExpandingTabs } from "@/components/ExpandingTa
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { useSearchOverlay } from "@/stores/searchOverlay";
 import { DesktopPersonCard } from "@/components/DesktopPersonCard";
+import { GridSkeleton } from "@/components/Skeleton";
+import { FadeIn } from "@/components/FadeIn";
 import type { MatchWithParticipant, MessageThread } from "@/api/chat";
 import type { SavedPerson } from "@/api/discover";
-import { CARD_SHADOW } from "@/theme/surfaces";
+import { CARD_SHADOW, PHOTO_FADE_MS } from "@/theme/surfaces";
 
 type Tab = "matched" | "connected" | "saved" | "likes";
 
@@ -145,6 +147,7 @@ function PersonCard({
             <Image
               source={{ uri: cover }}
               contentFit="cover"
+              transition={PHOTO_FADE_MS}
               style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
               accessibilityIgnoresInvertColors
             />
@@ -258,13 +261,16 @@ export default function Connections() {
   const userId = session?.user.id;
   const wide = useWideLayout();
   const openSearch = useSearchOverlay((s) => s.setOpen);
-  const { data: matched, refetch: refetchMatched, isRefetching: isRefetchingMatched } = useNewConnections(userId);
-  const { data: connected, refetch: refetchConnected, isRefetching: isRefetchingConnected } = useMessageThreads(userId);
-  const { data: saved, refetch: refetchSaved, isRefetching: isRefetchingSaved } = useSavedPeople(userId);
+  const { data: matched, refetch: refetchMatched, isRefetching: isRefetchingMatched, isLoading: matchedLoading } =
+    useNewConnections(userId);
+  const { data: connected, refetch: refetchConnected, isRefetching: isRefetchingConnected, isLoading: connectedLoading } =
+    useMessageThreads(userId);
+  const { data: saved, refetch: refetchSaved, isRefetching: isRefetchingSaved, isLoading: savedLoading } =
+    useSavedPeople(userId);
   const canSeeLikes = useCanSeeLikes(userId);
   const { data: likesCount, refetch: refetchLikesCount, isRefetching: isRefetchingLikesCount } =
     useIncomingLikesCount(userId);
-  const { data: likes, refetch: refetchLikes, isRefetching: isRefetchingLikes } = useIncomingLikes(
+  const { data: likes, refetch: refetchLikes, isRefetching: isRefetchingLikes, isLoading: likesLoading } = useIncomingLikes(
     userId,
     canSeeLikes === true
   );
@@ -352,7 +358,17 @@ export default function Connections() {
   );
   // Without Plus (and while likes aren't free), likes waiting get the teaser instead of a list.
   const showLikesTeaser = contentTab === "likes" && canSeeLikes === false && (likesCount ?? 0) > 0;
-  const isEmpty = !showLikesTeaser && (!people || people.length === 0);
+  // Still fetching this tab (or the session): placeholder cards rather than "nothing here".
+  const loading =
+    !userId ||
+    (contentTab === "matched"
+      ? matchedLoading
+      : contentTab === "connected"
+        ? connectedLoading
+        : contentTab === "saved"
+          ? savedLoading
+          : likesLoading);
+  const isEmpty = !loading && !showLikesTeaser && (!people || people.length === 0);
   const tabItems = TABS.map(({ value, icon }) => ({ value, icon, label: t(`connections.${value}`), count: counts[value] }));
 
   // No "bottom" edge: the tab bar already pads for the home indicator, and adding
@@ -409,10 +425,18 @@ export default function Connections() {
               </Text>
               <Button label={t("connections.seeWhoLikesYou")} onPress={() => router.push("/(app)/plus")} />
             </View>
+          ) : loading ? (
+            <GridSkeleton
+              count={4}
+              width={cardWidth}
+              height={wide ? Math.round(cardWidth * WIDE_CARD_ASPECT) : cardWidth}
+              gap={gap}
+            />
           ) : isEmpty ? (
             <EmptyState icon={TABS.find((x) => x.value === contentTab)!.icon} label={emptyLabel} />
           ) : cardWidth > 0 ? (
-            <View className="flex-row flex-wrap" style={{ gap }}>
+            // Keyed by tab, so each tab's cards ease in.
+            <FadeIn key={contentTab} style={{ flexDirection: "row", flexWrap: "wrap", gap }}>
               {contentTab === "saved" || contentTab === "likes"
                 ? ((contentTab === "saved" ? saved : likes) ?? []).map((person) => (
                     <PersonCard
@@ -434,7 +458,7 @@ export default function Connections() {
                       onQuickChat={contentTab === "connected" ? () => router.push(`/(app)/chat/${person.matchId}`, { withAnchor: true }) : undefined}
                     />
                   ))}
-            </View>
+            </FadeIn>
           ) : null}
         </View>
       </RefreshableScrollView>

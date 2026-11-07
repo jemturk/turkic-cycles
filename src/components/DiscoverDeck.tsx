@@ -25,7 +25,9 @@ import { useMatchingPreferences } from "@/hooks/useSettings";
 import { showAlert } from "@/lib/alert";
 import type { DiscoverCandidate } from "@/api/discover";
 import { useOtherUserVerificationStatus } from "@/hooks/useVerification";
-import { MatchCelebrationModal } from "@/components/MatchCelebrationModal";
+import { MatchCelebrationModal, type MatchedPerson } from "@/components/MatchCelebrationModal";
+import { DiscoverCardSkeleton } from "@/components/Skeleton";
+import { haptic } from "@/lib/haptics";
 import { DiscoverCardView } from "@/components/DiscoverCardView";
 import { SwipeButton } from "@/components/SwipeButton";
 import { DiscoverGrid } from "@/components/DiscoverGrid";
@@ -225,7 +227,7 @@ function SwipeDeck({ circleId, emptyLabel, filtersHref, onOpenProfile }: Discove
   const recordSwipe = useRecordSwipe(circleId, userId);
   const undoSwipe = useUndoSwipe(circleId, userId);
   const screenReader = useScreenReaderEnabled();
-  const [matchedName, setMatchedName] = useState<string | null>(null);
+  const [matched, setMatched] = useState<MatchedPerson | null>(null);
   // The last answer, undoable for UNDO_MS: who, what, and its save (done resolves to
   // whether it made a match -- a match can't be undone).
   const [lastAnswer, setLastAnswer] = useState<{
@@ -512,13 +514,14 @@ function SwipeDeck({ circleId, emptyLabel, filtersHref, onOpenProfile }: Discove
   function answer(action: "like" | "pass" | "save") {
     if (!candidate) return;
     dismissHint();
+    haptic(action === "like" ? "medium" : action === "pass" ? "light" : "selection");
     const person = candidate;
     setAnswered((current) => new Set(current).add(person.userId));
     const done = recordSwipe
       .mutateAsync({ targetId: person.userId, action })
       .then((isMatch) => {
         if (isMatch) {
-          setMatchedName(person.displayName);
+          setMatched({ name: person.displayName, avatarUrl: person.avatarUrl });
           // Matched: they've been told, so there's nothing to undo.
           setLastAnswer((current) => (current?.person.userId === person.userId ? null : current));
         }
@@ -593,7 +596,9 @@ function SwipeDeck({ circleId, emptyLabel, filtersHref, onOpenProfile }: Discove
 
   return (
     <>
-      {isLoading || recentlySkipped === null ? null : !candidate ? (
+      {isLoading || recentlySkipped === null ? (
+        <DiscoverCardSkeleton />
+      ) : !candidate ? (
         <DiscoverEmpty label={emptyLabel} filtersHref={filtersHref} />
       ) : (
         // The cards fill the space above the buttons (flex: 1). Animated views take
@@ -755,7 +760,7 @@ function SwipeDeck({ circleId, emptyLabel, filtersHref, onOpenProfile }: Discove
         </View>
       )}
 
-      <MatchCelebrationModal matchedName={matchedName} onDismiss={() => setMatchedName(null)} />
+      <MatchCelebrationModal matched={matched} onDismiss={() => setMatched(null)} />
     </>
   );
 }
