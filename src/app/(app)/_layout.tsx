@@ -24,6 +24,7 @@ import { useSearchOverlay } from "@/stores/searchOverlay";
 import { alertCoverRequired, useHasCover } from "@/hooks/useCoverGuard";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { DesktopSidebar, useSidebarWidth } from "@/components/DesktopSidebar";
+import { markSignedIn } from "@/lib/returningUser";
 
 // The only screen reachable while the cover slot is empty: their own profile,
 // where the gallery lives.
@@ -87,6 +88,11 @@ export default function AppTabsLayout() {
   useEffect(() => {
     if (signedOut) router.replace("/");
   }, [signedOut]);
+  // Also here, not only at the start (app/index.tsx): a web visit can open any page directly.
+  const signedIn = !!session;
+  useEffect(() => {
+    if (signedIn) markSignedIn();
+  }, [signedIn]);
   usePushNotifications(session?.user.id);
   useMarkDelivered(session?.user.id);
   const wide = useWideLayout();

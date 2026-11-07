@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { Redirect } from "expo-router";
 
 import { useSession } from "@/hooks/useSession";
 import { useMyProfile } from "@/hooks/useProfile";
+import { hasSignedInBefore, markSignedIn } from "@/lib/returningUser";
 
 type OnboardingRoute =
   | "/(onboarding)/step-1"
@@ -22,8 +24,16 @@ const ONBOARDING_STEP_ROUTES: Record<number, OnboardingRoute> = {
 export default function Index() {
   const { session, isLoading: sessionLoading } = useSession();
   const { data: profile, isLoading: profileLoading } = useMyProfile(session?.user.id);
+  // Signed out: someone who has signed in here before goes to Log in, not the intro.
+  const [returning, setReturning] = useState<boolean | null>(null);
+  const userId = session?.user.id;
+  useEffect(() => {
+    if (sessionLoading) return;
+    if (userId) markSignedIn();
+    else hasSignedInBefore().then(setReturning);
+  }, [sessionLoading, userId]);
 
-  if (sessionLoading || (session && profileLoading)) {
+  if (sessionLoading || (session && profileLoading) || (!session && returning === null)) {
     return (
       <View className="flex-1 items-center justify-center bg-primary-50 dark:bg-ink-950">
         <ActivityIndicator color="#127A87" />
@@ -32,7 +42,7 @@ export default function Index() {
   }
 
   if (!session) {
-    return <Redirect href="/(auth)/welcome" />;
+    return <Redirect href={returning ? "/(auth)/login" : "/(auth)/welcome"} />;
   }
 
   if (!profile?.onboarding_completed_at) {

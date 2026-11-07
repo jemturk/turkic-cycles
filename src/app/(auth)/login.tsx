@@ -51,7 +51,14 @@ export default function Login() {
   return (
     <SafeAreaView className="flex-1 bg-primary-50 dark:bg-ink-950">
       <FormScrollView className="flex-1" contentContainerClassName="flex-grow px-6 pb-10 pt-6">
-        <Ionicons name="chevron-back" size={24} className="text-ink-900 dark:text-ink-50" onPress={() => router.back()} />
+        {/* Opened straight from the start (signed in here before, app/index.tsx), there's
+            nothing to go back to: back then shows the intro. */}
+        <Ionicons
+          name="chevron-back"
+          size={24}
+          className="text-ink-900 dark:text-ink-50"
+          onPress={() => (router.canGoBack() ? router.back() : router.replace("/(auth)/welcome"))}
+        />
 
         <Text className="mt-8 font-display text-3xl text-ink-900 dark:text-ink-50">{t("auth.login.heading")}</Text>
         <Text className="mt-2 text-base text-ink-700 dark:text-ink-200">{t("auth.login.subheading")}</Text>

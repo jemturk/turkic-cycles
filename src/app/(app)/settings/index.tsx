@@ -35,6 +35,7 @@ import { Avatar } from "@/components/Avatar";
 import { useWideLayout } from "@/hooks/useWideLayout";
 import { showAlert } from "@/lib/alert";
 import { CARD_SHADOW } from "@/theme/surfaces";
+import { forgetSignedIn } from "@/lib/returningUser";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -559,7 +560,8 @@ export default function Settings() {
                 disabled={deleteAccount.isPending}
                 onPress={() =>
                   deleteAccount.mutate(undefined, {
-                    onSuccess: () => signOut("local"),
+                    // A deleted account is a fresh start: the intro again, not Log in.
+                    onSuccess: () => forgetSignedIn().then(() => signOut("local")),
                     onError: () => showAlert(t("settings.deleteAccountFailed")),
                   })
                 }
