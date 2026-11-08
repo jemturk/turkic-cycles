@@ -40,8 +40,8 @@ export function Bone({ className = "", style }: { className?: string; style?: Vi
   return <View className={`bg-ink-100 dark:bg-ink-700 ${className}`} style={style} />;
 }
 
-// Discover's swipe deck: a card filling the space above the buttons, its text band
-// at the bottom.
+// Discover's swipe deck: a card with its text band at the bottom, then the three
+// buttons -- laid out like the real deck (DiscoverDeck), so nothing jumps when it loads.
 export function DiscoverCardSkeleton() {
   return (
     <SkeletonPulse style={{ flex: 1, marginTop: 12 }}>
@@ -55,6 +55,11 @@ export function DiscoverCardSkeleton() {
           <Bone className="h-7 w-20 rounded-full" />
           <Bone className="h-7 w-24 rounded-full" />
         </View>
+      </View>
+      <View className="mt-4 flex-row items-center justify-center gap-6">
+        <Bone className="h-14 w-14 rounded-full" />
+        <Bone className="h-14 w-14 rounded-full" />
+        <Bone className="h-14 w-14 rounded-full" />
       </View>
     </SkeletonPulse>
   );
