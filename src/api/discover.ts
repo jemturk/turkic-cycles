@@ -45,7 +45,10 @@ async function rankedCandidates(circleId: string | null): Promise<{ userId: stri
     const status = ((error as { context?: unknown } | null)?.context as Response | undefined)?.status;
     if (status === 401) {
       const { data: refreshed } = await supabase.auth.refreshSession();
-      if (refreshed.session) ({ data, error } = await invoke(refreshed.session.access_token));
+      // No session to refresh: signed out (e.g. everywhere, from another device) while
+      // a tab still held the old token. Not a ranking failure -- nothing to report.
+      if (!refreshed.session) return null;
+      ({ data, error } = await invoke(refreshed.session.access_token));
     }
     if (error || !data) {
       await reportRankingFailure(error ?? new Error("rank-discover returned no data"));
@@ -62,12 +65,15 @@ async function rankedCandidates(circleId: string | null): Promise<{ userId: stri
 // unnoticed: send why to Sentry (an HTTP error's status and body too) and the console.
 async function reportRankingFailure(error: unknown) {
   let detail = "";
+  let status: string | undefined;
   const response = (error as { context?: unknown } | null)?.context;
   if (response instanceof Response) {
+    status = String(response.status);
     detail = `${response.status} ${await response.text().catch(() => "")}`.trim();
   }
   console.warn("rank-discover failed; showing Discover unranked", detail || error);
-  Sentry.captureException(error, { tags: { feature: "rank-discover" }, extra: { detail } });
+  // The status as a tag too: Sentry's alert emails show tags, not extra data.
+  Sentry.captureException(error, { tags: { feature: "rank-discover", status }, extra: { detail } });
 }
 
 async function hydrateRanked(ranked: { userId: string; match: MatchInfo }[]) {
