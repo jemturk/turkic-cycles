@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { useRef, useState } from "react";
+import { Pressable, ScrollView, View, type ViewInstance } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
@@ -23,6 +23,7 @@ import { confirmAlert, showAlert } from "@/lib/alert";
 import { haptic } from "@/lib/haptics";
 import { BrokenLinkIcon } from "@/components/BrokenLinkIcon";
 import { ProfileSkeleton } from "@/components/Skeleton";
+import { PopoverMenu } from "@/components/PopoverMenu";
 
 export default function OtherProfile() {
   const { t } = useTranslation();
@@ -51,6 +52,7 @@ export default function OtherProfile() {
   const removeConnection = useRemoveConnection(session?.user.id);
   const [matched, setMatched] = useState<MatchedPerson | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<ViewInstance>(null);
 
   const showSwipeActions = fromDiscover === "true";
   const wide = useWideLayout();
@@ -142,7 +144,7 @@ export default function OtherProfile() {
   // connected -- with Report, Remove connection and Block in a ⋯ menu at the end of the row.
 
   const moreButton = (
-    <View>
+    <View ref={moreRef} collapsable={false}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t("common.more")}
@@ -152,11 +154,8 @@ export default function OtherProfile() {
       >
         <Ionicons name="ellipsis-horizontal" size={20} color="#4A3F3A" />
       </Pressable>
-      {moreOpen ? (
-        <View
-          className="absolute right-0 top-14 z-10 w-52 overflow-hidden rounded-2xl bg-white py-1 dark:bg-ink-800"
-          style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.12, shadowRadius: 16 }}
-        >
+      <PopoverMenu open={moreOpen} onClose={() => setMoreOpen(false)} anchorRef={moreRef} width={208}>
+        <View className="py-1">
           <Pressable
             accessibilityRole="menuitem"
             onPress={() => {
@@ -187,7 +186,7 @@ export default function OtherProfile() {
             <Text className="text-sm text-accent-600">{t("discover.block")}</Text>
           </Pressable>
         </View>
-      ) : null}
+      </PopoverMenu>
     </View>
   );
 
