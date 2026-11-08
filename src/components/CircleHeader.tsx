@@ -26,7 +26,8 @@ export function CircleHeader({
   right?: ReactNode;
   /** A line under the name -- the circle page's "16 members · Tampa, FL". */
   subtitle?: string;
-  /** Makes the name and subtitle a button with a › -- the circle page's way to its members. */
+  /** Makes the name and subtitle a button, the subtitle a pill with a › -- the circle
+   *  page's way to its members. */
   onPressSubtitle?: () => void;
 }) {
   const { t } = useTranslation();
@@ -56,13 +57,19 @@ export function CircleHeader({
             <Text className="font-display text-lg text-ink-900" numberOfLines={1}>
               {name}
             </Text>
-            {subtitle ? (
-              <View className="flex-row items-center gap-0.5">
-                <Text className="shrink text-xs text-ink-700" numberOfLines={1}>
+            {subtitle && onPressSubtitle ? (
+              // A pill, so it reads as something to tap: who's in the circle.
+              <View className="mt-0.5 shrink flex-row items-center gap-1 self-start rounded-full bg-white/70 py-0.5 pl-2 pr-1.5">
+                <Ionicons name="people" size={12} color="#2B2320" />
+                <Text className="shrink text-xs font-medium text-ink-900" numberOfLines={1}>
                   {subtitle}
                 </Text>
-                {onPressSubtitle ? <Ionicons name="chevron-forward" size={12} color="#4A3F3A" /> : null}
+                <Ionicons name="chevron-forward" size={14} color="#2B2320" />
               </View>
+            ) : subtitle ? (
+              <Text className="text-xs text-ink-700" numberOfLines={1}>
+                {subtitle}
+              </Text>
             ) : null}
           </Pressable>
         </View>

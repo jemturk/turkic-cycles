@@ -138,11 +138,17 @@ export default function CircleEvents() {
               {circle.name}
             </Text>
             {/* The member count opens the members, as on a phone. */}
-            <Pressable onPress={openMembers} accessibilityRole="button" className="flex-row items-center gap-1 self-start">
-              <Text className="text-sm text-ink-400 web:hover:underline dark:text-ink-300">
+            <Pressable
+              onPress={openMembers}
+              accessibilityRole="button"
+              className="flex-row items-center gap-1.5 self-start rounded-full bg-white py-1 pl-3 pr-2 web:hover:bg-primary-100 dark:bg-ink-800 dark:web:hover:bg-ink-700"
+              style={CARD_SHADOW}
+            >
+              <Ionicons name="people" size={14} className="text-primary-500 dark:text-primary-400" />
+              <Text className="text-sm font-medium text-ink-900 dark:text-ink-50">
                 {[t("circles.membersCount", { count: circle.member_count }), place].filter(Boolean).join(" · ")}
               </Text>
-              <Ionicons name="chevron-forward" size={14} color="#A99C95" />
+              <Ionicons name="chevron-forward" size={16} className="text-ink-700 dark:text-ink-200" />
             </Pressable>
           </View>
           {canAddEvent ? (
