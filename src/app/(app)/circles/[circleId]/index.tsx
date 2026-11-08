@@ -65,6 +65,9 @@ export default function CircleEvents() {
       onError: (error) => showAlert(t("circles.deleteFailed"), error.message),
     });
   }
+  function openMembers() {
+    router.push(`/(app)/circles/${circleId}/members`, { withAnchor: true });
+  }
   // Join circle, or Leave circle behind a confirmation. In the header on a phone (in
   // place of search and your avatar), in the title row on desktop.
   const menu = circle ? (
@@ -75,6 +78,7 @@ export default function CircleEvents() {
       onJoin={() => joinCircle.mutate(circleId)}
       onLeave={() => leaveCircle.mutate(circleId)}
       onDelete={role === "owner" ? confirmDelete : undefined}
+      onMembers={openMembers}
     />
   ) : null;
   // Same rule the database enforces for creating events (migration 0035).
@@ -133,9 +137,13 @@ export default function CircleEvents() {
             <Text className="font-display text-4xl text-ink-900 dark:text-ink-50" numberOfLines={1}>
               {circle.name}
             </Text>
-            <Text className="text-sm text-ink-400 dark:text-ink-300">
-              {[t("circles.membersCount", { count: circle.member_count }), place].filter(Boolean).join(" · ")}
-            </Text>
+            {/* The member count opens the members, as on a phone. */}
+            <Pressable onPress={openMembers} accessibilityRole="button" className="flex-row items-center gap-1 self-start">
+              <Text className="text-sm text-ink-400 web:hover:underline dark:text-ink-300">
+                {[t("circles.membersCount", { count: circle.member_count }), place].filter(Boolean).join(" · ")}
+              </Text>
+              <Ionicons name="chevron-forward" size={14} color="#A99C95" />
+            </Pressable>
           </View>
           {canAddEvent ? (
             <Pressable
@@ -243,6 +251,7 @@ export default function CircleEvents() {
         topic={topic}
         onBack={goBack}
         right={menu}
+        onPressSubtitle={openMembers}
         // The details live in the header now; the description stays on the page.
         subtitle={[
           t("circles.membersCount", { count: circle.member_count }),

@@ -17,6 +17,7 @@ export function CircleHeader({
   onBack,
   right,
   subtitle,
+  onPressSubtitle,
 }: {
   name: string;
   topic: CircleTopic;
@@ -25,6 +26,8 @@ export function CircleHeader({
   right?: ReactNode;
   /** A line under the name -- the circle page's "16 members · Tampa, FL". */
   subtitle?: string;
+  /** Makes the name and subtitle a button with a › -- the circle page's way to its members. */
+  onPressSubtitle?: () => void;
 }) {
   const { t } = useTranslation();
   return (
@@ -43,16 +46,25 @@ export function CircleHeader({
           >
             <Ionicons name={CIRCLE_TOPIC_ICONS[topic]} size={20} color={CIRCLE_TOPIC_COLORS[topic].fg} />
           </View>
-          <View className="flex-1">
+          <Pressable
+            className="flex-1"
+            disabled={!onPressSubtitle}
+            onPress={onPressSubtitle}
+            accessibilityRole={onPressSubtitle ? "button" : undefined}
+            accessibilityHint={onPressSubtitle ? t("circles.members") : undefined}
+          >
             <Text className="font-display text-lg text-ink-900" numberOfLines={1}>
               {name}
             </Text>
             {subtitle ? (
-              <Text className="text-xs text-ink-700" numberOfLines={1}>
-                {subtitle}
-              </Text>
+              <View className="flex-row items-center gap-0.5">
+                <Text className="shrink text-xs text-ink-700" numberOfLines={1}>
+                  {subtitle}
+                </Text>
+                {onPressSubtitle ? <Ionicons name="chevron-forward" size={12} color="#4A3F3A" /> : null}
+              </View>
             ) : null}
-          </View>
+          </Pressable>
         </View>
       }
     />
